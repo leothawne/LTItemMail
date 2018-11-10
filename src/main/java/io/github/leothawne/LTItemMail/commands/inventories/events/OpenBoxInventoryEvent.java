@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -23,25 +22,17 @@ public class OpenBoxInventoryEvent implements Listener {
 			Player player = (Player) event.getPlayer();
 			player.setInvulnerable(false);
 			ItemStack[] contents = inventory.getContents();
-			List<ItemStack> contentsarray = new ArrayList<ItemStack>();
-			for(ItemStack content : contents) {
-				if(content == null) {
-					contentsarray.add(new ItemStack(Material.AIR));
-				} else {
-					contentsarray.add(content);
-				}
-			}
 			boolean isEmpty = true;
-			for(ItemStack content : contentsarray) {
-				if(content.getType() != Material.AIR) {
+			for(ItemStack content : contents) {
+				if(content != null) {
 					isEmpty = false;
 				}
 			}
 			if(isEmpty == false) {
 				List<ItemStack> itemslost = new ArrayList<ItemStack>();
 				int count = 0;
-				for(ItemStack content: contentsarray) {
-					if(content.getType() != Material.AIR) {
+				for(ItemStack content: contents) {
+					if(content != null) {
 						itemslost.add(content);
 						count = count + content.getAmount();
 					}
