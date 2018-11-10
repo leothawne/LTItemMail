@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.leothawne</groupId>
 	<artifactId>LTItemMail</artifactId>
-	<version>0.1.0</version>
+	<version>0.1.1</version>
 	<name>LT Item Mail</name>
 	<description>Easily send items to distant players.</description>
 	<build>

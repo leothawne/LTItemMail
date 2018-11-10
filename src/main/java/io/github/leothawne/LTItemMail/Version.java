@@ -17,7 +17,7 @@ public class Version {
 		this.myLogger = myLogger;
 	}
 	public int configFileVersion = 1;
-	public String LTIMVersion = "0.1.0";
+	public String LTIMVersion = "0.1.1";
 	public String LTIMVersion_Date = "10/11/2018 (America/Sao_Paulo)";
 	public String Minecraft_Version = "1.13.X";
 	public String Minecraft_Build = "1.13-R0.1-SNAPSHOT";

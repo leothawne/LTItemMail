@@ -43,7 +43,7 @@ public class LTItemMailLoader extends JavaPlugin {
 			getCommand("sendbox").setTabCompleter(new SendBoxConstructTabCompleter());
 			registerEvents(this, new SendBoxInventoryEvent(this));
 			registerEvents(this, new OpenBoxInventoryEvent());
-			registerEvents(this, new Listeners(this));
+			registerEvents(this, new Listeners(configuration));
 			new Version(this, myLogger).check();
 			myLogger.warning("A permissions plugin is required! Just make sure you are using one. Permissions nodes can be found at: https://leothawne.github.io/LTItemMail/permissions.html");
 			for(Player player : this.getServer().getOnlinePlayers()) {
