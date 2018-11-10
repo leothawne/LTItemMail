@@ -1,0 +1,27 @@
+User-agent: Googlebot
+Disallow: /LTItemMail/api/
+Allow: /LTItemMail/
+
+User-agent: Googlebot-images
+Disallow: /LTItemMail/api/
+Allow: /LTItemMail/
+
+User-agent: Adsbot-Google
+Disallow: /LTItemMail/api/
+Allow: /LTItemMail/
+
+User-agent: Mediapartners-Google
+Disallow: /LTItemMail/api/
+Allow: /LTItemMail/
+
+User-agent: Slurp
+Disallow: /LTItemMail/api/
+Allow: /LTItemMail/
+
+User-agent: Bingbot
+Disallow: /LTItemMail/api/
+Allow: /LTItemMail/
+
+User-agent: *
+Disallow: /LTItemMail/api/
+Allow: /LTItemMail/
