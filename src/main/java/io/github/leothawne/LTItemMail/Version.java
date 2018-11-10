@@ -39,7 +39,7 @@ public class Version {
 			if(sb.toString() != null) {
 				if(sb.toString().equalsIgnoreCase("disabled")) {
 					myLogger.severe("Hey you, stop right there! The version " + LTIMVersion + " is not allowed anymore!");
-					myLogger.severe("Apologies, but this plugin will now be disabled! Download a newer version to play: https://dev.bukkit.org/projects/the-doctor-reborn");
+					myLogger.severe("Apologies, but this plugin will now be disabled! Download a newer version to play: https://dev.bukkit.org/projects/lt-item-mail");
 					plugin.getServer().getPluginManager().disablePlugin(plugin);
 				}
 			}
