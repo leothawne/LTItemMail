@@ -77,7 +77,7 @@ public class ItemMailAdminCommands implements CommandExecutor {
 						sender.sendMessage(ChatColor.AQUA + "[LTIM :: Admin] " + ChatColor.YELLOW + "Too many arguments!");
 					}
 				} else {
-					sender.sendMessage(ChatColor.AQUA + "[LTIM :: Admin] " + ChatColor.YELLOW + "Invalid command! Type " + ChatColor.GREEN + "/itemmail " + ChatColor.YELLOW + "to see all available commands.");
+					sender.sendMessage(ChatColor.AQUA + "[LTIM :: Admin] " + ChatColor.YELLOW + "Invalid command! Type " + ChatColor.GREEN + "/itemmailadmin " + ChatColor.YELLOW + "to see all available commands.");
 				}
 			} else {
 				sender.sendMessage(ChatColor.AQUA + "[LTIM :: Admin] " + ChatColor.YELLOW + "You can't do that! You don't have permission.");
