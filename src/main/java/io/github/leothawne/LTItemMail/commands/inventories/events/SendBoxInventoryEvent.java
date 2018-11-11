@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,9 +21,11 @@ import net.milkbowl.vault.economy.EconomyResponse;
 
 public class SendBoxInventoryEvent implements Listener {
 	private LTItemMailLoader plugin;
+	private FileConfiguration configuration;
 	private Economy economyPlugin;
-	public SendBoxInventoryEvent(LTItemMailLoader plugin, Economy economyPlugin){
+	public SendBoxInventoryEvent(LTItemMailLoader plugin, FileConfiguration configuration, Economy economyPlugin){
 		this.plugin = plugin;
+		this.configuration = configuration;
 		this.economyPlugin = economyPlugin;
 	}
 	private String inventoryName = new SendBoxInventory().getName();
@@ -63,7 +66,7 @@ public class SendBoxInventoryEvent implements Listener {
 				if(recipientslots >= slots) {
 					if(recipient.isInvulnerable() == false) {
 						if(economyPlugin.has(sender, 10.0)) {
-							EconomyResponse er = economyPlugin.withdrawPlayer(sender, 10.0);
+							EconomyResponse er = economyPlugin.withdrawPlayer(sender, configuration.getDouble("mail-cost"));
 							if(er.transactionSuccess()) {
 								sender.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "You paid " + ChatColor.GREEN + "$10.0 " + ChatColor.YELLOW + "to the bank! " + recipientslots);
 								sender.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "Items sent to " + ChatColor.AQUA + "" + recipient.getName() + "" + ChatColor.YELLOW + ". " + slots);
