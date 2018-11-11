@@ -48,7 +48,7 @@ public class LTItemMailLoader extends JavaPlugin {
 					getCommand("itemmailadmin").setTabCompleter(new ItemMailAdminConstructTabCompleter());
 					getCommand("sendbox").setExecutor(new SendBoxCommand(this, myLogger));
 					getCommand("sendbox").setTabCompleter(new SendBoxConstructTabCompleter());
-					registerEvents(this, new SendBoxInventoryEvent(this, economyPlugin));
+					registerEvents(this, new SendBoxInventoryEvent(this, configuration, economyPlugin));
 					registerEvents(this, new OpenBoxInventoryEvent());
 					registerEvents(this, new Listeners(configuration));
 					new Version(this, myLogger).check();
