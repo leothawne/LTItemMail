@@ -9,7 +9,7 @@ public class VaultLoader {
 	public VaultLoader(LTItemMailLoader plugin) {
 		this.plugin = plugin;
 	}
-	RegisteredServiceProvider<Economy> rsp = null;
+	private RegisteredServiceProvider<Economy> rsp = null;
 	public boolean isInstalled() {
 		if(plugin.getServer().getPluginManager().getPlugin("Vault") != null) {
 			return true;
