@@ -68,8 +68,8 @@ public class SendBoxInventoryEvent implements Listener {
 						if(economyPlugin.has(sender, 10.0)) {
 							EconomyResponse er = economyPlugin.withdrawPlayer(sender, configuration.getDouble("mail-cost"));
 							if(er.transactionSuccess()) {
-								sender.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "You paid " + ChatColor.GREEN + "$" + configuration.getDouble("mail-cost") + " " + ChatColor.YELLOW + "to the bank! " + recipientslots);
-								sender.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "Items sent to " + ChatColor.AQUA + "" + recipient.getName() + "" + ChatColor.YELLOW + ". " + slots);
+								sender.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "You paid " + ChatColor.GREEN + "$" + configuration.getDouble("mail-cost") + " " + ChatColor.YELLOW + "to the bank!");
+								sender.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "Items sent to " + ChatColor.AQUA + "" + recipient.getName() + "" + ChatColor.YELLOW + ".");
 								recipient.setInvulnerable(true);
 								recipient.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.AQUA + "Mailbox from: " + ChatColor.GREEN + "" + sender.getName() + "" + ChatColor.AQUA + ".");
 								recipient.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.AQUA + "Opening in " + ChatColor.GREEN + "5 seconds" + ChatColor.AQUA + "... " + ChatColor.DARK_RED + "Items left inside will be lost!");
