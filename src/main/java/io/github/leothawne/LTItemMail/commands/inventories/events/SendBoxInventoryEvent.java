@@ -68,7 +68,7 @@ public class SendBoxInventoryEvent implements Listener {
 						if(economyPlugin.has(sender, 10.0)) {
 							EconomyResponse er = economyPlugin.withdrawPlayer(sender, configuration.getDouble("mail-cost"));
 							if(er.transactionSuccess()) {
-								sender.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "You paid " + ChatColor.GREEN + "$10.0 " + ChatColor.YELLOW + "to the bank! " + recipientslots);
+								sender.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "You paid " + ChatColor.GREEN + "$" + configuration.getDouble("mail-cost") + " " + ChatColor.YELLOW + "to the bank! " + recipientslots);
 								sender.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "Items sent to " + ChatColor.AQUA + "" + recipient.getName() + "" + ChatColor.YELLOW + ". " + slots);
 								recipient.setInvulnerable(true);
 								recipient.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.AQUA + "Mailbox from: " + ChatColor.GREEN + "" + sender.getName() + "" + ChatColor.AQUA + ".");
@@ -87,7 +87,7 @@ public class SendBoxInventoryEvent implements Listener {
 								}
 							}
 						} else {
-							sender.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "You don't have " + ChatColor.GREEN + "$10.0 " + ChatColor.YELLOW + "to pay.");
+							sender.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "You don't have " + ChatColor.GREEN + "$" + configuration.getDouble("mail-cost") + " " + ChatColor.YELLOW + "to pay.");
 							for(ItemStack item : contentsarray) {
 								sender.getInventory().addItem(item);
 							}
