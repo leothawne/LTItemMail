@@ -1,8 +1,11 @@
 #If for some reason you want to disable this plugin, just set this to 'false'. Default: true
 enable-plugin: true
 
-#Cost to send items to another players. Default: 30.0
-mail-cost: 30.0
+#If 'true', the 'mail-cost' value will be multiplied by the number of items inside the mailbox. Default: true
+cost-per-item: true
+
+#Cost to send items to another players. Default: 1.50 (per item), 30.0 (per mailbox)
+mail-cost: 1.50
 
 #Should administrators be warned about new updates? Default: true
 #If 'true', this will not bother you while you are playing. I promisse!
@@ -11,4 +14,4 @@ update:
     #download: true # Work in progress feature!
 
 #Do not change this under any circumstances!
-config-version: 2
+config-version: 3

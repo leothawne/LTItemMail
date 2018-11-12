@@ -56,19 +56,27 @@ public class SendBoxInventoryEvent implements Listener {
 			}
 			int recipientslots = 36 - countrecipientslot;
 			boolean isEmpty = true;
+			int count = 0;
 			for(ItemStack content : contentsarray) {
 				if(content.getType() != Material.AIR) {
 					isEmpty = false;
+					count = count + content.getAmount();
 				}
 			}
 			inventory.clear();
 			if(isEmpty == false) {
 				if(recipientslots >= slots) {
 					if(recipient.isInvulnerable() == false) {
-						if(economyPlugin.has(sender, 10.0)) {
-							EconomyResponse er = economyPlugin.withdrawPlayer(sender, configuration.getDouble("mail-cost"));
+						double newcost = 0;
+						if(configuration.getBoolean("cost-per-item") == true) {
+							newcost = configuration.getDouble("mail-cost") * count;
+						} else {
+							newcost = configuration.getDouble("mail-cost");
+						}
+						if(economyPlugin.has(sender, newcost)) {
+							EconomyResponse er = economyPlugin.withdrawPlayer(sender, newcost);
 							if(er.transactionSuccess()) {
-								sender.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "You paid " + ChatColor.GREEN + "$" + configuration.getDouble("mail-cost") + " " + ChatColor.YELLOW + "to the bank!");
+								sender.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "You paid " + ChatColor.GREEN + "$" + newcost + " " + ChatColor.YELLOW + "to the bank!");
 								sender.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "Items sent to " + ChatColor.AQUA + "" + recipient.getName() + "" + ChatColor.YELLOW + ".");
 								recipient.setInvulnerable(true);
 								recipient.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.AQUA + "Mailbox from: " + ChatColor.GREEN + "" + sender.getName() + "" + ChatColor.AQUA + ".");
@@ -87,7 +95,7 @@ public class SendBoxInventoryEvent implements Listener {
 								}
 							}
 						} else {
-							sender.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "You don't have " + ChatColor.GREEN + "$" + configuration.getDouble("mail-cost") + " " + ChatColor.YELLOW + "to pay.");
+							sender.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "You don't have " + ChatColor.GREEN + "$" + newcost + " " + ChatColor.YELLOW + "to pay.");
 							for(ItemStack item : contentsarray) {
 								sender.getInventory().addItem(item);
 							}
