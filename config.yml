@@ -1,6 +1,8 @@
 #If for some reason you want to disable this plugin, just set this to 'false'. Default: true
 enable-plugin: true
 
+language: english
+
 #If 'true', the 'mail-cost' value will be multiplied by the number of items inside the mailbox. Default: true
 cost-per-item: true
 
@@ -14,4 +16,4 @@ update:
     #download: true # Work in progress feature!
 
 #Do not change this under any circumstances!
-config-version: 3
+config-version: 4

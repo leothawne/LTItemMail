@@ -11,7 +11,7 @@ public class ConfigurationLoader {
 		this.plugin = plugin;
 		this.myLogger = myLogger;
 	}
-	private File configFile = null;
+	private File configFile;
 	public void check() {
 		myLogger.info("Looking for config file...");
 		configFile = new File(plugin.getDataFolder(), "config.yml");

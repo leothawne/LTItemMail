@@ -26,7 +26,8 @@ public class LTItemMailLoader extends JavaPlugin {
 			Bukkit.getServer().getPluginManager().registerEvents(listener, plugin);
 		}
 	}
-	private FileConfiguration configuration = null;
+	private FileConfiguration configuration;
+	private FileConfiguration language;
 	@Override
 	public void onEnable() {
 		for(Player player : this.getServer().getOnlinePlayers()) {
@@ -41,6 +42,8 @@ public class LTItemMailLoader extends JavaPlugin {
 				economyPlugin = vault.getEconomy();
 				new ConfigurationLoader(this, myLogger).check();
 				configuration = new ConfigurationLoader(this, myLogger).load();
+				new LanguageLoader(this, myLogger, configuration).check();
+				language = new LanguageLoader(this, myLogger, configuration).load();
 				if(configuration.getBoolean("enable-plugin") == true) {
 					getCommand("itemmail").setExecutor(new ItemMailCommands(this, myLogger));
 					getCommand("itemmail").setTabCompleter(new ItemMailConstructTabCompleter());
@@ -49,7 +52,7 @@ public class LTItemMailLoader extends JavaPlugin {
 					getCommand("sendbox").setExecutor(new SendBoxCommand(this, myLogger));
 					getCommand("sendbox").setTabCompleter(new SendBoxConstructTabCompleter());
 					registerEvents(this, new SendBoxInventoryEvent(this, configuration, economyPlugin));
-					registerEvents(this, new OpenBoxInventoryEvent());
+					registerEvents(this, new OpenBoxInventoryEvent(language));
 					registerEvents(this, new Listeners(configuration));
 					new Version(this, myLogger).check();
 					myLogger.warning("A permissions plugin is required! Just make sure you are using one. Permissions nodes can be found at: https://leothawne.github.io/LTItemMail/permissions.html");

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,6 +15,10 @@ import org.bukkit.inventory.ItemStack;
 import io.github.leothawne.LTItemMail.commands.inventories.OpenBoxInventory;
 
 public class OpenBoxInventoryEvent implements Listener {
+	private FileConfiguration language;
+	public OpenBoxInventoryEvent(FileConfiguration language) {
+		this.language = language;
+	}
 	private String inventoryName = new OpenBoxInventory().getName();
 	@EventHandler
 	public void onInventoryClose(InventoryCloseEvent event) {
@@ -37,9 +42,10 @@ public class OpenBoxInventoryEvent implements Listener {
 						count = count + content.getAmount();
 					}
 				}
-				player.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "Mailbox closed! You lost " + ChatColor.GREEN + "" + count + "" + ChatColor.YELLOW + " items: " + ChatColor.GREEN + "" + itemslost);
+				String[] mailboxCloseItems = language.getString("mailbox-close-items").split("%");
+				player.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "" + language.getString("mailbox-close") + " " + mailboxCloseItems[0] + " " + ChatColor.GREEN + "" + count + "" + ChatColor.YELLOW + " " + mailboxCloseItems[1] + " " + ChatColor.GREEN + "" + itemslost);
 			} else {
-				player.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "Mailbox closed!");
+				player.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "" + language.getString("mailbox-close"));
 			}
 			inventory.clear();
 		}
