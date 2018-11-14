@@ -42,10 +42,10 @@ public class OpenBoxInventoryEvent implements Listener {
 						count = count + content.getAmount();
 					}
 				}
-				String[] mailboxCloseItems = language.getString("mailbox-close-items").split("%");
-				player.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "" + language.getString("mailbox-close") + " " + mailboxCloseItems[0] + " " + ChatColor.GREEN + "" + count + "" + ChatColor.YELLOW + " " + mailboxCloseItems[1] + " " + ChatColor.GREEN + "" + itemslost);
+				String[] mailboxClosedItems = language.getString("mailbox-closed-items").split("%");
+				player.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "" + language.getString("mailbox-closed") + " " + mailboxClosedItems[0] + "" + ChatColor.GREEN + "" + count + "" + ChatColor.YELLOW + "" + mailboxClosedItems[1] + " " + ChatColor.GREEN + "" + itemslost);
 			} else {
-				player.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "" + language.getString("mailbox-close"));
+				player.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "" + language.getString("mailbox-closed"));
 			}
 			inventory.clear();
 		}

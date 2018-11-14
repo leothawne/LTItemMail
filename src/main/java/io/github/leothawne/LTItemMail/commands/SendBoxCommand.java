@@ -4,6 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import io.github.leothawne.LTItemMail.ConsoleLoader;
@@ -13,9 +14,11 @@ import io.github.leothawne.LTItemMail.commands.inventories.SendBoxInventory;
 public class SendBoxCommand implements CommandExecutor {
 	private LTItemMailLoader plugin;
 	private ConsoleLoader myLogger;
-	public SendBoxCommand(LTItemMailLoader plugin, ConsoleLoader myLogger) {
+	private FileConfiguration language;
+	public SendBoxCommand(LTItemMailLoader plugin, ConsoleLoader myLogger, FileConfiguration language) {
 		this.plugin = plugin;
 		this.myLogger = myLogger;
+		this.language = language;
 	}
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
@@ -23,7 +26,7 @@ public class SendBoxCommand implements CommandExecutor {
 			if(sender instanceof Player) {
 				Player player = (Player) sender;
 				if(args.length < 1) {
-					player.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "You must specify a player!");
+					player.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "" + language.getString("recipient-empty"));
 				} else if(args.length < 3) {
 					Player player1 = null;
 					for(Player player2 : plugin.getServer().getOnlinePlayers()) {
@@ -37,23 +40,23 @@ public class SendBoxCommand implements CommandExecutor {
 								player.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "Okay...");
 								player.openInventory(new SendBoxInventory().GUI(player1));
 							} else {
-								player.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "Why would you do that?");
+								player.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "" + language.getString("player-self"));
 							}
 						} else {
-							player.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "Opening mailbox...");
+							player.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "" + language.getString("mailbox-opening"));
 							player.openInventory(new SendBoxInventory().GUI(player1));
 						}
 					} else {
-						player.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "The specified player is not online.");
+						player.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "" + language.getString("recipient-offline"));
 					}
 				} else {
-					player.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "Too many arguments!");
+					player.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "" + language.getString("player-tma"));
 				}
 			} else {
-				sender.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "You must be a player to do that!");
+				sender.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "" + language.getString("player-error"));
 			}
 		} else {
-			sender.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "You do not have permission!");
+			sender.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "" + language.getString("no-permission"));
 			myLogger.warning(sender.getName() + " does not have permission [LTItemMail.use]!");
 		}
 		return true;

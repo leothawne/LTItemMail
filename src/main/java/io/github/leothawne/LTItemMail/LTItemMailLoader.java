@@ -45,13 +45,13 @@ public class LTItemMailLoader extends JavaPlugin {
 				new LanguageLoader(this, myLogger, configuration).check();
 				language = new LanguageLoader(this, myLogger, configuration).load();
 				if(configuration.getBoolean("enable-plugin") == true) {
-					getCommand("itemmail").setExecutor(new ItemMailCommands(this, myLogger));
+					getCommand("itemmail").setExecutor(new ItemMailCommands(this, myLogger, language));
 					getCommand("itemmail").setTabCompleter(new ItemMailConstructTabCompleter());
-					getCommand("itemmailadmin").setExecutor(new ItemMailAdminCommands(this, myLogger));
+					getCommand("itemmailadmin").setExecutor(new ItemMailAdminCommands(this, myLogger, language));
 					getCommand("itemmailadmin").setTabCompleter(new ItemMailAdminConstructTabCompleter());
-					getCommand("sendbox").setExecutor(new SendBoxCommand(this, myLogger));
+					getCommand("sendbox").setExecutor(new SendBoxCommand(this, myLogger, language));
 					getCommand("sendbox").setTabCompleter(new SendBoxConstructTabCompleter());
-					registerEvents(this, new SendBoxInventoryEvent(this, configuration, economyPlugin));
+					registerEvents(this, new SendBoxInventoryEvent(this, configuration, language, economyPlugin));
 					registerEvents(this, new OpenBoxInventoryEvent(language));
 					registerEvents(this, new Listeners(configuration));
 					new Version(this, myLogger).check();

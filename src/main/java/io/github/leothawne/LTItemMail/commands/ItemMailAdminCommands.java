@@ -10,6 +10,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 
 import io.github.leothawne.LTItemMail.ConsoleLoader;
 import io.github.leothawne.LTItemMail.LTItemMailLoader;
@@ -18,9 +19,11 @@ import io.github.leothawne.LTItemMail.Version;
 public class ItemMailAdminCommands implements CommandExecutor {
 	private LTItemMailLoader plugin;
 	private ConsoleLoader myLogger;
-	public ItemMailAdminCommands(LTItemMailLoader plugin, ConsoleLoader myLogger) {
+	private FileConfiguration language;
+	public ItemMailAdminCommands(LTItemMailLoader plugin, ConsoleLoader myLogger, FileConfiguration language) {
 		this.plugin = plugin;
 		this.myLogger = myLogger;
+		this.language = language;
 	}
 	private String LTIMVersion = new Version(plugin, myLogger).LTIMVersion;
 	private String LTIMVersion_Date = new Version(plugin, myLogger).LTIMVersion_Date;
@@ -80,11 +83,11 @@ public class ItemMailAdminCommands implements CommandExecutor {
 					sender.sendMessage(ChatColor.AQUA + "[LTIM :: Admin] " + ChatColor.YELLOW + "Invalid command! Type " + ChatColor.GREEN + "/itemmailadmin " + ChatColor.YELLOW + "to see all available commands.");
 				}
 			} else {
-				sender.sendMessage(ChatColor.AQUA + "[LTIM :: Admin] " + ChatColor.YELLOW + "You can't do that! You don't have permission.");
+				sender.sendMessage(ChatColor.AQUA + "[LTIM :: Admin] " + ChatColor.YELLOW + "" + language.getString("no-permission"));
 				myLogger.severe(sender.getName() + " does not have permission [LTItemMail.admin].");
 			}
 		} else {
-			sender.sendMessage(ChatColor.AQUA + "[LTIM] " + ChatColor.YELLOW + "You can't do that! You don't have permission.");
+			sender.sendMessage(ChatColor.AQUA + "[LTIM] " + ChatColor.YELLOW + "" + language.getString("no-permission"));
 			myLogger.severe(sender.getName() + " does not have permission [LTItemMail.use].");
 		}
 		return true;
