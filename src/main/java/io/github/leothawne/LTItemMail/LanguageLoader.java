@@ -22,10 +22,15 @@ public class LanguageLoader {
 		languageFile = new File(plugin.getDataFolder(), configuration.getString("language") + ".yml");
 		if(languageFile.exists() == false) {
 			myLogger.warning("Language file not found. Extracting...");
+			if(configuration.getString("language").equalsIgnoreCase("english") || configuration.getString("language").equalsIgnoreCase("portuguese")) {
+				plugin.saveResource(configuration.getString("language") + ".yml", true);
+				myLogger.warning(configuration.getString("language") + ".yml extracted!");
+			} else {
+				myLogger.severe(configuration.getString("language") + ".yml is not supported yet. I suggest you to manually create the language file and do manually the translation.");
+			}
+			
 		} else {
 			myLogger.info(configuration.getString("language") + ".yml file found.");
-			plugin.saveResource(configuration.getString("language") + ".yml", true);
-			myLogger.warning(configuration.getString("language") + ".yml extracted!");
 		}
 	}
 	public FileConfiguration load() {
