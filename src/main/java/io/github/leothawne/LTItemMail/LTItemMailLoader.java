@@ -45,14 +45,14 @@ public class LTItemMailLoader extends JavaPlugin {
 				new LanguageLoader(this, myLogger, configuration).check();
 				language = new LanguageLoader(this, myLogger, configuration).load();
 				if(configuration.getBoolean("enable-plugin") == true) {
-					getCommand("itemmail").setExecutor(new ItemMailCommands(this, myLogger, language));
+					getCommand("itemmail").setExecutor(new ItemMailCommands(this, myLogger, configuration, language));
 					getCommand("itemmail").setTabCompleter(new ItemMailConstructTabCompleter());
-					getCommand("itemmailadmin").setExecutor(new ItemMailAdminCommands(this, myLogger, language));
+					getCommand("itemmailadmin").setExecutor(new ItemMailAdminCommands(this, myLogger, configuration, language));
 					getCommand("itemmailadmin").setTabCompleter(new ItemMailAdminConstructTabCompleter());
-					getCommand("sendbox").setExecutor(new SendBoxCommand(this, myLogger, language));
+					getCommand("sendbox").setExecutor(new SendBoxCommand(this, myLogger, configuration, language));
 					getCommand("sendbox").setTabCompleter(new SendBoxConstructTabCompleter());
 					registerEvents(this, new SendBoxInventoryEvent(this, configuration, language, economyPlugin));
-					registerEvents(this, new OpenBoxInventoryEvent(language));
+					registerEvents(this, new OpenBoxInventoryEvent(configuration, language));
 					registerEvents(this, new Listeners(configuration));
 					new Version(this, myLogger).check();
 					myLogger.warning("A permissions plugin is required! Just make sure you are using one. Permissions nodes can be found at: https://leothawne.github.io/LTItemMail/permissions.html");
