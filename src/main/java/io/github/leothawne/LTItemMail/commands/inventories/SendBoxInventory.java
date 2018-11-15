@@ -6,7 +6,7 @@ import org.bukkit.inventory.Inventory;
 
 public class SendBoxInventory {
 	public String getName() {
-		return "Mailbox: Send";
+		return "< Mailbox >";
 	}
 	public Inventory GUI(Player player) {
 		Inventory inventory = Bukkit.createInventory(player, 54, getName());

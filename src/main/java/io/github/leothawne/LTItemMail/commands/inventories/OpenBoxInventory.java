@@ -8,7 +8,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class OpenBoxInventory {
 	public String getName() {
-		return "Mailbox: Receive";
+		return "> Mailbox < ";
 	}
 	public Inventory GUI(List<ItemStack> contents) {
 		Inventory inventory = Bukkit.createInventory(null, 54, getName());
