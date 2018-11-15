@@ -82,47 +82,50 @@ public class SendBoxInventoryEvent implements Listener {
 								String[] mailboxSent = language.getString("mailbox-sent").split("%");
 								String[] mailboxFrom = language.getString("mailbox-from").split("%");
 								String[] mailboxOpening = language.getString("mailbox-opening-seconds").split("%");
-								sender.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "" + mailboxPaid[0] + "" + ChatColor.GREEN + "$" + newcost + "" + ChatColor.YELLOW + "" + mailboxPaid[1]);
-								sender.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "" + mailboxSent[0] + "" + ChatColor.AQUA + "" + recipient.getName() + "" + ChatColor.YELLOW + "" + mailboxSent[1]);
+								sender.sendMessage(ChatColor.DARK_GREEN + "[" + configuration.getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + mailboxPaid[0] + "" + ChatColor.GREEN + "$" + newcost + "" + ChatColor.YELLOW + "" + mailboxPaid[1]);
+								sender.sendMessage(ChatColor.DARK_GREEN + "[" + configuration.getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + mailboxSent[0] + "" + ChatColor.AQUA + "" + recipient.getName() + "" + ChatColor.YELLOW + "" + mailboxSent[1]);
 								recipient.setInvulnerable(true);
-								recipient.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.AQUA + "" + mailboxFrom[0] + "" + ChatColor.GREEN + "" + sender.getName() + "" + ChatColor.AQUA + "" + mailboxFrom[1]);
-								recipient.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.AQUA + "" + mailboxOpening[0] + "" + ChatColor.GREEN + "5" + ChatColor.AQUA + "" + mailboxOpening[1] + " " + ChatColor.DARK_RED + "" + language.getString("mailbox-lose"));
-								recipient.sendTitle(ChatColor.AQUA + "" + mailboxFrom[0] +  "" + ChatColor.GREEN + "" + sender.getName(), ChatColor.AQUA + "" + mailboxOpening[0] + "" + ChatColor.GREEN + "5" + ChatColor.AQUA + "" + mailboxOpening[1] + " " + ChatColor.DARK_RED + "" + language.getString("mailbox-lose"), 20 * 1, 20 * 5, 20 * 1);
+								if(configuration.getBoolean("use-title") == true) {
+									recipient.sendTitle(ChatColor.AQUA + "" + mailboxFrom[0] +  "" + ChatColor.GREEN + "" + sender.getName(), ChatColor.AQUA + "" + mailboxOpening[0] + "" + ChatColor.GREEN + "" + configuration.getInt("mail-time") + "" + ChatColor.AQUA + "" + mailboxOpening[1] + " " + ChatColor.DARK_RED + "" + language.getString("mailbox-lose"), 20 * 1, 20 * configuration.getInt("mail-time"), 20 * 1);
+								} else {
+									recipient.sendMessage(ChatColor.DARK_GREEN + "[" + configuration.getString("plugin-tag") + "] " + ChatColor.AQUA + "" + mailboxFrom[0] + "" + ChatColor.GREEN + "" + sender.getName() + "" + ChatColor.AQUA + "" + mailboxFrom[1]);
+									recipient.sendMessage(ChatColor.DARK_GREEN + "[" + configuration.getString("plugin-tag") + "] " + ChatColor.AQUA + "" + mailboxOpening[0] + "" + ChatColor.GREEN + "" + configuration.getInt("mail-time") + "" + ChatColor.AQUA + "" + mailboxOpening[1] + " " + ChatColor.DARK_RED + "" + language.getString("mailbox-lose"));
+								}
 								plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 									public void run() {
 										recipient.openInventory(new OpenBoxInventory().GUI(contentsarray));
-										sender.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "" + language.getString("mailbox-delivered"));
+										sender.sendMessage(ChatColor.DARK_GREEN + "[" + configuration.getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + language.getString("mailbox-delivered"));
 									}
-								}, 20 * 7);
+								}, 20 * configuration.getInt("mail-time") + 2);
 							} else {
-								sender.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "" + language.getString("transaction-error"));
+								sender.sendMessage(ChatColor.DARK_GREEN + "[" + configuration.getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + language.getString("transaction-error"));
 								for(ItemStack item : contentsarray) {
 									sender.getInventory().addItem(item);
 								}
 							}
 						} else {
 							String[] transactionNoMoney = language.getString("transaction-no-money").split("%");
-							sender.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "" + transactionNoMoney[0] + "" + ChatColor.GREEN + "$" + newcost + "" + ChatColor.YELLOW + "" + transactionNoMoney[1]);
+							sender.sendMessage(ChatColor.DARK_GREEN + "[" + configuration.getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + transactionNoMoney[0] + "" + ChatColor.GREEN + "$" + newcost + "" + ChatColor.YELLOW + "" + transactionNoMoney[1]);
 							for(ItemStack item : contentsarray) {
 								sender.getInventory().addItem(item);
 							}
 						}
 					} else {
 						String[] recipientBusy = language.getString("recipient-busy").split("%");
-						sender.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.AQUA + "" + recipient.getName() + "" + ChatColor.YELLOW + "" + recipientBusy[1]);
+						sender.sendMessage(ChatColor.DARK_GREEN + "[" + configuration.getString("plugin-tag") + "] " + ChatColor.AQUA + "" + recipient.getName() + "" + ChatColor.YELLOW + "" + recipientBusy[1]);
 						for(ItemStack item : contentsarray) {
 							sender.getInventory().addItem(item);
 						}
 					}
 				} else {
 					String[] recipientFull = language.getString("recipient-full").split("%");
-					sender.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.AQUA + "" + recipient.getName() + "" + ChatColor.YELLOW + "" + recipientFull[1] + "" + slots + "" + recipientFull[2]);
+					sender.sendMessage(ChatColor.DARK_GREEN + "[" + configuration.getString("plugin-tag") + "] " + ChatColor.AQUA + "" + recipient.getName() + "" + ChatColor.YELLOW + "" + recipientFull[1] + "" + slots + "" + recipientFull[2]);
 					for(ItemStack item : contentsarray) {
 						sender.getInventory().addItem(item);
 					}
 				}
 			} else {
-				sender.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "" + language.getString("mailbox-aborted"));
+				sender.sendMessage(ChatColor.DARK_GREEN + "[" + configuration.getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + language.getString("mailbox-aborted"));
 			}
 		}
 	}
