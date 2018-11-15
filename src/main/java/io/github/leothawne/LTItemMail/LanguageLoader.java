@@ -41,6 +41,17 @@ public class LanguageLoader {
 			try {
 				languageConfig.load(languageFile);
 				myLogger.info(configuration.getString("language") + ".yml file loaded.");
+				int languageVersion = 0;
+				if(configuration.getString("language").equalsIgnoreCase("english")) {
+					languageVersion = new Version(plugin, myLogger).english_languageFileVersion;
+				} else if(configuration.getString("language").equalsIgnoreCase("portuguese")) {
+					languageVersion = new Version(plugin, myLogger).portuguese_languageFileVersion;
+				}
+				if(languageVersion != 0) {
+					if(languageConfig.getInt("language-version") != languageVersion) {
+						myLogger.severe("The " + configuration.getString("language") + ".yml file is outdated! You must manually delete the " + configuration.getString("language") + ".yml file and reload the plugin.");
+					}
+				}
 				return languageConfig;
 			} catch(IOException | InvalidConfigurationException exception) {
 				exception.printStackTrace();
