@@ -13,10 +13,12 @@ import io.github.leothawne.LTItemMail.Version;
 public class ItemMailCommands implements CommandExecutor {
 	private LTItemMailLoader plugin;
 	private ConsoleLoader myLogger;
+	private FileConfiguration configuration;
 	private FileConfiguration language;
-	public ItemMailCommands(LTItemMailLoader plugin, ConsoleLoader myLogger, FileConfiguration language) {
+	public ItemMailCommands(LTItemMailLoader plugin, ConsoleLoader myLogger, FileConfiguration configuration, FileConfiguration language) {
 		this.plugin = plugin;
 		this.myLogger = myLogger;
+		this.configuration = configuration;
 		this.language = language;
 	}
 	@Override
@@ -34,13 +36,13 @@ public class ItemMailCommands implements CommandExecutor {
 				if(args.length < 2) {
 					new Version(plugin, myLogger).version(sender);
 				} else {
-					sender.sendMessage(ChatColor.AQUA + "[LTIM] " + ChatColor.YELLOW + "Too many arguments!");
+					sender.sendMessage(ChatColor.AQUA + "[" + configuration.getString("plugin-tag") + "] " + ChatColor.YELLOW + "Too many arguments!");
 				}
 			} else {
-				sender.sendMessage(ChatColor.AQUA + "[LTIM] " + ChatColor.YELLOW + "Invalid command! Type " + ChatColor.GREEN + "/itemmail " + ChatColor.YELLOW + "to see all available commands.");
+				sender.sendMessage(ChatColor.AQUA + "[" + configuration.getString("plugin-tag") + "] " + ChatColor.YELLOW + "Invalid command! Type " + ChatColor.GREEN + "/itemmail " + ChatColor.YELLOW + "to see all available commands.");
 			}
 		} else {
-			sender.sendMessage(ChatColor.AQUA + "[LTIM] " + ChatColor.YELLOW + "" + language.getString("no-permission"));
+			sender.sendMessage(ChatColor.AQUA + "[" + configuration.getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + language.getString("no-permission"));
 			myLogger.severe(sender.getName() + " does not have permission [LTItemMail.use].");
 		}
 		return true;

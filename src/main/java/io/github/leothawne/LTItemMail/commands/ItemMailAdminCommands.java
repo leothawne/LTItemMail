@@ -19,10 +19,12 @@ import io.github.leothawne.LTItemMail.Version;
 public class ItemMailAdminCommands implements CommandExecutor {
 	private LTItemMailLoader plugin;
 	private ConsoleLoader myLogger;
+	private FileConfiguration configuration;
 	private FileConfiguration language;
-	public ItemMailAdminCommands(LTItemMailLoader plugin, ConsoleLoader myLogger, FileConfiguration language) {
+	public ItemMailAdminCommands(LTItemMailLoader plugin, ConsoleLoader myLogger, FileConfiguration configuration, FileConfiguration language) {
 		this.plugin = plugin;
 		this.myLogger = myLogger;
+		this.configuration = configuration;
 		this.language = language;
 	}
 	private String LTIMVersion = new Version(plugin, myLogger).LTIMVersion;
@@ -58,8 +60,8 @@ public class ItemMailAdminCommands implements CommandExecutor {
 								int Server2_VersionNumber1 = Integer.parseInt(Server2[0]);
 								int Server2_VersionNumber2 = Integer.parseInt(Server2[1]);
 								int Server2_VersionNumber3 = Integer.parseInt(Server2[2]);
-								sender.sendMessage(ChatColor.AQUA + "[LTIM :: Admin] " + ChatColor.YELLOW + "Running: " + ChatColor.GREEN + "" + LTIMVersion + "" + ChatColor.YELLOW + " (Released on " + ChatColor.GREEN + "" + LTIMVersion_Date + "" + ChatColor.YELLOW + ")");
-								String updateMessage = ChatColor.AQUA + "[LTIM :: Admin] " + ChatColor.YELLOW + "A newer version is available: " + ChatColor.GREEN + "" + Server1[0] + "" + ChatColor.YELLOW + " (released on " + ChatColor.GREEN + "" + Server1[1] + "" + ChatColor.YELLOW + ")";
+								sender.sendMessage(ChatColor.AQUA + "[" + configuration.getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "Running: " + ChatColor.GREEN + "" + LTIMVersion + "" + ChatColor.YELLOW + " (Released on " + ChatColor.GREEN + "" + LTIMVersion_Date + "" + ChatColor.YELLOW + ")");
+								String updateMessage = ChatColor.AQUA + "[" + configuration.getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "A newer version is available: " + ChatColor.GREEN + "" + Server1[0] + "" + ChatColor.YELLOW + " (released on " + ChatColor.GREEN + "" + Server1[1] + "" + ChatColor.YELLOW + ")";
 								if(Server2_VersionNumber1 > Local_VersionNumber1) {
 									sender.sendMessage(updateMessage);
 								} else if(Server2_VersionNumber1 == Local_VersionNumber1 && Server2_VersionNumber2 > Local_VersionNumber2) {
@@ -67,27 +69,27 @@ public class ItemMailAdminCommands implements CommandExecutor {
 								} else if(Server2_VersionNumber1 == Local_VersionNumber1 && Server2_VersionNumber2 == Local_VersionNumber2 && Server2_VersionNumber3 > Local_VersionNumber3) {
 									sender.sendMessage(updateMessage);
 								} else {
-									sender.sendMessage(ChatColor.AQUA + "[LTIM :: Admin] " + ChatColor.YELLOW + "The plugin is up to date!");
+									sender.sendMessage(ChatColor.AQUA + "[" + configuration.getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "The plugin is up to date!");
 								}
 							} else {
-								sender.sendMessage(ChatColor.AQUA + "[LTIM :: Admin] " + ChatColor.YELLOW + "Error while checking for new updates: Server did not respond correctly.");
+								sender.sendMessage(ChatColor.AQUA + "[" + configuration.getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "Error while checking for new updates: Server did not respond correctly.");
 							}
 						} catch(Exception e) {
 							myLogger.severe("Error while checking for new updates: " + e.getMessage());
-							sender.sendMessage(ChatColor.AQUA + "[LTIM :: Admin] " + ChatColor.YELLOW + "Error while checking for new updates.");
+							sender.sendMessage(ChatColor.AQUA + "[" + configuration.getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "Error while checking for new updates.");
 						}
 					} else {
-						sender.sendMessage(ChatColor.AQUA + "[LTIM :: Admin] " + ChatColor.YELLOW + "Too many arguments!");
+						sender.sendMessage(ChatColor.AQUA + "[" + configuration.getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "Too many arguments!");
 					}
 				} else {
-					sender.sendMessage(ChatColor.AQUA + "[LTIM :: Admin] " + ChatColor.YELLOW + "Invalid command! Type " + ChatColor.GREEN + "/itemmailadmin " + ChatColor.YELLOW + "to see all available commands.");
+					sender.sendMessage(ChatColor.AQUA + "[" + configuration.getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "Invalid command! Type " + ChatColor.GREEN + "/itemmailadmin " + ChatColor.YELLOW + "to see all available commands.");
 				}
 			} else {
-				sender.sendMessage(ChatColor.AQUA + "[LTIM :: Admin] " + ChatColor.YELLOW + "" + language.getString("no-permission"));
+				sender.sendMessage(ChatColor.AQUA + "[" + configuration.getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "" + language.getString("no-permission"));
 				myLogger.severe(sender.getName() + " does not have permission [LTItemMail.admin].");
 			}
 		} else {
-			sender.sendMessage(ChatColor.AQUA + "[LTIM] " + ChatColor.YELLOW + "" + language.getString("no-permission"));
+			sender.sendMessage(ChatColor.AQUA + "[" + configuration.getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + language.getString("no-permission"));
 			myLogger.severe(sender.getName() + " does not have permission [LTItemMail.use].");
 		}
 		return true;

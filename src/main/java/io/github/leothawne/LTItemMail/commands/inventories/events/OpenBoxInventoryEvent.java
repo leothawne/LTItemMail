@@ -15,8 +15,10 @@ import org.bukkit.inventory.ItemStack;
 import io.github.leothawne.LTItemMail.commands.inventories.OpenBoxInventory;
 
 public class OpenBoxInventoryEvent implements Listener {
+	private FileConfiguration configuration;
 	private FileConfiguration language;
-	public OpenBoxInventoryEvent(FileConfiguration language) {
+	public OpenBoxInventoryEvent(FileConfiguration configuration, FileConfiguration language) {
+		this.configuration = configuration;
 		this.language = language;
 	}
 	private String inventoryName = new OpenBoxInventory().getName();
@@ -43,9 +45,9 @@ public class OpenBoxInventoryEvent implements Listener {
 					}
 				}
 				String[] mailboxClosedItems = language.getString("mailbox-closed-items").split("%");
-				player.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "" + language.getString("mailbox-closed") + " " + mailboxClosedItems[0] + "" + ChatColor.GREEN + "" + count + "" + ChatColor.YELLOW + "" + mailboxClosedItems[1] + " " + ChatColor.GREEN + "" + itemslost);
+				player.sendMessage(ChatColor.DARK_GREEN + "[" + configuration.getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + language.getString("mailbox-closed") + " " + mailboxClosedItems[0] + "" + ChatColor.GREEN + "" + count + "" + ChatColor.YELLOW + "" + mailboxClosedItems[1] + " " + ChatColor.GREEN + "" + itemslost);
 			} else {
-				player.sendMessage(ChatColor.DARK_GREEN + "[LTIM] " + ChatColor.YELLOW + "" + language.getString("mailbox-closed"));
+				player.sendMessage(ChatColor.DARK_GREEN + "[" + configuration.getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + language.getString("mailbox-closed"));
 			}
 			inventory.clear();
 		}
