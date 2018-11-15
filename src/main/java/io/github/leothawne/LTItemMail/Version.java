@@ -16,9 +16,11 @@ public class Version {
 		this.plugin = plugin;
 		this.myLogger = myLogger;
 	}
-	public final int configFileVersion = 4;
-	public final String LTIMVersion = "0.2.0";
-	public final String LTIMVersion_Date = "14/11/2018 (America/Sao_Paulo)";
+	public final int configFileVersion = 5;
+	public final int english_languageFileVersion = 1;
+	public final int portuguese_languageFileVersion = 1;
+	public final String LTIMVersion = "0.2.1";
+	public final String LTIMVersion_Date = "99/99/9999 (America/Sao_Paulo)";
 	public final String Minecraft_Version = "1.13.X";
 	public final String Minecraft_Build = "1.13-R0.1-SNAPSHOT";
 	public final String Java_Version = "8+";
