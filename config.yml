@@ -1,13 +1,23 @@
 #If for some reason you want to disable this plugin, just set this to 'false'. Default: true
 enable-plugin: true
 
+#INTERNAL languages available: portuguese, english. Default: english
 language: english
+
+#Here you can customize the name that appears in the chat. Default: "LTIM"
+plugin-tag: "LTIM"
+
+#If 'true', title will be used instead of chat messages. If 'false', chat messages will be used. Default: true
+use-title: true
 
 #If 'true', the 'mail-cost' value will be multiplied by the number of items inside the mailbox. Default: true
 cost-per-item: true
 
 #Cost to send items to another players. Default: 1.50 (per item), 30.0 (per mailbox)
 mail-cost: 1.50
+
+#Time (in seconds) before a mailbox open. Default: 5
+mail-time: 5
 
 #Should administrators be warned about new updates? Default: true
 #If 'true', this will not bother you while you are playing. I promisse!
@@ -16,4 +26,4 @@ update:
     #download: true # Work in progress feature!
 
 #Do not change this under any circumstances!
-config-version: 4
+config-version: 5
