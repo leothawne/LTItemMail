@@ -19,5 +19,5 @@ player-error: "You must be a player to do that!"
 player-tma: "Too many arguments!"
 player-self: "Why would you do that?"
 
-#Do not change this under any circumstances!
+#Do not change it under any circumstances!
 language-version: 1
