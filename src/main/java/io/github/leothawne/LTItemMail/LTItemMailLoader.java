@@ -34,6 +34,7 @@ public class LTItemMailLoader extends JavaPlugin {
 			player.sendMessage(ChatColor.AQUA + "[LTItemMail] " + ChatColor.LIGHT_PURPLE + "Loading...");
 		}
 		myLogger.Hello();
+		new MetricsLoader(this, myLogger).init();
 		myLogger.info("Loading mailboxes...");
 		myLogger.info("Loading Vault...");
 		VaultLoader vault = new VaultLoader(this);
