@@ -38,7 +38,10 @@ public class LTItemMailLoader extends JavaPlugin {
 		myLogger.info("Loading Vault...");
 		VaultLoader vault = new VaultLoader(this);
 		if(vault.isInstalled()) {
+			myLogger.info("Vault loaded!");
+			myLogger.info("Looking for Economy plugin...");
 			if(vault.isReady()) {
+				myLogger.info("Economy plugin found!");
 				economyPlugin = vault.getEconomy();
 				new ConfigurationLoader(this, myLogger).check();
 				configuration = new ConfigurationLoader(this, myLogger).load();
