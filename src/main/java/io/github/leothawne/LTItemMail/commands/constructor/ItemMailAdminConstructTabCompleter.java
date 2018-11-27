@@ -16,6 +16,10 @@ public class ItemMailAdminConstructTabCompleter implements TabCompleter {
 				List<String> MailAdmin = new ArrayList<>();
 				MailAdmin.add("version");
 				return MailAdmin;
+			} else if(args.length == 2 && args[1].equalsIgnoreCase("version")) {
+				List<String> MailAdminVersion = new ArrayList<>();
+				MailAdminVersion.add("changelog");
+				return MailAdminVersion;
 			}
 		}
 		return ReturnNothing;

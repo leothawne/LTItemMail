@@ -78,6 +78,26 @@ public class ItemMailAdminCommands implements CommandExecutor {
 							myLogger.severe("Error while checking for new updates: " + e.getMessage());
 							sender.sendMessage(ChatColor.AQUA + "[" + configuration.getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "Error while checking for new updates.");
 						}
+					} else if(args.length < 3 && args[1].equalsIgnoreCase("changelog")) {
+						try {
+							URLConnection newUpdateURL = new URL("https://leothawne.github.io/LTItemMail/api/" + LTIMVersion + "/changelog.html").openConnection();
+							newUpdateURL.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
+							newUpdateURL.connect();
+							BufferedReader newUpdateReader = new BufferedReader(new InputStreamReader(newUpdateURL.getInputStream(), Charset.forName("UTF-8")));
+							StringBuilder sb = new StringBuilder();
+							String line;
+							while((line = newUpdateReader.readLine()) != null) {
+								sb.append(line);
+							}
+							if(sb.toString() != null) {
+								sender.sendMessage(ChatColor.AQUA + "[" + configuration.getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "Changelog: " + ChatColor.GREEN + "" + sb.toString());
+							} else {
+								sender.sendMessage(ChatColor.AQUA + "[" + configuration.getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "Error while checking for new updates: Server did not respond correctly.");
+							}
+						} catch(Exception e) {
+							myLogger.severe("Error while checking for new updates: " + e.getMessage());
+							sender.sendMessage(ChatColor.AQUA + "[" + configuration.getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "Error while checking for new updates.");
+						}
 					} else {
 						sender.sendMessage(ChatColor.AQUA + "[" + configuration.getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "Too many arguments!");
 					}
