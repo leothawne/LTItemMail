@@ -19,7 +19,7 @@ import io.github.leothawne.LTItemMail.player.Listeners;
 import net.milkbowl.vault.economy.Economy;
 
 public class LTItemMailLoader extends JavaPlugin {
-	private ConsoleLoader myLogger = new ConsoleLoader(this);
+	private final ConsoleLoader myLogger = new ConsoleLoader(this);
 	private Economy economyPlugin = null;
 	public static void registerEvents(LTItemMailLoader plugin, Listener...listeners) {
 		for(Listener listener : listeners) {
