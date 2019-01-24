@@ -1,62 +1,34 @@
 User-agent: Googlebot
 Disallow: /LTItemMail/api/
 Disallow: /LTItemMail/contents/
-Disallow: /LTItemMail/commands.html
-Disallow: /LTItemMail/configuration.html
-Disallow: /LTItemMail/permissions.html
-Disallow: /LTItemMail/recipes.html
 Allow: /LTItemMail/
 
 User-agent: Googlebot-images
 Disallow: /LTItemMail/api/
 Disallow: /LTItemMail/contents/
-Disallow: /LTItemMail/commands.html
-Disallow: /LTItemMail/configuration.html
-Disallow: /LTItemMail/permissions.html
-Disallow: /LTItemMail/recipes.html
 Allow: /LTItemMail/
 
 User-agent: Adsbot-Google
 Disallow: /LTItemMail/api/
 Disallow: /LTItemMail/contents/
-Disallow: /LTItemMail/commands.html
-Disallow: /LTItemMail/configuration.html
-Disallow: /LTItemMail/permissions.html
-Disallow: /LTItemMail/recipes.html
 Allow: /LTItemMail/
 
 User-agent: Mediapartners-Google
 Disallow: /LTItemMail/api/
 Disallow: /LTItemMail/contents/
-Disallow: /LTItemMail/commands.html
-Disallow: /LTItemMail/configuration.html
-Disallow: /LTItemMail/permissions.html
-Disallow: /LTItemMail/recipes.html
 Allow: /LTItemMail/
 
 User-agent: Slurp
 Disallow: /LTItemMail/api/
 Disallow: /LTItemMail/contents/
-Disallow: /LTItemMail/commands.html
-Disallow: /LTItemMail/configuration.html
-Disallow: /LTItemMail/permissions.html
-Disallow: /LTItemMail/recipes.html
 Allow: /LTItemMail/
 
 User-agent: Bingbot
 Disallow: /LTItemMail/api/
 Disallow: /LTItemMail/contents/
-Disallow: /LTItemMail/commands.html
-Disallow: /LTItemMail/configuration.html
-Disallow: /LTItemMail/permissions.html
-Disallow: /LTItemMail/recipes.html
 Allow: /LTItemMail/
 
 User-agent: *
 Disallow: /LTItemMail/api/
 Disallow: /LTItemMail/contents/
-Disallow: /LTItemMail/commands.html
-Disallow: /LTItemMail/configuration.html
-Disallow: /LTItemMail/permissions.html
-Disallow: /LTItemMail/recipes.html
 Allow: /LTItemMail/
