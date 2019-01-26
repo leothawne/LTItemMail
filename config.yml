@@ -26,4 +26,4 @@ update:
     #download: true # Work in progress feature!
 
 #Do not change this under any circumstances!
-config-version: 5
+config-version: 6

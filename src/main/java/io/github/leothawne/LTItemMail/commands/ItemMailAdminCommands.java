@@ -13,24 +13,21 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import io.github.leothawne.LTItemMail.ConsoleLoader;
-import io.github.leothawne.LTItemMail.LTItemMailLoader;
 import io.github.leothawne.LTItemMail.Version;
 
 public class ItemMailAdminCommands implements CommandExecutor {
-	private LTItemMailLoader plugin;
-	private ConsoleLoader myLogger;
-	private FileConfiguration configuration;
-	private FileConfiguration language;
-	public ItemMailAdminCommands(LTItemMailLoader plugin, ConsoleLoader myLogger, FileConfiguration configuration, FileConfiguration language) {
-		this.plugin = plugin;
-		this.myLogger = myLogger;
-		this.configuration = configuration;
-		this.language = language;
+	private static ConsoleLoader myLogger;
+	private static FileConfiguration configuration;
+	private static FileConfiguration language;
+	public ItemMailAdminCommands(ConsoleLoader myLogger, FileConfiguration configuration, FileConfiguration language) {
+		ItemMailAdminCommands.myLogger = myLogger;
+		ItemMailAdminCommands.configuration = configuration;
+		ItemMailAdminCommands.language = language;
 	}
-	private String LTIMVersion = new Version(plugin, myLogger).LTIMVersion;
-	private String LTIMVersion_Date = new Version(plugin, myLogger).LTIMVersion_Date;
+	private static final String LTIMVersion = Version.getVersionNumber();
+	private static final String LTIMVersion_Date = Version.getVersionDate();
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+	public final boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		if(sender.hasPermission("LTItemMail.use")) {
 			if(sender.hasPermission("LTItemMail.admin")) {
 				if(args.length == 0) {

@@ -20,45 +20,50 @@ import net.milkbowl.vault.economy.Economy;
 
 public class LTItemMailLoader extends JavaPlugin {
 	private final ConsoleLoader myLogger = new ConsoleLoader(this);
-	private Economy economyPlugin = null;
-	public static void registerEvents(LTItemMailLoader plugin, Listener...listeners) {
+	private static Economy economyPlugin = null;
+	public static final void registerEvents(LTItemMailLoader plugin, Listener...listeners) {
 		for(Listener listener : listeners) {
 			Bukkit.getServer().getPluginManager().registerEvents(listener, plugin);
 		}
 	}
-	private FileConfiguration configuration;
-	private FileConfiguration language;
+	private static FileConfiguration configuration;
+	private static FileConfiguration language;
 	@Override
-	public void onEnable() {
+	public final void onEnable() {
 		for(Player player : this.getServer().getOnlinePlayers()) {
 			player.sendMessage(ChatColor.AQUA + "[LTItemMail] " + ChatColor.LIGHT_PURPLE + "Loading...");
 		}
 		myLogger.Hello();
-		new MetricsLoader(this, myLogger).init();
+		new MetricsLoader(this, myLogger);
+		MetricsLoader.init();
 		myLogger.info("Loading mailboxes...");
 		myLogger.info("Loading Vault...");
-		VaultLoader vault = new VaultLoader(this);
-		if(vault.isInstalled()) {
+		if(VaultLoader.isInstalled()) {
 			myLogger.info("Vault loaded!");
 			myLogger.info("Looking for Economy plugin...");
-			if(vault.isReady()) {
+			if(VaultLoader.isReady()) {
 				myLogger.info("Economy plugin found!");
-				economyPlugin = vault.getEconomy();
-				new ConfigurationLoader(this, myLogger).check();
-				configuration = new ConfigurationLoader(this, myLogger).load();
-				new LanguageLoader(this, myLogger, configuration).check();
-				language = new LanguageLoader(this, myLogger, configuration).load();
+				economyPlugin = VaultLoader.getEconomy();
+				new ConfigurationLoader(this, myLogger);
+				ConfigurationLoader.check();
+				new ConfigurationLoader(this, myLogger);
+				configuration = ConfigurationLoader.load();
+				new LanguageLoader(this, myLogger, configuration);
+				LanguageLoader.check();
+				new LanguageLoader(this, myLogger, configuration);
+				language = LanguageLoader.load();
 				if(configuration.getBoolean("enable-plugin") == true) {
 					getCommand("itemmail").setExecutor(new ItemMailCommands(this, myLogger, configuration, language));
 					getCommand("itemmail").setTabCompleter(new ItemMailConstructTabCompleter());
-					getCommand("itemmailadmin").setExecutor(new ItemMailAdminCommands(this, myLogger, configuration, language));
+					getCommand("itemmailadmin").setExecutor(new ItemMailAdminCommands(myLogger, configuration, language));
 					getCommand("itemmailadmin").setTabCompleter(new ItemMailAdminConstructTabCompleter());
 					getCommand("sendbox").setExecutor(new SendBoxCommand(this, myLogger, configuration, language));
 					getCommand("sendbox").setTabCompleter(new SendBoxConstructTabCompleter());
 					registerEvents(this, new SendBoxInventoryEvent(this, configuration, language, economyPlugin));
 					registerEvents(this, new OpenBoxInventoryEvent(configuration, language));
 					registerEvents(this, new Listeners(configuration));
-					new Version(this, myLogger).check();
+					new Version(this, myLogger);
+					Version.check();
 					myLogger.warning("A permissions plugin is required! Just make sure you are using one. Permissions nodes can be found at: https://leothawne.github.io/LTItemMail/permissions.html");
 					for(Player player : this.getServer().getOnlinePlayers()) {
 						player.sendMessage(ChatColor.AQUA + "[LTItemMail] " + ChatColor.LIGHT_PURPLE + "Loaded!");
@@ -77,7 +82,7 @@ public class LTItemMailLoader extends JavaPlugin {
 		}
 	}
 	@Override
-	public void onDisable() {
+	public final void onDisable() {
 		for(Player player : this.getServer().getOnlinePlayers()) {
 			player.sendMessage(ChatColor.AQUA + "[LTItemMail] " + ChatColor.LIGHT_PURPLE + "Unloading...");
 		}

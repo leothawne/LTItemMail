@@ -11,18 +11,18 @@ import io.github.leothawne.LTItemMail.LTItemMailLoader;
 import io.github.leothawne.LTItemMail.Version;
 
 public class ItemMailCommands implements CommandExecutor {
-	private LTItemMailLoader plugin;
-	private ConsoleLoader myLogger;
-	private FileConfiguration configuration;
-	private FileConfiguration language;
+	private static LTItemMailLoader plugin;
+	private static ConsoleLoader myLogger;
+	private static FileConfiguration configuration;
+	private static FileConfiguration language;
 	public ItemMailCommands(LTItemMailLoader plugin, ConsoleLoader myLogger, FileConfiguration configuration, FileConfiguration language) {
-		this.plugin = plugin;
-		this.myLogger = myLogger;
-		this.configuration = configuration;
-		this.language = language;
+		ItemMailCommands.plugin = plugin;
+		ItemMailCommands.myLogger = myLogger;
+		ItemMailCommands.configuration = configuration;
+		ItemMailCommands.language = language;
 	}
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+	public final boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		if(sender.hasPermission("LTItemMail.use")) {
 			if(args.length == 0) {
 				sender.sendMessage(ChatColor.AQUA + "=+=+=+= [LT Item Mail] =+=+=+=");
@@ -34,7 +34,8 @@ public class ItemMailCommands implements CommandExecutor {
 				sender.sendMessage(ChatColor.YELLOW + "You can also use "+ ChatColor.GREEN + "/sendbox "+ ChatColor.YELLOW + "as "+ ChatColor.GREEN + "/sbx"+ ChatColor.YELLOW + ".");
 			} else if(args[0].equalsIgnoreCase("version")) {
 				if(args.length < 2) {
-					new Version(plugin, myLogger).version(sender);
+					new Version(plugin, myLogger);
+					Version.version(sender);
 				} else {
 					sender.sendMessage(ChatColor.AQUA + "[" + configuration.getString("plugin-tag") + "] " + ChatColor.YELLOW + "Too many arguments!");
 				}

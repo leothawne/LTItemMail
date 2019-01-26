@@ -16,13 +16,13 @@ public class Version {
 		Version.plugin = plugin;
 		Version.myLogger = myLogger;
 	}
-	private static final int configFileVersion = 5;
+	private static final int configFileVersion = 6;
 	private static final int english_languageFileVersion = 1;
 	private static final int portuguese_languageFileVersion = 1;
 	private static final int vietnamese_languageFileVersion = 1;
 	private static final String LTIMVersion = "0.2.3";
 	private static final String LTIMVersion_Date = "99/99/9999 (America/Sao_Paulo)";
-	private static final String Minecraft_Version = "1.13.X";
+	private static final String Minecraft_Version = "1.13.x";
 	private static final String Minecraft_Build = "1.13-R0.1-SNAPSHOT";
 	private static final String Java_Version = "8+";
 	public static final int getConfigVersion() {

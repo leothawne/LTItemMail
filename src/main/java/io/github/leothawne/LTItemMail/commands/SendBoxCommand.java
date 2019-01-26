@@ -12,18 +12,18 @@ import io.github.leothawne.LTItemMail.LTItemMailLoader;
 import io.github.leothawne.LTItemMail.commands.inventories.SendBoxInventory;
 
 public class SendBoxCommand implements CommandExecutor {
-	private LTItemMailLoader plugin;
-	private ConsoleLoader myLogger;
-	private FileConfiguration configuration;
-	private FileConfiguration language;
+	private static LTItemMailLoader plugin;
+	private static ConsoleLoader myLogger;
+	private static FileConfiguration configuration;
+	private static FileConfiguration language;
 	public SendBoxCommand(LTItemMailLoader plugin, ConsoleLoader myLogger, FileConfiguration configuration, FileConfiguration language) {
-		this.plugin = plugin;
-		this.myLogger = myLogger;
-		this.configuration = configuration;
-		this.language = language;
+		SendBoxCommand.plugin = plugin;
+		SendBoxCommand.myLogger = myLogger;
+		SendBoxCommand.configuration = configuration;
+		SendBoxCommand.language = language;
 	}
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+	public final boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		if(sender.hasPermission("LTItemMail.send")) {
 			if(sender instanceof Player) {
 				Player player = (Player) sender;
@@ -40,13 +40,15 @@ public class SendBoxCommand implements CommandExecutor {
 						if(player1.getUniqueId().equals(player.getUniqueId())) {
 							if(args.length == 2 && args[1].equalsIgnoreCase("becauseiwant")) {
 								player.sendMessage(ChatColor.DARK_GREEN + "[" + configuration.getString("plugin-tag") + "] " + ChatColor.YELLOW + "Okay...");
-								player.openInventory(new SendBoxInventory().GUI(player1));
+								new SendBoxInventory();
+								player.openInventory(SendBoxInventory.GUI(player1));
 							} else {
 								player.sendMessage(ChatColor.DARK_GREEN + "[" + configuration.getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + language.getString("player-self"));
 							}
 						} else {
 							player.sendMessage(ChatColor.DARK_GREEN + "[" + configuration.getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + language.getString("mailbox-opening"));
-							player.openInventory(new SendBoxInventory().GUI(player1));
+							new SendBoxInventory();
+							player.openInventory(SendBoxInventory.GUI(player1));
 						}
 					} else {
 						player.sendMessage(ChatColor.DARK_GREEN + "[" + configuration.getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + language.getString("recipient-offline"));

@@ -8,16 +8,16 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 public class LanguageLoader {
-	private LTItemMailLoader plugin;
-	private ConsoleLoader myLogger;
-	private FileConfiguration configuration;
+	private static LTItemMailLoader plugin;
+	private static ConsoleLoader myLogger;
+	private static FileConfiguration configuration;
 	public LanguageLoader(LTItemMailLoader plugin, ConsoleLoader myLogger, FileConfiguration configuration) {
-		this.plugin = plugin;
-		this.myLogger = myLogger;
-		this.configuration = configuration;
+		LanguageLoader.plugin = plugin;
+		LanguageLoader.myLogger = myLogger;
+		LanguageLoader.configuration = configuration;
 	}
-	private File languageFile;
-	public void check() {
+	private static File languageFile;
+	public static final void check() {
 		myLogger.info("Looking for language file...");
 		languageFile = new File(plugin.getDataFolder(), configuration.getString("language") + ".yml");
 		if(languageFile.exists() == false) {
@@ -33,7 +33,7 @@ public class LanguageLoader {
 			myLogger.info(configuration.getString("language") + ".yml file found.");
 		}
 	}
-	public FileConfiguration load() {
+	public static final FileConfiguration load() {
 		myLogger.info("Loading language file...");
 		languageFile = new File(plugin.getDataFolder(), configuration.getString("language") + ".yml");
 		if(languageFile.exists()) {

@@ -5,10 +5,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
 public class SendBoxInventory {
-	public String getName() {
+	public static final String getName() {
 		return "< Mailbox >";
 	}
-	public Inventory GUI(Player player) {
+	public static final Inventory GUI(Player player) {
 		Inventory inventory = Bukkit.createInventory(player, 54, getName());
 		return inventory;
 	}

@@ -9,7 +9,7 @@ import org.bukkit.command.TabCompleter;
 
 public class ItemMailConstructTabCompleter implements TabCompleter {
 	@Override
-	public List<String> onTabComplete(CommandSender sender, Command cmd, String commandLabel, String[] args){
+	public final List<String> onTabComplete(CommandSender sender, Command cmd, String commandLabel, String[] args){
 		List<String> ReturnNothing = new ArrayList<>();
 		if(sender.hasPermission("LTItemMail.use") && cmd.getName().equalsIgnoreCase("itemmail")) {
 			if(args.length == 1) {

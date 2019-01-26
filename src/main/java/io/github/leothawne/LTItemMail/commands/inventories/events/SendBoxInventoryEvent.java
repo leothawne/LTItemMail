@@ -20,19 +20,19 @@ import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 
 public class SendBoxInventoryEvent implements Listener {
-	private LTItemMailLoader plugin;
-	private FileConfiguration configuration;
-	private FileConfiguration language;
-	private Economy economyPlugin;
+	private static LTItemMailLoader plugin;
+	private static FileConfiguration configuration;
+	private static FileConfiguration language;
+	private static Economy economyPlugin;
 	public SendBoxInventoryEvent(LTItemMailLoader plugin, FileConfiguration configuration, FileConfiguration language, Economy economyPlugin){
-		this.plugin = plugin;
-		this.configuration = configuration;
-		this.language = language;
-		this.economyPlugin = economyPlugin;
+		SendBoxInventoryEvent.plugin = plugin;
+		SendBoxInventoryEvent.configuration = configuration;
+		SendBoxInventoryEvent.language = language;
+		SendBoxInventoryEvent.economyPlugin = economyPlugin;
 	}
-	private String inventoryName = new SendBoxInventory().getName();
+	private static final String inventoryName = new SendBoxInventory().getName();
 	@EventHandler
-	public void onInventoryClose(InventoryCloseEvent event) {
+	public static final void onInventoryClose(InventoryCloseEvent event) {
 		Inventory inventory = event.getInventory();
 		if(inventory.getName().equals(inventoryName)) {
 			Player sender = (Player) event.getPlayer();

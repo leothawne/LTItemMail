@@ -15,15 +15,15 @@ import org.bukkit.inventory.ItemStack;
 import io.github.leothawne.LTItemMail.commands.inventories.OpenBoxInventory;
 
 public class OpenBoxInventoryEvent implements Listener {
-	private FileConfiguration configuration;
-	private FileConfiguration language;
+	private static FileConfiguration configuration;
+	private static FileConfiguration language;
 	public OpenBoxInventoryEvent(FileConfiguration configuration, FileConfiguration language) {
-		this.configuration = configuration;
-		this.language = language;
+		OpenBoxInventoryEvent.configuration = configuration;
+		OpenBoxInventoryEvent.language = language;
 	}
-	private String inventoryName = new OpenBoxInventory().getName();
+	private static final String inventoryName = new OpenBoxInventory().getName();
 	@EventHandler
-	public void onInventoryClose(InventoryCloseEvent event) {
+	public static final void onInventoryClose(InventoryCloseEvent event) {
 		Inventory inventory = event.getInventory();
 		if(inventory.getName().equals(inventoryName)) {
 			Player player = (Player) event.getPlayer();
