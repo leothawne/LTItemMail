@@ -30,7 +30,7 @@ public class SendBoxInventoryEvent implements Listener {
 		SendBoxInventoryEvent.language = language;
 		SendBoxInventoryEvent.economyPlugin = economyPlugin;
 	}
-	private static final String inventoryName = new SendBoxInventory().getName();
+	private static final String inventoryName = SendBoxInventory.getName();
 	@EventHandler
 	public static final void onInventoryClose(InventoryCloseEvent event) {
 		Inventory inventory = event.getInventory();
@@ -93,7 +93,8 @@ public class SendBoxInventoryEvent implements Listener {
 								}
 								plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 									public void run() {
-										recipient.openInventory(new OpenBoxInventory().GUI(contentsarray));
+										new OpenBoxInventory();
+										recipient.openInventory(OpenBoxInventory.GUI(contentsarray));
 										sender.sendMessage(ChatColor.DARK_GREEN + "[" + configuration.getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + language.getString("mailbox-delivered"));
 									}
 								}, 20 * configuration.getInt("mail-time") + 2);

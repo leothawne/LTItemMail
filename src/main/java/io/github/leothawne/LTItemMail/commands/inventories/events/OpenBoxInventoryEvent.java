@@ -21,7 +21,7 @@ public class OpenBoxInventoryEvent implements Listener {
 		OpenBoxInventoryEvent.configuration = configuration;
 		OpenBoxInventoryEvent.language = language;
 	}
-	private static final String inventoryName = new OpenBoxInventory().getName();
+	private static final String inventoryName = OpenBoxInventory.getName();
 	@EventHandler
 	public static final void onInventoryClose(InventoryCloseEvent event) {
 		Inventory inventory = event.getInventory();
