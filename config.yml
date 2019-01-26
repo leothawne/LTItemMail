@@ -1,7 +1,7 @@
 #If for some reason you want to disable this plugin, just set this to 'false'. Default: true
 enable-plugin: true
 
-#INTERNAL languages available: portuguese, english. Default: english
+#INTERNAL languages available: portuguese, english, vietnamese. Default: english
 language: english
 
 #Here you can customize the name that appears in the chat. Default: "LTIM"

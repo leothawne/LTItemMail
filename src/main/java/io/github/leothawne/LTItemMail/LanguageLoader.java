@@ -22,7 +22,7 @@ public class LanguageLoader {
 		languageFile = new File(plugin.getDataFolder(), configuration.getString("language") + ".yml");
 		if(languageFile.exists() == false) {
 			myLogger.warning("Language file not found. Extracting...");
-			if(configuration.getString("language").equalsIgnoreCase("english") || configuration.getString("language").equalsIgnoreCase("portuguese")) {
+			if(configuration.getString("language").equalsIgnoreCase("english") || configuration.getString("language").equalsIgnoreCase("portuguese") || configuration.getString("language").equalsIgnoreCase("vietnamese")) {
 				plugin.saveResource(configuration.getString("language") + ".yml", true);
 				myLogger.warning(configuration.getString("language") + ".yml extracted!");
 			} else {
@@ -42,10 +42,9 @@ public class LanguageLoader {
 				languageConfig.load(languageFile);
 				myLogger.info(configuration.getString("language") + ".yml file loaded.");
 				int languageVersion = 0;
-				if(configuration.getString("language").equalsIgnoreCase("english")) {
-					languageVersion = new Version(plugin, myLogger).english_languageFileVersion;
-				} else if(configuration.getString("language").equalsIgnoreCase("portuguese")) {
-					languageVersion = new Version(plugin, myLogger).portuguese_languageFileVersion;
+				if(configuration.getString("language").equalsIgnoreCase("english") || configuration.getString("language").equalsIgnoreCase("portuguese") || configuration.getString("language").equalsIgnoreCase("vietnamese")) {
+					new Version(plugin, myLogger);
+					languageVersion = Version.getLanguageVersion(configuration.getString("language"));
 				}
 				if(languageVersion != 0) {
 					if(languageConfig.getInt("language-version") != languageVersion) {
