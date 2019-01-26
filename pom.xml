@@ -4,7 +4,7 @@
 	<artifactId>LTItemMail</artifactId>
 	<version>0.2.3</version>
 	<name>LT Item Mail</name>
-	<description>Easily send items to distant players.</description>
+	<description>A new way of sending items to another players in Minecraft 1.13.x.</description>
 	<build>
 		<finalName>LT Item Mail</finalName>
 		<plugins>
