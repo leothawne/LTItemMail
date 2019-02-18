@@ -1,4 +1,4 @@
-# LTItemMail
+# LT Item Mail
 ## Easily send items to distant players.
 ### [Website](https://leothawne.github.io/LTItemMail/)
 ### [SpigotMC page](https://www.spigotmc.org/resources/lt-item-mail.62294/)
