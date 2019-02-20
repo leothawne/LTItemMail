@@ -1,6 +1,6 @@
 package io.github.leothawne.LTItemMail;
 
-import io.github.leothawne.LTItemMail.api.bStats.Metrics;
+import io.github.leothawne.LTItemMail.api.bStats.MetricsAPI;
 
 public class MetricsLoader {
 	private static LTItemMailLoader plugin;
@@ -10,7 +10,7 @@ public class MetricsLoader {
 		MetricsLoader.myLogger = myLogger;
 	}
 	public static final void init() {
-		Metrics metrics = new Metrics(plugin);
+		MetricsAPI metrics = new MetricsAPI(plugin);
 		if(metrics.isEnabled() == true) {
 			myLogger.info("LT Item Mail is using bStats to collect data to improve the next versions. In case you want to know what data will be collected: https://bstats.org/getting-started");
 		} else {

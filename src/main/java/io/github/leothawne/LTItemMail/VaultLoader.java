@@ -16,7 +16,7 @@ public class VaultLoader {
 		}
 		return false;
 	}
-	public static final boolean isReady() {
+	public static final boolean ready() {
 		rsp = plugin.getServer().getServicesManager().getRegistration(Economy.class);
 		if(rsp != null) {
 			return true;

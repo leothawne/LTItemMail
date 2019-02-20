@@ -8,7 +8,7 @@ website: https://leothawne.github.io/LTItemMail/
 url: https://leothawne.github.io/LTItemMail/
 main: io.github.leothawne.LTItemMail.LTItemMailLoader
 database: false
-depend: [Vault]
+soft-depend: [Vault]
 commands:
     itemmail:
         description: All available commands for LT Item Mail.
