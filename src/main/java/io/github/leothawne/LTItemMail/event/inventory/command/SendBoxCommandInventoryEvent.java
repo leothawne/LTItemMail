@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2019 Murilo Amaral Nappi (murilonappi@gmail.com)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 package io.github.leothawne.LTItemMail.event.inventory.command;
 
 import java.util.ArrayList;
@@ -39,25 +55,25 @@ public class SendBoxCommandInventoryEvent implements Listener {
 			Player sender = (Player) event.getPlayer();
 			Player recipient = (Player) inventory.getHolder();
 			ItemStack[] contents = inventory.getContents();
-			ItemStack[] recipientContents = recipient.getInventory().getContents();
+			//ItemStack[] recipientContents = recipient.getInventory().getContents();
 			List<ItemStack> contentsarray = new ArrayList<ItemStack>();
-			int countslot = 0;
+			//int countslot = 0;
 			for(ItemStack content : contents) {
 				if(content == null) {
 					contentsarray.add(new ItemStack(Material.AIR));
-					countslot++;
+					//countslot++;
 				} else {
 					contentsarray.add(content);
 				}
 			}
-			int slots = 54 - countslot;
+			/*int slots = 54 - countslot;
 			int countrecipientslot = 0;
 			for(ItemStack content : recipientContents) {
 				if(content != null) {
 					countrecipientslot++;
 				}
 			}
-			int recipientslots = 36 - countrecipientslot;
+			int recipientslots = 36 - countrecipientslot;*/
 			boolean isEmpty = true;
 			int count = 0;
 			for(ItemStack content : contentsarray) {
@@ -68,7 +84,7 @@ public class SendBoxCommandInventoryEvent implements Listener {
 			}
 			inventory.clear();
 			if(isEmpty == false) {
-				if(recipientslots >= slots) {
+				//if(recipientslots >= slots) {
 					if(recipient.isInvulnerable() == false) {
 						double newcost = 0;
 						if(configuration.getBoolean("cost-per-item") == true) {
@@ -106,13 +122,13 @@ public class SendBoxCommandInventoryEvent implements Listener {
 							sender.getInventory().addItem(item);
 						}
 					}
-				} else {
+				/*} else {
 					String[] recipientFull = language.getString("recipient-full").split("%");
 					sender.sendMessage(ChatColor.DARK_GREEN + "[" + configuration.getString("plugin-tag") + "] " + ChatColor.AQUA + "" + recipient.getName() + "" + ChatColor.YELLOW + "" + recipientFull[1] + "" + slots + "" + recipientFull[2]);
 					for(ItemStack item : contentsarray) {
 						sender.getInventory().addItem(item);
 					}
-				}
+				}*/
 			} else {
 				sender.sendMessage(ChatColor.DARK_GREEN + "[" + configuration.getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + language.getString("mailbox-aborted"));
 			}
