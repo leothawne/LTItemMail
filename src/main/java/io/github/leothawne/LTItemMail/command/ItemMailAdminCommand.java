@@ -71,16 +71,14 @@ public class ItemMailAdminCommand implements CommandExecutor {
 								int Server2_VersionNumber1 = Integer.parseInt(Server2[0]);
 								int Server2_VersionNumber2 = Integer.parseInt(Server2[1]);
 								int Server2_VersionNumber3 = Integer.parseInt(Server2[2]);
-								sender.sendMessage(ChatColor.AQUA + "[" + configuration.getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "Running: " + ChatColor.GREEN + "" + Version.getVersionNumber() + "" + ChatColor.YELLOW + " (Released on " + ChatColor.GREEN + "" + Version.getVersionDate() + "" + ChatColor.YELLOW + ")");
-								String updateMessage = ChatColor.AQUA + "[" + configuration.getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "A newer version is available: " + ChatColor.GREEN + "" + Server1[0] + "" + ChatColor.YELLOW + " (released on " + ChatColor.GREEN + "" + Server1[1] + "" + ChatColor.YELLOW + ")";
+								sender.sendMessage(ChatColor.AQUA + "[" + configuration.getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "Running: " + ChatColor.GREEN + "" + Version.getVersionNumber() + "" + ChatColor.YELLOW + " (released on " + ChatColor.GREEN + "" + Version.getVersionDate() + "" + ChatColor.YELLOW + ").");
+								String updateMessage = ChatColor.AQUA + "[" + configuration.getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "A newer version is available: " + ChatColor.GREEN + "" + Server1[0] + "" + ChatColor.YELLOW + " (released on " + ChatColor.GREEN + "" + Server1[1] + "" + ChatColor.YELLOW + ").";
 								if(Server2_VersionNumber1 > Local_VersionNumber1) {
 									sender.sendMessage(updateMessage);
 								} else if(Server2_VersionNumber1 == Local_VersionNumber1 && Server2_VersionNumber2 > Local_VersionNumber2) {
 									sender.sendMessage(updateMessage);
 								} else if(Server2_VersionNumber1 == Local_VersionNumber1 && Server2_VersionNumber2 == Local_VersionNumber2 && Server2_VersionNumber3 > Local_VersionNumber3) {
 									sender.sendMessage(updateMessage);
-								} else {
-									sender.sendMessage(ChatColor.AQUA + "[" + configuration.getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "The plugin is up to date!");
 								}
 							} else {
 								sender.sendMessage(ChatColor.AQUA + "[" + configuration.getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "Error while checking for new updates: Server did not respond correctly.");
