@@ -72,10 +72,15 @@ public class Version {
 		new BukkitRunnable() {
 			@Override
 			public final void run() {
-				if(HTTP.getData(Plugin_URL).equalsIgnoreCase("disabled")) {
-					myLogger.severe("Hey you, stop right there! The version " + Plugin_Version + " is not allowed anymore!");
-					myLogger.severe("Apologies, but this plugin will now be disabled! Download a newer version to play: https://dev.bukkit.org/projects/lt-item-mail");
-					plugin.getServer().getPluginManager().disablePlugin(plugin);
+				String response = HTTP.getData(Plugin_URL);
+				if(response != null) {
+					if(response.equalsIgnoreCase("disabled")) {
+						myLogger.severe("Hey you, stop right there! The version " + Plugin_Version + " is not allowed anymore!");
+						myLogger.severe("Apologies, but this plugin will now be disabled! Download a newer version to play: https://dev.bukkit.org/projects/lt-item-mail");
+						plugin.getServer().getPluginManager().disablePlugin(plugin);
+					}
+				} else {
+					myLogger.warning("Unable to locate: " + Plugin_URL);
 				}
 			}
 		}.runTask(plugin);
