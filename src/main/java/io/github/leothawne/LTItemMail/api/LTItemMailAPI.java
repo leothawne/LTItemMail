@@ -110,7 +110,6 @@ public class LTItemMailAPI {
 	 * @deprecated Replaced by {@link #isPlayerBusy(Player)} or {@link #isPlayerBusy(UUID)}.
 	 * 
 	 */
-	@Deprecated
 	public final boolean isPlayerBusy(String playerName) {
 		return this.isPlayerBusy(plugin.getServer().getPlayer(playerName));
 	}
