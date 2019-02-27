@@ -139,7 +139,7 @@ public class LTItemMailAPI {
 	/**
 	 * 
 	 * Method used to send items anonymously
-	 * to any player in the server. The mailbox
+	 * to any player on the server. The mailbox
 	 * will be assigned as a "Special Mailbox".
 	 * 
 	 * @param player The Player type variable.
@@ -152,7 +152,7 @@ public class LTItemMailAPI {
 	/**
 	 * 
 	 * Method used to send items anonymously
-	 * to any player in the server. The mailbox
+	 * to any player on the server. The mailbox
 	 * will be assigned as a "Special Mailbox".
 	 * 
 	 * @param playerUUID The player's unique id.
@@ -165,7 +165,7 @@ public class LTItemMailAPI {
 	/**
 	 * 
 	 * Method used to send items anonymously
-	 * to any player in the server. The mailbox
+	 * to any player on the server. The mailbox
 	 * will be assigned as a "Special Mailbox".
 	 * 
 	 * @param playerName The player's name.
