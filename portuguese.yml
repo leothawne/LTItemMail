@@ -1,10 +1,11 @@
 no-permission: "Você não pode fazer isso! Você não tem permissão."
-mailbox-closed: "Caixa de correio fechada!"
+mailbox-closed: "Caixa de corrêio fechada!"
 mailbox-closed-items: "Você perdeu % itens:"
 mailbox-paid: "Você pagou % ao banco!"
 mailbox-sent: "Itens enviados para %."
-mailbox-from: "Correio de: %."
-mailbox-opening: "Abrindo caixa de correio..."
+mailbox-from: "Corrêio de: %."
+special-mailbox: "Corrêio especial!!!"
+mailbox-opening: "Abrindo caixa de corrêio..."
 mailbox-opening-seconds: "Abrindo em % segundos..."
 mailbox-lose: "Itens deixados dentro serão perdidos!"
 mailbox-delivered: "Itens entregues com sucesso!"
@@ -20,4 +21,4 @@ player-tma: "Muitos argumentos inseridos!"
 player-self: "Por que você faria isso?"
 
 #Não mude isso sob nenhuma circunstância!
-language-version: 1
+language-version: 2

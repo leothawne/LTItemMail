@@ -5,6 +5,7 @@ mailbox-closed-items: "Đã gửi % vật phẩm:"
 mailbox-paid: "Đã thanh toán % cho ngân hàng!"
 mailbox-sent: "Vật phẩm đã gửi cho %."
 mailbox-from: "Mailbox từ: %."
+special-mailbox: "hộp thư đặc biệt!!!"
 mailbox-opening: "Đang mở Mailbox..."
 mailbox-opening-seconds: "Mở trong % giây..."
 mailbox-lose: "Các vật phẩm còn lại bên trong sẽ bị mất!"
@@ -21,4 +22,4 @@ player-tma: "Too many arguments!"
 player-self: "Không thể gửi cho chính mình."
 
 #Đừng thay đổi nó trong bất kỳ trường hợp nào!
-language-version: 1
+language-version: 2

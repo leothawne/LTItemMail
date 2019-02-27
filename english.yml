@@ -4,6 +4,7 @@ mailbox-closed-items: "You lost % items:"
 mailbox-paid: "You paid % to the bank!"
 mailbox-sent: "Items sent to %."
 mailbox-from: "Mailbox from: %."
+special-mailbox: "Special Mailbox!!!"
 mailbox-opening: "Opening mailbox..."
 mailbox-opening-seconds: "Opening in % seconds..."
 mailbox-lose: "Items left inside will be lost!"
@@ -20,4 +21,4 @@ player-tma: "Too many arguments!"
 player-self: "Why would you do that?"
 
 #Do not change it under any circumstances!
-language-version: 1
+language-version: 2
