@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Murilo Amaral Nappi (murilonappi@gmail.com)
+ * Copyright (C) 2019 Murilo Amaral Nappi
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,9 +28,6 @@ public class OpenBoxCommandInventory {
 	}
 	public static final Inventory GUI(List<ItemStack> contents) {
 		Inventory inventory = Bukkit.createInventory(null, 54, getName());
-		/*for(ItemStack item : contents) {
-			inventory.addItem(item);
-		}*/
 		for(int i = 0; i < contents.size(); i++) {
 			inventory.setItem(i, contents.get(i));
 		}

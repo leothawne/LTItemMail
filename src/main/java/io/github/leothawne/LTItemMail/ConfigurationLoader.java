@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Murilo Amaral Nappi (murilonappi@gmail.com)
+ * Copyright (C) 2019 Murilo Amaral Nappi
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,16 +21,9 @@ import java.io.File;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class ConfigurationLoader {
-	private static LTItemMailLoader plugin;
-	private static ConsoleLoader myLogger;
-	public ConfigurationLoader(LTItemMailLoader plugin, ConsoleLoader myLogger) {
-		ConfigurationLoader.plugin = plugin;
-		ConfigurationLoader.myLogger = myLogger;
-	}
-	private static File configFile;
-	public static final void check() {
+	public static final void check(LTItemMail plugin, ConsoleLoader myLogger) {
 		myLogger.info("Looking for config file...");
-		configFile = new File(plugin.getDataFolder(), "config.yml");
+		File configFile = new File(plugin.getDataFolder(), "config.yml");
 		if(configFile.exists() == false) {
 			myLogger.warning("Config file not found. Creating a new one...");
 			plugin.saveDefaultConfig();
@@ -39,13 +32,12 @@ public class ConfigurationLoader {
 			myLogger.info("Config file found.");
 		}
 	}
-	public static final FileConfiguration load() {
+	public static final FileConfiguration load(LTItemMail plugin, ConsoleLoader myLogger) {
 		myLogger.info("Loading config file...");
-		configFile = new File(plugin.getDataFolder(), "config.yml");
+		File configFile = new File(plugin.getDataFolder(), "config.yml");
 		if(configFile.exists()) {
 			FileConfiguration configuration = plugin.getConfig();
 			myLogger.info("Config file loaded.");
-			new Version(plugin, myLogger);
 			if(configuration.getInt("config-version") != Version.getConfigVersion()) {
 				myLogger.severe("The config.yml file is outdated! You must manually delete the config.yml file and reload the plugin.");
 			}

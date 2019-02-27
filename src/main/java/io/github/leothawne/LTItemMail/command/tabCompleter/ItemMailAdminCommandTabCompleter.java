@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Murilo Amaral Nappi (murilonappi@gmail.com)
+ * Copyright (C) 2019 Murilo Amaral Nappi
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ public class ItemMailAdminCommandTabCompleter extends TabCompleterAPI implements
 	@Override
 	public final List<String> onTabComplete(CommandSender sender, Command cmd, String commandLabel, String[] args){
 		List<String> ReturnNothing = new ArrayList<>();
-		if(sender.hasPermission("LTItemMail.use") && sender.hasPermission("LTItemMail.admin") && cmd.getName().equalsIgnoreCase("itemmailadmin")) {
+		if(sender.hasPermission("LTItemMail.use") && sender.hasPermission("LTItemMail.admin")) {
 			if(args.length == 1) {
 				ImmutableList<String> MailAdmin = ImmutableList.of("version");
 				return partial(args[0], MailAdmin);

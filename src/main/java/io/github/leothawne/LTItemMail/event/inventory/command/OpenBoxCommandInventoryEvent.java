@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Murilo Amaral Nappi (murilonappi@gmail.com)
+ * Copyright (C) 2019 Murilo Amaral Nappi
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,12 +17,15 @@
 package io.github.leothawne.LTItemMail.event.inventory.command;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
@@ -33,17 +36,18 @@ import io.github.leothawne.LTItemMail.inventory.command.OpenBoxCommandInventory;
 public class OpenBoxCommandInventoryEvent implements Listener {
 	private static FileConfiguration configuration;
 	private static FileConfiguration language;
-	public OpenBoxCommandInventoryEvent(FileConfiguration configuration, FileConfiguration language) {
+	private static HashMap<UUID, Boolean> playerBusy;
+	public OpenBoxCommandInventoryEvent(FileConfiguration configuration, FileConfiguration language, HashMap<UUID, Boolean> playerBusy) {
 		OpenBoxCommandInventoryEvent.configuration = configuration;
 		OpenBoxCommandInventoryEvent.language = language;
+		OpenBoxCommandInventoryEvent.playerBusy = playerBusy;
 	}
-	private static final String inventoryName = OpenBoxCommandInventory.getName();
-	@EventHandler
+	@EventHandler(priority = EventPriority.MONITOR)
 	public static final void onInventoryClose(InventoryCloseEvent event) {
 		Inventory inventory = event.getInventory();
-		if(inventory.getName().equals(inventoryName)) {
+		if(inventory.getName().equals(OpenBoxCommandInventory.getName())) {
 			Player player = (Player) event.getPlayer();
-			player.setInvulnerable(false);
+			playerBusy.put(player.getUniqueId(), false);
 			ItemStack[] contents = inventory.getContents();
 			boolean isEmpty = true;
 			for(ItemStack content : contents) {

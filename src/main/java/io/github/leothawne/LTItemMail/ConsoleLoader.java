@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Murilo Amaral Nappi (murilonappi@gmail.com)
+ * Copyright (C) 2019 Murilo Amaral Nappi
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,8 +20,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
 
 public class ConsoleLoader {
-	private LTItemMailLoader plugin;
-	public ConsoleLoader(LTItemMailLoader plugin) {
+	private LTItemMail plugin;
+	public ConsoleLoader(LTItemMail plugin) {
 		this.plugin = plugin;
 	}
 	private final ConsoleCommandSender getConsoleSender() {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Murilo Amaral Nappi (murilonappi@gmail.com)
+ * Copyright (C) 2019 Murilo Amaral Nappi
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,16 +23,13 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import io.github.leothawne.LTItemMail.ConsoleLoader;
-import io.github.leothawne.LTItemMail.LTItemMailLoader;
 import io.github.leothawne.LTItemMail.Version;
 
 public class ItemMailCommand implements CommandExecutor {
-	private static LTItemMailLoader plugin;
 	private static ConsoleLoader myLogger;
 	private static FileConfiguration configuration;
 	private static FileConfiguration language;
-	public ItemMailCommand(LTItemMailLoader plugin, ConsoleLoader myLogger, FileConfiguration configuration, FileConfiguration language) {
-		ItemMailCommand.plugin = plugin;
+	public ItemMailCommand(ConsoleLoader myLogger, FileConfiguration configuration, FileConfiguration language) {
 		ItemMailCommand.myLogger = myLogger;
 		ItemMailCommand.configuration = configuration;
 		ItemMailCommand.language = language;
@@ -50,7 +47,6 @@ public class ItemMailCommand implements CommandExecutor {
 				sender.sendMessage(ChatColor.YELLOW + "You can also use "+ ChatColor.GREEN + "/sendbox "+ ChatColor.YELLOW + "as "+ ChatColor.GREEN + "/sbx"+ ChatColor.YELLOW + ".");
 			} else if(args[0].equalsIgnoreCase("version")) {
 				if(args.length < 2) {
-					new Version(plugin, myLogger);
 					Version.version(sender);
 				} else {
 					sender.sendMessage(ChatColor.AQUA + "[" + configuration.getString("plugin-tag") + "] " + ChatColor.YELLOW + "Too many arguments!");

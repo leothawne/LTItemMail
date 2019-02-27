@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Murilo Amaral Nappi (murilonappi@gmail.com)
+ * Copyright (C) 2019 Murilo Amaral Nappi
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,18 +19,12 @@ package io.github.leothawne.LTItemMail;
 import io.github.leothawne.LTItemMail.api.bStats.MetricsAPI;
 
 public class MetricsLoader {
-	private static LTItemMailLoader plugin;
-	private static ConsoleLoader myLogger;
-	public MetricsLoader(LTItemMailLoader plugin, ConsoleLoader myLogger) {
-		MetricsLoader.plugin = plugin;
-		MetricsLoader.myLogger = myLogger;
-	}
-	public static final void init() {
-		MetricsAPI metrics = new MetricsAPI(plugin);
+	public static final void init(LTItemMail plugin, ConsoleLoader myLogger, MetricsAPI metrics) {
+		metrics = new MetricsAPI(plugin);
 		if(metrics.isEnabled() == true) {
-			myLogger.info("LT Item Mail is using bStats to collect data to improve the next versions. In case you want to know what data will be collected: https://bstats.org/getting-started");
+			myLogger.info(plugin.getName() + " is using bStats to collect data to improve the next versions. In case you want to know what data will be collected: https://bstats.org/getting-started");
 		} else {
-			myLogger.warning("bStats is disabled and LT Item Mail cannot use it. Please enable bStats! Thank you.");
+			myLogger.warning("bStats is disabled and " + plugin.getName() + " cannot use it. Please enable bStats! Thank you.");
 		}
 	}
 }
