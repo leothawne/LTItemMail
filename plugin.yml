@@ -6,7 +6,7 @@ load: POSTWORLD
 author: [leothawne]
 website: https://leothawne.github.io/LTItemMail/
 url: https://leothawne.github.io/LTItemMail/
-main: io.github.leothawne.LTItemMail.LTItemMailLoader
+main: io.github.leothawne.LTItemMail.LTItemMail
 database: false
 soft-depend: [Vault]
 commands:
