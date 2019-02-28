@@ -118,7 +118,7 @@ public class LTItemMailAPI {
 	 * Returns a FileConfiguration type value that can be used
 	 * to determine the current language used by the plugin.
 	 * 
-	 * @return Returns a FileConfiguration type value.
+	 * @return A FileConfiguration type value.
 	 * 
 	 */
 	public final FileConfiguration getLanguageFile(){
