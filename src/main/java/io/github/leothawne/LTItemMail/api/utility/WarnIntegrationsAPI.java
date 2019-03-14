@@ -27,7 +27,7 @@ public class WarnIntegrationsAPI {
 		for(String plugin : plugins) {
 			Plugin getPlugin = mainPlugin.getServer().getPluginManager().getPlugin(plugin);
 			if(getPlugin != null) {
-				getPlugin.getLogger().warning(getPlugin.getName() + " was successfully integrated with " + mainPlugin.getName() + "!");
+				getPlugin.getLogger().warning(mainPlugin.getName() + " were successfully hooked into " + getPlugin.getName() + "!");
 			}
 		}
 	}
