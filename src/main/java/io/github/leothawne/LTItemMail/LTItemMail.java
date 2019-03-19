@@ -25,6 +25,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitScheduler;
 
 import io.github.leothawne.LTItemMail.api.LTItemMailAPI;
 import io.github.leothawne.LTItemMail.api.bStats.MetricsAPI;
@@ -38,6 +39,7 @@ import io.github.leothawne.LTItemMail.command.tabCompleter.SendBoxCommandTabComp
 import io.github.leothawne.LTItemMail.event.PlayerEvent;
 import io.github.leothawne.LTItemMail.event.inventory.command.OpenBoxCommandInventoryEvent;
 import io.github.leothawne.LTItemMail.event.inventory.command.SendBoxCommandInventoryEvent;
+import io.github.leothawne.LTItemMail.task.VersionTask;
 import net.milkbowl.vault.economy.Economy;
 
 /**
@@ -57,6 +59,8 @@ public class LTItemMail extends JavaPlugin {
 	private static FileConfiguration language;
 	private static HashMap<UUID, Boolean> playerBusy = new HashMap<UUID, Boolean>();
 	private static MetricsAPI metrics;
+	private static BukkitScheduler scheduler;
+	private static int versionTask;
 	/**
 	 * 
 	 * @deprecated Not for public use.
@@ -98,8 +102,9 @@ public class LTItemMail extends JavaPlugin {
 			getCommand("itemmailadmin").setTabCompleter(new ItemMailAdminCommandTabCompleter());
 			getCommand("sendbox").setExecutor(new SendBoxCommand(this, myLogger, configuration, language));
 			getCommand("sendbox").setTabCompleter(new SendBoxCommandTabCompleter());
+			scheduler = getServer().getScheduler();
+			versionTask = scheduler.scheduleAsyncRepeatingTask(this, new VersionTask(this, myLogger, Version.getVersionNumber(), Version.getPluginURL()), 0, 20 * 1800);
 			registerEvents(new SendBoxCommandInventoryEvent(this, configuration, language, playerBusy, economyPlugin), new OpenBoxCommandInventoryEvent(configuration, language, playerBusy), new PlayerEvent(configuration, playerBusy));
-			Version.check(this, myLogger);
 		} else {
 			myLogger.severe("You choose to disable this plugin.");
 			getServer().getPluginManager().disablePlugin(this);
@@ -113,6 +118,9 @@ public class LTItemMail extends JavaPlugin {
 	@Override
 	public final void onDisable() {
 		myLogger.info("Unloading...");
+		if(scheduler.isCurrentlyRunning(versionTask)) {
+			scheduler.cancelTask(versionTask);
+		}
 	}
 	/**
 	 * 

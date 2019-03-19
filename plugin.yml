@@ -1,6 +1,6 @@
 name: LTItemMail
-description: A new way of sending items to another players in Minecraft 1.13.x.
-version: 0.2.3
+description: A new way of sending items to another players in Minecraft.
+version: 0.2.4
 api-version: 1.13
 load: POSTWORLD
 author: [leothawne]

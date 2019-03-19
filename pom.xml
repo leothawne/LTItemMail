@@ -2,9 +2,9 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.leothawne</groupId>
 	<artifactId>LTItemMail</artifactId>
-	<version>0.2.3</version>
+	<version>0.2.4</version>
 	<name>LT Item Mail</name>
-	<description>A new way of sending items to another players in Minecraft 1.13.x.</description>
+	<description>A new way of sending items to another players in Minecraft.</description>
 	<build>
 		<finalName>LT Item Mail</finalName>
 		<plugins>

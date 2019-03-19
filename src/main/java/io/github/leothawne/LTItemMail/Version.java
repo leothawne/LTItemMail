@@ -18,17 +18,14 @@ package io.github.leothawne.LTItemMail;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.scheduler.BukkitRunnable;
-
-import io.github.leothawne.LTItemMail.api.utility.HTTP;
 
 public class Version {
 	private static final int configFileVersion = 6;
 	private static final int english_languageFileVersion = 2;
 	private static final int portuguese_languageFileVersion = 2;
 	private static final int vietnamese_languageFileVersion = 2;
-	private static final String Plugin_Version = "0.2.3";
-	private static final String Plugin_Date = "26/02/2019 (America/Sao_Paulo)";
+	private static final String Plugin_Version = "0.2.4";
+	private static final String Plugin_Date = "99/99/9999 00:00 (BRT)";
 	private static final String Minecraft_Version = "1.13.x";
 	private static final String Minecraft_Build = "1.13-R0.1-SNAPSHOT";
 	private static final String Java_Version = "8+";
@@ -65,25 +62,10 @@ public class Version {
 	public static final String getUpdateURL() {
 		return Update_URL;
 	}
+	public static final String getPluginURL() {
+		return Plugin_URL;
+	}
 	public static final void version(CommandSender sender) {
 		sender.sendMessage(ChatColor.AQUA + "LT Item Mail " + ChatColor.YELLOW + "plugin " + ChatColor.GREEN + "" + Plugin_Version + "" + ChatColor.YELLOW + " (" + ChatColor.GREEN + "" + Plugin_Date + "" + ChatColor.YELLOW + "), Minecraft " + ChatColor.GREEN + "" + Minecraft_Version +  "" + ChatColor.YELLOW + " (Java " + ChatColor.GREEN + "" + Java_Version + "" + ChatColor.YELLOW + ", build " + ChatColor.GREEN + "" + Minecraft_Build + "" + ChatColor.YELLOW + ").");
-	}
-	public static final void check(LTItemMail plugin, ConsoleLoader myLogger) {
-		new BukkitRunnable() {
-			@Override
-			public final void run() {
-				String response = HTTP.getData(Plugin_URL);
-				if(response != null) {
-					if(response.equalsIgnoreCase("disabled")) {
-						myLogger.severe("Hey you, stop right there! The version " + Plugin_Version + " is not allowed anymore!");
-						myLogger.severe("Apologies, but this plugin will now be disabled! Download a newer version to play: https://dev.bukkit.org/projects/lt-item-mail");
-						plugin.getServer().getPluginManager().disablePlugin(plugin);
-					}
-				} else {
-					myLogger.warning("Unable to locate: " + Plugin_URL);
-				}
-			}
-		}.runTask(plugin);
-		
 	}
 }
