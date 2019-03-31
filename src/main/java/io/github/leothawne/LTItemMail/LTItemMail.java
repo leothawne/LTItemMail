@@ -103,7 +103,7 @@ public class LTItemMail extends JavaPlugin {
 			getCommand("sendbox").setExecutor(new SendBoxCommand(this, myLogger, configuration, language));
 			getCommand("sendbox").setTabCompleter(new SendBoxCommandTabCompleter());
 			scheduler = getServer().getScheduler();
-			versionTask = scheduler.scheduleAsyncRepeatingTask(this, new VersionTask(this, myLogger, Version.getVersionNumber(), Version.getPluginURL()), 0, 20 * 1800);
+			versionTask = scheduler.scheduleAsyncRepeatingTask(this, new VersionTask(this, myLogger, Version.getVersionNumber(), Version.getPluginURL()), 0, 20 * 60 * 60);
 			registerEvents(new SendBoxCommandInventoryEvent(this, configuration, language, playerBusy, economyPlugin), new OpenBoxCommandInventoryEvent(configuration, language, playerBusy), new PlayerEvent(configuration, playerBusy));
 		} else {
 			myLogger.severe("You choose to disable this plugin.");
