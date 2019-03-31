@@ -107,8 +107,6 @@ public class LTItemMailAPI {
 	 * 
 	 * @return A boolean type value.
 	 * 
-	 * @deprecated Replaced by {@link #isPlayerBusy(Player)} or {@link #isPlayerBusy(UUID)}.
-	 * 
 	 */
 	public final boolean isPlayerBusy(String playerName) {
 		return this.isPlayerBusy(plugin.getServer().getPlayer(playerName));
@@ -169,8 +167,6 @@ public class LTItemMailAPI {
 	 * 
 	 * @param playerName The player's name.
 	 * @param items The list of items that the player will receive.
-	 * 
-	 * @deprecated Replaced by {@link #sendSpecialMailbox(Player, List)} or {@link #sendSpecialMailbox(UUID, List)}.
 	 * 
 	 */
 	@Deprecated
