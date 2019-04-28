@@ -37,3 +37,4 @@ target/classes/io/github/leothawne/LTItemMail/Version.class
 target/classes/META-INF/MANIFEST.MF
 target/classes/META-INF/maven/io.github.leothawne/LTItemMail/pom.properties
 target/classes/META-INF/maven/io.github.leothawne/LTItemMail/pom.xml
+target/classes/io/github/leothawne/LTItemMail/task/VersionTask.class
