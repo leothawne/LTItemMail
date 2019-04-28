@@ -46,12 +46,7 @@ public class SendBoxCommand implements CommandExecutor {
 				if(args.length < 1) {
 					player.sendMessage(ChatColor.DARK_GREEN + "[" + configuration.getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + language.getString("recipient-empty"));
 				} else if(args.length < 3) {
-					Player player1 = null;
-					for(Player player2 : plugin.getServer().getOnlinePlayers()) {
-						if(player2.getName().equalsIgnoreCase(args[0])) {
-							player1 = plugin.getServer().getPlayer(player2.getUniqueId());
-						}
-					}
+					Player player1 = plugin.getServer().getPlayer(args[0]);
 					if(player1 != null) {
 						if(player1.getUniqueId().equals(player.getUniqueId())) {
 							if(args.length == 2 && ((configuration.getString("language").equalsIgnoreCase("english") && args[1].equalsIgnoreCase("becauseiwant")) || (configuration.getString("language").equalsIgnoreCase("portuguese") && args[1].equalsIgnoreCase("porqueeuquero")))) {
