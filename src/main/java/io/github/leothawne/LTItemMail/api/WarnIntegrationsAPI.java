@@ -14,24 +14,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package io.github.leothawne.LTItemMail.command.tabCompleter;
+package io.github.leothawne.LTItemMail.api;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginManager;
 
-public class SendBoxCommandTabCompleter implements TabCompleter {
-	@Override
-	public final List<String> onTabComplete(CommandSender sender, Command cmd, String commandLabel, String[] args){
-		List<String> ReturnNothing = new ArrayList<>();
-		if(sender.hasPermission("LTItemMail.send")) {
-			if(args.length == 1) {
-				return null;
+import io.github.leothawne.LTItemMail.LTItemMail;
+
+public final class WarnIntegrationsAPI {
+	public WarnIntegrationsAPI(final LTItemMail mainPlugin, final List<String> plugins) {
+		final PluginManager manager = mainPlugin.getServer().getPluginManager();
+		for(final String plugin : plugins) {
+			final Plugin getPlugin = manager.getPlugin(plugin);
+			if(getPlugin != null && getPlugin.isEnabled()) {
+				getPlugin.getLogger().warning(mainPlugin.getName() + " were successfully hooked into " + getPlugin.getName() + "!");
 			}
 		}
-		return ReturnNothing;
 	}
 }

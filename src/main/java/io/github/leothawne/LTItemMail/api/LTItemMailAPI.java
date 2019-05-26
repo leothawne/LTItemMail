@@ -17,7 +17,7 @@
 package io.github.leothawne.LTItemMail.api;
 
 import java.util.HashMap;
-import java.util.List;
+import java.util.LinkedList;
 import java.util.UUID;
 
 import org.bukkit.configuration.file.FileConfiguration;
@@ -26,7 +26,6 @@ import org.bukkit.inventory.ItemStack;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
 import io.github.leothawne.LTItemMail.api.bStats.MetricsAPI;
-import io.github.leothawne.LTItemMail.api.utility.MailboxAPI;
 
 /**
  * 
@@ -35,7 +34,7 @@ import io.github.leothawne.LTItemMail.api.utility.MailboxAPI;
  * @author leothawne
  * 
  */
-public class LTItemMailAPI {
+public final class LTItemMailAPI {
 	private static LTItemMail plugin;
 	private static FileConfiguration configuration;
 	private static FileConfiguration language;
@@ -48,7 +47,7 @@ public class LTItemMailAPI {
 	 * you can easily use {@link LTItemMail#getAPI()}.
 	 * 
 	 */
-	public LTItemMailAPI(LTItemMail plugin, FileConfiguration configuration, FileConfiguration language, HashMap<UUID, Boolean> playerBusy, MetricsAPI metrics) {
+	public LTItemMailAPI(final LTItemMail plugin, final FileConfiguration configuration, final FileConfiguration language, final HashMap<UUID, Boolean> playerBusy, final MetricsAPI metrics) {
 		LTItemMailAPI.plugin = plugin;
 		LTItemMailAPI.configuration = configuration;
 		LTItemMailAPI.language = language;
@@ -64,7 +63,7 @@ public class LTItemMailAPI {
 	 * 
 	 */
 	public final boolean isUsingVault() {
-		return configuration.getBoolean("use-vault");
+		return LTItemMailAPI.configuration.getBoolean("use-vault");
 	}
 	/**
 	 * 
@@ -78,8 +77,8 @@ public class LTItemMailAPI {
 	 * @return A boolean type value.
 	 * 
 	 */
-	public final boolean isPlayerBusy(Player player) {
-		return (boolean) playerBusy.get(player.getUniqueId()).booleanValue();
+	public final boolean isPlayerBusy(final Player player) {
+		return (boolean) LTItemMailAPI.playerBusy.get(player.getUniqueId()).booleanValue();
 	}
 	/**
 	 * 
@@ -93,8 +92,8 @@ public class LTItemMailAPI {
 	 * @return A boolean type value.
 	 * 
 	 */
-	public final boolean isPlayerBusy(UUID playerUUID) {
-		return this.isPlayerBusy(plugin.getServer().getPlayer(playerUUID));
+	public final boolean isPlayerBusy(final UUID playerUUID) {
+		return this.isPlayerBusy(LTItemMailAPI.plugin.getServer().getPlayer(playerUUID));
 	}
 	/**
 	 * 
@@ -108,8 +107,8 @@ public class LTItemMailAPI {
 	 * @return A boolean type value.
 	 * 
 	 */
-	public final boolean isPlayerBusy(String playerName) {
-		return this.isPlayerBusy(plugin.getServer().getPlayer(playerName));
+	public final boolean isPlayerBusy(final String playerName) {
+		return this.isPlayerBusy(LTItemMailAPI.plugin.getServer().getPlayer(playerName));
 	}
 	/**
 	 * 
@@ -119,8 +118,8 @@ public class LTItemMailAPI {
 	 * @return A FileConfiguration type value.
 	 * 
 	 */
-	public final FileConfiguration getLanguageFile(){
-		return language;
+	public final FileConfiguration getLanguageMap(){
+		return LTItemMailAPI.language;
 	}
 	/**
 	 * 
@@ -131,7 +130,7 @@ public class LTItemMailAPI {
 	 * 
 	 */
 	public final boolean isMetricsEnabled() {
-		return metrics.isEnabled();
+		return LTItemMailAPI.metrics.isEnabled();
 	}
 	/**
 	 * 
@@ -143,8 +142,8 @@ public class LTItemMailAPI {
 	 * @param items The list of items that the player will receive.
 	 * 
 	 */
-	public final void sendSpecialMailbox(Player player, List<ItemStack> items) {
-		MailboxAPI.run(plugin, configuration, language, playerBusy, player, items);
+	public final void sendSpecialMailbox(final Player player, final LinkedList<ItemStack> items) {
+		MailboxAPI.sendSpecial(LTItemMailAPI.plugin, LTItemMailAPI.configuration, LTItemMailAPI.language, LTItemMailAPI.playerBusy, player, items);
 	}
 	/**
 	 * 
@@ -156,8 +155,8 @@ public class LTItemMailAPI {
 	 * @param items The list of items that the player will receive.
 	 * 
 	 */
-	public final void sendSpecialMailbox(UUID playerUUID, List<ItemStack> items) {
-		this.sendSpecialMailbox(plugin.getServer().getPlayer(playerUUID), items);
+	public final void sendSpecialMailbox(final UUID playerUUID, final LinkedList<ItemStack> items) {
+		this.sendSpecialMailbox(LTItemMailAPI.plugin.getServer().getPlayer(playerUUID), items);
 	}
 	/**
 	 * 
@@ -169,8 +168,7 @@ public class LTItemMailAPI {
 	 * @param items The list of items that the player will receive.
 	 * 
 	 */
-	@Deprecated
-	public final void sendSpecialMailbox(String playerName, List<ItemStack> items) {
-		this.sendSpecialMailbox(plugin.getServer().getPlayer(playerName), items);
+	public final void sendSpecialMailbox(final String playerName, final LinkedList<ItemStack> items) {
+		this.sendSpecialMailbox(LTItemMailAPI.plugin.getServer().getPlayer(playerName), items);
 	}
 }

@@ -1,21 +1,23 @@
-package io.github.leothawne.LTItemMail.api.utility;
+package io.github.leothawne.LTItemMail.api;
 
 import java.util.HashMap;
-import java.util.List;
+import java.util.LinkedList;
 import java.util.UUID;
 
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
-import io.github.leothawne.LTItemMail.inventory.OpenBoxCommandInventory;
+import io.github.leothawne.LTItemMail.inventory.MailboxInventory;
+import io.github.leothawne.LTItemMail.type.MailboxType;
 
-public class MailboxAPI {
-	public static final void run(LTItemMail plugin, FileConfiguration configuration, FileConfiguration language, HashMap<UUID, Boolean> playerBusy, Player receiver, List<ItemStack> items) {
-		String mailboxFrom = language.getString("special-mailbox");
-		String[] mailboxOpening = language.getString("mailbox-opening-seconds").split("%");
+public final class MailboxAPI {
+	public static final void sendSpecial(final LTItemMail plugin, final FileConfiguration configuration, final FileConfiguration language, final HashMap<UUID, Boolean> playerBusy, final Player receiver, final LinkedList<ItemStack> items) {
+		final String mailboxFrom = language.getString("special-mailbox");
+		final String[] mailboxOpening = language.getString("mailbox-opening-seconds").split("%");
 		playerBusy.put(receiver.getUniqueId(), true);
 		if(configuration.getBoolean("use-title") == true) {
 			receiver.sendTitle(ChatColor.LIGHT_PURPLE + "" + mailboxFrom, ChatColor.AQUA + "" + mailboxOpening[0] + "" + ChatColor.GREEN + "" + configuration.getInt("mail-time") + "" + ChatColor.AQUA + "" + mailboxOpening[1] + " " + ChatColor.DARK_RED + "" + language.getString("mailbox-lose"), 20 * 1, 20 * configuration.getInt("mail-time"), 20 * 1);
@@ -23,11 +25,11 @@ public class MailboxAPI {
 			receiver.sendMessage(ChatColor.DARK_GREEN + "[" + configuration.getString("plugin-tag") + "] " + ChatColor.AQUA + "" + mailboxFrom);
 			receiver.sendMessage(ChatColor.DARK_GREEN + "[" + configuration.getString("plugin-tag") + "] " + ChatColor.AQUA + "" + mailboxOpening[0] + "" + ChatColor.GREEN + "" + configuration.getInt("mail-time") + "" + ChatColor.AQUA + "" + mailboxOpening[1] + " " + ChatColor.DARK_RED + "" + language.getString("mailbox-lose"));
 		}
-		plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+		new BukkitRunnable() {
+			@Override
 			public final void run() {
-				new OpenBoxCommandInventory();
-				receiver.openInventory(OpenBoxCommandInventory.GUI(items));
+				receiver.openInventory(MailboxInventory.getMailboxInventory(MailboxType.IN, null, items));
 			}
-		}, 20 * configuration.getInt("mail-time") + 2);
+		}.runTaskLater(plugin, 20 * configuration.getInt("mail-time") + 2);
 	}
 }

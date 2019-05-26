@@ -28,23 +28,21 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import io.github.leothawne.LTItemMail.api.LTItemMailAPI;
+import io.github.leothawne.LTItemMail.api.WarnIntegrationsAPI;
 import io.github.leothawne.LTItemMail.api.bStats.MetricsAPI;
-import io.github.leothawne.LTItemMail.api.utility.WarnIntegrationsAPI;
 import io.github.leothawne.LTItemMail.command.ItemMailAdminCommand;
 import io.github.leothawne.LTItemMail.command.ItemMailCommand;
 import io.github.leothawne.LTItemMail.command.MailItemCommand;
 import io.github.leothawne.LTItemMail.command.tabCompleter.ItemMailAdminCommandTabCompleter;
 import io.github.leothawne.LTItemMail.command.tabCompleter.ItemMailCommandTabCompleter;
-import io.github.leothawne.LTItemMail.command.tabCompleter.SendBoxCommandTabCompleter;
-import io.github.leothawne.LTItemMail.listener.OpenBoxCommandInventoryEvent;
+import io.github.leothawne.LTItemMail.command.tabCompleter.MailItemCommandTabCompleter;
+import io.github.leothawne.LTItemMail.listener.MailboxListener;
 import io.github.leothawne.LTItemMail.listener.PlayerListener;
-import io.github.leothawne.LTItemMail.listener.SendBoxCommandInventoryEvent;
 import io.github.leothawne.LTItemMail.module.ConfigurationModule;
 import io.github.leothawne.LTItemMail.module.ConsoleModule;
 import io.github.leothawne.LTItemMail.module.LanguageModule;
 import io.github.leothawne.LTItemMail.module.MetricsModule;
 import io.github.leothawne.LTItemMail.module.VaultModule;
-import io.github.leothawne.LTItemMail.module.DataModule;
 import io.github.leothawne.LTItemMail.task.VersionTask;
 import net.milkbowl.vault.economy.Economy;
 
@@ -56,9 +54,9 @@ import net.milkbowl.vault.economy.Economy;
  */
 public final class LTItemMail extends JavaPlugin {
 	private final ConsoleModule console = new ConsoleModule(this);
-	private static final void registerEvents(final Listener...listeners) {
+	private final void registerEvents(final Listener...listeners) {
 		for(final Listener listener : listeners) {
-			Bukkit.getServer().getPluginManager().registerEvents(listener, new LTItemMail());
+			Bukkit.getServer().getPluginManager().registerEvents(listener, this);
 		}
 	}
 	private static FileConfiguration configuration;
@@ -82,7 +80,7 @@ public final class LTItemMail extends JavaPlugin {
 		ConfigurationModule.check(this, this.console);
 		LTItemMail.configuration = ConfigurationModule.load(this, this.console);
 		if(LTItemMail.configuration.getBoolean("enable-plugin") == true) {
-			MetricsModule.init(this, this.console, LTItemMail.metrics);
+			LTItemMail.metrics = MetricsModule.init(this, this.console);
 			Economy economyPlugin = null;
 			if(LTItemMail.configuration.getBoolean("use-vault") == true) {
 				this.console.info("Loading Vault...");
@@ -102,15 +100,15 @@ public final class LTItemMail extends JavaPlugin {
 			}
 			LanguageModule.check(this, this.console, LTItemMail.configuration);
 			LTItemMail.language = LanguageModule.load(this, this.console, LTItemMail.configuration);
-			this.getCommand("itemmail").setExecutor(new ItemMailCommand(this.console, LTItemMail.configuration, LTItemMail.language));
+			this.getCommand("itemmail").setExecutor(new ItemMailCommand(this, this.console, LTItemMail.configuration, LTItemMail.language));
 			this.getCommand("itemmail").setTabCompleter(new ItemMailCommandTabCompleter());
 			this.getCommand("itemmailadmin").setExecutor(new ItemMailAdminCommand(this, this.console, LTItemMail.configuration, LTItemMail.language));
 			this.getCommand("itemmailadmin").setTabCompleter(new ItemMailAdminCommandTabCompleter());
-			this.getCommand("sendbox").setExecutor(new MailItemCommand(this, this.console, LTItemMail.configuration, LTItemMail.language));
-			this.getCommand("sendbox").setTabCompleter(new SendBoxCommandTabCompleter());
+			this.getCommand("mailitem").setExecutor(new MailItemCommand(this, this.console, LTItemMail.configuration, LTItemMail.language));
+			this.getCommand("mailitem").setTabCompleter(new MailItemCommandTabCompleter(this));
 			LTItemMail.scheduler = this.getServer().getScheduler();
-			LTItemMail.versionTask = scheduler.scheduleAsyncRepeatingTask(this, new VersionTask(this, this.console, DataModule.getVersionNumber(), DataModule.getPluginURL()), 0, 20 * 60 * 60);
-			registerEvents(new SendBoxCommandInventoryEvent(this, LTItemMail.configuration, LTItemMail.language, LTItemMail.playerBusy, economyPlugin), new OpenBoxCommandInventoryEvent(LTItemMail.configuration, LTItemMail.language, LTItemMail.playerBusy), new PlayerListener(LTItemMail.configuration, LTItemMail.playerBusy));
+			LTItemMail.versionTask = scheduler.scheduleAsyncRepeatingTask(this, new VersionTask(this, this.console), 0, 20 * 60 * 60);
+			registerEvents(new MailboxListener(this, LTItemMail.configuration, LTItemMail.language, LTItemMail.playerBusy, economyPlugin), new PlayerListener(LTItemMail.configuration, LTItemMail.playerBusy));
 		} else {
 			this.console.severe("You've choosen to disable me.");
 			this.getServer().getPluginManager().disablePlugin(this);

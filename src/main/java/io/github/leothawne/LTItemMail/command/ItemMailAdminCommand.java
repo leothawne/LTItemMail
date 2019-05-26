@@ -24,18 +24,18 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
-import io.github.leothawne.LTItemMail.api.utility.HTTP;
+import io.github.leothawne.LTItemMail.api.HTTP;
 import io.github.leothawne.LTItemMail.module.ConsoleModule;
 import io.github.leothawne.LTItemMail.module.DataModule;
 
-public class ItemMailAdminCommand implements CommandExecutor {
+public final class ItemMailAdminCommand implements CommandExecutor {
 	private static LTItemMail plugin;
-	private static ConsoleModule myLogger;
+	private static ConsoleModule console;
 	private static FileConfiguration configuration;
 	private static FileConfiguration language;
-	public ItemMailAdminCommand(LTItemMail plugin, ConsoleModule myLogger, FileConfiguration configuration, FileConfiguration language) {
+	public ItemMailAdminCommand(final LTItemMail plugin, final ConsoleModule console, final FileConfiguration configuration, final FileConfiguration language) {
 		ItemMailAdminCommand.plugin = plugin;
-		ItemMailAdminCommand.myLogger = myLogger;
+		ItemMailAdminCommand.console = console;
 		ItemMailAdminCommand.configuration = configuration;
 		ItemMailAdminCommand.language = language;
 	}
@@ -53,45 +53,40 @@ public class ItemMailAdminCommand implements CommandExecutor {
 						new BukkitRunnable() {
 							@Override
 							public final void run() {
-								String[] LocalVersion = DataModule.getVersionNumber().split("\\.");
+								String[] LocalVersion = ItemMailAdminCommand.plugin.getDescription().getVersion().split("\\.");
 								int Local_VersionNumber1 = Integer.parseInt(LocalVersion[0]);
 								int Local_VersionNumber2 = Integer.parseInt(LocalVersion[1]);
 								int Local_VersionNumber3 = Integer.parseInt(LocalVersion[2]);
-								String upToDate = ChatColor.AQUA + "[" + configuration.getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "The plugin is up to date!";
 								String[] Server1 = HTTP.getData(DataModule.getUpdateURL()).split("-");
-								if(Server1[2].equals(DataModule.getMinecraftVersion())) {
-									String[] Server2 = Server1[0].split("\\.");
-									int Server2_VersionNumber1 = Integer.parseInt(Server2[0]);
-									int Server2_VersionNumber2 = Integer.parseInt(Server2[1]);
-									int Server2_VersionNumber3 = Integer.parseInt(Server2[2]);
-									String updateMessage = ChatColor.AQUA + "[" + configuration.getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "A newer version is available: " + ChatColor.GREEN + "" + Server1[0] + "" + ChatColor.YELLOW + " (released on " + ChatColor.GREEN + "" + Server1[1] + "" + ChatColor.YELLOW + ").";
-									if(Server2_VersionNumber1 > Local_VersionNumber1) {
-										sender.sendMessage(updateMessage);
-									} else if(Server2_VersionNumber1 == Local_VersionNumber1 && Server2_VersionNumber2 > Local_VersionNumber2) {
-										sender.sendMessage(updateMessage);
-									} else if(Server2_VersionNumber1 == Local_VersionNumber1 && Server2_VersionNumber2 == Local_VersionNumber2 && Server2_VersionNumber3 > Local_VersionNumber3) {
-										sender.sendMessage(updateMessage);
-									} else {
-										sender.sendMessage(upToDate);
-									}
+								String[] Server2 = Server1[0].split("\\.");
+								int Server2_VersionNumber1 = Integer.parseInt(Server2[0]);
+								int Server2_VersionNumber2 = Integer.parseInt(Server2[1]);
+								int Server2_VersionNumber3 = Integer.parseInt(Server2[2]);
+								String updateMessage = ChatColor.AQUA + "[" + ItemMailAdminCommand.configuration.getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "A newer version is available: " + ChatColor.GREEN + Server1[0] + ChatColor.YELLOW + " (released on " + ChatColor.GREEN + Server1[1] + ChatColor.YELLOW + ").";
+								if(Server2_VersionNumber1 > Local_VersionNumber1) {
+									sender.sendMessage(updateMessage);
+								} else if(Server2_VersionNumber1 == Local_VersionNumber1 && Server2_VersionNumber2 > Local_VersionNumber2) {
+									sender.sendMessage(updateMessage);
+								} else if(Server2_VersionNumber1 == Local_VersionNumber1 && Server2_VersionNumber2 == Local_VersionNumber2 && Server2_VersionNumber3 > Local_VersionNumber3) {
+									sender.sendMessage(updateMessage);
 								} else {
-									sender.sendMessage(upToDate);
+									sender.sendMessage(ChatColor.AQUA + "[" + ItemMailAdminCommand.configuration.getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "The plugin is up to date!");
 								}
 							}
-						}.runTask(plugin);
+						}.runTaskAsynchronously(plugin);
 					} else {
-						sender.sendMessage(ChatColor.AQUA + "[" + configuration.getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "Too many arguments!");
+						sender.sendMessage(ChatColor.AQUA + "[" + ItemMailAdminCommand.configuration.getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "Too many arguments!");
 					}
 				} else {
-					sender.sendMessage(ChatColor.AQUA + "[" + configuration.getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "Invalid command! Type " + ChatColor.GREEN + "/itemmailadmin " + ChatColor.YELLOW + "to see all available commands.");
+					sender.sendMessage(ChatColor.AQUA + "[" + ItemMailAdminCommand.configuration.getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "Invalid command! Type " + ChatColor.GREEN + "/itemmailadmin " + ChatColor.YELLOW + "to see all available commands.");
 				}
 			} else {
-				sender.sendMessage(ChatColor.AQUA + "[" + configuration.getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "" + language.getString("no-permission"));
-				myLogger.severe(sender.getName() + " does not have permission [LTItemMail.admin].");
+				sender.sendMessage(ChatColor.AQUA + "[" + ItemMailAdminCommand.configuration.getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "" + ItemMailAdminCommand.language.getString("no-permission"));
+				ItemMailAdminCommand.console.severe(sender.getName() + " does not have permission [LTItemMail.admin].");
 			}
 		} else {
-			sender.sendMessage(ChatColor.AQUA + "[" + configuration.getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + language.getString("no-permission"));
-			myLogger.severe(sender.getName() + " does not have permission [LTItemMail.use].");
+			sender.sendMessage(ChatColor.AQUA + "[" + ItemMailAdminCommand.configuration.getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + ItemMailAdminCommand.language.getString("no-permission"));
+			ItemMailAdminCommand.console.severe(sender.getName() + " does not have permission [LTItemMail.use].");
 		}
 		return true;
 	}

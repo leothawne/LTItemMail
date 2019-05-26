@@ -22,15 +22,18 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import io.github.leothawne.LTItemMail.LTItemMail;
 import io.github.leothawne.LTItemMail.module.ConsoleModule;
 import io.github.leothawne.LTItemMail.module.DataModule;
 
-public class ItemMailCommand implements CommandExecutor {
-	private static ConsoleModule myLogger;
+public final class ItemMailCommand implements CommandExecutor {
+	private static LTItemMail plugin;
+	private static ConsoleModule console;
 	private static FileConfiguration configuration;
 	private static FileConfiguration language;
-	public ItemMailCommand(ConsoleModule myLogger, FileConfiguration configuration, FileConfiguration language) {
-		ItemMailCommand.myLogger = myLogger;
+	public ItemMailCommand(final LTItemMail plugin, final ConsoleModule console, final FileConfiguration configuration, final FileConfiguration language) {
+		ItemMailCommand.plugin = plugin;
+		ItemMailCommand.console = console;
 		ItemMailCommand.configuration = configuration;
 		ItemMailCommand.language = language;
 	}
@@ -41,22 +44,22 @@ public class ItemMailCommand implements CommandExecutor {
 				sender.sendMessage(ChatColor.AQUA + "=+=+=+= [LT Item Mail] =+=+=+=");
 				sender.sendMessage(ChatColor.GREEN + "/itemmail " + ChatColor.AQUA + "- Show all commands for LT Item Mail.");
 				sender.sendMessage(ChatColor.GREEN + "/itemmail version " + ChatColor.AQUA + "- Show plugin version.");
-				sender.sendMessage(ChatColor.GREEN + "/sendbox <player> " + ChatColor.AQUA + "- Send items to players.");
+				sender.sendMessage(ChatColor.GREEN + "/mailitem <player> " + ChatColor.AQUA + "- Send items to players.");
 				sender.sendMessage(ChatColor.GREEN + "/itemmailadmin " + ChatColor.AQUA + "- Administration commands for LT Item Mail.");
 				sender.sendMessage(ChatColor.YELLOW + "You can also use "+ ChatColor.GREEN + "/itemmail "+ ChatColor.YELLOW + "as "+ ChatColor.GREEN + "/ima"+ ChatColor.YELLOW + ".");
-				sender.sendMessage(ChatColor.YELLOW + "You can also use "+ ChatColor.GREEN + "/sendbox "+ ChatColor.YELLOW + "as "+ ChatColor.GREEN + "/sbx"+ ChatColor.YELLOW + ".");
+				sender.sendMessage(ChatColor.YELLOW + "You can also use "+ ChatColor.GREEN + "/mailitem "+ ChatColor.YELLOW + "as "+ ChatColor.GREEN + "/mit"+ ChatColor.YELLOW + " or "+ ChatColor.GREEN + "/enviaritem"+ ChatColor.YELLOW + " or "+ ChatColor.GREEN + "/vit"+ ChatColor.YELLOW + ".");
 			} else if(args[0].equalsIgnoreCase("version")) {
 				if(args.length < 2) {
-					DataModule.version(sender);
+					DataModule.version(ItemMailCommand.plugin.getDescription().getVersion(), sender);
 				} else {
-					sender.sendMessage(ChatColor.AQUA + "[" + configuration.getString("plugin-tag") + "] " + ChatColor.YELLOW + "Too many arguments!");
+					sender.sendMessage(ChatColor.AQUA + "[" + ItemMailCommand.configuration.getString("plugin-tag") + "] " + ChatColor.YELLOW + "Too many arguments!");
 				}
 			} else {
-				sender.sendMessage(ChatColor.AQUA + "[" + configuration.getString("plugin-tag") + "] " + ChatColor.YELLOW + "Invalid command! Type " + ChatColor.GREEN + "/itemmail " + ChatColor.YELLOW + "to see all available commands.");
+				sender.sendMessage(ChatColor.AQUA + "[" + ItemMailCommand.configuration.getString("plugin-tag") + "] " + ChatColor.YELLOW + "Invalid command! Type " + ChatColor.GREEN + "/itemmail " + ChatColor.YELLOW + "to see all available commands.");
 			}
 		} else {
-			sender.sendMessage(ChatColor.AQUA + "[" + configuration.getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + language.getString("no-permission"));
-			myLogger.severe(sender.getName() + " does not have permission [LTItemMail.use].");
+			sender.sendMessage(ChatColor.AQUA + "[" + ItemMailCommand.configuration.getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + ItemMailCommand.language.getString("no-permission"));
+			ItemMailCommand.console.severe(sender.getName() + " does not have permission [LTItemMail.use].");
 		}
 		return true;
 	}

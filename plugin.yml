@@ -14,9 +14,9 @@ commands:
         description: All available commands for LT Item Mail.
         aliases: [ima]
         usage: /<command>
-    sendbox:
+    mailitem:
         description: Instantly send items to other players.
-        aliases: [sbx]
+        aliases: [mit, enviaritem, vit]
         usage: /<command>
     itemmailadmin:
         description: All admin commands for LT Item Mail.

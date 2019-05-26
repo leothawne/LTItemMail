@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package io.github.leothawne.LTItemMail.api.utility;
+package io.github.leothawne.LTItemMail.api;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

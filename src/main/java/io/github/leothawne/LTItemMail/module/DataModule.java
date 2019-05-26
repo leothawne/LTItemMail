@@ -27,7 +27,7 @@ import io.github.leothawne.LTItemMail.type.VersionType;
 public final class DataModule {
 	private static final String PROJECT_PAGES = "BUKKIT_DEV:https://dev.bukkit.org/projects/lt-item-mail,SPIGOT_MC:https://www.spigotmc.org/resources/62294";
 	private static final String VERSIONS = "CONFIG_YML:6,ENGLISH_YML:2,PORTUGUESE_YML:2,VIETNAMESE_YML:2,MINECRAFT:1.14,JAVA:8";
-	private static final String Plugin_Date = "99/99/9999 (America/Sao_Paulo)";
+	private static final String Plugin_Date = "26/05/2019 07:23 (BRT)";
 	private static final String Minecraft_Build = "1.14-R0.1-SNAPSHOT";
 	private static final String Update_URL = "https://leothawne.github.io/LTItemMail/api/1.14.html";
 	private static final String Plugin_URL = "https://leothawne.github.io/LTItemMail/api/$version/plugin.html";

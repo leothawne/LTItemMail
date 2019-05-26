@@ -17,7 +17,7 @@
 package io.github.leothawne.LTItemMail.task;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
-import io.github.leothawne.LTItemMail.api.utility.HTTP;
+import io.github.leothawne.LTItemMail.api.HTTP;
 import io.github.leothawne.LTItemMail.module.ConsoleModule;
 import io.github.leothawne.LTItemMail.module.DataModule;
 import io.github.leothawne.LTItemMail.type.ProjectPageType;

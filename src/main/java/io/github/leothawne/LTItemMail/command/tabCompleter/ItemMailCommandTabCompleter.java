@@ -25,15 +25,15 @@ import org.bukkit.command.TabCompleter;
 
 import com.google.common.collect.ImmutableList;
 
-import io.github.leothawne.LTItemMail.api.utility.TabCompleterAPI;
+import io.github.leothawne.LTItemMail.api.TabCompleterAPI;
 
-public class ItemMailCommandTabCompleter extends TabCompleterAPI implements TabCompleter {
+public final class ItemMailCommandTabCompleter extends TabCompleterAPI implements TabCompleter {
 	@Override
 	public final List<String> onTabComplete(CommandSender sender, Command cmd, String commandLabel, String[] args){
-		List<String> ReturnNothing = new ArrayList<>();
+		final List<String> ReturnNothing = new ArrayList<>();
 		if(sender.hasPermission("LTItemMail.use")) {
 			if(args.length == 1) {
-				ImmutableList<String> Mail = ImmutableList.of("version");
+				final ImmutableList<String> Mail = ImmutableList.of("version");
 				return partial(args[0], Mail);
 			}
 		}
