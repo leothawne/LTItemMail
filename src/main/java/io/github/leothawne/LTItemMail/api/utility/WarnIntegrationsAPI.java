@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Murilo Amaral Nappi
+ * Copyright (C) 2019 Murilo Amaral Nappi (murilonappi@gmail.com)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,14 +19,16 @@ package io.github.leothawne.LTItemMail.api.utility;
 import java.util.List;
 
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginManager;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
 
-public class WarnIntegrationsAPI {
-	public WarnIntegrationsAPI(LTItemMail mainPlugin, List<String> plugins) {
-		for(String plugin : plugins) {
-			Plugin getPlugin = mainPlugin.getServer().getPluginManager().getPlugin(plugin);
-			if(getPlugin != null) {
+public final class WarnIntegrationsAPI {
+	public WarnIntegrationsAPI(final LTItemMail mainPlugin, final List<String> plugins) {
+		final PluginManager manager = mainPlugin.getServer().getPluginManager();
+		for(final String plugin : plugins) {
+			final Plugin getPlugin = manager.getPlugin(plugin);
+			if(getPlugin != null && getPlugin.isEnabled()) {
 				getPlugin.getLogger().warning(mainPlugin.getName() + " were successfully hooked into " + getPlugin.getName() + "!");
 			}
 		}

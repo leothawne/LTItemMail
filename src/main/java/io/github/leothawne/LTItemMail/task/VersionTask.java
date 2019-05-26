@@ -16,32 +16,32 @@
  */
 package io.github.leothawne.LTItemMail.task;
 
-import io.github.leothawne.LTItemMail.ConsoleLoader;
 import io.github.leothawne.LTItemMail.LTItemMail;
 import io.github.leothawne.LTItemMail.api.utility.HTTP;
+import io.github.leothawne.LTItemMail.module.ConsoleModule;
+import io.github.leothawne.LTItemMail.module.DataModule;
+import io.github.leothawne.LTItemMail.type.ProjectPageType;
 
-public class VersionTask implements Runnable {
+public final class VersionTask implements Runnable {
 	private static LTItemMail plugin;
-	private static ConsoleLoader myLogger;
-	private static String pluginVersion;
-	private static String pluginURL;
-	public VersionTask(LTItemMail plugin, ConsoleLoader myLogger, String pluginVersion, String pluginURL) {
+	private static ConsoleModule myLogger;
+	public VersionTask(final LTItemMail plugin, final ConsoleModule myLogger) {
 		VersionTask.plugin = plugin;
 		VersionTask.myLogger = myLogger;
-		VersionTask.pluginVersion = pluginVersion;
-		VersionTask.pluginURL = pluginURL;
 	}
 	@Override
 	public final void run() {
-		String response = HTTP.getData(pluginURL);
+		final String version = VersionTask.plugin.getDescription().getVersion();
+		final String url = DataModule.getPluginURL(version);
+		final String response = HTTP.getData(url);
 		if(response != null) {
 			if(response.equalsIgnoreCase("disabled")) {
-				myLogger.severe("Hey you, stop right there! The version " + pluginVersion + " is not allowed anymore!");
-				myLogger.severe("Apologies, but this plugin will now be disabled! Download a newer version to play: https://dev.bukkit.org/projects/lt-item-mail");
-				plugin.getServer().getPluginManager().disablePlugin(plugin);
+				VersionTask.myLogger.info("Hey you! Stop right there! This version (" + version + ") is no longer allowed to be used/played.");
+				VersionTask.myLogger.info("Download a newer version: " + DataModule.getProjectPage(ProjectPageType.BUKKIT_DEV) + " or " + DataModule.getProjectPage(ProjectPageType.SPIGOT_MC));
+				VersionTask.plugin.getServer().getPluginManager().disablePlugin(VersionTask.plugin);
 			}
 		} else {
-			myLogger.warning("Unable to locate: " + pluginURL);
+			VersionTask.myLogger.warning("Unable to locate: " + url);
 		}
 	}
 }

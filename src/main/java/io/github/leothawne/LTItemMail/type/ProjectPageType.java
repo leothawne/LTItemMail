@@ -14,17 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package io.github.leothawne.LTItemMail;
+package io.github.leothawne.LTItemMail.type;
 
-import io.github.leothawne.LTItemMail.api.bStats.MetricsAPI;
-
-public class MetricsLoader {
-	public static final void init(LTItemMail plugin, ConsoleLoader myLogger, MetricsAPI metrics) {
-		metrics = new MetricsAPI(plugin);
-		if(metrics.isEnabled() == true) {
-			myLogger.info(plugin.getName() + " is using bStats to collect data to improve the next versions. In case you want to know what data will be collected: https://bstats.org/getting-started");
-		} else {
-			myLogger.warning("bStats is disabled and " + plugin.getName() + " cannot use it. Please enable bStats! Thank you.");
-		}
-	}
+public enum ProjectPageType {
+	BUKKIT_DEV,
+	SPIGOT_MC
 }

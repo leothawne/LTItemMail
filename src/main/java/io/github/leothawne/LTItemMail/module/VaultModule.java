@@ -14,16 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package io.github.leothawne.LTItemMail.api.utility;
+package io.github.leothawne.LTItemMail.module;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import org.bukkit.plugin.Plugin;
 
-import org.bukkit.util.StringUtil;
+import io.github.leothawne.LTItemMail.LTItemMail;
+import net.milkbowl.vault.economy.Economy;
 
-public final class TabCompleterAPI {
-	public static final List<String> partial(final String token, final Collection<String> from) {
-        return StringUtil.copyPartialMatches(token, from, new ArrayList<>(from.size()));
-    }
+public final class VaultModule {
+	public static final boolean isVaultInstalled(final LTItemMail plugin) {
+		final Plugin vault = plugin.getServer().getPluginManager().getPlugin("Vault");
+		return (vault != null && vault.isEnabled());
+	}
+	public static final Economy getEconomy(final LTItemMail plugin) {
+		return plugin.getServer().getServicesManager().getRegistration(Economy.class).getProvider();
+	}
 }

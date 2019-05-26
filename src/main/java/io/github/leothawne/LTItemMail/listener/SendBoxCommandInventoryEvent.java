@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package io.github.leothawne.LTItemMail.event.inventory.command;
+package io.github.leothawne.LTItemMail.listener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,8 +34,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
-import io.github.leothawne.LTItemMail.inventory.command.OpenBoxCommandInventory;
-import io.github.leothawne.LTItemMail.inventory.command.SendBoxCommandInventory;
+import io.github.leothawne.LTItemMail.inventory.OpenBoxCommandInventory;
+import io.github.leothawne.LTItemMail.inventory.SendBoxInventory;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 
@@ -55,7 +55,7 @@ public class SendBoxCommandInventoryEvent implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR)
 	public static final void onInventoryClose(InventoryCloseEvent event) {
 		Inventory inventory = event.getInventory();
-		if(inventory.getName().equals(SendBoxCommandInventory.getName())) {
+		if(inventory.getName().equals(SendBoxInventory.getName())) {
 			Player sender = (Player) event.getPlayer();
 			Player recipient = (Player) inventory.getHolder();
 			ItemStack[] contents = inventory.getContents();

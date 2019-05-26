@@ -10,9 +10,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
-import io.github.leothawne.LTItemMail.inventory.command.OpenBoxCommandInventory;
+import io.github.leothawne.LTItemMail.inventory.OpenBoxCommandInventory;
 
-public class SendMailboxAPI {
+public class MailboxAPI {
 	public static final void run(LTItemMail plugin, FileConfiguration configuration, FileConfiguration language, HashMap<UUID, Boolean> playerBusy, Player receiver, List<ItemStack> items) {
 		String mailboxFrom = language.getString("special-mailbox");
 		String[] mailboxOpening = language.getString("mailbox-opening-seconds").split("%");

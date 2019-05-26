@@ -14,18 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package io.github.leothawne.LTItemMail.inventory.command;
+package io.github.leothawne.LTItemMail.type;
 
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-
-public class SendBoxCommandInventory {
-	public static final String getName() {
-		return "< Mailbox >";
-	}
-	public static final Inventory GUI(Player player) {
-		Inventory inventory = Bukkit.createInventory(player, 54, getName());
-		return inventory;
-	}
+public enum MailboxType {
+	IN,
+	OUT
 }

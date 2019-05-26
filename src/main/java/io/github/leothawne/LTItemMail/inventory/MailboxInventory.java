@@ -14,23 +14,32 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package io.github.leothawne.LTItemMail.inventory.command;
+package io.github.leothawne.LTItemMail.inventory;
 
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-public class OpenBoxCommandInventory {
-	public static final String getName() {
-		return "> Mailbox < ";
+import io.github.leothawne.LTItemMail.type.MailboxType;
+
+public final class MailboxInventory {
+	public static final String getMailboxName(final MailboxType type) {
+		if(type.equals(MailboxType.IN)) return "> Mailbox <";
+		if(type.equals(MailboxType.OUT)) return "< Mailbox >";
+		return null;
 	}
-	public static final Inventory GUI(List<ItemStack> contents) {
-		Inventory inventory = Bukkit.createInventory(null, 54, getName());
-		for(int i = 0; i < contents.size(); i++) {
-			inventory.setItem(i, contents.get(i));
+	public static final Inventory getMailboxInventory(final MailboxType type, final Player player, final List<ItemStack> contents) {
+		final Inventory inventory = Bukkit.createInventory(null, 54, getMailboxName(type));
+		if(type.equals(MailboxType.IN)) {
+			for(int i = 0; i < (contents.size() - 1); i++) {
+				inventory.setItem(i, contents.get(i));
+			}
+			return inventory;
 		}
-		return inventory;
+		if(type.equals(MailboxType.OUT)) return inventory;
+		return null;
 	}
 }

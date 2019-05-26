@@ -23,17 +23,17 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import io.github.leothawne.LTItemMail.ConsoleLoader;
 import io.github.leothawne.LTItemMail.LTItemMail;
-import io.github.leothawne.LTItemMail.Version;
 import io.github.leothawne.LTItemMail.api.utility.HTTP;
+import io.github.leothawne.LTItemMail.module.ConsoleModule;
+import io.github.leothawne.LTItemMail.module.DataModule;
 
 public class ItemMailAdminCommand implements CommandExecutor {
 	private static LTItemMail plugin;
-	private static ConsoleLoader myLogger;
+	private static ConsoleModule myLogger;
 	private static FileConfiguration configuration;
 	private static FileConfiguration language;
-	public ItemMailAdminCommand(LTItemMail plugin, ConsoleLoader myLogger, FileConfiguration configuration, FileConfiguration language) {
+	public ItemMailAdminCommand(LTItemMail plugin, ConsoleModule myLogger, FileConfiguration configuration, FileConfiguration language) {
 		ItemMailAdminCommand.plugin = plugin;
 		ItemMailAdminCommand.myLogger = myLogger;
 		ItemMailAdminCommand.configuration = configuration;
@@ -53,13 +53,13 @@ public class ItemMailAdminCommand implements CommandExecutor {
 						new BukkitRunnable() {
 							@Override
 							public final void run() {
-								String[] LocalVersion = Version.getVersionNumber().split("\\.");
+								String[] LocalVersion = DataModule.getVersionNumber().split("\\.");
 								int Local_VersionNumber1 = Integer.parseInt(LocalVersion[0]);
 								int Local_VersionNumber2 = Integer.parseInt(LocalVersion[1]);
 								int Local_VersionNumber3 = Integer.parseInt(LocalVersion[2]);
 								String upToDate = ChatColor.AQUA + "[" + configuration.getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "The plugin is up to date!";
-								String[] Server1 = HTTP.getData(Version.getUpdateURL()).split("-");
-								if(Server1[2].equals(Version.getMinecraftVersion())) {
+								String[] Server1 = HTTP.getData(DataModule.getUpdateURL()).split("-");
+								if(Server1[2].equals(DataModule.getMinecraftVersion())) {
 									String[] Server2 = Server1[0].split("\\.");
 									int Server2_VersionNumber1 = Integer.parseInt(Server2[0]);
 									int Server2_VersionNumber2 = Integer.parseInt(Server2[1]);

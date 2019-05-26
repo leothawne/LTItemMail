@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package io.github.leothawne.LTItemMail.event.inventory.command;
+package io.github.leothawne.LTItemMail.listener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,7 +31,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import io.github.leothawne.LTItemMail.inventory.command.OpenBoxCommandInventory;
+import io.github.leothawne.LTItemMail.inventory.OpenBoxCommandInventory;
 
 public class OpenBoxCommandInventoryEvent implements Listener {
 	private static FileConfiguration configuration;

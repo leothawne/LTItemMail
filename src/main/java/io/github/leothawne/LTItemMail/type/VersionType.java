@@ -14,16 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package io.github.leothawne.LTItemMail.api.utility;
+package io.github.leothawne.LTItemMail.type;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import org.bukkit.util.StringUtil;
-
-public final class TabCompleterAPI {
-	public static final List<String> partial(final String token, final Collection<String> from) {
-        return StringUtil.copyPartialMatches(token, from, new ArrayList<>(from.size()));
-    }
+public enum VersionType {
+	CONFIG_YML,
+	ENGLISH_YML,
+	PORTUGUESE_YML,
+	VIETNAMESE_YML,
+	MINECRAFT,
+	JAVA
 }

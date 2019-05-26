@@ -32,13 +32,19 @@ import io.github.leothawne.LTItemMail.api.bStats.MetricsAPI;
 import io.github.leothawne.LTItemMail.api.utility.WarnIntegrationsAPI;
 import io.github.leothawne.LTItemMail.command.ItemMailAdminCommand;
 import io.github.leothawne.LTItemMail.command.ItemMailCommand;
-import io.github.leothawne.LTItemMail.command.SendBoxCommand;
+import io.github.leothawne.LTItemMail.command.MailItemCommand;
 import io.github.leothawne.LTItemMail.command.tabCompleter.ItemMailAdminCommandTabCompleter;
 import io.github.leothawne.LTItemMail.command.tabCompleter.ItemMailCommandTabCompleter;
 import io.github.leothawne.LTItemMail.command.tabCompleter.SendBoxCommandTabCompleter;
-import io.github.leothawne.LTItemMail.event.PlayerEvent;
-import io.github.leothawne.LTItemMail.event.inventory.command.OpenBoxCommandInventoryEvent;
-import io.github.leothawne.LTItemMail.event.inventory.command.SendBoxCommandInventoryEvent;
+import io.github.leothawne.LTItemMail.listener.OpenBoxCommandInventoryEvent;
+import io.github.leothawne.LTItemMail.listener.PlayerListener;
+import io.github.leothawne.LTItemMail.listener.SendBoxCommandInventoryEvent;
+import io.github.leothawne.LTItemMail.module.ConfigurationModule;
+import io.github.leothawne.LTItemMail.module.ConsoleModule;
+import io.github.leothawne.LTItemMail.module.LanguageModule;
+import io.github.leothawne.LTItemMail.module.MetricsModule;
+import io.github.leothawne.LTItemMail.module.VaultModule;
+import io.github.leothawne.LTItemMail.module.DataModule;
 import io.github.leothawne.LTItemMail.task.VersionTask;
 import net.milkbowl.vault.economy.Economy;
 
@@ -48,11 +54,11 @@ import net.milkbowl.vault.economy.Economy;
  * @author leothawne
  *
  */
-public class LTItemMail extends JavaPlugin {
-	private final ConsoleLoader myLogger = new ConsoleLoader(this);
-	private final void registerEvents(Listener...listeners) {
-		for(Listener listener : listeners) {
-			Bukkit.getServer().getPluginManager().registerEvents(listener, this);
+public final class LTItemMail extends JavaPlugin {
+	private final ConsoleModule console = new ConsoleModule(this);
+	private static final void registerEvents(final Listener...listeners) {
+		for(final Listener listener : listeners) {
+			Bukkit.getServer().getPluginManager().registerEvents(listener, new LTItemMail());
 		}
 	}
 	private static FileConfiguration configuration;
@@ -60,7 +66,7 @@ public class LTItemMail extends JavaPlugin {
 	private static HashMap<UUID, Boolean> playerBusy = new HashMap<UUID, Boolean>();
 	private static MetricsAPI metrics;
 	private static BukkitScheduler scheduler;
-	private static int versionTask;
+	private static int versionTask = 0;
 	/**
 	 * 
 	 * @deprecated Not for public use.
@@ -68,46 +74,46 @@ public class LTItemMail extends JavaPlugin {
 	 */
 	@Override
 	public final void onEnable() {
-		myLogger.Hello();
-		myLogger.info("Loading...");
-		for(Player player : getServer().getOnlinePlayers()) {
-			playerBusy.put(player.getUniqueId(), false);
+		this.console.Hello();
+		this.console.info("Loading...");
+		for(final Player player : getServer().getOnlinePlayers()) {
+			LTItemMail.playerBusy.put(player.getUniqueId(), false);
 		}
-		ConfigurationLoader.check(this, myLogger);
-		configuration = ConfigurationLoader.load(this, myLogger);
-		if(configuration.getBoolean("enable-plugin") == true) {
-			MetricsLoader.init(this, myLogger, metrics);
+		ConfigurationModule.check(this, this.console);
+		LTItemMail.configuration = ConfigurationModule.load(this, this.console);
+		if(LTItemMail.configuration.getBoolean("enable-plugin") == true) {
+			MetricsModule.init(this, this.console, LTItemMail.metrics);
 			Economy economyPlugin = null;
-			if(configuration.getBoolean("use-vault") == true) {
-				myLogger.info("Loading Vault...");
-				if(VaultLoader.isVaultInstalled(this)) {
-					myLogger.info("Vault loaded.");
-					myLogger.info("Looking for an Economy plugin...");
-					economyPlugin = VaultLoader.getEconomy(this);
+			if(LTItemMail.configuration.getBoolean("use-vault") == true) {
+				this.console.info("Loading Vault...");
+				if(VaultModule.isVaultInstalled(this)) {
+					this.console.info("Vault loaded.");
+					this.console.info("Looking for an Economy plugin...");
+					economyPlugin = VaultModule.getEconomy(this);
 					if(economyPlugin != null) {
-						myLogger.info("Economy plugin found.");
+						this.console.info("Economy plugin found.");
 						new WarnIntegrationsAPI(this, Arrays.asList("Vault"));
 					} else {
-						myLogger.info("Economy plugin is missing. Skipping...");
+						this.console.info("Economy plugin is missing. Skipping...");
 					}
 				} else {
-					myLogger.info("Vault is not installed. Skipping...");
+					this.console.info("Vault is not installed. Skipping...");
 				}
 			}
-			LanguageLoader.check(this, myLogger, configuration);
-			language = LanguageLoader.load(this, myLogger, configuration);
-			getCommand("itemmail").setExecutor(new ItemMailCommand(myLogger, configuration, language));
-			getCommand("itemmail").setTabCompleter(new ItemMailCommandTabCompleter());
-			getCommand("itemmailadmin").setExecutor(new ItemMailAdminCommand(this, myLogger, configuration, language));
-			getCommand("itemmailadmin").setTabCompleter(new ItemMailAdminCommandTabCompleter());
-			getCommand("sendbox").setExecutor(new SendBoxCommand(this, myLogger, configuration, language));
-			getCommand("sendbox").setTabCompleter(new SendBoxCommandTabCompleter());
-			scheduler = getServer().getScheduler();
-			versionTask = scheduler.scheduleAsyncRepeatingTask(this, new VersionTask(this, myLogger, Version.getVersionNumber(), Version.getPluginURL()), 0, 20 * 60 * 60);
-			registerEvents(new SendBoxCommandInventoryEvent(this, configuration, language, playerBusy, economyPlugin), new OpenBoxCommandInventoryEvent(configuration, language, playerBusy), new PlayerEvent(configuration, playerBusy));
+			LanguageModule.check(this, this.console, LTItemMail.configuration);
+			LTItemMail.language = LanguageModule.load(this, this.console, LTItemMail.configuration);
+			this.getCommand("itemmail").setExecutor(new ItemMailCommand(this.console, LTItemMail.configuration, LTItemMail.language));
+			this.getCommand("itemmail").setTabCompleter(new ItemMailCommandTabCompleter());
+			this.getCommand("itemmailadmin").setExecutor(new ItemMailAdminCommand(this, this.console, LTItemMail.configuration, LTItemMail.language));
+			this.getCommand("itemmailadmin").setTabCompleter(new ItemMailAdminCommandTabCompleter());
+			this.getCommand("sendbox").setExecutor(new MailItemCommand(this, this.console, LTItemMail.configuration, LTItemMail.language));
+			this.getCommand("sendbox").setTabCompleter(new SendBoxCommandTabCompleter());
+			LTItemMail.scheduler = this.getServer().getScheduler();
+			LTItemMail.versionTask = scheduler.scheduleAsyncRepeatingTask(this, new VersionTask(this, this.console, DataModule.getVersionNumber(), DataModule.getPluginURL()), 0, 20 * 60 * 60);
+			registerEvents(new SendBoxCommandInventoryEvent(this, LTItemMail.configuration, LTItemMail.language, LTItemMail.playerBusy, economyPlugin), new OpenBoxCommandInventoryEvent(LTItemMail.configuration, LTItemMail.language, LTItemMail.playerBusy), new PlayerListener(LTItemMail.configuration, LTItemMail.playerBusy));
 		} else {
-			myLogger.severe("You choose to disable this plugin.");
-			getServer().getPluginManager().disablePlugin(this);
+			this.console.severe("You've choosen to disable me.");
+			this.getServer().getPluginManager().disablePlugin(this);
 		}
 	}
 	/**
@@ -117,9 +123,9 @@ public class LTItemMail extends JavaPlugin {
 	 */
 	@Override
 	public final void onDisable() {
-		myLogger.info("Unloading...");
-		if(scheduler.isCurrentlyRunning(versionTask)) {
-			scheduler.cancelTask(versionTask);
+		this.console.info("Unloading...");
+		if(LTItemMail.scheduler.isCurrentlyRunning(LTItemMail.versionTask) || scheduler.isQueued(LTItemMail.versionTask)) {
+			LTItemMail.scheduler.cancelTask(LTItemMail.versionTask);
 		}
 	}
 	/**
@@ -131,6 +137,6 @@ public class LTItemMail extends JavaPlugin {
 	 */
 	@SuppressWarnings("deprecation")
 	public final LTItemMailAPI getAPI() {
-		return new LTItemMailAPI(this, configuration, language, playerBusy, metrics);
+		return new LTItemMailAPI(this, LTItemMail.configuration, LTItemMail.language, LTItemMail.playerBusy, LTItemMail.metrics);
 	}
 }

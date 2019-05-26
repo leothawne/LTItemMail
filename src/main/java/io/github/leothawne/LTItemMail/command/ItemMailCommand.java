@@ -22,14 +22,14 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import io.github.leothawne.LTItemMail.ConsoleLoader;
-import io.github.leothawne.LTItemMail.Version;
+import io.github.leothawne.LTItemMail.module.ConsoleModule;
+import io.github.leothawne.LTItemMail.module.DataModule;
 
 public class ItemMailCommand implements CommandExecutor {
-	private static ConsoleLoader myLogger;
+	private static ConsoleModule myLogger;
 	private static FileConfiguration configuration;
 	private static FileConfiguration language;
-	public ItemMailCommand(ConsoleLoader myLogger, FileConfiguration configuration, FileConfiguration language) {
+	public ItemMailCommand(ConsoleModule myLogger, FileConfiguration configuration, FileConfiguration language) {
 		ItemMailCommand.myLogger = myLogger;
 		ItemMailCommand.configuration = configuration;
 		ItemMailCommand.language = language;
@@ -47,7 +47,7 @@ public class ItemMailCommand implements CommandExecutor {
 				sender.sendMessage(ChatColor.YELLOW + "You can also use "+ ChatColor.GREEN + "/sendbox "+ ChatColor.YELLOW + "as "+ ChatColor.GREEN + "/sbx"+ ChatColor.YELLOW + ".");
 			} else if(args[0].equalsIgnoreCase("version")) {
 				if(args.length < 2) {
-					Version.version(sender);
+					DataModule.version(sender);
 				} else {
 					sender.sendMessage(ChatColor.AQUA + "[" + configuration.getString("plugin-tag") + "] " + ChatColor.YELLOW + "Too many arguments!");
 				}

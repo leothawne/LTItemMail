@@ -23,20 +23,20 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
-import io.github.leothawne.LTItemMail.ConsoleLoader;
 import io.github.leothawne.LTItemMail.LTItemMail;
-import io.github.leothawne.LTItemMail.inventory.command.SendBoxCommandInventory;
+import io.github.leothawne.LTItemMail.inventory.SendBoxInventory;
+import io.github.leothawne.LTItemMail.module.ConsoleModule;
 
-public class SendBoxCommand implements CommandExecutor {
+public class MailItemCommand implements CommandExecutor {
 	private static LTItemMail plugin;
-	private static ConsoleLoader myLogger;
+	private static ConsoleModule myLogger;
 	private static FileConfiguration configuration;
 	private static FileConfiguration language;
-	public SendBoxCommand(LTItemMail plugin, ConsoleLoader myLogger, FileConfiguration configuration, FileConfiguration language) {
-		SendBoxCommand.plugin = plugin;
-		SendBoxCommand.myLogger = myLogger;
-		SendBoxCommand.configuration = configuration;
-		SendBoxCommand.language = language;
+	public MailItemCommand(LTItemMail plugin, ConsoleModule myLogger, FileConfiguration configuration, FileConfiguration language) {
+		MailItemCommand.plugin = plugin;
+		MailItemCommand.myLogger = myLogger;
+		MailItemCommand.configuration = configuration;
+		MailItemCommand.language = language;
 	}
 	@Override
 	public final boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
@@ -51,15 +51,15 @@ public class SendBoxCommand implements CommandExecutor {
 						if(player1.getUniqueId().equals(player.getUniqueId())) {
 							if(args.length == 2 && ((configuration.getString("language").equalsIgnoreCase("english") && args[1].equalsIgnoreCase("becauseiwant")) || (configuration.getString("language").equalsIgnoreCase("portuguese") && args[1].equalsIgnoreCase("porqueeuquero")))) {
 								player.sendMessage(ChatColor.DARK_GREEN + "[" + configuration.getString("plugin-tag") + "] " + ChatColor.YELLOW + "Okay...");
-								new SendBoxCommandInventory();
-								player.openInventory(SendBoxCommandInventory.GUI(player1));
+								new SendBoxInventory();
+								player.openInventory(SendBoxInventory.GUI(player1));
 							} else {
 								player.sendMessage(ChatColor.DARK_GREEN + "[" + configuration.getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + language.getString("player-self"));
 							}
 						} else {
 							player.sendMessage(ChatColor.DARK_GREEN + "[" + configuration.getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + language.getString("mailbox-opening"));
-							new SendBoxCommandInventory();
-							player.openInventory(SendBoxCommandInventory.GUI(player1));
+							new SendBoxInventory();
+							player.openInventory(SendBoxInventory.GUI(player1));
 						}
 					} else {
 						player.sendMessage(ChatColor.DARK_GREEN + "[" + configuration.getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + language.getString("recipient-offline"));

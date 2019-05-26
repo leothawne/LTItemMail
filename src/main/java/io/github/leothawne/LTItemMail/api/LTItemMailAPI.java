@@ -26,7 +26,7 @@ import org.bukkit.inventory.ItemStack;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
 import io.github.leothawne.LTItemMail.api.bStats.MetricsAPI;
-import io.github.leothawne.LTItemMail.api.utility.SendMailboxAPI;
+import io.github.leothawne.LTItemMail.api.utility.MailboxAPI;
 
 /**
  * 
@@ -144,7 +144,7 @@ public class LTItemMailAPI {
 	 * 
 	 */
 	public final void sendSpecialMailbox(Player player, List<ItemStack> items) {
-		SendMailboxAPI.run(plugin, configuration, language, playerBusy, player, items);
+		MailboxAPI.run(plugin, configuration, language, playerBusy, player, items);
 	}
 	/**
 	 * 
