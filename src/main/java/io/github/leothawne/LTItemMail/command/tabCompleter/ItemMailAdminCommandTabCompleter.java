@@ -33,7 +33,7 @@ public final class ItemMailAdminCommandTabCompleter extends TabCompleterAPI impl
 		final List<String> ReturnNothing = new ArrayList<>();
 		if(sender.hasPermission("LTItemMail.use") && sender.hasPermission("LTItemMail.admin")) {
 			if(args.length == 1) {
-				final ImmutableList<String> MailAdmin = ImmutableList.of("version");
+				final ImmutableList<String> MailAdmin = ImmutableList.of("update");
 				return partial(args[0], MailAdmin);
 			}
 		}

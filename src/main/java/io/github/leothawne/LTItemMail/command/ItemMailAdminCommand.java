@@ -45,10 +45,10 @@ public final class ItemMailAdminCommand implements CommandExecutor {
 			if(sender.hasPermission("LTItemMail.admin")) {
 				if(args.length == 0) {
 					sender.sendMessage(ChatColor.AQUA + "=+=+=+= [LT Item Mail :: Admin] =+=+=+=");
-					sender.sendMessage(ChatColor.GREEN + "/itemmailadmin " + ChatColor.AQUA + "- Administration commands for LT Item Mail.");
-					sender.sendMessage(ChatColor.GREEN + "/itemmailadmin version " + ChatColor.AQUA + "- Check for new updates.");
+					sender.sendMessage(ChatColor.GREEN + "/itemmailadmin " + ChatColor.AQUA + "- Shows commands for administrators.");
+					sender.sendMessage(ChatColor.GREEN + "/itemmailadmin update " + ChatColor.AQUA + "- Checks for new updates.");
 					sender.sendMessage(ChatColor.YELLOW + "You can also use "+ ChatColor.GREEN + "/itemmailadmin "+ ChatColor.YELLOW + "as "+ ChatColor.GREEN + "/imad"+ ChatColor.YELLOW + ".");
-				} else if(args[0].equalsIgnoreCase("version")) {
+				} else if(args[0].equalsIgnoreCase("update")) {
 					if(args.length < 2) {
 						new BukkitRunnable() {
 							@Override

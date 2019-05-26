@@ -16,7 +16,7 @@
  */
 package io.github.leothawne.LTItemMail.inventory;
 
-import java.util.List;
+import java.util.LinkedList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -31,7 +31,7 @@ public final class MailboxInventory {
 		if(type.equals(MailboxType.OUT)) return "< Mailbox >";
 		return null;
 	}
-	public static final Inventory getMailboxInventory(final MailboxType type, Player player, final List<ItemStack> contents) {
+	public static final Inventory getMailboxInventory(final MailboxType type, Player player, final LinkedList<ItemStack> contents) {
 		if(type.equals(MailboxType.IN)) {
 			final Inventory inventory = Bukkit.createInventory(null, 54, getMailboxName(type));
 			for(int i = 0; i < (contents.size() - 1); i++) {

@@ -1,5 +1,5 @@
 name: LTItemMail
-description: A new way of sending items to another players in Minecraft.
+description: A way of sending items to another players without needing to teleport to them.
 version: 0.2.4
 api-version: 1.13
 load: POSTWORLD
@@ -8,27 +8,27 @@ website: https://leothawne.github.io/LTItemMail/
 url: https://leothawne.github.io/LTItemMail/
 main: io.github.leothawne.LTItemMail.LTItemMail
 database: false
-soft-depend: [Vault]
+soft-depend: [Vault, Essentials]
 commands:
     itemmail:
-        description: All available commands for LT Item Mail.
+        description: Shows commands for everyone.
         aliases: [ima]
         usage: /<command>
     mailitem:
-        description: Instantly send items to other players.
+        description: Open a mailbox to put items inside.
         aliases: [mit, enviaritem, vit]
         usage: /<command>
     itemmailadmin:
-        description: All admin commands for LT Item Mail.
+        description: Shows commands for administrators.
         aliases: [imad]
         usage: /<command>
 permissions:
     LTItemMail.use:
-        description: Allow players to use LTIM commands.
+        description: Gives access to players' commands.
         default: true
     LTItemMail.send:
-        description: Allow players to send items to other players.
+        description: Allows players to send mailboxes.
         default: true
     LTItemMail.admin:
-        description: Allow admins to use LTIM admin commands.
+        description: Gives access to admins' commands.
         default: op
