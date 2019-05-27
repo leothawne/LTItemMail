@@ -20,8 +20,9 @@ import javax.swing.JOptionPane;
 
 public final class App {
 	public static final void main(final String[] args) {
-		final String warning = "You must put this jar file into the /plugins/ folder of your CraftBukkit/Spigot/Paper server.";
-		JOptionPane.showMessageDialog(null, warning, "@leothawne", JOptionPane.WARNING_MESSAGE);
+		final String error = "You must put this jar file into the /plugins/ folder of your CraftBukkit/Spigot/Paper server.";
+		System.err.println(error);
+		JOptionPane.showMessageDialog(null, error, "https://leothawne.github.io/", JOptionPane.ERROR_MESSAGE);
 		System.exit(0);
 	}
 }

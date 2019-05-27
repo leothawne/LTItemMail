@@ -32,9 +32,9 @@ public final class ConsoleModule {
 	}
 	public final void Hello() {
 		getConsoleSender().sendMessage(ChatColor.AQUA + " _   _______ _____ __  __ ");
-		getConsoleSender().sendMessage(ChatColor.AQUA + "| | |__   __|_   _|  \\\\/  |");
-		getConsoleSender().sendMessage(ChatColor.AQUA + "| |    | |    | | | \\\\  / |" + ChatColor.WHITE + "  V: " + plugin.getDescription().getVersion() + " (Minecraft: " + DataModule.getVersion(VersionType.MINECRAFT) + ".x)");
-		getConsoleSender().sendMessage(ChatColor.AQUA + "| |    | |    | | | |\\\\/| |" + ChatColor.WHITE + "  Requires Java: " + DataModule.getVersion(VersionType.JAVA) + "+");
+		getConsoleSender().sendMessage(ChatColor.AQUA + "| | |__   __|_   _|  \\/  |");
+		getConsoleSender().sendMessage(ChatColor.AQUA + "| |    | |    | | | \\  / |" + ChatColor.WHITE + "  V: " + plugin.getDescription().getVersion() + " (Minecraft: " + DataModule.getVersion(VersionType.MINECRAFT) + ")");
+		getConsoleSender().sendMessage(ChatColor.AQUA + "| |    | |    | | | |\\/| |" + ChatColor.WHITE + "  Requires Java: " + DataModule.getVersion(VersionType.JAVA));
 		getConsoleSender().sendMessage(ChatColor.AQUA + "| |____| |   _| |_| |  | |" + ChatColor.WHITE + "  Released on: " + DataModule.getVersionDate());
 		getConsoleSender().sendMessage(ChatColor.AQUA + "|______|_|  |_____|_|  |_|" + ChatColor.WHITE + "  My Twitter: @leonappi_");
 	}

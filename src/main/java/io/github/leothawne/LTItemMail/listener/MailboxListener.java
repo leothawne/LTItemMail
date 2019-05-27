@@ -117,7 +117,7 @@ public final class MailboxListener implements Listener {
 							final EconomyResponse er = MailboxListener.economyPlugin.withdrawPlayer(sender, newcost);
 							if(er.transactionSuccess()) {
 								final String[] mailboxPaid = MailboxListener.language.getString("mailbox-paid").split("%");
-								sender.sendMessage(ChatColor.DARK_GREEN + "[" + MailboxListener.configuration.getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + mailboxPaid[0] + "" + ChatColor.GREEN + "$" + newcost + "" + ChatColor.YELLOW + "" + mailboxPaid[1]);
+								sender.sendMessage(ChatColor.DARK_GREEN + "[" + MailboxListener.configuration.getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + mailboxPaid[0] + "" + ChatColor.GREEN + newcost + "" + ChatColor.YELLOW + "" + mailboxPaid[1]);
 								sendBox(sender, recipient, contentsarray);
 							} else {
 								sender.sendMessage(ChatColor.DARK_GREEN + "[" + MailboxListener.configuration.getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + MailboxListener.language.getString("transaction-error"));
@@ -127,7 +127,7 @@ public final class MailboxListener implements Listener {
 							}
 						} else {
 							final String[] transactionNoMoney = MailboxListener.language.getString("transaction-no-money").split("%");
-							sender.sendMessage(ChatColor.DARK_GREEN + "[" + MailboxListener.configuration.getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + transactionNoMoney[0] + "" + ChatColor.GREEN + "$" + newcost + "" + ChatColor.YELLOW + "" + transactionNoMoney[1]);
+							sender.sendMessage(ChatColor.DARK_GREEN + "[" + MailboxListener.configuration.getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + transactionNoMoney[0] + "" + ChatColor.GREEN + newcost + "" + ChatColor.YELLOW + "" + transactionNoMoney[1]);
 							for(final ItemStack item : contentsarray) {
 								sender.getInventory().addItem(item);
 							}

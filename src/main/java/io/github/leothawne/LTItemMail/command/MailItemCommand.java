@@ -50,7 +50,7 @@ public final class MailItemCommand implements CommandExecutor {
 					final Player player1 = MailItemCommand.plugin.getServer().getPlayer(args[0]);
 					if(player1 != null) {
 						if(player1.getUniqueId().equals(player.getUniqueId())) {
-							if(args.length == 2 && args[1].equalsIgnoreCase("-biw")) {
+							if(args.length == 2 && args[1].equalsIgnoreCase("--bypass") && player.hasPermission("LTItemMail.admin")) {
 								player.sendMessage(ChatColor.DARK_GREEN + "[" + MailItemCommand.configuration.getString("plugin-tag") + "] " + ChatColor.YELLOW + "Okay...");
 								player.openInventory(MailboxInventory.getMailboxInventory(MailboxType.OUT, player1, null));
 							} else {

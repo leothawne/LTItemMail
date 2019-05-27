@@ -18,6 +18,7 @@ package io.github.leothawne.LTItemMail;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -90,7 +91,6 @@ public final class LTItemMail extends JavaPlugin {
 					economyPlugin = VaultModule.getEconomy(this);
 					if(economyPlugin != null) {
 						this.console.info("Economy plugin found.");
-						new WarnIntegrationsAPI(this, Arrays.asList("Vault"));
 					} else {
 						this.console.info("Economy plugin is missing. Skipping...");
 					}
@@ -109,6 +109,7 @@ public final class LTItemMail extends JavaPlugin {
 			LTItemMail.scheduler = this.getServer().getScheduler();
 			LTItemMail.versionTask = scheduler.scheduleAsyncRepeatingTask(this, new VersionTask(this, this.console), 0, 20 * 60 * 60);
 			registerEvents(new MailboxListener(this, LTItemMail.configuration, LTItemMail.language, LTItemMail.playerBusy, economyPlugin), new PlayerListener(LTItemMail.configuration, LTItemMail.playerBusy));
+			new WarnIntegrationsAPI(this, new LinkedList<String>(Arrays.asList("Vault", "Essentials")));
 		} else {
 			this.console.severe("You've choosen to disable me.");
 			this.getServer().getPluginManager().disablePlugin(this);
