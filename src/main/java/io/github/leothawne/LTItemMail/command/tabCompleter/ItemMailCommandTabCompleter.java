@@ -27,14 +27,14 @@ import com.google.common.collect.ImmutableList;
 
 import io.github.leothawne.LTItemMail.api.TabCompleterAPI;
 
-public final class ItemMailCommandTabCompleter extends TabCompleterAPI implements TabCompleter {
+public final class ItemMailCommandTabCompleter implements TabCompleter {
 	@Override
 	public final List<String> onTabComplete(CommandSender sender, Command cmd, String commandLabel, String[] args){
 		final List<String> ReturnNothing = new ArrayList<>();
 		if(sender.hasPermission("LTItemMail.use")) {
 			if(args.length == 1) {
 				final ImmutableList<String> Mail = ImmutableList.of("version");
-				return partial(args[0], Mail);
+				return TabCompleterAPI.partial(args[0], Mail);
 			}
 		}
 		return ReturnNothing;

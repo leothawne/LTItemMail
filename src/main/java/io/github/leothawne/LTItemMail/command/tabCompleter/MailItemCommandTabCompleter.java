@@ -28,7 +28,7 @@ import org.bukkit.entity.Player;
 import io.github.leothawne.LTItemMail.LTItemMail;
 import io.github.leothawne.LTItemMail.api.TabCompleterAPI;
 
-public final class MailItemCommandTabCompleter extends TabCompleterAPI implements TabCompleter {
+public final class MailItemCommandTabCompleter implements TabCompleter {
 	private static LTItemMail plugin;
 	public MailItemCommandTabCompleter(final LTItemMail plugin) {
 		MailItemCommandTabCompleter.plugin = plugin;
@@ -42,7 +42,7 @@ public final class MailItemCommandTabCompleter extends TabCompleterAPI implement
 				for(final Player player : MailItemCommandTabCompleter.plugin.getServer().getOnlinePlayers()) {
 					players.add(player.getName());
 				}
-				return partial(args[0], players);
+				return TabCompleterAPI.partial(args[0], players);
 			}
 		}
 		return ReturnNothing;
