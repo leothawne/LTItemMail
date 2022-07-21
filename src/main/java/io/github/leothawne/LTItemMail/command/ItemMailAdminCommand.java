@@ -50,6 +50,7 @@ public final class ItemMailAdminCommand implements CommandExecutor {
 					sender.sendMessage(ChatColor.YELLOW + "You can also use "+ ChatColor.GREEN + "/itemmailadmin "+ ChatColor.YELLOW + "as "+ ChatColor.GREEN + "/imad"+ ChatColor.YELLOW + ".");
 				} else if(args[0].equalsIgnoreCase("update")) {
 					if(args.length < 2) {
+						final CommandSender finalSender = sender;
 						new BukkitRunnable() {
 							@Override
 							public final void run() {
@@ -64,13 +65,13 @@ public final class ItemMailAdminCommand implements CommandExecutor {
 								int Server2_VersionNumber3 = Integer.parseInt(Server2[2]);
 								String updateMessage = ChatColor.AQUA + "[" + ItemMailAdminCommand.configuration.getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "A newer version is available: " + ChatColor.GREEN + Server1[0] + ChatColor.YELLOW + " (released on " + ChatColor.GREEN + Server1[1] + ChatColor.YELLOW + ").";
 								if(Server2_VersionNumber1 > Local_VersionNumber1) {
-									sender.sendMessage(updateMessage);
+									finalSender.sendMessage(updateMessage);
 								} else if(Server2_VersionNumber1 == Local_VersionNumber1 && Server2_VersionNumber2 > Local_VersionNumber2) {
-									sender.sendMessage(updateMessage);
+									finalSender.sendMessage(updateMessage);
 								} else if(Server2_VersionNumber1 == Local_VersionNumber1 && Server2_VersionNumber2 == Local_VersionNumber2 && Server2_VersionNumber3 > Local_VersionNumber3) {
-									sender.sendMessage(updateMessage);
+									finalSender.sendMessage(updateMessage);
 								} else {
-									sender.sendMessage(ChatColor.AQUA + "[" + ItemMailAdminCommand.configuration.getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "The plugin is up to date!");
+									finalSender.sendMessage(ChatColor.AQUA + "[" + ItemMailAdminCommand.configuration.getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "The plugin is up to date!");
 								}
 							}
 						}.runTaskAsynchronously(plugin);

@@ -29,8 +29,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import io.github.leothawne.LTItemMail.api.LTItemMailAPI;
+import io.github.leothawne.LTItemMail.api.MetricsAPI;
 import io.github.leothawne.LTItemMail.api.WarnIntegrationsAPI;
-import io.github.leothawne.LTItemMail.api.bStats.MetricsAPI;
 import io.github.leothawne.LTItemMail.command.ItemMailAdminCommand;
 import io.github.leothawne.LTItemMail.command.ItemMailCommand;
 import io.github.leothawne.LTItemMail.command.MailItemCommand;

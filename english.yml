@@ -3,7 +3,7 @@ mailbox-closed: "Box closed."
 mailbox-closed-items: "You lost % items:"
 mailbox-paid: "You paid $% to the post office."
 mailbox-sent: "Sending box to %..."
-mailbox-from: "Mailbox from %"
+mailbox-from: "Mailbox from %."
 special-mailbox: "Special Mailbox!!!"
 mailbox-opening: "Opening box..."
 mailbox-opening-seconds: "Opening in % seconds..."
@@ -21,4 +21,4 @@ player-tma: "Too many arguments!"
 player-self: "You can not send a mailbox to yourself."
 
 #Do not change it under any circumstances!
-language-version: 3
+language-version: 4

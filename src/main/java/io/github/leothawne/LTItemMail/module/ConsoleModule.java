@@ -36,7 +36,7 @@ public final class ConsoleModule {
 		getConsoleSender().sendMessage(ChatColor.AQUA + "| |    | |    | | | \\  / |" + ChatColor.WHITE + "  V: " + plugin.getDescription().getVersion() + " (Minecraft: " + DataModule.getVersion(VersionType.MINECRAFT) + ")");
 		getConsoleSender().sendMessage(ChatColor.AQUA + "| |    | |    | | | |\\/| |" + ChatColor.WHITE + "  Requires Java: " + DataModule.getVersion(VersionType.JAVA));
 		getConsoleSender().sendMessage(ChatColor.AQUA + "| |____| |   _| |_| |  | |" + ChatColor.WHITE + "  Released on: " + DataModule.getVersionDate());
-		getConsoleSender().sendMessage(ChatColor.AQUA + "|______|_|  |_____|_|  |_|" + ChatColor.WHITE + "  My Twitter: @leonappi_");
+		getConsoleSender().sendMessage(ChatColor.AQUA + "|______|_|  |_____|_|  |_|" + ChatColor.WHITE + "  My Twitter: @nc2ps");
 	}
 	public final void info(final String message) {
 		getConsoleSender().sendMessage(ChatColor.WHITE + "[" + ChatColor.AQUA + "LTIM " + ChatColor.GREEN + "I" + ChatColor.WHITE + "] " + message);

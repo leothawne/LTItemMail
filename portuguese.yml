@@ -3,7 +3,7 @@ mailbox-closed: "Caixa fechada."
 mailbox-closed-items: "Você perdeu % itens:"
 mailbox-paid: "Você pagou $% ao corrêio."
 mailbox-sent: "Enviando caixa para %..."
-mailbox-from: "Corrêio de %"
+mailbox-from: "Corrêio de % chegando"
 special-mailbox: "Corrêio especial!!!"
 mailbox-opening: "Abrindo caixa..."
 mailbox-opening-seconds: "Abrindo em % segundos..."
@@ -21,4 +21,4 @@ player-tma: "Muitos argumentos inseridos!"
 player-self: "Você não pode enviar uma caixa de itens para você mesmo."
 
 #Não mude isso sob nenhuma circunstância!
-language-version: 3
+language-version: 4

@@ -68,11 +68,13 @@ public final class MailboxListener implements Listener {
 				}
 			}
 			if(isEmpty == false) {
-				final LinkedList<ItemStack> itemslost = new LinkedList<ItemStack>();
+				String itemslost = "";
 				int count = 0;
 				for(final ItemStack content: contents) {
 					if(content != null) {
-						itemslost.add(content);
+						if(itemslost.isBlank() && itemslost.trim().isBlank()) {
+							itemslost = content.getAmount() + "x " + content.getType().name();
+						} else itemslost = itemslost + ", " + content.getAmount() + "x " + content.getType().name();
 						count = count + content.getAmount();
 					}
 				}

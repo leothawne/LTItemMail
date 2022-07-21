@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.leothawne</groupId>
 	<artifactId>LTItemMail</artifactId>
-	<version>0.2.4</version>
+	<version>0.2.5</version>
 	<name>LT Item Mail</name>
 	<description>A way of sending items to another players without needing to teleport to them.</description>
 	<build>
@@ -12,8 +12,8 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+					<source>1.17</source>
+					<target>1.17</target>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -65,11 +65,11 @@
 	</build>
 	<repositories>
 		<repository>
-			<id>spigot-repo</id>
+			<id>spigot</id>
 			<url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
 		</repository>
 		<repository>
-	    	<id>vault-repo</id>
+	    	<id>vault</id>
 	    	<url>http://nexus.hc.to/content/repositories/pub_releases/</url>
     	</repository>
 	</repositories>
@@ -77,7 +77,7 @@
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
-			<version>1.14-R0.1-SNAPSHOT</version>
+			<version>1.19-R0.1-SNAPSHOT</version>
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
@@ -87,5 +87,11 @@
 	        <version>1.7</version>
 	        <scope>provided</scope>
     	</dependency>
+    	<dependency>
+  			<groupId>org.bstats</groupId>
+ 			 <artifactId>bstats-bukkit</artifactId>
+  			<version>3.0.0</version>
+  			<scope>compile</scope>
+		</dependency>
 	</dependencies>
 </project>
