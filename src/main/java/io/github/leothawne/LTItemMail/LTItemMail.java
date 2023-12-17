@@ -14,6 +14,7 @@
  */
 package io.github.leothawne.LTItemMail;
 
+import java.sql.Connection;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -39,6 +40,7 @@ import io.github.leothawne.LTItemMail.listener.MailboxListener;
 import io.github.leothawne.LTItemMail.listener.PlayerListener;
 import io.github.leothawne.LTItemMail.module.ConfigurationModule;
 import io.github.leothawne.LTItemMail.module.ConsoleModule;
+import io.github.leothawne.LTItemMail.module.DatabaseModule;
 import io.github.leothawne.LTItemMail.module.LanguageModule;
 import io.github.leothawne.LTItemMail.module.MetricsModule;
 import io.github.leothawne.LTItemMail.module.VaultModule;
@@ -52,18 +54,18 @@ import net.milkbowl.vault.economy.Economy;
  *
  */
 public final class LTItemMail extends JavaPlugin {
-	private final ConsoleModule console = new ConsoleModule(this);
+	private static LTItemMail instance;
 	private final void registerEvents(final Listener...listeners) {
-		for(final Listener listener : listeners) {
-			Bukkit.getServer().getPluginManager().registerEvents(listener, this);
-		}
+		for(final Listener listener : listeners) Bukkit.getServer().getPluginManager().registerEvents(listener, this);
 	}
-	private static FileConfiguration configuration;
-	private static FileConfiguration language;
-	private static HashMap<UUID, Boolean> playerBusy = new HashMap<UUID, Boolean>();
-	private static MetricsAPI metrics;
-	private static BukkitScheduler scheduler;
-	private static int versionTask = 0;
+	private final ConsoleModule console = new ConsoleModule(this);
+	private FileConfiguration configuration;
+	private FileConfiguration language;
+	private Connection con;
+	private HashMap<UUID, Boolean> playerBusy = new HashMap<UUID, Boolean>();
+	private MetricsAPI metrics;
+	private BukkitScheduler scheduler;
+	private Economy economyPlugin;
 	/**
 	 * 
 	 * @deprecated Not for public use.
@@ -71,46 +73,43 @@ public final class LTItemMail extends JavaPlugin {
 	 */
 	@Override
 	public final void onEnable() {
+		instance = this;
 		this.console.Hello();
 		this.console.info("Loading...");
-		for(final Player player : getServer().getOnlinePlayers()) {
-			LTItemMail.playerBusy.put(player.getUniqueId(), false);
-		}
-		ConfigurationModule.check(this, this.console);
-		LTItemMail.configuration = ConfigurationModule.load(this, this.console);
-		if(LTItemMail.configuration.getBoolean("enable-plugin") == true) {
-			LTItemMail.metrics = MetricsModule.init(this, this.console);
+		for(final Player player : getServer().getOnlinePlayers()) playerBusy.put(player.getUniqueId(), false);
+		ConfigurationModule.check();
+		configuration = ConfigurationModule.load();
+		if(configuration.getBoolean("enable-plugin")) {
+			metrics = MetricsModule.init();
 			Economy economyPlugin = null;
-			if(LTItemMail.configuration.getBoolean("use-vault") == true) {
-				this.console.info("Loading Vault...");
-				if(VaultModule.isVaultInstalled(this)) {
-					this.console.info("Vault loaded.");
-					this.console.info("Looking for an Economy plugin...");
-					economyPlugin = VaultModule.getEconomy(this);
+			if(configuration.getBoolean("use-vault")) {
+				console.info("Loading Vault...");
+				if(VaultModule.isVaultInstalled()) {
+					console.info("Vault loaded.");
+					console.info("Looking for an Economy plugin...");
+					economyPlugin = VaultModule.getEconomy();
 					if(economyPlugin != null) {
-						this.console.info("Economy plugin found.");
-					} else {
-						this.console.info("Economy plugin is missing. Skipping...");
-					}
-				} else {
-					this.console.info("Vault is not installed. Skipping...");
-				}
+						console.info("Economy plugin found.");
+					} else console.info("Economy plugin is missing. Skipping...");
+				} else console.info("Vault is not installed. Skipping...");
 			}
-			LanguageModule.check(this, this.console, LTItemMail.configuration);
-			LTItemMail.language = LanguageModule.load(this, this.console, LTItemMail.configuration);
-			this.getCommand("itemmail").setExecutor(new ItemMailCommand(this, this.console, LTItemMail.configuration, LTItemMail.language));
-			this.getCommand("itemmail").setTabCompleter(new ItemMailCommandTabCompleter());
-			this.getCommand("itemmailadmin").setExecutor(new ItemMailAdminCommand(this, this.console, LTItemMail.configuration, LTItemMail.language));
-			this.getCommand("itemmailadmin").setTabCompleter(new ItemMailAdminCommandTabCompleter());
-			this.getCommand("mailitem").setExecutor(new MailItemCommand(this, this.console, LTItemMail.configuration, LTItemMail.language));
-			this.getCommand("mailitem").setTabCompleter(new MailItemCommandTabCompleter(this));
-			LTItemMail.scheduler = this.getServer().getScheduler();
-			LTItemMail.versionTask = scheduler.scheduleAsyncRepeatingTask(this, new VersionTask(this, this.console), 0, 20 * 60 * 60);
-			registerEvents(new MailboxListener(this, LTItemMail.configuration, LTItemMail.language, LTItemMail.playerBusy, economyPlugin), new PlayerListener(LTItemMail.configuration, LTItemMail.playerBusy));
-			new WarnIntegrationsAPI(this, new LinkedList<String>(Arrays.asList("Vault", "Essentials")));
+			LanguageModule.check();
+			language = LanguageModule.load();
+			DatabaseModule.check();
+			con = DatabaseModule.load();
+			getCommand("itemmail").setExecutor(new ItemMailCommand());
+			getCommand("itemmail").setTabCompleter(new ItemMailCommandTabCompleter());
+			getCommand("itemmailadmin").setExecutor(new ItemMailAdminCommand());
+			getCommand("itemmailadmin").setTabCompleter(new ItemMailAdminCommandTabCompleter());
+			getCommand("mailitem").setExecutor(new MailItemCommand());
+			getCommand("mailitem").setTabCompleter(new MailItemCommandTabCompleter());
+			scheduler = Bukkit.getScheduler();
+			scheduler.scheduleSyncRepeatingTask(this, new VersionTask(), 0, 20 * 60 * 60);
+			registerEvents(new MailboxListener(), new PlayerListener());
+			new WarnIntegrationsAPI(new LinkedList<String>(Arrays.asList("Vault", "Essentials")));
 		} else {
 			this.console.severe("You've choosen to disable me.");
-			this.getServer().getPluginManager().disablePlugin(this);
+			Bukkit.getPluginManager().disablePlugin(this);
 		}
 	}
 	/**
@@ -120,10 +119,8 @@ public final class LTItemMail extends JavaPlugin {
 	 */
 	@Override
 	public final void onDisable() {
-		this.console.info("Unloading...");
-		if(LTItemMail.scheduler.isCurrentlyRunning(LTItemMail.versionTask) || scheduler.isQueued(LTItemMail.versionTask)) {
-			LTItemMail.scheduler.cancelTask(LTItemMail.versionTask);
-		}
+		console.info("Unloading...");
+		scheduler.cancelTasks(this);
 	}
 	/**
 	 * 
@@ -134,6 +131,30 @@ public final class LTItemMail extends JavaPlugin {
 	 */
 	@SuppressWarnings("deprecation")
 	public final LTItemMailAPI getAPI() {
-		return new LTItemMailAPI(this, LTItemMail.configuration, LTItemMail.language, LTItemMail.playerBusy, LTItemMail.metrics);
+		return new LTItemMailAPI();
+	}
+	public static final LTItemMail getInstance() {
+		return instance;
+	}
+	public final FileConfiguration getConfiguration() {
+		return configuration;
+	}
+	public final FileConfiguration getLanguage() {
+		return language;
+	}
+	public final HashMap<UUID, Boolean> getPlayerBusy(){
+		return playerBusy;
+	}
+	public final ConsoleModule getConsole() {
+		return console;
+	}
+	public final MetricsAPI getMetrics() {
+		return metrics;
+	}
+	public final Economy getEconomy() {
+		return economyPlugin;
+	}
+	public final Connection getConnection() {
+		return con;
 	}
 }

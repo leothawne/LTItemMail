@@ -15,9 +15,7 @@ public final class HTTP {
 			final BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), Charset.forName("UTF-8")));
 			final StringBuilder builder = new StringBuilder();
 			String string;
-			while((string = reader.readLine()) != null) {
-				builder.append(string);
-			}
+			while((string = reader.readLine()) != null) builder.append(string);
 			return builder.toString();
 		} catch(final Exception exception) {
 			return null;

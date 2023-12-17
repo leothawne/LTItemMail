@@ -8,27 +8,23 @@ import io.github.leothawne.LTItemMail.LTItemMail;
 import io.github.leothawne.LTItemMail.type.VersionType;
 
 public final class ConfigurationModule {
-	public static final void check(final LTItemMail plugin, final ConsoleModule console) {
-		final File configFile = new File(plugin.getDataFolder(), "config.yml");
+	public static final void check() {
+		final File configFile = new File(LTItemMail.getInstance().getDataFolder(), "config.yml");
 		if(configFile.exists() == false) {
-			console.warning("Extracting config.yml file...");
-			plugin.saveDefaultConfig();
-			console.info("Done.");
-		} else {
-			console.info("Found config.yml file.");
-		}
+			LTItemMail.getInstance().getConsole().warning("Extracting config.yml file...");
+			LTItemMail.getInstance().saveDefaultConfig();
+			LTItemMail.getInstance().getConsole().info("Done.");
+		} else LTItemMail.getInstance().getConsole().info("Found config.yml file.");
 	}
-	public static final FileConfiguration load(final LTItemMail plugin, final ConsoleModule console) {
-		final File configFile = new File(plugin.getDataFolder(), "config.yml");
+	public static final FileConfiguration load() {
+		final File configFile = new File(LTItemMail.getInstance().getDataFolder(), "config.yml");
 		if(configFile.exists()) {
-			final FileConfiguration configuration = plugin.getConfig();
-			console.info("Loaded config.yml file.");
-			if(configuration.getInt("config-version") != Integer.parseInt(DataModule.getVersion(VersionType.CONFIG_YML))) {
-				console.severe("config.yml file outdated. Delete that file and restart the server.");
-			}
+			final FileConfiguration configuration = LTItemMail.getInstance().getConfig();
+			LTItemMail.getInstance().getConsole().info("Loaded config.yml file.");
+			if(configuration.getInt("config-version") != Integer.parseInt(DataModule.getVersion(VersionType.CONFIG_YML))) LTItemMail.getInstance().getConsole().severe("config.yml file outdated. Delete that file and restart the server.");
 			return configuration;
 		}
-		console.severe("Missing config.yml file.");
+		LTItemMail.getInstance().getConsole().severe("Missing config.yml file.");
 		return null;
 	}
 }

@@ -18,12 +18,9 @@ public final class MailboxInventory {
 	public static final Inventory getMailboxInventory(final MailboxType type, Player player, final LinkedList<ItemStack> contents) {
 		if(type.equals(MailboxType.IN)) {
 			final Inventory inventory = Bukkit.createInventory(null, 54, getMailboxName(type));
-			for(int i = 0; i < (contents.size() - 1); i++) {
-				inventory.setItem(i, contents.get(i));
-			}
+			for(int i = 0; i < (contents.size() - 1); i++) inventory.setItem(i, contents.get(i));
 			return inventory;
-		}
-		if(type.equals(MailboxType.OUT)) {
+		} else if(type.equals(MailboxType.OUT)) {
 			final Inventory inventory = Bukkit.createInventory(player, 54, getMailboxName(type));
 			return inventory;
 		}
