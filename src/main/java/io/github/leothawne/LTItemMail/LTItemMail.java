@@ -81,7 +81,7 @@ public final class LTItemMail extends JavaPlugin {
 		configuration = ConfigurationModule.load();
 		if(configuration.getBoolean("enable-plugin")) {
 			metrics = MetricsModule.init();
-			Economy economyPlugin = null;
+			economyPlugin = null;
 			if(configuration.getBoolean("use-vault")) {
 				console.info("Loading Vault...");
 				if(VaultModule.isVaultInstalled()) {

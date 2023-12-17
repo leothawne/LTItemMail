@@ -14,6 +14,6 @@ public final class PlayerListener implements Listener {
 	public final void onPlayerJoin(final PlayerJoinEvent event) {
 		final Player player = (Player) event.getPlayer();
 		LTItemMail.getInstance().getPlayerBusy().put(player.getUniqueId(), false);
-		if(player.hasPermission("LTItemMail.admin")) if(LTItemMail.getInstance().getConfiguration().getBoolean("update.check")) player.performCommand("itemmailadmin version");
+		if(player.hasPermission("LTItemMail.admin")) if(LTItemMail.getInstance().getConfiguration().getBoolean("update.check")) player.performCommand("itemmailadmin update");
 	}
 }
