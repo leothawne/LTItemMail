@@ -17,15 +17,15 @@ public final class MailboxAPI {
 		final String[] mailboxOpening = LTItemMail.getInstance().getLanguage().getString("mailbox-opening-seconds").split("%");
 		LTItemMail.getInstance().getPlayerBusy().put(receiver.getUniqueId(), true);
 		if(LTItemMail.getInstance().getConfiguration().getBoolean("use-title") == true) {
-			receiver.sendTitle(ChatColor.LIGHT_PURPLE + "" + mailboxFrom, ChatColor.AQUA + "" + mailboxOpening[0] + "" + ChatColor.GREEN + "" + LTItemMail.getInstance().getConfiguration().getInt("mail-time") + "" + ChatColor.AQUA + "" + mailboxOpening[1] + " " + ChatColor.DARK_RED + "" + LTItemMail.getInstance().getLanguage().getString("mailbox-lose"), 20 * 1, 20 * LTItemMail.getInstance().getConfiguration().getInt("mail-time"), 20 * 1);
+			receiver.sendTitle(ChatColor.LIGHT_PURPLE + "" + mailboxFrom, ChatColor.AQUA + "" + mailboxOpening[0] + "" + ChatColor.GREEN + "" + LTItemMail.getInstance().getConfiguration().getInt("mail-time") + "" + ChatColor.AQUA + "" + mailboxOpening[1], 20 * 1, 20 * LTItemMail.getInstance().getConfiguration().getInt("mail-time"), 20 * 1);
 		} else {
 			receiver.sendMessage(ChatColor.DARK_GREEN + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.AQUA + "" + mailboxFrom);
-			receiver.sendMessage(ChatColor.DARK_GREEN + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.AQUA + "" + mailboxOpening[0] + "" + ChatColor.GREEN + "" + LTItemMail.getInstance().getConfiguration().getInt("mail-time") + "" + ChatColor.AQUA + "" + mailboxOpening[1] + " " + ChatColor.DARK_RED + "" + LTItemMail.getInstance().getLanguage().getString("mailbox-lose"));
+			receiver.sendMessage(ChatColor.DARK_GREEN + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.AQUA + "" + mailboxOpening[0] + "" + ChatColor.GREEN + "" + LTItemMail.getInstance().getConfiguration().getInt("mail-time") + "" + ChatColor.AQUA + "" + mailboxOpening[1]);
 		}
 		new BukkitRunnable() {
 			@Override
 			public final void run() {
-				receiver.openInventory(MailboxInventory.getMailboxInventory(MailboxType.IN, null, items));
+				receiver.openInventory(MailboxInventory.getMailboxInventory(MailboxType.IN, null, null, items));
 			}
 		}.runTaskLater(LTItemMail.getInstance(), 20 * LTItemMail.getInstance().getConfiguration().getInt("mail-time") + 2);
 	}

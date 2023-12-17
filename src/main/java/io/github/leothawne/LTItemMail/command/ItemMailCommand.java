@@ -1,12 +1,18 @@
 package io.github.leothawne.LTItemMail.command;
 
+import java.util.HashMap;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
+import io.github.leothawne.LTItemMail.inventory.MailboxInventory;
 import io.github.leothawne.LTItemMail.module.DataModule;
+import io.github.leothawne.LTItemMail.module.DatabaseModule;
+import io.github.leothawne.LTItemMail.type.MailboxType;
 
 public final class ItemMailCommand implements CommandExecutor {
 	public ItemMailCommand() {}
@@ -27,10 +33,25 @@ public final class ItemMailCommand implements CommandExecutor {
 				if(args.length == 1) {
 					DataModule.version(LTItemMail.getInstance().getDescription().getVersion(), sender);
 				} else sender.sendMessage(ChatColor.AQUA + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.YELLOW + "Too many arguments!");
-			} else if(args[0].equalsIgnoreCase("open")) {
-				
-			} else if(args[0].equalsIgnoreCase("list")) {
-				
+			} else if(args[0].equalsIgnoreCase("open") && sender instanceof Player) {
+				final Player player = (Player) sender;
+				if(args.length == 2) try {
+					final Integer mailboxID = Integer.valueOf(args[1]);
+					if(DatabaseModule.Function.isMaiboxOwner(player.getUniqueId(), mailboxID) && !DatabaseModule.Function.isMailboxOpened(mailboxID)) {
+						player.sendMessage(ChatColor.DARK_RED + "" + LTItemMail.getInstance().getLanguage().getString("mailbox-lose"));
+						LTItemMail.getInstance().getPlayerBusy().put(player.getUniqueId(), true);
+						player.openInventory(MailboxInventory.getMailboxInventory(MailboxType.IN, mailboxID, null, DatabaseModule.Function.getMailbox(mailboxID)));
+						DatabaseModule.Function.setMailboxOpened(mailboxID);
+					}
+				} catch (final NumberFormatException e) {
+					player.sendMessage("Mailbox ID must be a number!");
+				}
+			} else if(args[0].equalsIgnoreCase("list") && sender instanceof Player) {
+				final Player player = (Player) sender;
+				final HashMap<Integer, String> mailboxes = DatabaseModule.Function.getMailboxesList(player.getUniqueId());
+				if(mailboxes.size() > 0) {
+					for(final Integer mailboxID : mailboxes.keySet()) player.sendMessage("Mailbox #" + mailboxID + " : " + mailboxes.get(mailboxID));
+				} else player.sendMessage("No new mailboxes.");
 			} else sender.sendMessage(ChatColor.AQUA + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.YELLOW + "Invalid command! Type " + ChatColor.GREEN + "/itemmail " + ChatColor.YELLOW + "to see all available commands.");
 		} else {
 			sender.sendMessage(ChatColor.AQUA + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + LTItemMail.getInstance().getLanguage().getString("no-permission"));

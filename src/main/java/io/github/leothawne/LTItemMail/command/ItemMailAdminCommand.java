@@ -1,14 +1,24 @@
 package io.github.leothawne.LTItemMail.command;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
 import io.github.leothawne.LTItemMail.api.HTTP;
+import io.github.leothawne.LTItemMail.inventory.MailboxInventory;
 import io.github.leothawne.LTItemMail.module.DataModule;
+import io.github.leothawne.LTItemMail.module.DatabaseModule;
+import io.github.leothawne.LTItemMail.type.MailboxType;
 
 public final class ItemMailAdminCommand implements CommandExecutor {
 	public ItemMailAdminCommand() {}
@@ -19,6 +29,8 @@ public final class ItemMailAdminCommand implements CommandExecutor {
 				sender.sendMessage(ChatColor.AQUA + "=+=+=+= [LT Item Mail :: Admin] =+=+=+=");
 				sender.sendMessage(ChatColor.GREEN + "/itemmailadmin " + ChatColor.AQUA + "- Commands for administrators.");
 				sender.sendMessage(ChatColor.GREEN + "/itemmailadmin update " + ChatColor.AQUA + "- Check for new updates.");
+				sender.sendMessage(ChatColor.GREEN + "/itemmailadmin list <player> " + ChatColor.AQUA + "- List opened mailboxes of a specific player.");
+				sender.sendMessage(ChatColor.GREEN + "/itemmailadmin recover <mailbox id> " + ChatColor.AQUA + "- Recover lost items (if there is any).");
 				sender.sendMessage(ChatColor.YELLOW + "You can also use "+ ChatColor.GREEN + "/itemmailadmin "+ ChatColor.YELLOW + "as "+ ChatColor.GREEN + "/imad"+ ChatColor.YELLOW + ".");
 			} else if(args[0].equalsIgnoreCase("update")) {
 				if(args.length == 1) {
@@ -46,6 +58,29 @@ public final class ItemMailAdminCommand implements CommandExecutor {
 						}
 					}.runTaskAsynchronously(LTItemMail.getInstance());
 				} else sender.sendMessage(ChatColor.AQUA + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "Too many arguments!");
+			} else if(args[0].equalsIgnoreCase("list") && sender instanceof Player) {
+				final Player player = (Player) sender;
+				if(args.length == 2) {
+					@SuppressWarnings("deprecation")
+					final OfflinePlayer offPlayer = Bukkit.getOfflinePlayer(args[1]);
+					final HashMap<Integer, String> mailboxes = DatabaseModule.Function.getOpenedMailboxesList(offPlayer.getUniqueId());
+					if(mailboxes.size() > 0) {
+						player.sendMessage(offPlayer.getName() + "'s opened mailboxes:");
+						for(final Integer mailboxID : mailboxes.keySet()) player.sendMessage("Mailbox #" + mailboxID + " : " + mailboxes.get(mailboxID));
+					} else player.sendMessage("No opened mailboxes for player " + offPlayer.getName() + ".");
+				}
+			} else if(args[0].equalsIgnoreCase("recover") && sender instanceof Player) {
+				final Player player = (Player) sender;
+				if(args.length == 2) try {
+					final Integer mailboxID = Integer.valueOf(args[1]);
+					final LinkedList<ItemStack> items = DatabaseModule.Function.getLostMailbox(mailboxID);
+					if(items.size() > 0) {
+						LTItemMail.getInstance().getPlayerBusy().put(player.getUniqueId(), true);
+						player.openInventory(MailboxInventory.getMailboxInventory(MailboxType.IN, mailboxID, null, items));
+					} else player.sendMessage("There is no lost items on this mailbox.");
+				} catch (final NumberFormatException e) {
+					player.sendMessage("Mailbox ID must be a number!");
+				}
 			} else sender.sendMessage(ChatColor.AQUA + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "Invalid command! Type " + ChatColor.GREEN + "/itemmailadmin " + ChatColor.YELLOW + "to see all available commands.");
 		} else {
 			sender.sendMessage(ChatColor.AQUA + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "" + LTItemMail.getInstance().getLanguage().getString("no-permission"));

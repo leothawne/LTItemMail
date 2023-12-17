@@ -25,11 +25,11 @@ public final class MailItemCommand implements CommandExecutor {
 						if(player1.getUniqueId().equals(player.getUniqueId())) {
 							if(args.length == 2 && args[1].equalsIgnoreCase("--bypass") && player.hasPermission("LTItemMail.admin")) {
 								player.sendMessage(ChatColor.DARK_GREEN + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.YELLOW + "Okay...");
-								player.openInventory(MailboxInventory.getMailboxInventory(MailboxType.OUT, player1, null));
+								player.openInventory(MailboxInventory.getMailboxInventory(MailboxType.OUT, null, player1, null));
 							} else player.sendMessage(ChatColor.DARK_GREEN + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + LTItemMail.getInstance().getLanguage().getString("player-self"));
 						} else {
 							player.sendMessage(ChatColor.DARK_GREEN + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + LTItemMail.getInstance().getLanguage().getString("mailbox-opening"));
-							player.openInventory(MailboxInventory.getMailboxInventory(MailboxType.OUT, player1, null));
+							player.openInventory(MailboxInventory.getMailboxInventory(MailboxType.OUT, null, player1, null));
 						}
 					} else player.sendMessage(ChatColor.DARK_GREEN + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + LTItemMail.getInstance().getLanguage().getString("recipient-offline"));
 				} else player.sendMessage(ChatColor.DARK_GREEN + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + LTItemMail.getInstance().getLanguage().getString("player-tma"));

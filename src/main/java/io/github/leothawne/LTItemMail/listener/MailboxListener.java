@@ -17,6 +17,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
 import io.github.leothawne.LTItemMail.inventory.MailboxInventory;
+import io.github.leothawne.LTItemMail.module.DatabaseModule;
 import io.github.leothawne.LTItemMail.type.MailboxType;
 import net.milkbowl.vault.economy.EconomyResponse;
 
@@ -27,25 +28,47 @@ public final class MailboxListener implements Listener {
 		final Player player = (Player) event.getPlayer();
 		final Inventory inventory = event.getInventory();
 		final InventoryView inventoryView = player.getOpenInventory();
-		if(inventoryView.getTitle().equals(MailboxInventory.getMailboxName(MailboxType.IN))) {
+		if(inventoryView.getTitle().contains(MailboxInventory.getMailboxName(MailboxType.IN, 0)) && inventoryView.getTitle().split("#").length == 2) {
 			LTItemMail.getInstance().getPlayerBusy().put(player.getUniqueId(), false);
+			final Integer mailboxID = Integer.valueOf(inventoryView.getTitle().split("#")[1]);
 			final ItemStack[] contents = inventory.getContents();
-			boolean isEmpty = true;
+			Boolean isEmpty = true;
 			for(final ItemStack content : contents) if(content != null) isEmpty = false;
-			if(isEmpty == false) {
+			if(!isEmpty) {
+				final LinkedList<ItemStack> items = new LinkedList<>();
 				String itemslost = "";
 				int count = 0;
 				for(final ItemStack content: contents) if(content != null) {
+					items.add(content);
 					if(itemslost.isBlank() && itemslost.trim().isBlank()) {
 						itemslost = content.getAmount() + "x " + content.getType().name();
 					} else itemslost = itemslost + ", " + content.getAmount() + "x " + content.getType().name();
 					count = count + content.getAmount();
 				}
+				DatabaseModule.Function.saveLostMailbox(mailboxID, items);
 				final String[] mailboxClosedItems = LTItemMail.getInstance().getLanguage().getString("mailbox-closed-items").split("%");
 				player.sendMessage(ChatColor.DARK_GREEN + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + LTItemMail.getInstance().getLanguage().getString("mailbox-closed") + " " + mailboxClosedItems[0] + "" + ChatColor.GREEN + "" + count + "" + ChatColor.YELLOW + "" + mailboxClosedItems[1] + " " + ChatColor.GREEN + "" + itemslost);
+			} else {
+				DatabaseModule.Function.saveLostMailbox(mailboxID, new LinkedList<ItemStack>());
+				player.sendMessage(ChatColor.DARK_GREEN + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + LTItemMail.getInstance().getLanguage().getString("mailbox-closed"));
+			}
+			inventory.clear();
+		} else if(inventoryView.getTitle().equals(MailboxInventory.getMailboxName(MailboxType.IN, null))) {
+			LTItemMail.getInstance().getPlayerBusy().put(player.getUniqueId(), false);
+			final ItemStack[] contents = inventory.getContents();
+			Boolean isEmpty = true;
+			for(final ItemStack content : contents) if(content != null) isEmpty = false;
+			if(!isEmpty) {
+				final LinkedList<ItemStack> items = new LinkedList<>();
+				for(final ItemStack content: contents) {
+					if(content != null) {
+						items.add(content);
+					} else items.add(new ItemStack(Material.AIR));
+				}
+				DatabaseModule.Function.saveMailbox(player.getUniqueId(), items);
 			} else player.sendMessage(ChatColor.DARK_GREEN + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + LTItemMail.getInstance().getLanguage().getString("mailbox-closed"));
 			inventory.clear();
-		} else if(inventoryView.getTitle().equals(MailboxInventory.getMailboxName(MailboxType.OUT))) {
+		} else if(inventoryView.getTitle().equals(MailboxInventory.getMailboxName(MailboxType.OUT, null))) {
 			final Player sender = (Player) event.getPlayer();
 			final Player recipient = (Player) inventory.getHolder();
 			final ItemStack[] contents = inventory.getContents();
@@ -53,7 +76,7 @@ public final class MailboxListener implements Listener {
 			for(final ItemStack content : contents) if(content == null) {
 				contentsarray.add(new ItemStack(Material.AIR));
 			} else contentsarray.add(content);
-			boolean isEmpty = true;
+			Boolean isEmpty = true;
 			int count = 0;
 			for(final ItemStack content : contentsarray) if(content.getType() != Material.AIR) {
 				isEmpty = false;
@@ -61,7 +84,7 @@ public final class MailboxListener implements Listener {
 			}
 			inventory.clear();
 			if(!isEmpty) {
-				if(LTItemMail.getInstance().getPlayerBusy().get(recipient.getUniqueId()).booleanValue()) {
+				if(!LTItemMail.getInstance().getPlayerBusy().get(recipient.getUniqueId()).booleanValue()) {
 					double newcost = 0;
 					if(LTItemMail.getInstance().getConfiguration().getBoolean("cost-per-item")) {
 						newcost = LTItemMail.getInstance().getConfiguration().getDouble("mail-cost") * count;
@@ -98,15 +121,15 @@ public final class MailboxListener implements Listener {
 		sender.sendMessage(ChatColor.DARK_GREEN + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + mailboxSent[0] + "" + ChatColor.AQUA + "" + recipient.getName() + "" + ChatColor.YELLOW + "" + mailboxSent[1]);
 		LTItemMail.getInstance().getPlayerBusy().put(recipient.getUniqueId(), true);
 		if(LTItemMail.getInstance().getConfiguration().getBoolean("use-title") == true) {
-			recipient.sendTitle(ChatColor.AQUA + "" + mailboxFrom[0] +  "" + ChatColor.GREEN + "" + sender.getName(), ChatColor.AQUA + "" + mailboxOpening[0] + "" + ChatColor.GREEN + "" + LTItemMail.getInstance().getConfiguration().getInt("mail-time") + "" + ChatColor.AQUA + "" + mailboxOpening[1] + " " + ChatColor.DARK_RED + "" + LTItemMail.getInstance().getLanguage().getString("mailbox-lose"), 20 * 1, 20 * LTItemMail.getInstance().getConfiguration().getInt("mail-time"), 20 * 1);
+			recipient.sendTitle(ChatColor.AQUA + "" + mailboxFrom[0] +  "" + ChatColor.GREEN + "" + sender.getName(), ChatColor.AQUA + "" + mailboxOpening[0] + "" + ChatColor.GREEN + "" + LTItemMail.getInstance().getConfiguration().getInt("mail-time") + "" + ChatColor.AQUA + "" + mailboxOpening[1], 20 * 1, 20 * LTItemMail.getInstance().getConfiguration().getInt("mail-time"), 20 * 1);
 		} else {
 			recipient.sendMessage(ChatColor.DARK_GREEN + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.AQUA + "" + mailboxFrom[0] + "" + ChatColor.GREEN + "" + sender.getName() + "" + ChatColor.AQUA + "" + mailboxFrom[1]);
-			recipient.sendMessage(ChatColor.DARK_GREEN + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.AQUA + "" + mailboxOpening[0] + "" + ChatColor.GREEN + "" + LTItemMail.getInstance().getConfiguration().getInt("mail-time") + "" + ChatColor.AQUA + "" + mailboxOpening[1] + " " + ChatColor.DARK_RED + "" + LTItemMail.getInstance().getLanguage().getString("mailbox-lose"));
+			recipient.sendMessage(ChatColor.DARK_GREEN + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.AQUA + "" + mailboxOpening[0] + "" + ChatColor.GREEN + "" + LTItemMail.getInstance().getConfiguration().getInt("mail-time") + "" + ChatColor.AQUA + "" + mailboxOpening[1]);
 		}
 		new BukkitRunnable() {
 			@Override
 			public final void run() {
-				recipient.openInventory(MailboxInventory.getMailboxInventory(MailboxType.IN, null, contentsarray));
+				recipient.openInventory(MailboxInventory.getMailboxInventory(MailboxType.IN, null, null, contentsarray));
 				sender.sendMessage(ChatColor.DARK_GREEN + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + LTItemMail.getInstance().getLanguage().getString("mailbox-delivered"));
 			}
 		}.runTaskLater(LTItemMail.getInstance(), 20 * LTItemMail.getInstance().getConfiguration().getInt("mail-time") + 2);
