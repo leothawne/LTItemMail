@@ -3,3 +3,4 @@ Changelog:
 - Added language fallback.
 - Added new messages.
 - Added /itemmail delete command.
+- Now you can customize mailbox name in config.yml.
