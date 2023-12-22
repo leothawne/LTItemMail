@@ -19,6 +19,7 @@ mailbox-deleted: "Deletado"
 opened-boxes: "Caixas abertas de"
 empty: "Vazio"
 mailbox-recover-empty: "Não há itens perdidos nessa caixa."
+mailbox-list-empty: "Não há caixas abertas do jogador"
 
 #Não mude isso sob nenhuma circunstância!
 language-version: 5

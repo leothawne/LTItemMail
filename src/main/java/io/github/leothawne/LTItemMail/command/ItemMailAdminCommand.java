@@ -74,7 +74,7 @@ public final class ItemMailAdminCommand implements CommandExecutor {
 							if(items.size() == 0) x = " [" + LanguageModule.get("empty") + "]";
 							player.sendMessage(LTItemMail.getInstance().getConfiguration().getString("mailbox-name") + " #" + mailboxID + " : " + mailboxes.get(mailboxID) + x); 
 						}
-					} else player.sendMessage("No opened mailboxes for player " + offPlayer.getName());
+					} else sender.sendMessage(ChatColor.AQUA + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + LanguageModule.get("mailbox-list-empty") + " " + offPlayer.getName());
 				} else sender.sendMessage(ChatColor.AQUA + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + LanguageModule.get("player-tma"));
 			} else if(args[0].equalsIgnoreCase("recover") && sender instanceof Player) {
 				final Player player = (Player) sender;

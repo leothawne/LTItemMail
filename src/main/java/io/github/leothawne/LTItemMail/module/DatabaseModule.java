@@ -2,6 +2,7 @@ package io.github.leothawne.LTItemMail.module;
 
 import java.io.File;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -45,19 +46,44 @@ public final class DatabaseModule {
 		LTItemMail.getInstance().getConsole().severe("Missing mailboxes.db file.");
 		return null;
 	}
-	public static final class Function {
-		public static final int checkDatabaseVersion() {
-			
-			return 0;
-		}
-		public static final boolean updateDatabase(Integer databaseVersion) {
-			switch(databaseVersion) {
-				case 0:
-					
-					break;
+	public static final int checkDbVer() {
+		try {
+			DatabaseMetaData meta = LTItemMail.getInstance().getConnection().getMetaData();
+			ResultSet results = meta.getTables(null, null, "config", new String[] {"TABLE"});
+			if(results.next()) {
+				final Statement statement = LTItemMail.getInstance().getConnection().createStatement();
+				results = statement.executeQuery("SELECT version FROM config;");
+				statement.closeOnCompletion();
+				if(results.next()) return results.getInt("version");
 			}
-			return false;
+		} catch (final SQLException e) {
+			e.printStackTrace();
+			LTItemMail.getInstance().getConsole().severe("An error occurred while checking database version.");
 		}
+		return 0;
+	}
+	public static final boolean updateDb(Integer dbVer) {
+		LinkedList<String> sqlList = new LinkedList<>();
+		switch(dbVer) {
+			case 0:
+				sqlList.add(0, "CREATE TABLE config(version INTEGER NOT NULL);");
+				sqlList.add(1, "INSERT INTO config(version) VALUES('1');");
+				sqlList.add(2, "ALTER TABLE mailbox DROP COLUMN items_lost;");
+				break;
+		}
+		if(sqlList.size() > 0) try {
+			for(Integer i = 0; i < sqlList.size(); i++) {
+				final Statement statement = LTItemMail.getInstance().getConnection().createStatement();
+				statement.execute(sqlList.get(i));
+				statement.closeOnCompletion();
+			}
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	public static final class Function {
 		public static final int saveMailbox(final UUID playerFrom, UUID playerTo, final LinkedList<ItemStack> items) {
 			final String time = DateTimeFormatter.ofPattern("dd/MM/yyyy").format(LocalDateTime.now());
 			try {
@@ -75,7 +101,7 @@ public final class DatabaseModule {
 				final Statement get = LTItemMail.getInstance().getConnection().createStatement();
 				final ResultSet results = get.executeQuery("SELECT id FROM mailbox WHERE uuid_to = '" + playerTo.toString() + "' AND sent_date = '" + time + "' ORDER BY id DESC LIMIT 1;");
 				get.closeOnCompletion();
-				while(results.next()) return results.getInt("id");
+				if(results.next()) return results.getInt("id");
 			} catch (final SQLException e) {
 				e.printStackTrace();
 				LTItemMail.getInstance().getConsole().severe("An error occurred while saving a mailbox.");
@@ -111,7 +137,7 @@ public final class DatabaseModule {
 				final ResultSet results = statement.executeQuery("SELECT items FROM mailbox WHERE id = '" + mailboxID + "';");
 				final YamlConfiguration itemString = new YamlConfiguration();
 				Boolean empty = false;
-				while(results.next()) if(!results.getString("items").equals("")) {
+				if(results.next()) if(!results.getString("items").equals("")) {
 					itemString.loadFromString(results.getString("items"));
 				} else empty = true;
 				statement.closeOnCompletion();
@@ -140,7 +166,7 @@ public final class DatabaseModule {
 				final Statement statement = LTItemMail.getInstance().getConnection().createStatement();
 				final ResultSet results = statement.executeQuery("SELECT uuid_to FROM mailbox WHERE id = '" + mailboxID + "';");
 				statement.closeOnCompletion();
-				while(results.next()) if(results.getString("uuid_to").equals(owner.toString())) return true;
+				if(results.next()) if(results.getString("uuid_to").equals(owner.toString())) return true;
 			} catch (final SQLException e) {
 				e.printStackTrace();
 				LTItemMail.getInstance().getConsole().severe("An error occurred while checking for a mailbox ownership.");
@@ -152,7 +178,7 @@ public final class DatabaseModule {
 				final Statement statement = LTItemMail.getInstance().getConnection().createStatement();
 				final ResultSet results = statement.executeQuery("SELECT uuid_to FROM mailbox WHERE id = '" + mailboxID + "';");
 				statement.closeOnCompletion();
-				while(results.next()) return UUID.fromString(results.getString("uuid_to"));
+				if(results.next()) return UUID.fromString(results.getString("uuid_to"));
 			} catch (final SQLException e) {
 				e.printStackTrace();
 				LTItemMail.getInstance().getConsole().severe("An error occurred while checking for a mailbox ownership.");
@@ -163,7 +189,7 @@ public final class DatabaseModule {
 			try {
 				final Statement statement = LTItemMail.getInstance().getConnection().createStatement();
 				final ResultSet results = statement.executeQuery("SELECT opened FROM mailbox WHERE id = '" + mailboxID + "';");
-				while(results.next()) if(results.getInt("opened") == 1) return true;
+				if(results.next()) if(results.getInt("opened") == 1) return true;
 				statement.closeOnCompletion();
 			} catch (final SQLException e) {
 				e.printStackTrace();

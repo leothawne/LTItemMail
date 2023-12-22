@@ -37,12 +37,14 @@ import io.github.leothawne.LTItemMail.listener.MailboxListener;
 import io.github.leothawne.LTItemMail.listener.PlayerListener;
 import io.github.leothawne.LTItemMail.module.ConfigurationModule;
 import io.github.leothawne.LTItemMail.module.ConsoleModule;
+import io.github.leothawne.LTItemMail.module.DataModule;
 import io.github.leothawne.LTItemMail.module.DatabaseModule;
 import io.github.leothawne.LTItemMail.module.LanguageModule;
 import io.github.leothawne.LTItemMail.module.MailboxLogModule;
 import io.github.leothawne.LTItemMail.module.MetricsModule;
 import io.github.leothawne.LTItemMail.module.VaultModule;
 import io.github.leothawne.LTItemMail.task.VersionTask;
+import io.github.leothawne.LTItemMail.type.VersionType;
 import net.milkbowl.vault.economy.Economy;
 
 /**
@@ -97,6 +99,15 @@ public final class LTItemMail extends JavaPlugin {
 			}
 			DatabaseModule.check();
 			con = DatabaseModule.load();
+			final Integer dbVer = DatabaseModule.checkDbVer();
+			if(dbVer < Integer.valueOf(DataModule.getVersion(VersionType.DATABASE))) {
+				for(Integer i = dbVer; i < Integer.valueOf(DataModule.getVersion(VersionType.DATABASE)); i++) {
+					console.warning("Updating database... (" + i + " -> " + (i + 1) + ")");
+					if(DatabaseModule.updateDb(i)) {
+						console.info("Database updated! (" + i + " -> " + (i + 1) + ")");
+					} else console.severe("Database update failed! (" + i + " -> " + (i + 1) + ")");
+				}
+			} else console.info("Database is up to date! (" + dbVer + ")");
 			MailboxLogModule.init();
 			getCommand("itemmail").setExecutor(new ItemMailCommand());
 			getCommand("itemmail").setTabCompleter(new ItemMailCommandTabCompleter());
@@ -107,7 +118,7 @@ public final class LTItemMail extends JavaPlugin {
 			scheduler = Bukkit.getScheduler();
 			scheduler.scheduleSyncRepeatingTask(this, new VersionTask(), 0, 20 * 60 * 60);
 			registerEvents(new MailboxListener(), new PlayerListener());
-			new WarnIntegrationsAPI(new LinkedList<String>(Arrays.asList("Vault", "Essentials")));
+			new WarnIntegrationsAPI(new LinkedList<String>(Arrays.asList("Vault")));
 		} else {
 			this.console.severe("You've choosen to disable me.");
 			Bukkit.getPluginManager().disablePlugin(this);
@@ -130,7 +141,6 @@ public final class LTItemMail extends JavaPlugin {
 	 * @return The API class.
 	 * 
 	 */
-	@SuppressWarnings("deprecation")
 	public final LTItemMailAPI getAPI() {
 		return new LTItemMailAPI();
 	}

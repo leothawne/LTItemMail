@@ -7,8 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import io.github.leothawne.LTItemMail.LTItemMail;
-
+// TODO: Auto-generated Javadoc
 /**
  * 
  * The API class.
@@ -17,25 +16,11 @@ import io.github.leothawne.LTItemMail.LTItemMail;
  * 
  */
 public final class LTItemMailAPI {
+	
 	/**
-	 * 
-	 * @deprecated There is no need to manually create
-	 * an object with this constructor when
-	 * you can easily use {@link LTItemMail#getAPI()}.
-	 * 
+	 * Instantiates a new LT Item Mail API.
 	 */
 	public LTItemMailAPI() {}
-	/**
-	 * 
-	 * Returns a boolean type value that can be used to determine
-	 * if the plugin is currently using currently using Vault.
-	 * 
-	 * @return A boolean type value.
-	 * 
-	 */
-	public final boolean isUsingVault() {
-		return LTItemMail.getInstance().getConfiguration().getBoolean("use-vault");
-	}
 	/**
 	 * 
 	 * Method used to send items anonymously

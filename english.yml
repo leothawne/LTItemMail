@@ -19,6 +19,7 @@ mailbox-deleted: "Deleted"
 opened-boxes: "Opened boxes of"
 empty: "Empty"
 mailbox-recover-empty: "There is no lost items in this box."
+mailbox-list-empty: "No opened mailboxes for player"
 
 #Do not change it under any circumstances!
 language-version: 5

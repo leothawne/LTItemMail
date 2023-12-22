@@ -13,7 +13,7 @@ public final class WarnIntegrationsAPI {
 		final PluginManager manager = Bukkit.getPluginManager();
 		for(final String plugin : plugins) {
 			final Plugin getPlugin = manager.getPlugin(plugin);
-			if(getPlugin != null && getPlugin.isEnabled()) LTItemMail.getInstance().getConsole().info(LTItemMail.getInstance().getName() + " were successfully hooked into " + getPlugin.getName() + "!");
+			if(getPlugin != null && getPlugin.isEnabled()) LTItemMail.getInstance().getConsole().info(LTItemMail.getInstance().getName() + " successfully hooked into " + getPlugin.getName() + "!");
 		}
 	}
 }

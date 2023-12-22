@@ -112,6 +112,9 @@ public final class LanguageModule {
 			case "mailbox-recover-empty":
 				result = "There is no lost items in this box.";
 				break;
+			case "mailbox-list-empty":
+				result = "No opened mailboxes for player";
+				break;
 		}
 		if(LTItemMail.getInstance().getLanguage().isSet(path)) result = LTItemMail.getInstance().getLanguage().getString(path);
 		return result;
