@@ -11,8 +11,14 @@ recipient-full: "% não tem % slot(s) livre(s)."
 recipient-empty: "Enter the name of the recipient."
 recipient-offline: "The recipient you have chosen is not online."
 player-error: "Você precisa ser um jogador para fazer isso!"
-player-tma: "Muitos argumentos inseridos!"
+player-tma: "Erro de sintaxe!"
 player-self: "Você não pode enviar uma caixa de itens para você mesmo."
+no-new-mailbox: "Não há novas caixas."
+mailbox-id-error: "ID da caixa deve ser um número inteiro."
+mailbox-deleted: "Deletado"
+opened-boxes: "Caixas abertas de"
+empty: "Vazio"
+mailbox-recover-empty: "Não há itens perdidos nessa caixa."
 
 #Não mude isso sob nenhuma circunstância!
 language-version: 5

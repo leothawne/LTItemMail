@@ -89,10 +89,28 @@ public final class LanguageModule {
 				result = "You must be a player to do that!";
 				break;
 			case "player-tma":
-				result = "Too many arguments!";
+				result = "Syntax error!";
 				break;
 			case "player-self":
 				result = "You can not send a mailbox to yourself.";
+				break;
+			case "no-new-mailbox":
+				result = "No new boxes.";
+				break;
+			case "mailbox-id-error":
+				result = "Mailbox ID must be a number.";
+				break;
+			case "mailbox-deleted":
+				result = "Deleted";
+				break;
+			case "opened-boxes":
+				result = "Opened boxes of";
+				break;
+			case "empty":
+				result = "Empty";
+				break;
+			case "mailbox-recover-empty":
+				result = "There is no lost items in this box.";
 				break;
 		}
 		if(LTItemMail.getInstance().getLanguage().isSet(path)) result = LTItemMail.getInstance().getLanguage().getString(path);

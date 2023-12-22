@@ -10,9 +10,15 @@ transaction-no-money: "You do not have $% to pay to the post office."
 recipient-full: "% does not have % free slot(s)."
 recipient-empty: "You must specify a player!"
 recipient-offline: "The specified player is not online."
-player-error: "You must be a player to do this!"
-player-tma: "Too many arguments!"
+player-error: "You must be a player to do that!"
+player-tma: "Syntax error!"
 player-self: "You can not send a mailbox to yourself."
+no-new-mailbox: "No new boxes."
+mailbox-id-error: "Mailbox ID must be a number."
+mailbox-deleted: "Deleted"
+opened-boxes: "Opened boxes of"
+empty: "Empty"
+mailbox-recover-empty: "There is no lost items in this box."
 
 #Do not change it under any circumstances!
 language-version: 5

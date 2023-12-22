@@ -12,8 +12,7 @@ recipient-full: "% không có đủ % slots còn trống để gửi."
 recipient-empty: "bạn phải chỉ định người chơi!"
 recipient-offline: "Người chơi bạn chỉ định đang Offline."
 player-error: "Bạn phải là người chơi để làm điều này!"
-player-tma: "Too many arguments!"
 player-self: "Không thể gửi cho chính mình."
 
 #Đừng thay đổi nó trong bất kỳ trường hợp nào!
-language-version: 5
+language-version: 2

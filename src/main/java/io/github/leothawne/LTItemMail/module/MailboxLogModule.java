@@ -2,6 +2,8 @@ package io.github.leothawne.LTItemMail.module;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
@@ -21,14 +23,13 @@ public final class MailboxLogModule {
 		instance = this;
 		log = Logger.getLogger(MailboxLogModule.class.getName());
 		try {
+			Files.createDirectories(Paths.get(LTItemMail.getInstance().getDataFolder() + File.separator + "logs"));
 			final FileHandler fh = new FileHandler(LTItemMail.getInstance().getDataFolder() + File.separator + "logs" + File.separator + "mailboxes_" + DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss").format(LocalDateTime.now()) + ".log");
 			fh.setFormatter(new SimpleFormatter());
 			log.addHandler(fh);
 		} catch (final SecurityException | IOException e) {
 			e.printStackTrace();
 		}
-		//log.setUseParentHandlers(false);
-		//time = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 	}
 	private static final MailboxLogModule getInstance() {
 		return instance;
@@ -36,9 +37,6 @@ public final class MailboxLogModule {
 	private final Logger getLogger() {
 		return log;
 	}
-	/*private final String getTime() {
-		return time.format(LocalDateTime.now());
-	}*/
 	public static final void init() {
 		new MailboxLogModule();
 	}
@@ -46,7 +44,7 @@ public final class MailboxLogModule {
 		if(playerFrom == null) return false;
 		if(action == null) return false;
 		if(mailboxID == null) return false;
-		String log = /*"[" + MailboxLogModule.getInstance().getTime() + "] " + */Bukkit.getPlayer(playerFrom).getName() + " ";
+		String log = Bukkit.getPlayer(playerFrom).getName() + " ";
 		switch(action) {
 			case RECOVERED:
 				log = log + "recovered lost items of ";

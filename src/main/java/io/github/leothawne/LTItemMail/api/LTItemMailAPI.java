@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -36,17 +35,6 @@ public final class LTItemMailAPI {
 	 */
 	public final boolean isUsingVault() {
 		return LTItemMail.getInstance().getConfiguration().getBoolean("use-vault");
-	}
-	/**
-	 * 
-	 * Returns a FileConfiguration type value that can be used
-	 * to determine the current language used by the plugin.
-	 * 
-	 * @return A FileConfiguration type value.
-	 * 
-	 */
-	public final FileConfiguration getLanguageMap(){
-		return LTItemMail.getInstance().getLanguage();
 	}
 	/**
 	 * 
