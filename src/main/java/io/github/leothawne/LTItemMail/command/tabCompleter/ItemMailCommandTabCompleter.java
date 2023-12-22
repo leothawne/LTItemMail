@@ -21,11 +21,11 @@ public final class ItemMailCommandTabCompleter implements TabCompleter {
 		final List<String> ReturnNothing = new ArrayList<>();
 		if(sender.hasPermission("LTItemMail.use")) {
 			if(args.length == 1) {
-				final ImmutableList<String> completes = ImmutableList.of("version", "list", "open");
+				final ImmutableList<String> completes = ImmutableList.of("version", "list", "open", "delete");
 				return TabCompleterAPI.partial(args[0], completes);
 			}
 			if(args.length == 2) {
-				if(args[0].equals("open")) if(sender instanceof Player) {
+				if(args[0].equals("open") || args[0].equals("delete")) if(sender instanceof Player) {
 					final Player player = (Player) sender;
 					final HashMap<Integer, String> mailboxes = DatabaseModule.Function.getMailboxesList(player.getUniqueId());
 					final LinkedList<String> completes = new LinkedList<>();

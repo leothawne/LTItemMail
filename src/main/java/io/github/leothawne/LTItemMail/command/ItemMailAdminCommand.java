@@ -18,6 +18,8 @@ import io.github.leothawne.LTItemMail.api.HTTP;
 import io.github.leothawne.LTItemMail.inventory.MailboxInventory;
 import io.github.leothawne.LTItemMail.module.DataModule;
 import io.github.leothawne.LTItemMail.module.DatabaseModule;
+import io.github.leothawne.LTItemMail.module.LanguageModule;
+import io.github.leothawne.LTItemMail.module.MailboxLogModule;
 import io.github.leothawne.LTItemMail.type.MailboxType;
 
 public final class ItemMailAdminCommand implements CommandExecutor {
@@ -66,24 +68,29 @@ public final class ItemMailAdminCommand implements CommandExecutor {
 					final HashMap<Integer, String> mailboxes = DatabaseModule.Function.getOpenedMailboxesList(offPlayer.getUniqueId());
 					if(mailboxes.size() > 0) {
 						player.sendMessage(offPlayer.getName() + "'s opened mailboxes:");
-						for(final Integer mailboxID : mailboxes.keySet()) player.sendMessage("Mailbox #" + mailboxID + " : " + mailboxes.get(mailboxID));
+						for(final Integer mailboxID : mailboxes.keySet()) {
+							String x = "";
+							final LinkedList<ItemStack> items = DatabaseModule.Function.getMailbox(mailboxID);
+							if(items.size() == 0) x = " [Empty]";
+							player.sendMessage("Mailbox #" + mailboxID + " : " + mailboxes.get(mailboxID) + x); 
+						}
 					} else player.sendMessage("No opened mailboxes for player " + offPlayer.getName() + ".");
 				}
 			} else if(args[0].equalsIgnoreCase("recover") && sender instanceof Player) {
 				final Player player = (Player) sender;
 				if(args.length == 2) try {
 					final Integer mailboxID = Integer.valueOf(args[1]);
-					final LinkedList<ItemStack> items = DatabaseModule.Function.getLostMailbox(mailboxID);
+					final LinkedList<ItemStack> items = DatabaseModule.Function.getMailbox(mailboxID);
 					if(items.size() > 0) {
-						LTItemMail.getInstance().getPlayerBusy().put(player.getUniqueId(), true);
 						player.openInventory(MailboxInventory.getMailboxInventory(MailboxType.IN, mailboxID, null, items));
+						MailboxLogModule.log(player.getUniqueId(), null, MailboxLogModule.ActionType.RECOVERED, mailboxID);
 					} else player.sendMessage("There is no lost items on this mailbox.");
 				} catch (final NumberFormatException e) {
 					player.sendMessage("Mailbox ID must be a number!");
 				}
 			} else sender.sendMessage(ChatColor.AQUA + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "Invalid command! Type " + ChatColor.GREEN + "/itemmailadmin " + ChatColor.YELLOW + "to see all available commands.");
 		} else {
-			sender.sendMessage(ChatColor.AQUA + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "" + LTItemMail.getInstance().getLanguage().getString("no-permission"));
+			sender.sendMessage(ChatColor.AQUA + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "" + LanguageModule.get("no-permission"));
 			LTItemMail.getInstance().getConsole().severe(sender.getName() + " does not have permission [LTItemMail.admin].");
 		}
 		return true;

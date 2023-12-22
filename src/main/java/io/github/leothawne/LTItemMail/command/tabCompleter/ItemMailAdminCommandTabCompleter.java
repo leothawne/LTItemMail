@@ -20,8 +20,8 @@ public final class ItemMailAdminCommandTabCompleter implements TabCompleter {
 		final List<String> ReturnNothing = new ArrayList<>();
 		if(sender.hasPermission("LTItemMail.admin")) {
 			if(args.length == 1) {
-				final ImmutableList<String> MailAdmin = ImmutableList.of("update", "list", "recover");
-				return TabCompleterAPI.partial(args[0], MailAdmin);
+				final ImmutableList<String> completes = ImmutableList.of("update", "list", "recover");
+				return TabCompleterAPI.partial(args[0], completes);
 			}
 			if(args.length == 2) {
 				if(args[0].equals("list")) {

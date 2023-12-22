@@ -6,5 +6,6 @@ public enum VersionType {
 	PORTUGUESE_YML,
 	VIETNAMESE_YML,
 	MINECRAFT,
-	JAVA
+	JAVA,
+	DATABASE
 }

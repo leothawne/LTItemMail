@@ -5,28 +5,18 @@ import java.util.LinkedList;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
-import io.github.leothawne.LTItemMail.inventory.MailboxInventory;
-import io.github.leothawne.LTItemMail.type.MailboxType;
+import io.github.leothawne.LTItemMail.module.DatabaseModule;
+import io.github.leothawne.LTItemMail.module.LanguageModule;
+import io.github.leothawne.LTItemMail.module.MailboxLogModule;
 
 public final class MailboxAPI {
 	public static final void sendSpecial(final Player receiver, final LinkedList<ItemStack> items) {
-		final String mailboxFrom = LTItemMail.getInstance().getLanguage().getString("special-mailbox");
-		final String[] mailboxOpening = LTItemMail.getInstance().getLanguage().getString("mailbox-opening-seconds").split("%");
-		LTItemMail.getInstance().getPlayerBusy().put(receiver.getUniqueId(), true);
-		if(LTItemMail.getInstance().getConfiguration().getBoolean("use-title") == true) {
-			receiver.sendTitle(ChatColor.LIGHT_PURPLE + "" + mailboxFrom, ChatColor.AQUA + "" + mailboxOpening[0] + "" + ChatColor.GREEN + "" + LTItemMail.getInstance().getConfiguration().getInt("mail-time") + "" + ChatColor.AQUA + "" + mailboxOpening[1], 20 * 1, 20 * LTItemMail.getInstance().getConfiguration().getInt("mail-time"), 20 * 1);
-		} else {
-			receiver.sendMessage(ChatColor.DARK_GREEN + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.AQUA + "" + mailboxFrom);
-			receiver.sendMessage(ChatColor.DARK_GREEN + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.AQUA + "" + mailboxOpening[0] + "" + ChatColor.GREEN + "" + LTItemMail.getInstance().getConfiguration().getInt("mail-time") + "" + ChatColor.AQUA + "" + mailboxOpening[1]);
-		}
-		new BukkitRunnable() {
-			@Override
-			public final void run() {
-				receiver.openInventory(MailboxInventory.getMailboxInventory(MailboxType.IN, null, null, items));
-			}
-		}.runTaskLater(LTItemMail.getInstance(), 20 * LTItemMail.getInstance().getConfiguration().getInt("mail-time") + 2);
+		if(LTItemMail.getInstance().getConfiguration().getBoolean("use-title")) {
+			receiver.sendTitle(ChatColor.AQUA + "" + LanguageModule.get("special-mailbox"), "", 20 * 1, 20 * 5, 20 * 1);
+		} else receiver.sendMessage(ChatColor.DARK_GREEN + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.AQUA + "" + LanguageModule.get("special-mailbox"));
+		final Integer mailboxID = DatabaseModule.Function.saveMailbox(null, receiver.getUniqueId(), items);
+		MailboxLogModule.log(null, null, MailboxLogModule.ActionType.RECEIVED, mailboxID);
 	}
 }

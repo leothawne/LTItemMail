@@ -1,18 +1,12 @@
 no-permission: "Você não tem permissão para fazer isso."
 mailbox-closed: "Caixa fechada."
-mailbox-closed-items: "Você perdeu % itens:"
 mailbox-paid: "Você pagou $% ao corrêio."
 mailbox-sent: "Enviando caixa para %..."
-mailbox-from: "Corrêio de % chegando"
+mailbox-from: "Novo corrêio de"
 special-mailbox: "Corrêio especial!!!"
-mailbox-opening: "Abrindo caixa..."
-mailbox-opening-seconds: "Abrindo em % segundos..."
-mailbox-lose: "Não deixe itens dentro antes de fechar!"
-mailbox-delivered: "A caixa foi entregue!"
 mailbox-aborted: "Envio cancelado."
 transaction-error: "Transação mal sucedida!"
 transaction-no-money: "Você não tem $% para pagar ao corrêio."
-recipient-busy: "% está ocupado agora. Tente novamente em alguns segundos."
 recipient-full: "% não tem % slot(s) livre(s)."
 recipient-empty: "Enter the name of the recipient."
 recipient-offline: "The recipient you have chosen is not online."
@@ -21,4 +15,4 @@ player-tma: "Muitos argumentos inseridos!"
 player-self: "Você não pode enviar uma caixa de itens para você mesmo."
 
 #Não mude isso sob nenhuma circunstância!
-language-version: 4
+language-version: 5

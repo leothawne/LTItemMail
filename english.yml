@@ -1,18 +1,12 @@
 no-permission: "You do not have permission to do this."
 mailbox-closed: "Box closed."
-mailbox-closed-items: "You lost % items:"
 mailbox-paid: "You paid $% to the post office."
 mailbox-sent: "Sending box to %..."
-mailbox-from: "Mailbox from %."
+mailbox-from: "New mailbox from"
 special-mailbox: "Special Mailbox!!!"
-mailbox-opening: "Opening box..."
-mailbox-opening-seconds: "Opening in % seconds..."
-mailbox-lose: "Do not let items inside before closing it!"
-mailbox-delivered: "The box was delivered!"
 mailbox-aborted: "Shipping canceled!"
 transaction-error: "Transaction not succeeded!"
 transaction-no-money: "You do not have $% to pay to the post office."
-recipient-busy: "% is busy right now. Try again in a few seconds."
 recipient-full: "% does not have % free slot(s)."
 recipient-empty: "You must specify a player!"
 recipient-offline: "The specified player is not online."
@@ -21,4 +15,4 @@ player-tma: "Too many arguments!"
 player-self: "You can not send a mailbox to yourself."
 
 #Do not change it under any circumstances!
-language-version: 4
+language-version: 5

@@ -19,8 +19,8 @@ cost-per-item: true
 #Cost to send items to another players. Default: 0.50 (per item), 100.0 (per mailbox).
 mail-cost: 0.50
 
-#Time (in seconds) before a mailbox open. Default: 5.
-mail-time: 5
+#Name of the mail inventory. Default: Mailbox.
+mailbox-name: "Mailbox"
 
 #Should administrators be warned about new updates? Default: true.
 #If 'true', this will not bother you while you are playing. I promisse!
@@ -28,4 +28,4 @@ update:
     check: true
 
 #Do not change this under any circumstances!
-config-version: 6
+config-version: 7

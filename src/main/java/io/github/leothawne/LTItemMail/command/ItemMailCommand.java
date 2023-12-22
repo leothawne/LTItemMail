@@ -12,6 +12,8 @@ import io.github.leothawne.LTItemMail.LTItemMail;
 import io.github.leothawne.LTItemMail.inventory.MailboxInventory;
 import io.github.leothawne.LTItemMail.module.DataModule;
 import io.github.leothawne.LTItemMail.module.DatabaseModule;
+import io.github.leothawne.LTItemMail.module.LanguageModule;
+import io.github.leothawne.LTItemMail.module.MailboxLogModule;
 import io.github.leothawne.LTItemMail.type.MailboxType;
 
 public final class ItemMailCommand implements CommandExecutor {
@@ -37,12 +39,7 @@ public final class ItemMailCommand implements CommandExecutor {
 				final Player player = (Player) sender;
 				if(args.length == 2) try {
 					final Integer mailboxID = Integer.valueOf(args[1]);
-					if(DatabaseModule.Function.isMaiboxOwner(player.getUniqueId(), mailboxID) && !DatabaseModule.Function.isMailboxOpened(mailboxID)) {
-						player.sendMessage(ChatColor.DARK_RED + "" + LTItemMail.getInstance().getLanguage().getString("mailbox-lose"));
-						LTItemMail.getInstance().getPlayerBusy().put(player.getUniqueId(), true);
-						player.openInventory(MailboxInventory.getMailboxInventory(MailboxType.IN, mailboxID, null, DatabaseModule.Function.getMailbox(mailboxID)));
-						DatabaseModule.Function.setMailboxOpened(mailboxID);
-					}
+					if(DatabaseModule.Function.isMaiboxOwner(player.getUniqueId(), mailboxID) && !DatabaseModule.Function.isMailboxOpened(mailboxID)) player.openInventory(MailboxInventory.getMailboxInventory(MailboxType.IN, mailboxID, null, DatabaseModule.Function.getMailbox(mailboxID)));
 				} catch (final NumberFormatException e) {
 					player.sendMessage("Mailbox ID must be a number!");
 				}
@@ -52,9 +49,21 @@ public final class ItemMailCommand implements CommandExecutor {
 				if(mailboxes.size() > 0) {
 					for(final Integer mailboxID : mailboxes.keySet()) player.sendMessage("Mailbox #" + mailboxID + " : " + mailboxes.get(mailboxID));
 				} else player.sendMessage("No new mailboxes.");
+			} else if(args[0].equalsIgnoreCase("delete") && sender instanceof Player) {
+				final Player player = (Player) sender;
+				if(args.length == 2) try {
+					final Integer mailboxID = Integer.valueOf(args[1]);
+					if(DatabaseModule.Function.isMaiboxOwner(player.getUniqueId(), mailboxID) && !DatabaseModule.Function.isMailboxOpened(mailboxID)) {
+						DatabaseModule.Function.setMailboxOpened(mailboxID);
+						MailboxLogModule.log(player.getUniqueId(), null, MailboxLogModule.ActionType.OPENED, mailboxID);
+						player.sendMessage("Deleted!");
+					}
+				} catch (final NumberFormatException e) {
+					player.sendMessage("Mailbox ID must be a number!");
+				}
 			} else sender.sendMessage(ChatColor.AQUA + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.YELLOW + "Invalid command! Type " + ChatColor.GREEN + "/itemmail " + ChatColor.YELLOW + "to see all available commands.");
 		} else {
-			sender.sendMessage(ChatColor.AQUA + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + LTItemMail.getInstance().getLanguage().getString("no-permission"));
+			sender.sendMessage(ChatColor.AQUA + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + LanguageModule.get("no-permission"));
 			LTItemMail.getInstance().getConsole().severe(sender.getName() + " does not have permission [LTItemMail.use].");
 		}
 		return true;

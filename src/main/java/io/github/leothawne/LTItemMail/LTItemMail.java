@@ -16,13 +16,10 @@ package io.github.leothawne.LTItemMail;
 
 import java.sql.Connection;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -42,6 +39,7 @@ import io.github.leothawne.LTItemMail.module.ConfigurationModule;
 import io.github.leothawne.LTItemMail.module.ConsoleModule;
 import io.github.leothawne.LTItemMail.module.DatabaseModule;
 import io.github.leothawne.LTItemMail.module.LanguageModule;
+import io.github.leothawne.LTItemMail.module.MailboxLogModule;
 import io.github.leothawne.LTItemMail.module.MetricsModule;
 import io.github.leothawne.LTItemMail.module.VaultModule;
 import io.github.leothawne.LTItemMail.task.VersionTask;
@@ -58,11 +56,10 @@ public final class LTItemMail extends JavaPlugin {
 	private final void registerEvents(final Listener...listeners) {
 		for(final Listener listener : listeners) Bukkit.getServer().getPluginManager().registerEvents(listener, this);
 	}
-	private final ConsoleModule console = new ConsoleModule(this);
+	private final ConsoleModule console = new ConsoleModule();
 	private FileConfiguration configuration;
 	private FileConfiguration language;
 	private Connection con;
-	private HashMap<UUID, Boolean> playerBusy = new HashMap<UUID, Boolean>();
 	private MetricsAPI metrics;
 	private BukkitScheduler scheduler;
 	private Economy economyPlugin;
@@ -76,9 +73,14 @@ public final class LTItemMail extends JavaPlugin {
 		instance = this;
 		this.console.Hello();
 		this.console.info("Loading...");
-		for(final Player player : getServer().getOnlinePlayers()) playerBusy.put(player.getUniqueId(), false);
 		ConfigurationModule.check();
 		configuration = ConfigurationModule.load();
+		LanguageModule.check();
+		language = LanguageModule.load();
+		if(configuration == null || language == null) {
+			Bukkit.getServer().shutdown();
+			return;
+		}
 		if(configuration.getBoolean("enable-plugin")) {
 			metrics = MetricsModule.init();
 			economyPlugin = null;
@@ -93,10 +95,9 @@ public final class LTItemMail extends JavaPlugin {
 					} else console.info("Economy plugin is missing. Skipping...");
 				} else console.info("Vault is not installed. Skipping...");
 			}
-			LanguageModule.check();
-			language = LanguageModule.load();
 			DatabaseModule.check();
 			con = DatabaseModule.load();
+			MailboxLogModule.init();
 			getCommand("itemmail").setExecutor(new ItemMailCommand());
 			getCommand("itemmail").setTabCompleter(new ItemMailCommandTabCompleter());
 			getCommand("itemmailadmin").setExecutor(new ItemMailAdminCommand());
@@ -141,9 +142,6 @@ public final class LTItemMail extends JavaPlugin {
 	}
 	public final FileConfiguration getLanguage() {
 		return language;
-	}
-	public final HashMap<UUID, Boolean> getPlayerBusy(){
-		return playerBusy;
 	}
 	public final ConsoleModule getConsole() {
 		return console;

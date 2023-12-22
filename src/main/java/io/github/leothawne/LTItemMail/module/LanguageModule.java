@@ -32,7 +32,11 @@ public final class LanguageModule {
 				if(LTItemMail.getInstance().getConfiguration().getString("language").equalsIgnoreCase("english")) languageVersion = Integer.parseInt(DataModule.getVersion(VersionType.ENGLISH_YML));
 				if(LTItemMail.getInstance().getConfiguration().getString("language").equalsIgnoreCase("portuguese")) languageVersion = Integer.parseInt(DataModule.getVersion(VersionType.PORTUGUESE_YML));
 				if(LTItemMail.getInstance().getConfiguration().getString("language").equalsIgnoreCase("vietnamese")) languageVersion = Integer.parseInt(DataModule.getVersion(VersionType.VIETNAMESE_YML));
-				if(languageVersion != 0) if(languageConfig.getInt("language-version") != languageVersion) LTItemMail.getInstance().getConsole().severe(LTItemMail.getInstance().getConfiguration().getString("language") + ".yml file outdated. Delete that file and restart the server.");
+				if(languageVersion != 0) if(languageConfig.getInt("language-version") != languageVersion) {
+					LTItemMail.getInstance().getConsole().severe(LTItemMail.getInstance().getConfiguration().getString("language") + ".yml file outdated. Please restart the server.");
+					languageFile.delete();
+					return null;
+				}
 				return languageConfig;
 			} catch(final IOException | InvalidConfigurationException exception) {
 				exception.printStackTrace();
@@ -41,5 +45,57 @@ public final class LanguageModule {
 		}
 		LTItemMail.getInstance().getConsole().severe("Missing " + LTItemMail.getInstance().getConfiguration().getString("language") + ".yml file.");
 		return null;
+	}
+	public static final String get(final String path) {
+		String result = null;
+		switch(path) {
+			case "no-permission":
+				result = "You do not have permission to do this.";
+				break;
+			case "mailbox-closed":
+				result = "Box closed.";
+				break;
+			case "mailbox-paid":
+				result = "You paid $% to the post office.";
+				break;
+			case "mailbox-sent":
+				result = "Sending box to %...";
+				break;
+			case "mailbox-from":
+				result = "New mailbox from";
+				break;
+			case "special-mailbox":
+				result = "Special Mailbox!!!";
+				break;
+			case "mailbox-aborted":
+				result = "Shipping canceled!";
+				break;
+			case "transaction-error":
+				result = "Transaction not succeeded!";
+				break;
+			case "transaction-no-money":
+				result = "You do not have $% to pay to the post office.";
+				break;
+			case "recipient-full":
+				result = "% does not have % free slot(s).";
+				break;
+			case "recipient-empty":
+				result = "You must specify a player!";
+				break;
+			case "recipient-offline":
+				result = "The specified player is not online.";
+				break;
+			case "player-error":
+				result = "You must be a player to do that!";
+				break;
+			case "player-tma":
+				result = "Too many arguments!";
+				break;
+			case "player-self":
+				result = "You can not send a mailbox to yourself.";
+				break;
+		}
+		if(LTItemMail.getInstance().getLanguage().isSet(path)) result = LTItemMail.getInstance().getLanguage().getString(path);
+		return result;
 	}
 }

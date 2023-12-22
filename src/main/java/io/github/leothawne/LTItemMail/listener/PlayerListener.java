@@ -10,10 +10,10 @@ import io.github.leothawne.LTItemMail.LTItemMail;
 
 public final class PlayerListener implements Listener {
 	public PlayerListener() {}
-	@EventHandler(priority = EventPriority.MONITOR)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public final void onPlayerJoin(final PlayerJoinEvent event) {
 		final Player player = (Player) event.getPlayer();
-		LTItemMail.getInstance().getPlayerBusy().put(player.getUniqueId(), false);
 		if(player.hasPermission("LTItemMail.admin")) if(LTItemMail.getInstance().getConfiguration().getBoolean("update.check")) player.performCommand("itemmailadmin update");
+		if(player.hasPermission("LTItemMail.use")) player.performCommand("itemmail list");
 	}
 }

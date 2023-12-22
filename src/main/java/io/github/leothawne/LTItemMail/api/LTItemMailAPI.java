@@ -39,51 +39,6 @@ public final class LTItemMailAPI {
 	}
 	/**
 	 * 
-	 * Returns a boolean type value that can be used to determine
-	 * if a player is marked as busy. While opening a mailbox,
-	 * the receiver is marked as busy to not receive other
-	 * mailboxes until it closes the currently opened one.
-	 * 
-	 * @param player The Player type variable.
-	 * 
-	 * @return A boolean type value.
-	 * 
-	 */
-	public final boolean isPlayerBusy(final Player player) {
-		return (boolean) LTItemMail.getInstance().getPlayerBusy().get(player.getUniqueId()).booleanValue();
-	}
-	/**
-	 * 
-	 * Returns a boolean type value that can be used to determine
-	 * if a player is marked as busy. While opening a mailbox,
-	 * the receiver is marked as busy to not receive other
-	 * mailboxes until it closes the currently opened one.
-	 * 
-	 * @param playerUUID The player's unique id.
-	 * 
-	 * @return A boolean type value.
-	 * 
-	 */
-	public final boolean isPlayerBusy(final UUID playerUUID) {
-		return isPlayerBusy(Bukkit.getPlayer(playerUUID));
-	}
-	/**
-	 * 
-	 * Returns a boolean type value that can be used to determine
-	 * if a player is marked as busy. While opening a mailbox,
-	 * the receiver is marked as busy to not receive other
-	 * mailboxes until it closes the currently opened one.
-	 * 
-	 * @param playerName The player's name.
-	 * 
-	 * @return A boolean type value.
-	 * 
-	 */
-	public final boolean isPlayerBusy(final String playerName) {
-		return isPlayerBusy(Bukkit.getPlayer(playerName));
-	}
-	/**
-	 * 
 	 * Returns a FileConfiguration type value that can be used
 	 * to determine the current language used by the plugin.
 	 * 
