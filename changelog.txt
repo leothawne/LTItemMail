@@ -2,3 +2,4 @@ Changelog:
 - Improved mailbox system.
 - Added language fallback.
 - Added new messages.
+- Added /itemmail delete command.
