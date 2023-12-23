@@ -1,6 +1,6 @@
 name: LTItemMail
 description: A new way of sending items to another player without need teleporting to them.
-version: 0.2.7
+version: ${project.version}
 api-version: 1.13
 load: STARTUP
 author: [leothawne]

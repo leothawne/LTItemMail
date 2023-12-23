@@ -22,6 +22,7 @@
 		    <resource>
 		        <targetPath>${basedir}</targetPath>
 		        <directory>${basedir}/src/main/resources</directory>
+		        <filtering>true</filtering>
 		    </resource>
 		</resources>
 	</build>
