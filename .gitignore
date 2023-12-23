@@ -4,3 +4,12 @@
 .settings/org.eclipse.m2e.core.prefs
 .project
 javadoc.xml
+changelog.txt
+.settings/org.eclipse.core.resources.prefs
+config.yml
+english.yml
+mailboxes.db
+plugin.yml
+pom.xml
+portuguese.yml
+vietnamese.yml

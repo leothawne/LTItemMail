@@ -66,15 +66,15 @@ public final class DatabaseModule {
 		LinkedList<String> sqlList = new LinkedList<>();
 		switch(dbVer) {
 			case 0:
-				sqlList.add(0, "CREATE TABLE config(version INTEGER NOT NULL);");
-				sqlList.add(1, "INSERT INTO config(version) VALUES('1');");
-				sqlList.add(2, "ALTER TABLE mailbox DROP COLUMN items_lost;");
+				sqlList.add("CREATE TABLE config(version INTEGER NOT NULL);");
+				sqlList.add("INSERT INTO config(version) VALUES('1');");
+				sqlList.add("ALTER TABLE mailbox DROP COLUMN items_lost;");
 				break;
 		}
 		if(sqlList.size() > 0) try {
-			for(Integer i = 0; i < sqlList.size(); i++) {
+			for(final String sql : sqlList) {
 				final Statement statement = LTItemMail.getInstance().getConnection().createStatement();
-				statement.execute(sqlList.get(i));
+				statement.execute(sql);
 				statement.closeOnCompletion();
 			}
 			return true;

@@ -119,6 +119,7 @@ public final class LTItemMail extends JavaPlugin {
 			scheduler.scheduleSyncRepeatingTask(this, new VersionTask(), 0, 20 * 60 * 60);
 			registerEvents(new MailboxListener(), new PlayerListener());
 			new WarnIntegrationsAPI(new LinkedList<String>(Arrays.asList("Vault")));
+			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "itemmailadmin update");
 		} else {
 			this.console.severe("You've choosen to disable me.");
 			Bukkit.getPluginManager().disablePlugin(this);
