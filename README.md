@@ -1,6 +1,5 @@
 # LT Item Mail
-## Easily send items to distant players.
-### [Website](https://leothawne.github.io/LTItemMail/)
-### [SpigotMC page](https://www.spigotmc.org/resources/lt-item-mail.62294/)
+## Have you ever imagined mailing items to your friends in Minecraft?
+### [SpigotMC page](https://www.spigotmc.org/resources/62294/)
 ### [Bukkit Dev page](https://dev.bukkit.org/projects/lt-item-mail)
 ### [Javadocs](https://leothawne.github.io/javadocs/LTItemMail/)
