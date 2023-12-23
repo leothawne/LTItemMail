@@ -3,4 +3,4 @@
 ### [Website](https://leothawne.github.io/LTItemMail/)
 ### [SpigotMC page](https://www.spigotmc.org/resources/lt-item-mail.62294/)
 ### [Bukkit Dev page](https://dev.bukkit.org/projects/lt-item-mail)
-### [Javadoc](https://leothawne.github.io/javadocs/LTItemMail/)
+### [Javadocs](https://leothawne.github.io/javadocs/LTItemMail/)
