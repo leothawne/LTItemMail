@@ -7,7 +7,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-// TODO: Auto-generated Javadoc
 /**
  * 
  * The API class.
@@ -16,11 +15,17 @@ import org.bukkit.inventory.ItemStack;
  * 
  */
 public final class LTItemMailAPI {
-	
+	private LTItemMailAPI() {}
 	/**
-	 * Instantiates a new LT Item Mail API.
+	 * 
+	 * Method used to instantiate LT Item Mail API class.
+	 * 
+	 * @return The API class.
+	 * 
 	 */
-	public LTItemMailAPI() {}
+	public static final LTItemMailAPI getInstance() {
+		return new LTItemMailAPI();
+	}
 	/**
 	 * 
 	 * Method used to send items anonymously

@@ -47,12 +47,6 @@ import io.github.leothawne.LTItemMail.task.VersionTask;
 import io.github.leothawne.LTItemMail.type.VersionType;
 import net.milkbowl.vault.economy.Economy;
 
-/**
- * Main class.
- * 
- * @author leothawne
- *
- */
 public final class LTItemMail extends JavaPlugin {
 	private static LTItemMail instance;
 	private final void registerEvents(final Listener...listeners) {
@@ -65,11 +59,6 @@ public final class LTItemMail extends JavaPlugin {
 	private MetricsAPI metrics;
 	private BukkitScheduler scheduler;
 	private Economy economyPlugin;
-	/**
-	 * 
-	 * @deprecated Not for public use.
-	 * 
-	 */
 	@Override
 	public final void onEnable() {
 		instance = this;
@@ -125,11 +114,6 @@ public final class LTItemMail extends JavaPlugin {
 			Bukkit.getPluginManager().disablePlugin(this);
 		}
 	}
-	/**
-	 * 
-	 * @deprecated Not for public use.
-	 * 
-	 */
 	@Override
 	public final void onDisable() {
 		console.info("Unloading...");
@@ -137,13 +121,13 @@ public final class LTItemMail extends JavaPlugin {
 	}
 	/**
 	 * 
-	 * Method used to cast the API class.
+	 * Method used to instantiate LT Item Mail API class.
 	 * 
 	 * @return The API class.
 	 * 
 	 */
-	public final LTItemMailAPI getAPI() {
-		return new LTItemMailAPI();
+	public static final LTItemMailAPI getAPI() {
+		return LTItemMailAPI.getInstance();
 	}
 	public static final LTItemMail getInstance() {
 		return instance;
