@@ -25,25 +25,24 @@ public final class DatabaseModule {
 	public static final void check() {
 		final File databaseFile = new File(LTItemMail.getInstance().getDataFolder(), "mailboxes.db");
 		if(!databaseFile.exists()) {
-			LTItemMail.getInstance().getConsole().warning("Extracting mailboxes.db file...");
+			ConsoleModule.warning("Extracting mailboxes.db file...");
 			LTItemMail.getInstance().saveResource("mailboxes.db", false);
-			LTItemMail.getInstance().getConsole().info("Done.");
-		} else LTItemMail.getInstance().getConsole().info("Found mailboxes.db file.");
+			ConsoleModule.info("Done.");
+		} else ConsoleModule.info("Found mailboxes.db file.");
 	}
 	public static final Connection load() {
 		final File databaseFile = new File(LTItemMail.getInstance().getDataFolder(), "mailboxes.db");
 		if(databaseFile.exists()) {
 			try {
 				final Connection con = DriverManager.getConnection("jdbc:sqlite:" + LTItemMail.getInstance().getDataFolder() + File.separator + "mailboxes.db");
-				LTItemMail.getInstance().getConsole().info("Database loaded.");
+				ConsoleModule.info("Database loaded.");
 				return con;
 			} catch (final SQLException e) {
 				e.printStackTrace();
 			}
-			LTItemMail.getInstance().getConsole().severe("An error occurred while loading the database.");
 			return null;
 		}
-		LTItemMail.getInstance().getConsole().severe("Missing mailboxes.db file.");
+		ConsoleModule.severe("Missing mailboxes.db file.");
 		return null;
 	}
 	public static final int checkDbVer() {
@@ -58,7 +57,6 @@ public final class DatabaseModule {
 			}
 		} catch (final SQLException e) {
 			e.printStackTrace();
-			LTItemMail.getInstance().getConsole().severe("An error occurred while checking database version.");
 		}
 		return 0;
 	}
@@ -104,7 +102,6 @@ public final class DatabaseModule {
 				if(results.next()) return results.getInt("id");
 			} catch (final SQLException e) {
 				e.printStackTrace();
-				LTItemMail.getInstance().getConsole().severe("An error occurred while saving a mailbox.");
 			}
 			return 0;
 		}
@@ -126,7 +123,6 @@ public final class DatabaseModule {
 				return true;
 			} catch (final SQLException e) {
 				e.printStackTrace();
-				LTItemMail.getInstance().getConsole().severe("An error occurred while updating a mailbox status.");
 			}
 			return false;
 		}
@@ -145,7 +141,6 @@ public final class DatabaseModule {
 				return items;
 			} catch (final SQLException | InvalidConfigurationException e) {
 				e.printStackTrace();
-				LTItemMail.getInstance().getConsole().severe("An error occurred while getting a mailbox items.");
 			}
 			return items;
 		}
@@ -157,7 +152,6 @@ public final class DatabaseModule {
 				return true;
 			} catch (final SQLException e) {
 				e.printStackTrace();
-				LTItemMail.getInstance().getConsole().severe("An error occurred while updating a mailbox status.");
 			}
 			return false;
 		}
@@ -169,7 +163,6 @@ public final class DatabaseModule {
 				if(results.next()) if(results.getString("uuid_to").equals(owner.toString())) return true;
 			} catch (final SQLException e) {
 				e.printStackTrace();
-				LTItemMail.getInstance().getConsole().severe("An error occurred while checking for a mailbox ownership.");
 			}
 			return false;
 		}
@@ -181,7 +174,6 @@ public final class DatabaseModule {
 				if(results.next()) return UUID.fromString(results.getString("uuid_to"));
 			} catch (final SQLException e) {
 				e.printStackTrace();
-				LTItemMail.getInstance().getConsole().severe("An error occurred while checking for a mailbox ownership.");
 			}
 			return null;
 		}
@@ -193,7 +185,6 @@ public final class DatabaseModule {
 				statement.closeOnCompletion();
 			} catch (final SQLException e) {
 				e.printStackTrace();
-				LTItemMail.getInstance().getConsole().severe("An error occurred while checking for a mailbox status.");
 			}
 			return false;
 		}
@@ -206,7 +197,6 @@ public final class DatabaseModule {
 				statement.closeOnCompletion();
 			} catch (final SQLException e) {
 				e.printStackTrace();
-				LTItemMail.getInstance().getConsole().severe("An error occurred getting a mailboxes list.");
 			}
 			return mailboxes;
 		}
@@ -219,7 +209,6 @@ public final class DatabaseModule {
 				statement.closeOnCompletion();
 			} catch (final SQLException e) {
 				e.printStackTrace();
-				LTItemMail.getInstance().getConsole().severe("An error occurred getting a mailboxes list.");
 			}
 			return mailboxes;
 		}

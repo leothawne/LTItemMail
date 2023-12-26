@@ -1,25 +1,45 @@
-no-permission: "Você não tem permissão para fazer isso."
-mailbox-closed: "Caixa fechada."
-mailbox-paid: "Você pagou $% ao corrêio."
-mailbox-sent: "Enviando caixa para %..."
-mailbox-from: "Novo corrêio de"
-special-mailbox: "Corrêio especial!!!"
-mailbox-aborted: "Envio cancelado."
-transaction-error: "Transação mal sucedida!"
-transaction-no-money: "Você não tem $% para pagar ao corrêio."
-recipient-full: "% não tem % slot(s) livre(s)."
-recipient-empty: "Enter the name of the recipient."
-recipient-offline: "The recipient you have chosen is not online."
-player-error: "Você precisa ser um jogador para fazer isso!"
-player-tma: "Erro de sintaxe!"
-player-self: "Você não pode enviar uma caixa de itens para você mesmo."
-no-new-mailbox: "Não há novas caixas."
-mailbox-id-error: "ID da caixa deve ser um número inteiro."
-mailbox-deleted: "Deletado"
-opened-boxes: "Caixas abertas de"
-empty: "Vazio"
-mailbox-recover-empty: "Não há itens perdidos nessa caixa."
-mailbox-list-empty: "Não há caixas abertas do jogador"
+player:
+    permissionerror: "Você não tem permissão para fazer isso."
+    inventoryfull: "% não tem % slot(s) livre(s)."
+    missingerror: "Você deve especificar o nome do jogador."
+    offlineerror: "O jogador especificado não está online."
+    error: "Você precisa ser um jogador para fazer isso!"
+    syntaxerror: "Erro de sintaxe!"
+    selferror: "Você não pode enviar uma caixa de itens para você mesmo."
+    openedboxes: "Caixas abertas de"
+
+mailbox:
+    closed: "Caixa fechada."
+    sent: "Enviando caixa para %..."
+    from: "Novo corrêio de"
+    special: "Corrêio especial!!!"
+    aborted: "Envio cancelado."
+    nonew: "Não há novas caixas."
+    iderror: "ID da caixa deve ser um número inteiro."
+    deleted: "Deletado"
+    empty: "Vazio"
+    nolost: "Não há itens perdidos nessa caixa."
+    emptylist: "Não há caixas abertas do jogador"
+
+transaction:
+    error: "Transação mal sucedida!"
+    nomoney: "Você não tem $% para pagar ao corrêio."
+    paid: "Você pagou $% ao corrêio."
+
+command:
+    invalid: "Comando inválido. Digite % para ver a lista de comandos."
+    player:
+        itemmail: "Lista de comandos para jogadores."
+        version: "Mostra a versão atual do plugin."
+        list: "Lista de todas as caixas de corrêio pendentes recebidas."
+        open: "Abre uma caixa de corrêio pendente."
+        delete: "Deleta uma caixa de corrêio pendente."
+        mailitem: "Abre uma nova caixa de corrêio pra colocar itens dentro e enviar para outro jogador."
+    admin:
+        itemmailadmin: "Lista de comandos para admins."
+        update: "Verifica se há novas atualizações."
+        list: "Lista de todas as caixas de corrêio deletadas de um jogador."
+        recover: "Recupera items perdidos de caixas de corrêio deletadas (se houver algum)."
 
 #Não mude isso sob nenhuma circunstância!
-language-version: 5
+language-version: 6

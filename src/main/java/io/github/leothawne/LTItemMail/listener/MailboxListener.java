@@ -20,11 +20,11 @@ import io.github.leothawne.LTItemMail.inventory.MailboxInventory;
 import io.github.leothawne.LTItemMail.module.DatabaseModule;
 import io.github.leothawne.LTItemMail.module.LanguageModule;
 import io.github.leothawne.LTItemMail.module.MailboxLogModule;
+import io.github.leothawne.LTItemMail.type.LanguageType;
 import io.github.leothawne.LTItemMail.type.MailboxType;
 import net.milkbowl.vault.economy.EconomyResponse;
 
 public final class MailboxListener implements Listener {
-	public MailboxListener(){}
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public final void onInventoryClose(final InventoryCloseEvent event) {
 		final Player player = (Player) event.getPlayer();
@@ -44,7 +44,7 @@ public final class MailboxListener implements Listener {
 				}
 				DatabaseModule.Function.updateMailbox(mailboxID, items);
 			} else DatabaseModule.Function.updateMailbox(mailboxID, new LinkedList<ItemStack>());
-			player.sendMessage(ChatColor.DARK_GREEN + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + LanguageModule.get("mailbox-closed"));
+			player.sendMessage(ChatColor.DARK_GREEN + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + LanguageModule.get(LanguageType.MAILBOX_CLOSED));
 			inventory.clear();
 		} else if(inventoryView.getTitle().contains(MailboxInventory.getMailboxName(MailboxType.OUT, null, null)) && inventoryView.getTitle().split("@").length == 2) {
 			final Player sender = (Player) event.getPlayer();
@@ -70,34 +70,34 @@ public final class MailboxListener implements Listener {
 					if(LTItemMail.getInstance().getEconomy().has(sender, newcost)) {
 						final EconomyResponse er = LTItemMail.getInstance().getEconomy().withdrawPlayer(sender, newcost);
 						if(er.transactionSuccess()) {
-							final String[] mailboxPaid = LanguageModule.get("mailbox-paid").split("%");
+							final String[] mailboxPaid = LanguageModule.get(LanguageType.TRANSACTION_PAID).split("%");
 							sender.sendMessage(ChatColor.DARK_GREEN + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + mailboxPaid[0] + "" + ChatColor.GREEN + newcost + "" + ChatColor.YELLOW + "" + mailboxPaid[1]);
 							sendBox(sender, recipient, contentsarray);
 						} else {
-							sender.sendMessage(ChatColor.DARK_GREEN + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + LanguageModule.get("transaction-error"));
+							sender.sendMessage(ChatColor.DARK_GREEN + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + LanguageModule.get(LanguageType.TRANSACTION_ERROR));
 							for(final ItemStack item : contentsarray) sender.getInventory().addItem(item);
 						}
 					} else {
-						final String[] transactionNoMoney = LanguageModule.get("transaction-no-money").split("%");
+						final String[] transactionNoMoney = LanguageModule.get(LanguageType.TRANSACTION_NOMONEY).split("%");
 						sender.sendMessage(ChatColor.DARK_GREEN + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + transactionNoMoney[0] + "" + ChatColor.GREEN + newcost + "" + ChatColor.YELLOW + "" + transactionNoMoney[1]);
 						for(final ItemStack item : contentsarray) sender.getInventory().addItem(item);
 					}
 				} else sendBox(sender, recipient, contentsarray);
-			} else sender.sendMessage(ChatColor.DARK_GREEN + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + LanguageModule.get("mailbox-aborted"));
+			} else sender.sendMessage(ChatColor.DARK_GREEN + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + LanguageModule.get(LanguageType.MAILBOX_ABORTED));
 		}
 	}
 	private static final void sendBox(final CommandSender sender, final Player recipient, final LinkedList<ItemStack> contentsarray) {
-		final String[] mailboxSent = LanguageModule.get("mailbox-sent").split("%");
+		final String[] mailboxSent = LanguageModule.get(LanguageType.MAILBOX_SENT).split("%");
 		sender.sendMessage(ChatColor.DARK_GREEN + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + mailboxSent[0] + "" + ChatColor.AQUA + "" + recipient.getName() + "" + ChatColor.YELLOW + "" + mailboxSent[1]);
 		if(LTItemMail.getInstance().getConfiguration().getBoolean("use-title")) {
-			recipient.sendTitle(ChatColor.AQUA + "" + LanguageModule.get("mailbox-from") +  " " + ChatColor.GREEN + "" + sender.getName(), "", 20 * 1, 20 * 5, 20 * 1);
-		} else recipient.sendMessage(ChatColor.DARK_GREEN + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.AQUA + "" + LanguageModule.get("mailbox-from") + " " + ChatColor.GREEN + "" + sender.getName());
+			recipient.sendTitle(ChatColor.AQUA + "" + LanguageModule.get(LanguageType.MAILBOX_FROM) +  " " + ChatColor.GREEN + "" + sender.getName(), "", 20 * 1, 20 * 5, 20 * 1);
+		} else recipient.sendMessage(ChatColor.DARK_GREEN + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.AQUA + "" + LanguageModule.get(LanguageType.MAILBOX_FROM) + " " + ChatColor.GREEN + "" + sender.getName());
 		Player senderPlayer = null;
 		if(sender instanceof Player) senderPlayer = (Player) sender;
 		UUID senderPlayerID = null;
 		if(senderPlayer != null) senderPlayerID = senderPlayer.getUniqueId();
 		final Integer mailboxID = DatabaseModule.Function.saveMailbox(senderPlayerID, recipient.getUniqueId(), contentsarray);
-		if(senderPlayer != null) MailboxLogModule.log(senderPlayer.getUniqueId(), recipient.getUniqueId(), MailboxLogModule.ActionType.SENT, mailboxID);
-		MailboxLogModule.log(recipient.getUniqueId(), null, MailboxLogModule.ActionType.RECEIVED, mailboxID);
+		if(senderPlayer != null) MailboxLogModule.log(senderPlayer.getUniqueId(), recipient.getUniqueId(), MailboxLogModule.Action.SENT, mailboxID);
+		MailboxLogModule.log(recipient.getUniqueId(), null, MailboxLogModule.Action.RECEIVED, mailboxID);
 	}
 }

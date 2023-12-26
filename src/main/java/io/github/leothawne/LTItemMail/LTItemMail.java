@@ -22,6 +22,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import io.github.leothawne.LTItemMail.api.LTItemMailAPI;
@@ -52,7 +53,6 @@ public final class LTItemMail extends JavaPlugin {
 	private final void registerEvents(final Listener...listeners) {
 		for(final Listener listener : listeners) Bukkit.getServer().getPluginManager().registerEvents(listener, this);
 	}
-	private final ConsoleModule console = new ConsoleModule();
 	private FileConfiguration configuration;
 	private FileConfiguration language;
 	private Connection con;
@@ -62,41 +62,46 @@ public final class LTItemMail extends JavaPlugin {
 	@Override
 	public final void onEnable() {
 		instance = this;
-		this.console.Hello();
-		this.console.info("Loading...");
+		ConsoleModule.Hello();
+		ConsoleModule.info("Loading...");
 		ConfigurationModule.check();
 		configuration = ConfigurationModule.load();
 		LanguageModule.check();
 		language = LanguageModule.load();
-		if(configuration == null || language == null) {
-			Bukkit.getServer().shutdown();
+		if(configuration == null) {
+			new BukkitRunnable() {
+				@Override
+				public final void run() {
+					Bukkit.getPluginManager().disablePlugin(LTItemMail.getInstance());
+				}
+			}.runTaskTimer(this, 0, 0);
 			return;
 		}
 		if(configuration.getBoolean("enable-plugin")) {
 			metrics = MetricsModule.init();
 			economyPlugin = null;
 			if(configuration.getBoolean("use-vault")) {
-				console.info("Loading Vault...");
+				ConsoleModule.info("Loading Vault...");
 				if(VaultModule.isVaultInstalled()) {
-					console.info("Vault loaded.");
-					console.info("Looking for an Economy plugin...");
+					ConsoleModule.info("Vault loaded.");
+					ConsoleModule.info("Looking for an Economy plugin...");
 					economyPlugin = VaultModule.getEconomy();
 					if(economyPlugin != null) {
-						console.info("Economy plugin found.");
-					} else console.info("Economy plugin is missing. Skipping...");
-				} else console.info("Vault is not installed. Skipping...");
+						ConsoleModule.info("Economy plugin found.");
+					} else ConsoleModule.info("Economy plugin is missing. Skipping...");
+				} else ConsoleModule.info("Vault is not installed. Skipping...");
 			}
 			DatabaseModule.check();
 			con = DatabaseModule.load();
 			final Integer dbVer = DatabaseModule.checkDbVer();
 			if(dbVer < Integer.valueOf(DataModule.getVersion(VersionType.DATABASE))) {
 				for(Integer i = dbVer; i < Integer.valueOf(DataModule.getVersion(VersionType.DATABASE)); i++) {
-					console.warning("Updating database... (" + i + " -> " + (i + 1) + ")");
+					ConsoleModule.warning("Updating database... (" + i + " -> " + (i + 1) + ")");
 					if(DatabaseModule.updateDb(i)) {
-						console.info("Database updated! (" + i + " -> " + (i + 1) + ")");
-					} else console.severe("Database update failed! (" + i + " -> " + (i + 1) + ")");
+						ConsoleModule.info("Database updated! (" + i + " -> " + (i + 1) + ")");
+					} else ConsoleModule.severe("Database update failed! (" + i + " -> " + (i + 1) + ")");
 				}
-			} else console.info("Database is up to date! (" + dbVer + ")");
+			} else ConsoleModule.info("Database is up to date! (" + dbVer + ")");
 			MailboxLogModule.init();
 			getCommand("itemmail").setExecutor(new ItemMailCommand());
 			getCommand("itemmail").setTabCompleter(new ItemMailCommandTabCompleter());
@@ -110,13 +115,13 @@ public final class LTItemMail extends JavaPlugin {
 			new WarnIntegrationsAPI(new LinkedList<String>(Arrays.asList("Vault")));
 			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "itemmailadmin update");
 		} else {
-			this.console.severe("You've choosen to disable me.");
+			ConsoleModule.severe("You've choosen to disable me!");
 			Bukkit.getPluginManager().disablePlugin(this);
 		}
 	}
 	@Override
 	public final void onDisable() {
-		console.info("Unloading...");
+		ConsoleModule.info("Unloading...");
 		scheduler.cancelTasks(this);
 	}
 	/**
@@ -137,9 +142,6 @@ public final class LTItemMail extends JavaPlugin {
 	}
 	public final FileConfiguration getLanguage() {
 		return language;
-	}
-	public final ConsoleModule getConsole() {
-		return console;
 	}
 	public final MetricsAPI getMetrics() {
 		return metrics;

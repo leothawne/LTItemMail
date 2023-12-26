@@ -11,6 +11,7 @@ import io.github.leothawne.LTItemMail.LTItemMail;
 import io.github.leothawne.LTItemMail.type.MailboxType;
 
 public final class MailboxInventory {
+	private MailboxInventory() {}
 	public static final String getMailboxName(final MailboxType type, final Integer mailboxID, final Player playerFrom) {
 		if(type.equals(MailboxType.IN)) {
 			if(mailboxID != null) {

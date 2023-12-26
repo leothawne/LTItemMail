@@ -9,7 +9,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import io.github.leothawne.LTItemMail.LTItemMail;
 
 public final class PlayerListener implements Listener {
-	public PlayerListener() {}
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public final void onPlayerJoin(final PlayerJoinEvent event) {
 		final Player player = (Player) event.getPlayer();

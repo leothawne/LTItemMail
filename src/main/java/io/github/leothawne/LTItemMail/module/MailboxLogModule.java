@@ -40,7 +40,7 @@ public final class MailboxLogModule {
 	public static final void init() {
 		new MailboxLogModule();
 	}
-	public static final boolean log(final UUID playerFrom, UUID playerTo, final ActionType action, final Integer mailboxID) {
+	public static final boolean log(final UUID playerFrom, UUID playerTo, final Action action, final Integer mailboxID) {
 		if(playerFrom == null) return false;
 		if(action == null) return false;
 		if(mailboxID == null) return false;
@@ -63,7 +63,7 @@ public final class MailboxLogModule {
 		MailboxLogModule.getInstance().getLogger().info(log);
 		return true;
 	}
-	public enum ActionType {
+	public enum Action {
 		RECOVERED,
 		OPENED,
 		RECEIVED,

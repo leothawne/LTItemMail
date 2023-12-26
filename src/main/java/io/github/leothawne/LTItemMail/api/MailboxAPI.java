@@ -10,13 +10,15 @@ import io.github.leothawne.LTItemMail.LTItemMail;
 import io.github.leothawne.LTItemMail.module.DatabaseModule;
 import io.github.leothawne.LTItemMail.module.LanguageModule;
 import io.github.leothawne.LTItemMail.module.MailboxLogModule;
+import io.github.leothawne.LTItemMail.type.LanguageType;
 
 public final class MailboxAPI {
+	private MailboxAPI() {}
 	public static final void sendSpecial(final Player receiver, final LinkedList<ItemStack> items) {
 		if(LTItemMail.getInstance().getConfiguration().getBoolean("use-title")) {
-			receiver.sendTitle(ChatColor.AQUA + "" + LanguageModule.get("special-mailbox"), "", 20 * 1, 20 * 5, 20 * 1);
-		} else receiver.sendMessage(ChatColor.DARK_GREEN + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.AQUA + "" + LanguageModule.get("special-mailbox"));
+			receiver.sendTitle(ChatColor.AQUA + "" + LanguageModule.get(LanguageType.MAILBOX_SPECIAL), "", 20 * 1, 20 * 5, 20 * 1);
+		} else receiver.sendMessage(ChatColor.DARK_GREEN + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.AQUA + "" + LanguageModule.get(LanguageType.MAILBOX_SPECIAL));
 		final Integer mailboxID = DatabaseModule.Function.saveMailbox(null, receiver.getUniqueId(), items);
-		MailboxLogModule.log(null, null, MailboxLogModule.ActionType.RECEIVED, mailboxID);
+		MailboxLogModule.log(null, null, MailboxLogModule.Action.RECEIVED, mailboxID);
 	}
 }

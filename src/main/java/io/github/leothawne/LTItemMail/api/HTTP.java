@@ -7,6 +7,7 @@ import java.net.URLConnection;
 import java.nio.charset.Charset;
 
 public final class HTTP {
+	private HTTP() {}
 	public static final String getData(final String url) {
 		try {
 			final URLConnection connection = new URL(url).openConnection();

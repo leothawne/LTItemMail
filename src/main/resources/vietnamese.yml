@@ -1,18 +1,23 @@
 #Translation created by DUYSONGLOI: https://github.com/DUYSONGLOI
-no-permission: "Bạn không có quyền để làm điều này"
-mailbox-closed: "Đã tắt MailBox!"
-mailbox-paid: "Đã thanh toán % cho ngân hàng!"
-mailbox-sent: "Vật phẩm đã gửi cho %."
-mailbox-from: "Mailbox từ:"
-special-mailbox: "hộp thư đặc biệt!!!"
-mailbox-aborted: "Box Trống! Đã bị hủy."
-transaction-error: "Giao dịch không thành công!"
-transaction-no-money: "Bạn không có % để gửi."
-recipient-full: "% không có đủ % slots còn trống để gửi."
-recipient-empty: "bạn phải chỉ định người chơi!"
-recipient-offline: "Người chơi bạn chỉ định đang Offline."
-player-error: "Bạn phải là người chơi để làm điều này!"
-player-self: "Không thể gửi cho chính mình."
+player:
+    permissionerror: "Bạn không có quyền để làm điều này"
+    inventoryfull: "% không có đủ % slots còn trống để gửi."
+    missingerror: "bạn phải chỉ định người chơi!"
+    offlineerror: "Người chơi bạn chỉ định đang Offline."
+    error: "Bạn phải là người chơi để làm điều này!"
+    selferror: "Không thể gửi cho chính mình."
+
+mailbox:
+    closed: "Đã tắt MailBox!"
+    sent: "Vật phẩm đã gửi cho %."
+    from: "Mailbox từ:"
+    special: "hộp thư đặc biệt!!!"
+    aborted: "Box Trống! Đã bị hủy."
+
+transaction:
+    error: "Giao dịch không thành công!"
+    nomoney: "Bạn không có % để gửi."
+    paid: "Đã thanh toán % cho ngân hàng!"
 
 #Đừng thay đổi nó trong bất kỳ trường hợp nào!
-language-version: 2
+language-version: 3

@@ -7,6 +7,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import net.milkbowl.vault.economy.Economy;
 
 public final class VaultModule {
+	private VaultModule() {}
 	public static final boolean isVaultInstalled() {
 		final Plugin vault = Bukkit.getPluginManager().getPlugin("Vault");
 		return (vault != null && vault.isEnabled());

@@ -1,25 +1,45 @@
-no-permission: "You do not have permission to do this."
-mailbox-closed: "Box closed."
-mailbox-paid: "You paid $% to the post office."
-mailbox-sent: "Sending box to %..."
-mailbox-from: "New mailbox from"
-special-mailbox: "Special Mailbox!!!"
-mailbox-aborted: "Shipping canceled!"
-transaction-error: "Transaction not succeeded!"
-transaction-no-money: "You do not have $% to pay to the post office."
-recipient-full: "% does not have % free slot(s)."
-recipient-empty: "You must specify a player!"
-recipient-offline: "The specified player is not online."
-player-error: "You must be a player to do that!"
-player-tma: "Syntax error!"
-player-self: "You can not send a mailbox to yourself."
-no-new-mailbox: "No new boxes."
-mailbox-id-error: "Mailbox ID must be a number."
-mailbox-deleted: "Deleted"
-opened-boxes: "Opened boxes of"
-empty: "Empty"
-mailbox-recover-empty: "There is no lost items in this box."
-mailbox-list-empty: "No opened mailboxes for player"
+player:
+    permissionerror: "You do not have permission to do this."
+    inventoryfull: "% does not have % free slot(s)."
+    missingerror: "You must specify a player!"
+    offlineerror: "The specified player is not online."
+    error: "You must be a player to do that!"
+    syntaxerror: "Syntax error!"
+    selferror: "You can not send a mailbox to yourself."
+    openedboxes: "Opened boxes of"
+
+mailbox:
+    closed: "Box closed."
+    sent: "Sending box to %..."
+    from: "New mailbox from"
+    special: "Special Mailbox!!!"
+    aborted: "Shipping canceled!"
+    nonew: "No new boxes."
+    iderror: "Mailbox ID must be a number."
+    deleted: "Deleted"
+    empty: "Empty"
+    nolost: "There is no lost items in this box."
+    emptylist: "No opened mailboxes for player"
+
+transaction:
+    error: "Transaction not succeeded!"
+    nomoney: "You do not have $% to pay to the post office."
+    paid: "You paid $% to the post office." 
+
+command:
+    invalid: "Invalid command. Type % to see the command list."
+    player:
+        itemmail: "List of player commands."
+        version: "Show the current plugin version."
+        list: "List all pending mailboxes received."
+        open: "Open a pending mailbox."
+        delete: "Delete a pending mailbox."
+        mailitem: "Open a new mailbox to put items inside and send it to another player."
+    admin:
+        itemmailadmin: "List of admin commands."
+        update: "Check for new updates."
+        list: "List deleted mailboxes of a player."
+        recover: "Recover lost items from a deleted mailbox (if there is any)."
 
 #Do not change it under any circumstances!
-language-version: 5
+language-version: 6

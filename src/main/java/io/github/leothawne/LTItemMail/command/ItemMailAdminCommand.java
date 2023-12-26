@@ -20,20 +20,19 @@ import io.github.leothawne.LTItemMail.module.DataModule;
 import io.github.leothawne.LTItemMail.module.DatabaseModule;
 import io.github.leothawne.LTItemMail.module.LanguageModule;
 import io.github.leothawne.LTItemMail.module.MailboxLogModule;
+import io.github.leothawne.LTItemMail.type.LanguageType;
 import io.github.leothawne.LTItemMail.type.MailboxType;
 
 public final class ItemMailAdminCommand implements CommandExecutor {
-	public ItemMailAdminCommand() {}
 	@Override
 	public final boolean onCommand(final CommandSender sender, final Command cmd, final String commandLabel, final String[] args) {
 		if(sender.hasPermission("LTItemMail.admin")) {
 			if(args.length == 0) {
-				sender.sendMessage(ChatColor.AQUA + "=+=+=+= [LT Item Mail :: Admin] =+=+=+=");
-				sender.sendMessage(ChatColor.GREEN + "/itemmailadmin " + ChatColor.AQUA + "- Commands for administrators.");
-				sender.sendMessage(ChatColor.GREEN + "/itemmailadmin update " + ChatColor.AQUA + "- Check for new updates.");
-				sender.sendMessage(ChatColor.GREEN + "/itemmailadmin list <player> " + ChatColor.AQUA + "- List opened mailboxes of a specific player.");
-				sender.sendMessage(ChatColor.GREEN + "/itemmailadmin recover <mailbox id> " + ChatColor.AQUA + "- Recover lost items (if there is any).");
-				sender.sendMessage(ChatColor.YELLOW + "You can also use "+ ChatColor.GREEN + "/itemmailadmin "+ ChatColor.YELLOW + "as "+ ChatColor.GREEN + "/imad"+ ChatColor.YELLOW + ".");
+				sender.sendMessage(ChatColor.AQUA + "=+=+=+= [LT Item Mail " + LTItemMail.getInstance().getDescription().getVersion() + " :: Admin] =+=+=+=");
+				sender.sendMessage(ChatColor.GREEN + "/itemmailadmin " + ChatColor.AQUA + "- " + LanguageModule.get(LanguageType.COMMAND_ADMIN_ITEMMAILADMIN));
+				sender.sendMessage(ChatColor.GREEN + "/itemmailadmin update " + ChatColor.AQUA + "- " + LanguageModule.get(LanguageType.COMMAND_ADMIN_UPDATE));
+				sender.sendMessage(ChatColor.GREEN + "/itemmailadmin list <player> " + ChatColor.AQUA + "- " + LanguageModule.get(LanguageType.COMMAND_ADMIN_LIST));
+				sender.sendMessage(ChatColor.GREEN + "/itemmailadmin recover <mailbox id> " + ChatColor.AQUA + "- " + LanguageModule.get(LanguageType.COMMAND_ADMIN_RECOVER));
 			} else if(args[0].equalsIgnoreCase("update")) {
 				if(args.length == 1) {
 					final CommandSender finalSender = sender;
@@ -59,7 +58,7 @@ public final class ItemMailAdminCommand implements CommandExecutor {
 							} else finalSender.sendMessage(ChatColor.AQUA + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "The plugin is up to date!");
 						}
 					}.runTaskAsynchronously(LTItemMail.getInstance());
-				} else sender.sendMessage(ChatColor.AQUA + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + LanguageModule.get("player-tma"));
+				} else sender.sendMessage(ChatColor.AQUA + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + LanguageModule.get(LanguageType.PLAYER_SYNTAXERROR));
 			} else if(args[0].equalsIgnoreCase("list") && sender instanceof Player) {
 				final Player player = (Player) sender;
 				if(args.length == 2) {
@@ -67,15 +66,15 @@ public final class ItemMailAdminCommand implements CommandExecutor {
 					final OfflinePlayer offPlayer = Bukkit.getOfflinePlayer(args[1]);
 					final HashMap<Integer, String> mailboxes = DatabaseModule.Function.getOpenedMailboxesList(offPlayer.getUniqueId());
 					if(mailboxes.size() > 0) {
-						player.sendMessage(ChatColor.AQUA + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "" + LanguageModule.get("opened-boxes") + " " + offPlayer.getName() + ":");
+						player.sendMessage(ChatColor.AQUA + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "" + LanguageModule.get(LanguageType.PLAYER_OPENEDBOXES) + " " + offPlayer.getName() + ":");
 						for(final Integer mailboxID : mailboxes.keySet()) {
 							String x = "";
 							final LinkedList<ItemStack> items = DatabaseModule.Function.getMailbox(mailboxID);
-							if(items.size() == 0) x = " [" + LanguageModule.get("empty") + "]";
+							if(items.size() == 0) x = " [" + LanguageModule.get(LanguageType.MAILBOX_EMPTY) + "]";
 							player.sendMessage(LTItemMail.getInstance().getConfiguration().getString("mailbox-name") + " #" + mailboxID + " : " + mailboxes.get(mailboxID) + x); 
 						}
-					} else sender.sendMessage(ChatColor.AQUA + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + LanguageModule.get("mailbox-list-empty") + " " + offPlayer.getName());
-				} else sender.sendMessage(ChatColor.AQUA + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + LanguageModule.get("player-tma"));
+					} else sender.sendMessage(ChatColor.AQUA + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + LanguageModule.get(LanguageType.MAILBOX_EMPTYLIST) + " " + offPlayer.getName());
+				} else sender.sendMessage(ChatColor.AQUA + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + LanguageModule.get(LanguageType.PLAYER_SYNTAXERROR));
 			} else if(args[0].equalsIgnoreCase("recover") && sender instanceof Player) {
 				final Player player = (Player) sender;
 				if(args.length == 2) {
@@ -84,17 +83,17 @@ public final class ItemMailAdminCommand implements CommandExecutor {
 						final LinkedList<ItemStack> items = DatabaseModule.Function.getMailbox(mailboxID);
 						if(items.size() > 0) {
 							player.openInventory(MailboxInventory.getMailboxInventory(MailboxType.IN, mailboxID, null, items));
-							MailboxLogModule.log(player.getUniqueId(), null, MailboxLogModule.ActionType.RECOVERED, mailboxID);
-						} else player.sendMessage(ChatColor.AQUA + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "" + LanguageModule.get("mailbox-recover-empty"));
+							MailboxLogModule.log(player.getUniqueId(), null, MailboxLogModule.Action.RECOVERED, mailboxID);
+						} else player.sendMessage(ChatColor.AQUA + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "" + LanguageModule.get(LanguageType.MAILBOX_NOLOST));
 					} catch (final NumberFormatException e) {
-						player.sendMessage(ChatColor.AQUA + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "" + LanguageModule.get("mailbox-id-error"));
+						player.sendMessage(ChatColor.AQUA + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "" + LanguageModule.get(LanguageType.MAILBOX_IDERROR));
 					}
-				} else sender.sendMessage(ChatColor.AQUA + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + LanguageModule.get("player-tma"));
-			} else sender.sendMessage(ChatColor.AQUA + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "Invalid command! Type " + ChatColor.GREEN + "/itemmailadmin " + ChatColor.YELLOW + "to see all available commands.");
-		} else {
-			sender.sendMessage(ChatColor.AQUA + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "" + LanguageModule.get("no-permission"));
-			LTItemMail.getInstance().getConsole().severe(sender.getName() + " does not have permission [LTItemMail.admin].");
-		}
+				} else sender.sendMessage(ChatColor.AQUA + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + LanguageModule.get(LanguageType.PLAYER_SYNTAXERROR));
+			} else {
+				final String[] invalidCmd = LanguageModule.get(LanguageType.COMMAND_INVALID).split("%");
+				sender.sendMessage(ChatColor.AQUA + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + invalidCmd[0] + ChatColor.GREEN + "/itemmailadmin " + ChatColor.YELLOW + invalidCmd[1]);
+			}
+		} else sender.sendMessage(ChatColor.AQUA + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "" + LanguageModule.get(LanguageType.PLAYER_PERMISSIONERROR));
 		return true;
 	}
 }

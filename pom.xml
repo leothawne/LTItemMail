@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.leothawne</groupId>
 	<artifactId>LTItemMail</artifactId>
-	<version>0.2.7</version>
+	<version>0.2.8</version>
 	<name>LT Item Mail</name>
 	<description>A new way of sending items to another player without need teleporting to them.</description>
 	<build>
