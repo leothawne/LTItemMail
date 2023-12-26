@@ -15,7 +15,6 @@ public final class LanguageModule {
 	private LanguageModule() {}
 	private static File languageFile = new File(LTItemMail.getInstance().getDataFolder(), LTItemMail.getInstance().getConfiguration().getString("language") + ".yml");
 	public static final void check() {
-		final File languageFile = new File(LTItemMail.getInstance().getDataFolder(), LTItemMail.getInstance().getConfiguration().getString("language") + ".yml");
 		if(!languageFile.exists()) {
 			ConsoleModule.warning("Extracting " + LTItemMail.getInstance().getConfiguration().getString("language") + ".yml file...");
 			if(LTItemMail.getInstance().getConfiguration().getString("language").equalsIgnoreCase("vietnamese") || LTItemMail.getInstance().getConfiguration().getString("language").equalsIgnoreCase("english") || LTItemMail.getInstance().getConfiguration().getString("language").equalsIgnoreCase("portuguese")) {
