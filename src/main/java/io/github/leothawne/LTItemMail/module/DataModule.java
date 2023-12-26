@@ -5,9 +5,6 @@ import java.util.HashMap;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-import io.github.leothawne.LTItemMail.type.ProjectPageType;
-import io.github.leothawne.LTItemMail.type.VersionType;
-
 public final class DataModule {
 	private DataModule() {}
 	private static final String PROJECT_PAGES = "BUKKIT_DEV:https://dev.bukkit.org/projects/lt-item-mail,SPIGOT_MC:https://www.spigotmc.org/resources/62294";
@@ -16,18 +13,18 @@ public final class DataModule {
 	private static final String Minecraft_Build = "1.19-R0.1-SNAPSHOT";
 	private static final String Update_URL = "https://leothawne.github.io/LTItemMail/api/" + getVersion(VersionType.MINECRAFT) + ".html";
 	private static final String Plugin_URL = "https://leothawne.github.io/LTItemMail/api/$version/plugin.html";
-	public static final String getProjectPage(final ProjectPageType type) {
+	public static final String getProjectPage(final ProjectType type) {
 		final String[] pageString = DataModule.PROJECT_PAGES.split(",");
-		final HashMap<ProjectPageType, String> pageMap = new HashMap<ProjectPageType, String>();
+		final HashMap<ProjectType, String> pageMap = new HashMap<>();
 		for(final String page : pageString) {
 			final String[] string = page.split(":");
-			pageMap.put(ProjectPageType.valueOf(string[0]), string[1]);
+			pageMap.put(ProjectType.valueOf(string[0]), string[1]);
 		}
 		return pageMap.get(type);
 	}
 	public static final String getVersion(final VersionType type) {
 		final String[] versionString = DataModule.VERSIONS.split(",");
-		final HashMap<VersionType, String> versionMap = new HashMap<VersionType, String>();
+		final HashMap<VersionType, String> versionMap = new HashMap<>();
 		for(final String version : versionString) {
 			final String[] string = version.split(":");
 			versionMap.put(VersionType.valueOf(string[0]), string[1]);
@@ -50,5 +47,18 @@ public final class DataModule {
 	}
 	public static final void version(final String version, final CommandSender sender) {
 		sender.sendMessage(ChatColor.YELLOW + "Version " + ChatColor.GREEN + version + ChatColor.YELLOW + " (" + ChatColor.GREEN + Plugin_Date + ChatColor.YELLOW + "), Minecraft " + ChatColor.GREEN + DataModule.getVersion(VersionType.MINECRAFT) + ChatColor.YELLOW + " (Java " + ChatColor.GREEN + DataModule.getVersion(VersionType.JAVA) + ChatColor.YELLOW + ", build " + ChatColor.GREEN + Minecraft_Build + ChatColor.YELLOW + ").");
+	}
+	public enum VersionType {
+		CONFIG_YML,
+		ENGLISH_YML,
+		PORTUGUESE_YML,
+		VIETNAMESE_YML,
+		MINECRAFT,
+		JAVA,
+		DATABASE
+	}
+	public enum ProjectType {
+		BUKKIT_DEV,
+		SPIGOT_MC
 	}
 }

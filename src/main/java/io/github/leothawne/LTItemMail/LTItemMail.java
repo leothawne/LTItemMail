@@ -16,17 +16,14 @@ package io.github.leothawne.LTItemMail;
 
 import java.sql.Connection;
 import java.util.Arrays;
-import java.util.LinkedList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitScheduler;
 
 import io.github.leothawne.LTItemMail.api.LTItemMailAPI;
-import io.github.leothawne.LTItemMail.api.MetricsAPI;
 import io.github.leothawne.LTItemMail.api.WarnIntegrationsAPI;
 import io.github.leothawne.LTItemMail.command.ItemMailAdminCommand;
 import io.github.leothawne.LTItemMail.command.ItemMailCommand;
@@ -45,7 +42,6 @@ import io.github.leothawne.LTItemMail.module.MailboxLogModule;
 import io.github.leothawne.LTItemMail.module.MetricsModule;
 import io.github.leothawne.LTItemMail.module.VaultModule;
 import io.github.leothawne.LTItemMail.task.VersionTask;
-import io.github.leothawne.LTItemMail.type.VersionType;
 import net.milkbowl.vault.economy.Economy;
 
 public final class LTItemMail extends JavaPlugin {
@@ -56,18 +52,14 @@ public final class LTItemMail extends JavaPlugin {
 	private FileConfiguration configuration;
 	private FileConfiguration language;
 	private Connection con;
-	private MetricsAPI metrics;
-	private BukkitScheduler scheduler;
 	private Economy economyPlugin;
 	@Override
 	public final void onEnable() {
 		instance = this;
 		ConsoleModule.Hello();
-		ConsoleModule.info("Loading...");
+		ConsoleModule.info("Enabling...");
 		ConfigurationModule.check();
 		configuration = ConfigurationModule.load();
-		LanguageModule.check();
-		language = LanguageModule.load();
 		if(configuration == null) {
 			new BukkitRunnable() {
 				@Override
@@ -78,24 +70,40 @@ public final class LTItemMail extends JavaPlugin {
 			return;
 		}
 		if(configuration.getBoolean("enable-plugin")) {
-			metrics = MetricsModule.init();
+			Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new VersionTask(), 0, 20 * 60 * 60);
+			MetricsModule.init();
+			LanguageModule.check();
+			language = LanguageModule.load();
 			economyPlugin = null;
 			if(configuration.getBoolean("use-vault")) {
 				ConsoleModule.info("Loading Vault...");
 				if(VaultModule.isVaultInstalled()) {
 					ConsoleModule.info("Vault loaded.");
+					new WarnIntegrationsAPI(Arrays.asList("Vault"));
 					ConsoleModule.info("Looking for an Economy plugin...");
 					economyPlugin = VaultModule.getEconomy();
 					if(economyPlugin != null) {
 						ConsoleModule.info("Economy plugin found.");
-					} else ConsoleModule.info("Economy plugin is missing. Skipping...");
-				} else ConsoleModule.info("Vault is not installed. Skipping...");
+					} else {
+						ConsoleModule.info("Economy plugin not found. Waiting for Vault registration.");
+						new BukkitRunnable() {
+							@Override
+							public final void run() {
+								economyPlugin = VaultModule.getEconomy();
+								if(economyPlugin != null) {
+									ConsoleModule.info("Economy plugin installed.");
+									this.cancel();
+								}
+							}
+						}.runTaskTimer(this, 20, 20);
+					}
+				} else ConsoleModule.info("Vault is not installed. Skipping.");
 			}
 			DatabaseModule.check();
 			con = DatabaseModule.load();
 			final Integer dbVer = DatabaseModule.checkDbVer();
-			if(dbVer < Integer.valueOf(DataModule.getVersion(VersionType.DATABASE))) {
-				for(Integer i = dbVer; i < Integer.valueOf(DataModule.getVersion(VersionType.DATABASE)); i++) {
+			if(dbVer < Integer.valueOf(DataModule.getVersion(DataModule.VersionType.DATABASE))) {
+				for(Integer i = dbVer; i < Integer.valueOf(DataModule.getVersion(DataModule.VersionType.DATABASE)); i++) {
 					ConsoleModule.warning("Updating database... (" + i + " -> " + (i + 1) + ")");
 					if(DatabaseModule.updateDb(i)) {
 						ConsoleModule.info("Database updated! (" + i + " -> " + (i + 1) + ")");
@@ -103,16 +111,13 @@ public final class LTItemMail extends JavaPlugin {
 				}
 			} else ConsoleModule.info("Database is up to date! (" + dbVer + ")");
 			MailboxLogModule.init();
+			registerEvents(new MailboxListener(), new PlayerListener());
 			getCommand("itemmail").setExecutor(new ItemMailCommand());
 			getCommand("itemmail").setTabCompleter(new ItemMailCommandTabCompleter());
 			getCommand("itemmailadmin").setExecutor(new ItemMailAdminCommand());
 			getCommand("itemmailadmin").setTabCompleter(new ItemMailAdminCommandTabCompleter());
 			getCommand("mailitem").setExecutor(new MailItemCommand());
 			getCommand("mailitem").setTabCompleter(new MailItemCommandTabCompleter());
-			scheduler = Bukkit.getScheduler();
-			scheduler.scheduleSyncRepeatingTask(this, new VersionTask(), 0, 20 * 60 * 60);
-			registerEvents(new MailboxListener(), new PlayerListener());
-			new WarnIntegrationsAPI(new LinkedList<String>(Arrays.asList("Vault")));
 			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "itemmailadmin update");
 		} else {
 			ConsoleModule.severe("You've choosen to disable me!");
@@ -121,8 +126,8 @@ public final class LTItemMail extends JavaPlugin {
 	}
 	@Override
 	public final void onDisable() {
-		ConsoleModule.info("Unloading...");
-		scheduler.cancelTasks(this);
+		ConsoleModule.info("Disabling...");
+		Bukkit.getScheduler().cancelTasks(this);
 	}
 	/**
 	 * 
@@ -142,9 +147,6 @@ public final class LTItemMail extends JavaPlugin {
 	}
 	public final FileConfiguration getLanguage() {
 		return language;
-	}
-	public final MetricsAPI getMetrics() {
-		return metrics;
 	}
 	public final Economy getEconomy() {
 		return economyPlugin;

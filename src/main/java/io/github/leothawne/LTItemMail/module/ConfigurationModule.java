@@ -5,7 +5,6 @@ import java.io.File;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
-import io.github.leothawne.LTItemMail.type.VersionType;
 
 public final class ConfigurationModule {
 	private ConfigurationModule() {}
@@ -22,7 +21,7 @@ public final class ConfigurationModule {
 		if(configFile.exists()) {
 			final FileConfiguration configuration = LTItemMail.getInstance().getConfig();
 			ConsoleModule.info("Loaded config.yml file.");
-			if(configuration.getInt("config-version") != Integer.parseInt(DataModule.getVersion(VersionType.CONFIG_YML))) {
+			if(configuration.getInt("config-version") != Integer.parseInt(DataModule.getVersion(DataModule.VersionType.CONFIG_YML))) {
 				ConsoleModule.severe("config.yml file outdated. Delete the current file and restart the server.");
 				return null;
 			}

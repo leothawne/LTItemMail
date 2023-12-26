@@ -13,24 +13,17 @@ import org.bukkit.entity.Player;
 import com.google.common.collect.ImmutableList;
 
 import io.github.leothawne.LTItemMail.api.TabCompleterAPI;
+import io.github.leothawne.LTItemMail.module.PermissionModule;
 
 public final class ItemMailAdminCommandTabCompleter implements TabCompleter {
 	@Override
-	public final List<String> onTabComplete(CommandSender sender, Command cmd, String commandLabel, String[] args){
-		final List<String> ReturnNothing = new ArrayList<>();
-		if(sender.hasPermission("LTItemMail.admin")) {
-			if(args.length == 1) {
-				final ImmutableList<String> completes = ImmutableList.of("update", "list", "recover");
-				return TabCompleterAPI.partial(args[0], completes);
-			}
-			if(args.length == 2) {
-				if(args[0].equals("list")) {
-					final LinkedList<String> completes = new LinkedList<>();
-					for(final Player p: Bukkit.getOnlinePlayers()) completes.add(p.getName());
-					return TabCompleterAPI.partial(args[1], completes);
-				}
-			}
+	public final List<String> onTabComplete(final CommandSender sender, Command cmd, final String commandLabel, final String[] args){
+		if(args.length == 1) if(PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_ADMIN_MAIN)) return TabCompleterAPI.partial(args[0], ImmutableList.of("update", "list", "recover"));
+		if(args.length == 2) if(PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_ADMIN_LIST)) if(args[0].equals("list")) {
+			final LinkedList<String> response = new LinkedList<>();
+			for(final Player p: Bukkit.getOnlinePlayers()) response.add(p.getName());
+			return TabCompleterAPI.partial(args[1], response);
 		}
-		return ReturnNothing;
+		return new ArrayList<>();
 	}
 }

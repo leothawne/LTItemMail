@@ -1,34 +1,51 @@
 name: LTItemMail
-description: A new way of sending items to another player without need teleporting to them.
+description: Have you ever imagined mailing items to your friends in Minecraft?
 version: ${project.version}
 api-version: 1.13
-load: STARTUP
+load: POSTWORLD
 author: [leothawne]
 website: https://leothawne.github.io/LTItemMail/
 url: https://leothawne.github.io/LTItemMail/
 main: io.github.leothawne.LTItemMail.LTItemMail
 database: true
-soft-depend: [Vault, Essentials]
+soft-depend: [Vault]
 commands:
     itemmail:
-        description: Shows commands for everyone.
-        aliases: [ima]
+        description: Commands for players.
+        aliases: [ima, imail]
         usage: /<command>
     mailitem:
-        description: Open a mailbox to put items inside.
-        aliases: [mit, enviaritem, vit]
+        description: Command for players.
+        aliases: [mit, enviaritem, mail]
         usage: /<command>
     itemmailadmin:
-        description: Shows commands for administrators.
-        aliases: [imad]
+        description: Commands for admins.
+        aliases: [imad, imadmin]
         usage: /<command>
 permissions:
-    LTItemMail.use:
-        description: Gives access to players' commands.
+    ltitemmail.player:
         default: true
-    LTItemMail.send:
-        description: Allows players to send mailboxes.
+    ltitemmail.player.version:
         default: true
-    LTItemMail.admin:
-        description: Gives access to admins' commands.
+    ltitemmail.player.list:
+        default: true
+    ltitemmail.player.open:
+        default: true
+    ltitemmail.player.delete:
+        default: true
+    ltitemmail.player.send:
+        default: true
+    ltitemmail.player.notify:
+        default: true
+    ltitemmail.admin:
         default: op
+    ltitemmail.admin.update:
+        default: op
+    ltitemmail.admin.list:
+        default: op
+    ltitemmail.admin.recover:
+        default: op
+    ltitemmail.admin.notify:
+        default: op
+    ltitemmail.admin.bypass:
+        default: false

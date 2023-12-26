@@ -2,9 +2,9 @@
 enable-plugin: true
 
 #INTERNAL languages available: portuguese, english, vietnamese. Default: english.
-language: english
+language: "english"
 
-#Here you can customize the name that appears in the chat. Default: "LTIM".
+#Here you can customize the name that appears in the chat. Default: LTIM.
 plugin-tag: "LTIM"
 
 #If 'true', Vault will be integrated if its enabled on the server. Default: true.
@@ -16,7 +16,7 @@ use-title: false
 #If 'true', the 'mail-cost' value will be multiplied by the number of items inside the mailbox. Default: true.
 cost-per-item: true
 
-#Cost to send items to another players. Default: 0.50 (per item), 100.0 (per mailbox).
+#Cost to send items to another players. Default: 0.50 (per item), 50.0 (per mailbox).
 mail-cost: 0.50
 
 #Name of the mail inventory. Default: Mailbox.

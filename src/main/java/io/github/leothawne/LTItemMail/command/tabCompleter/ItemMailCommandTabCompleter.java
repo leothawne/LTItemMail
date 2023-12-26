@@ -14,26 +14,19 @@ import com.google.common.collect.ImmutableList;
 
 import io.github.leothawne.LTItemMail.api.TabCompleterAPI;
 import io.github.leothawne.LTItemMail.module.DatabaseModule;
+import io.github.leothawne.LTItemMail.module.PermissionModule;
 
 public final class ItemMailCommandTabCompleter implements TabCompleter {
 	@Override
-	public final List<String> onTabComplete(CommandSender sender, Command cmd, String commandLabel, String[] args){
-		final List<String> ReturnNothing = new ArrayList<>();
-		if(sender.hasPermission("LTItemMail.use")) {
-			if(args.length == 1) {
-				final ImmutableList<String> completes = ImmutableList.of("version", "list", "open", "delete");
-				return TabCompleterAPI.partial(args[0], completes);
-			}
-			if(args.length == 2) {
-				if(args[0].equals("open") || args[0].equals("delete")) if(sender instanceof Player) {
-					final Player player = (Player) sender;
-					final HashMap<Integer, String> mailboxes = DatabaseModule.Function.getMailboxesList(player.getUniqueId());
-					final LinkedList<String> completes = new LinkedList<>();
-					for(final Integer i : mailboxes.keySet()) completes.add(String.valueOf(i));
-					return TabCompleterAPI.partial(args[1], completes);
-				}
-			}
+	public final List<String> onTabComplete(final CommandSender sender, final Command cmd, final String commandLabel, final String[] args){
+		if(args.length == 1) if(PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_PLAYER_MAIN)) return TabCompleterAPI.partial(args[0], ImmutableList.of("version", "list", "open", "delete"));
+		if(args.length == 2) if(PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_PLAYER_OPEN) || PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_PLAYER_DELETE)) if(args[0].equals("open") || args[0].equals("delete")) if(sender instanceof Player) {
+			final Player player = (Player) sender;
+			final HashMap<Integer, String> mailboxes = DatabaseModule.Function.getMailboxesList(player.getUniqueId());
+			final LinkedList<String> response = new LinkedList<>();
+			for(final Integer i : mailboxes.keySet()) response.add(String.valueOf(i));
+			return TabCompleterAPI.partial(args[1], response);
 		}
-		return ReturnNothing;
+		return new ArrayList<>();
 	}
 }

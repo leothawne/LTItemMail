@@ -8,8 +8,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
-import io.github.leothawne.LTItemMail.type.LanguageType;
-import io.github.leothawne.LTItemMail.type.VersionType;
 
 public final class LanguageModule {
 	private LanguageModule() {}
@@ -32,13 +30,13 @@ public final class LanguageModule {
 				int languageVersion = 0;
 				switch(LTItemMail.getInstance().getConfiguration().getString("language").toLowerCase()) {
 					case "english":
-						languageVersion = Integer.parseInt(DataModule.getVersion(VersionType.ENGLISH_YML));
+						languageVersion = Integer.parseInt(DataModule.getVersion(DataModule.VersionType.ENGLISH_YML));
 						break;
 					case "portuguese":
-						languageVersion = Integer.parseInt(DataModule.getVersion(VersionType.PORTUGUESE_YML));
+						languageVersion = Integer.parseInt(DataModule.getVersion(DataModule.VersionType.PORTUGUESE_YML));
 						break;
 					case "vietnamese":
-						languageVersion = Integer.parseInt(DataModule.getVersion(VersionType.VIETNAMESE_YML));
+						languageVersion = Integer.parseInt(DataModule.getVersion(DataModule.VersionType.VIETNAMESE_YML));
 						break;
 				}
 				if(languageVersion != 0) if(languageConfig.getInt("language-version") != languageVersion) {
@@ -50,12 +48,11 @@ public final class LanguageModule {
 			} catch(final IOException | InvalidConfigurationException exception) {
 				exception.printStackTrace();
 			}
-			return null;
 		}
 		ConsoleModule.severe("Missing " + LTItemMail.getInstance().getConfiguration().getString("language") + ".yml file.");
 		return null;
 	}
-	public static final String get(final LanguageType type) {
+	public static final String get(final Type type) {
 		String result = null;
 		String path = null;
 		switch(type) {
@@ -192,7 +189,7 @@ public final class LanguageModule {
 				path = "command.invalid";
 				break;
 		}
-		if(path != null) if(LTItemMail.getInstance().getLanguage().isSet(path)) {
+		if(path != null && result != null) if(LTItemMail.getInstance().getLanguage().isSet(path)) {
 			result = LTItemMail.getInstance().getLanguage().getString(path);
 		} else {
 			LTItemMail.getInstance().getLanguage().set(path, result);
@@ -203,5 +200,40 @@ public final class LanguageModule {
 			}
 		}
 		return result;
+	}
+	public enum Type {
+		COMMAND_INVALID,
+		COMMAND_PLAYER_ITEMMAIL,
+		COMMAND_PLAYER_VERSION,
+		COMMAND_PLAYER_LIST,
+		COMMAND_PLAYER_OPEN,
+		COMMAND_PLAYER_DELETE,
+		COMMAND_PLAYER_MAILITEM,
+		COMMAND_ADMIN_ITEMMAILADMIN,
+		COMMAND_ADMIN_UPDATE,
+		COMMAND_ADMIN_LIST,
+		COMMAND_ADMIN_RECOVER,
+		PLAYER_PERMISSIONERROR,
+		PLAYER_INVENTORYFULL,
+		PLAYER_MISSINGERROR,
+		PLAYER_OFFLINEERROR,
+		PLAYER_ERROR,
+		PLAYER_SYNTAXERROR,
+		PLAYER_SELFERROR,
+		PLAYER_OPENEDBOXES,
+		MAILBOX_CLOSED,
+		MAILBOX_SENT,
+		MAILBOX_FROM,
+		MAILBOX_SPECIAL,
+		MAILBOX_ABORTED,
+		MAILBOX_IDERROR,
+		MAILBOX_DELETED,
+		MAILBOX_EMPTY,
+		MAILBOX_NOLOST,
+		MAILBOX_EMPTYLIST,
+		MAILBOX_NONEW,
+		TRANSACTION_PAID,
+		TRANSACTION_ERROR,
+		TRANSACTION_NOMONEY
 	}
 }

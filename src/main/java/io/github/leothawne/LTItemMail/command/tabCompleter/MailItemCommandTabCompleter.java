@@ -11,21 +11,17 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
 import io.github.leothawne.LTItemMail.api.TabCompleterAPI;
+import io.github.leothawne.LTItemMail.module.PermissionModule;
 
 public final class MailItemCommandTabCompleter implements TabCompleter {
 	public MailItemCommandTabCompleter() {}
 	@Override
 	public final List<String> onTabComplete(final CommandSender sender, final Command cmd, final String commandLabel, final String[] args){
-		final List<String> ReturnNothing = new ArrayList<>();
-		if(sender.hasPermission("LTItemMail.send")) {
-			if(args.length == 1) {
-				final LinkedList<String> players = new LinkedList<String>();
-				for(final Player player : Bukkit.getOnlinePlayers()) {
-					players.add(player.getName());
-				}
-				return TabCompleterAPI.partial(args[0], players);
-			}
+		if(args.length == 1) if(PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_PLAYER_SEND)) {
+			final LinkedList<String> response = new LinkedList<>();
+			for(final Player player : Bukkit.getOnlinePlayers()) response.add(player.getName());
+			return TabCompleterAPI.partial(args[0], response);
 		}
-		return ReturnNothing;
+		return new ArrayList<>();
 	}
 }
