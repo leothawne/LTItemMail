@@ -23,6 +23,7 @@ import io.github.leothawne.LTItemMail.module.MailboxLogModule;
 import io.github.leothawne.LTItemMail.module.PermissionModule;
 
 public final class ItemMailAdminCommand implements CommandExecutor {
+	@SuppressWarnings("deprecation")
 	@Override
 	public final boolean onCommand(final CommandSender sender, final Command cmd, final String commandLabel, final String[] args) {
 		Boolean hasPermission = false;
@@ -64,14 +65,13 @@ public final class ItemMailAdminCommand implements CommandExecutor {
 		} else if(args[0].equalsIgnoreCase("list")) {
 			if(hasPermission = PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_ADMIN_LIST)) {
 				if(args.length == 2) {
-					@SuppressWarnings("deprecation")
 					final OfflinePlayer offPlayer = Bukkit.getOfflinePlayer(args[1]);
-					final HashMap<Integer, String> mailboxes = DatabaseModule.Function.getOpenedMailboxesList(offPlayer.getUniqueId());
+					final HashMap<Integer, String> mailboxes = DatabaseModule.Virtual.getOpenedMailboxesList(offPlayer.getUniqueId());
 					if(mailboxes.size() > 0) {
 						sender.sendMessage(ChatColor.AQUA + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "" + LanguageModule.get(LanguageModule.Type.PLAYER_OPENEDBOXES) + " " + offPlayer.getName() + ":");
 						for(final Integer mailboxID : mailboxes.keySet()) {
 							String x = "";
-							final LinkedList<ItemStack> items = DatabaseModule.Function.getMailbox(mailboxID);
+							final LinkedList<ItemStack> items = DatabaseModule.Virtual.getMailbox(mailboxID);
 							if(items.size() == 0) x = " [" + LanguageModule.get(LanguageModule.Type.MAILBOX_EMPTY) + "]";
 							sender.sendMessage(LTItemMail.getInstance().getConfiguration().getString("mailbox-name") + " #" + mailboxID + " : " + mailboxes.get(mailboxID) + x); 
 						}
@@ -85,10 +85,10 @@ public final class ItemMailAdminCommand implements CommandExecutor {
 					if(args.length == 2) {
 						try {
 							final Integer mailboxID = Integer.valueOf(args[1]);
-							final LinkedList<ItemStack> items = DatabaseModule.Function.getMailbox(mailboxID);
+							final LinkedList<ItemStack> items = DatabaseModule.Virtual.getMailbox(mailboxID);
 							if(items.size() > 0) {
 								player.openInventory(MailboxInventory.getMailboxInventory(MailboxInventory.Type.IN, mailboxID, null, items));
-								MailboxLogModule.log(player.getUniqueId(), null, MailboxLogModule.Action.RECOVERED, mailboxID);
+								MailboxLogModule.log(player.getUniqueId(), null, MailboxLogModule.Action.RECOVERED, mailboxID, null);
 							} else player.sendMessage(ChatColor.AQUA + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "" + LanguageModule.get(LanguageModule.Type.MAILBOX_NOLOST));
 						} catch (final NumberFormatException e) {
 							player.sendMessage(ChatColor.AQUA + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + " :: Admin] " + ChatColor.YELLOW + "" + LanguageModule.get(LanguageModule.Type.MAILBOX_IDERROR));

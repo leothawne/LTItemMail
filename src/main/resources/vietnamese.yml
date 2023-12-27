@@ -3,7 +3,6 @@ player:
     permissionerror: "Bạn không có quyền để làm điều này"
     inventoryfull: "% không có đủ % slots còn trống để gửi."
     missingerror: "bạn phải chỉ định người chơi!"
-    offlineerror: "Người chơi bạn chỉ định đang Offline."
     error: "Bạn phải là người chơi để làm điều này!"
     selferror: "Không thể gửi cho chính mình."
 

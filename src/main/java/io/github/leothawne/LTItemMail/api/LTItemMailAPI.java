@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -32,12 +32,14 @@ public final class LTItemMailAPI {
 	 * to any player on the server. The mailbox
 	 * will be assigned as a "Special Mailbox".
 	 * 
-	 * @param player The Player type variable.
+	 * @param player The OfflinePlayer type variable.
 	 * @param items The list of items that the player will receive.
 	 * 
+	 * @return "success" if it was successfully delivered. Otherwise it will return an error message.
+	 * 
 	 */
-	public final void sendSpecialMailbox(final Player player, final LinkedList<ItemStack> items) {
-		MailboxAPI.sendSpecial(player, items);
+	public final String sendSpecialMailbox(final OfflinePlayer player, final LinkedList<ItemStack> items) {
+		return MailboxAPI.sendSpecial(player, items);
 	}
 	/**
 	 * 
@@ -48,9 +50,11 @@ public final class LTItemMailAPI {
 	 * @param playerUUID The player's unique id.
 	 * @param items The list of items that the player will receive.
 	 * 
+	 * @return "success" if it was successfully delivered. Otherwise it will return an error message.
+	 * 
 	 */
-	public final void sendSpecialMailbox(final UUID playerUUID, final LinkedList<ItemStack> items) {
-		sendSpecialMailbox(Bukkit.getPlayer(playerUUID), items);
+	public final String sendSpecialMailbox(final UUID playerUUID, final LinkedList<ItemStack> items) {
+		return sendSpecialMailbox(Bukkit.getOfflinePlayer(playerUUID), items);
 	}
 	/**
 	 * 
@@ -61,8 +65,11 @@ public final class LTItemMailAPI {
 	 * @param playerName The player's name.
 	 * @param items The list of items that the player will receive.
 	 * 
+	 * @return "success" if it was successfully delivered. Otherwise it will return an error message.
+	 * 
 	 */
-	public final void sendSpecialMailbox(final String playerName, final LinkedList<ItemStack> items) {
-		sendSpecialMailbox(Bukkit.getPlayer(playerName), items);
+	@SuppressWarnings("deprecation")
+	public final String sendSpecialMailbox(final String playerName, final LinkedList<ItemStack> items) {
+		return sendSpecialMailbox(Bukkit.getOfflinePlayer(playerName), items);
 	}
 }

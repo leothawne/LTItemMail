@@ -43,7 +43,7 @@ public final class ItemMailCommand implements CommandExecutor {
 					if(args.length == 2) {
 						try {
 							final Integer mailboxID = Integer.valueOf(args[1]);
-							if(DatabaseModule.Function.isMaiboxOwner(player.getUniqueId(), mailboxID) && !DatabaseModule.Function.isMailboxOpened(mailboxID)) player.openInventory(MailboxInventory.getMailboxInventory(MailboxInventory.Type.IN, mailboxID, null, DatabaseModule.Function.getMailbox(mailboxID)));
+							if(DatabaseModule.Virtual.isMaiboxOwner(player.getUniqueId(), mailboxID) && !DatabaseModule.Virtual.isMailboxOpened(mailboxID)) player.openInventory(MailboxInventory.getMailboxInventory(MailboxInventory.Type.IN, mailboxID, null, DatabaseModule.Virtual.getMailbox(mailboxID)));
 						} catch (final NumberFormatException e) {
 							player.sendMessage(ChatColor.AQUA + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + LanguageModule.get(LanguageModule.Type.MAILBOX_IDERROR));
 						}
@@ -55,7 +55,7 @@ public final class ItemMailCommand implements CommandExecutor {
 				if(sender instanceof Player) {
 					final Player player = (Player) sender;
 					if(args.length == 1) {
-						final HashMap<Integer, String> mailboxes = DatabaseModule.Function.getMailboxesList(player.getUniqueId());
+						final HashMap<Integer, String> mailboxes = DatabaseModule.Virtual.getMailboxesList(player.getUniqueId());
 						if(mailboxes.size() > 0) {
 							for(final Integer mailboxID : mailboxes.keySet()) player.sendMessage(LTItemMail.getInstance().getConfiguration().getString("mailbox-name") + " #" + mailboxID + " : " + mailboxes.get(mailboxID));
 						} else player.sendMessage(ChatColor.AQUA + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + LanguageModule.get(LanguageModule.Type.MAILBOX_NONEW));
@@ -69,9 +69,9 @@ public final class ItemMailCommand implements CommandExecutor {
 					if(args.length == 2) {
 						try {
 							final Integer mailboxID = Integer.valueOf(args[1]);
-							if(DatabaseModule.Function.isMaiboxOwner(player.getUniqueId(), mailboxID) && !DatabaseModule.Function.isMailboxOpened(mailboxID)) {
-								DatabaseModule.Function.setMailboxOpened(mailboxID);
-								MailboxLogModule.log(player.getUniqueId(), null, MailboxLogModule.Action.OPENED, mailboxID);
+							if(DatabaseModule.Virtual.isMaiboxOwner(player.getUniqueId(), mailboxID) && !DatabaseModule.Virtual.isMailboxOpened(mailboxID)) {
+								DatabaseModule.Virtual.setMailboxOpened(mailboxID);
+								MailboxLogModule.log(player.getUniqueId(), null, MailboxLogModule.Action.OPENED, mailboxID, null);
 								player.sendMessage(ChatColor.AQUA + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + LanguageModule.get(LanguageModule.Type.MAILBOX_DELETED) + " " + LTItemMail.getInstance().getConfiguration().getString("mailbox-name") + " #" + mailboxID);
 							}
 						} catch (final NumberFormatException e) {

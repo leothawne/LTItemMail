@@ -12,6 +12,8 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
 
@@ -40,26 +42,36 @@ public final class MailboxLogModule {
 	public static final void init() {
 		new MailboxLogModule();
 	}
-	public static final boolean log(final UUID playerFrom, UUID playerTo, final Action action, final Integer mailboxID) {
+	public static final boolean log(final UUID playerFrom, UUID playerTo, final Action action, final Integer mailboxID, final Location mailboxBlock) {
 		if(playerFrom == null) return false;
 		if(action == null) return false;
-		if(mailboxID == null) return false;
-		String log = Bukkit.getPlayer(playerFrom).getName() + " ";
+		String log = Bukkit.getOfflinePlayer(playerFrom).getName() + " ";
 		switch(action) {
 			case RECOVERED:
-				log = log + "recovered lost items of ";
+				log = log + "recovered lost items of Mailbox#" + mailboxID;
 				break;
 			case OPENED:
-				log = log + "deleted ";
+				log = log + "deleted Mailbox#" + mailboxID;
 				break;
 			case RECEIVED:
-				log = log + "received ";
+				log = log + "received Mailbox#" + mailboxID;
 				break;
 			case SENT:
-				log = log + "sent to " + Bukkit.getPlayer(playerTo).getName() + ": ";
+				String offline = "";
+				final OfflinePlayer offPlayerTo = Bukkit.getOfflinePlayer(playerTo);
+				if(offPlayerTo.getPlayer() == null) offline = " (offline)";
+				log = log + "sent to " + offPlayerTo.getName() + offline + ": Mailbox#" + mailboxID;
+				break;
+			case PLACED:
+				log = log + "placed a mailbox at X: " + mailboxBlock.getBlockX() + ", Y: " + mailboxBlock.getBlockY() + ", Z: " + mailboxBlock.getBlockZ();
+				break;
+			case BROKE:
+				log = log + "broke a mailbox at X: " + mailboxBlock.getBlockX() + ", Y: " + mailboxBlock.getBlockY() + ", Z: " + mailboxBlock.getBlockZ();
+				break;
+			case ADMIN_BROKE:
+				log = log + "broke the mailbox of " + Bukkit.getOfflinePlayer(playerTo).getName() + " at X: " + mailboxBlock.getBlockX() + ", Y: " + mailboxBlock.getBlockY() + ", Z: " + mailboxBlock.getBlockZ();
 				break;
 		}
-		log = log + "Mailbox#" + mailboxID;
 		MailboxLogModule.getInstance().getLogger().info(log);
 		return true;
 	}
@@ -67,6 +79,9 @@ public final class MailboxLogModule {
 		RECOVERED,
 		OPENED,
 		RECEIVED,
-		SENT
+		SENT,
+		PLACED,
+		BROKE,
+		ADMIN_BROKE
 	}
 }

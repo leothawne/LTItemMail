@@ -46,6 +46,18 @@ public class PermissionModule {
 			case CMD_PLAYER_NOTIFY:
 				node = "ltitemmail.player.notify";
 				break;
+			case BLOCK_PLAYER_BREAK:
+				node = "ltitemmail.block.break";
+				break;
+			case BLOCK_PLAYER_PLACE:
+				node = "ltitemmail.block.place";
+				break;
+			case BLOCK_PLAYER_USE:
+				node = "ltitemmail.block.use";
+				break;
+			case BLOCK_ADMIN_BREAK:
+				node = "ltitemmail.block.break-bypass";
+				break;
 		}
 		if(node != null) return sender.hasPermission(node);
 		return false;
@@ -63,6 +75,10 @@ public class PermissionModule {
 		CMD_ADMIN_RECOVER,
 		CMD_ADMIN_BYPASS,
 		CMD_PLAYER_NOTIFY,
-		CMD_ADMIN_NOTIFY
+		CMD_ADMIN_NOTIFY,
+		BLOCK_PLAYER_PLACE,
+		BLOCK_PLAYER_BREAK,
+		BLOCK_PLAYER_USE,
+		BLOCK_ADMIN_BREAK
 	}
 }

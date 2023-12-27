@@ -57,7 +57,7 @@ public final class LanguageModule {
 		String path = null;
 		switch(type) {
 			case PLAYER_PERMISSIONERROR:
-				result = "You do not have permission to do this.";
+				result = "You do not have permission to do that.";
 				path = "player.permissionerror";
 				break;
 			case MAILBOX_CLOSED:
@@ -100,9 +100,9 @@ public final class LanguageModule {
 				result = "You must specify a player!";
 				path = "player.missingerror";
 				break;
-			case PLAYER_OFFLINEERROR:
-				result = "The specified player is not online.";
-				path = "player.offlineerror";
+			case PLAYER_NEVERPLAYEDERROR:
+				result = "The specified player never joined this server.";
+				path = "player.neverplayederror";
 				break;
 			case PLAYER_ERROR:
 				result = "You must be a player to do that!";
@@ -113,7 +113,7 @@ public final class LanguageModule {
 				path = "player.syntaxerror";
 				break;
 			case PLAYER_SELFERROR:
-				result = "You can not send a mailbox to yourself.";
+				result = "You can not send items to yourself.";
 				path = "player.selferror";
 				break;
 			case MAILBOX_NONEW:
@@ -188,6 +188,30 @@ public final class LanguageModule {
 				result = "Invalid command. Type % to see the command list.";
 				path = "command.invalid";
 				break;
+			case BLOCK_BREAKERROR:
+				result = "You do not have permission to break that mailbox.";
+				path = "block.breakerror";
+				break;
+			case BLOCK_PLACEERROR:
+				result = "You do not have permission to place a mailbox.";
+				path = "block.placeerror";
+				break;
+			case BLOCK_USEERROR:
+				result = "You do not have permission to use a mailbox.";
+				path = "block.useerror";
+				break;
+			case BLOCK_OWNERERROR:
+				result = "You are not the mailbox owner to do that.";
+				path = "block.ownererror";
+				break;
+			case BLOCK_BELOWERROR:
+				result = "Below block must be a fence.";
+				path = "block.belowerror";
+				break;
+			case BLOCK_ADMINBROKE:
+				result = "You broke the mailbox of";
+				path = "block.adminbroke";
+				break;
 		}
 		if(path != null && result != null) if(LTItemMail.getInstance().getLanguage().isSet(path)) {
 			result = LTItemMail.getInstance().getLanguage().getString(path);
@@ -216,7 +240,7 @@ public final class LanguageModule {
 		PLAYER_PERMISSIONERROR,
 		PLAYER_INVENTORYFULL,
 		PLAYER_MISSINGERROR,
-		PLAYER_OFFLINEERROR,
+		PLAYER_NEVERPLAYEDERROR,
 		PLAYER_ERROR,
 		PLAYER_SYNTAXERROR,
 		PLAYER_SELFERROR,
@@ -234,6 +258,12 @@ public final class LanguageModule {
 		MAILBOX_NONEW,
 		TRANSACTION_PAID,
 		TRANSACTION_ERROR,
-		TRANSACTION_NOMONEY
+		TRANSACTION_NOMONEY,
+		BLOCK_PLACEERROR,
+		BLOCK_BREAKERROR,
+		BLOCK_USEERROR,
+		BLOCK_OWNERERROR,
+		BLOCK_BELOWERROR,
+		BLOCK_ADMINBROKE
 	}
 }

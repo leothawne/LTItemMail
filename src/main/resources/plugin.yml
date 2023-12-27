@@ -37,6 +37,12 @@ permissions:
         default: true
     ltitemmail.player.notify:
         default: true
+    ltitemmail.block.place:
+        default: true
+    ltitemmail.block.break:
+        default: true
+    ltitemmail.block.use:
+        default: true
     ltitemmail.admin:
         default: op
     ltitemmail.admin.update:
@@ -46,6 +52,8 @@ permissions:
     ltitemmail.admin.recover:
         default: op
     ltitemmail.admin.notify:
+        default: op
+    ltitemmail.block.break-bypass:
         default: op
     ltitemmail.admin.bypass:
         default: false

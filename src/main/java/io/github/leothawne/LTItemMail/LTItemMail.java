@@ -31,8 +31,9 @@ import io.github.leothawne.LTItemMail.command.MailItemCommand;
 import io.github.leothawne.LTItemMail.command.tabCompleter.ItemMailAdminCommandTabCompleter;
 import io.github.leothawne.LTItemMail.command.tabCompleter.ItemMailCommandTabCompleter;
 import io.github.leothawne.LTItemMail.command.tabCompleter.MailItemCommandTabCompleter;
-import io.github.leothawne.LTItemMail.listener.MailboxListener;
+import io.github.leothawne.LTItemMail.listener.ItemMailboxListener;
 import io.github.leothawne.LTItemMail.listener.PlayerListener;
+import io.github.leothawne.LTItemMail.listener.VirtualMailboxListener;
 import io.github.leothawne.LTItemMail.module.ConfigurationModule;
 import io.github.leothawne.LTItemMail.module.ConsoleModule;
 import io.github.leothawne.LTItemMail.module.DataModule;
@@ -40,7 +41,9 @@ import io.github.leothawne.LTItemMail.module.DatabaseModule;
 import io.github.leothawne.LTItemMail.module.LanguageModule;
 import io.github.leothawne.LTItemMail.module.MailboxLogModule;
 import io.github.leothawne.LTItemMail.module.MetricsModule;
+import io.github.leothawne.LTItemMail.module.RecipeModule;
 import io.github.leothawne.LTItemMail.module.VaultModule;
+import io.github.leothawne.LTItemMail.task.MailboxItemTask;
 import io.github.leothawne.LTItemMail.task.VersionTask;
 import net.milkbowl.vault.economy.Economy;
 
@@ -53,6 +56,7 @@ public final class LTItemMail extends JavaPlugin {
 	private FileConfiguration language;
 	private Connection con;
 	private Economy economyPlugin;
+	private Integer versionTaskID;
 	@Override
 	public final void onEnable() {
 		instance = this;
@@ -64,13 +68,13 @@ public final class LTItemMail extends JavaPlugin {
 			new BukkitRunnable() {
 				@Override
 				public final void run() {
-					Bukkit.getPluginManager().disablePlugin(LTItemMail.getInstance());
+					Bukkit.getPluginManager().disablePlugin(instance);
 				}
 			}.runTaskTimer(this, 0, 0);
 			return;
 		}
 		if(configuration.getBoolean("enable-plugin")) {
-			Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new VersionTask(), 0, 20 * 60 * 60);
+			versionTaskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new VersionTask(), 0, 20 * 10);
 			MetricsModule.init();
 			LanguageModule.check();
 			language = LanguageModule.load();
@@ -85,7 +89,7 @@ public final class LTItemMail extends JavaPlugin {
 					if(economyPlugin != null) {
 						ConsoleModule.info("Economy plugin found.");
 					} else {
-						ConsoleModule.info("Economy plugin not found. Waiting for Vault registration.");
+						ConsoleModule.warning("Economy plugin not found. Waiting for Vault registration.");
 						new BukkitRunnable() {
 							@Override
 							public final void run() {
@@ -95,9 +99,9 @@ public final class LTItemMail extends JavaPlugin {
 									this.cancel();
 								}
 							}
-						}.runTaskTimer(this, 20, 20);
+						}.runTaskTimer(this, 0, 20 * 5);
 					}
-				} else ConsoleModule.info("Vault is not installed. Skipping.");
+				} else ConsoleModule.warning("Vault is not installed. Skipping.");
 			}
 			DatabaseModule.check();
 			con = DatabaseModule.load();
@@ -106,12 +110,16 @@ public final class LTItemMail extends JavaPlugin {
 				for(Integer i = dbVer; i < Integer.valueOf(DataModule.getVersion(DataModule.VersionType.DATABASE)); i++) {
 					ConsoleModule.warning("Updating database... (" + i + " -> " + (i + 1) + ")");
 					if(DatabaseModule.updateDb(i)) {
-						ConsoleModule.info("Database updated! (" + i + " -> " + (i + 1) + ")");
+						ConsoleModule.warning("Database updated! (" + i + " -> " + (i + 1) + ")");
 					} else ConsoleModule.severe("Database update failed! (" + i + " -> " + (i + 1) + ")");
 				}
 			} else ConsoleModule.info("Database is up to date! (" + dbVer + ")");
 			MailboxLogModule.init();
-			registerEvents(new MailboxListener(), new PlayerListener());
+			RecipeModule.register();
+			Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new MailboxItemTask(), 0, 0);
+			registerEvents(new VirtualMailboxListener(),
+					new PlayerListener(),
+					new ItemMailboxListener());
 			getCommand("itemmail").setExecutor(new ItemMailCommand());
 			getCommand("itemmail").setTabCompleter(new ItemMailCommandTabCompleter());
 			getCommand("itemmailadmin").setExecutor(new ItemMailAdminCommand());
@@ -120,8 +128,13 @@ public final class LTItemMail extends JavaPlugin {
 			getCommand("mailitem").setTabCompleter(new MailItemCommandTabCompleter());
 			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "itemmailadmin update");
 		} else {
-			ConsoleModule.severe("You've choosen to disable me!");
-			Bukkit.getPluginManager().disablePlugin(this);
+			ConsoleModule.severe("You've choosen to disable me.");
+			new BukkitRunnable() {
+				@Override
+				public final void run() {
+					Bukkit.getPluginManager().disablePlugin(instance);
+				}
+			}.runTaskTimer(this, 0, 20);
 		}
 	}
 	@Override
@@ -153,5 +166,8 @@ public final class LTItemMail extends JavaPlugin {
 	}
 	public final Connection getConnection() {
 		return con;
+	}
+	public final Integer getVersionTask() {
+		return versionTaskID;
 	}
 }

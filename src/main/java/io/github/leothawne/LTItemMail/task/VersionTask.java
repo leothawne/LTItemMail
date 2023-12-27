@@ -14,11 +14,14 @@ public final class VersionTask implements Runnable {
 		final String url = DataModule.getPluginURL(version);
 		final String response = HTTP.getData(url);
 		if(response != null) {
-			if(response.equalsIgnoreCase("disabled")) {
-				ConsoleModule.info("Hey you! Stop right there! The version (" + version + ") is no longer allowed to be used/played.");
-				ConsoleModule.info("Download a newer one: " + DataModule.getProjectPage(DataModule.ProjectType.BUKKIT_DEV) + " or " + DataModule.getProjectPage(DataModule.ProjectType.SPIGOT_MC));
+			if(response.toLowerCase().contains("disabled")) {
+				ConsoleModule.severe("Hey you! Stop right there! The version (" + version + ") is no longer allowed to be used/played.");
+				ConsoleModule.severe("Download a newer one: https://" + DataModule.getProjectPage(DataModule.ProjectType.BUKKIT_DEV) + " or https://" + DataModule.getProjectPage(DataModule.ProjectType.SPIGOT_MC));
 				Bukkit.getPluginManager().disablePlugin(LTItemMail.getInstance());
 			}
-		} else ConsoleModule.warning("Unable to locate: " + url + ". Are you offline?");
+		} else {
+			ConsoleModule.warning("Unable to locate: " + url + ". Are you offline?");
+			Bukkit.getScheduler().cancelTask(LTItemMail.getInstance().getVersionTask());
+		}
 	}
 }

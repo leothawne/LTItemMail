@@ -22,7 +22,7 @@ public final class ItemMailCommandTabCompleter implements TabCompleter {
 		if(args.length == 1) if(PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_PLAYER_MAIN)) return TabCompleterAPI.partial(args[0], ImmutableList.of("version", "list", "open", "delete"));
 		if(args.length == 2) if(PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_PLAYER_OPEN) || PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_PLAYER_DELETE)) if(args[0].equals("open") || args[0].equals("delete")) if(sender instanceof Player) {
 			final Player player = (Player) sender;
-			final HashMap<Integer, String> mailboxes = DatabaseModule.Function.getMailboxesList(player.getUniqueId());
+			final HashMap<Integer, String> mailboxes = DatabaseModule.Virtual.getMailboxesList(player.getUniqueId());
 			final LinkedList<String> response = new LinkedList<>();
 			for(final Integer i : mailboxes.keySet()) response.add(String.valueOf(i));
 			return TabCompleterAPI.partial(args[1], response);

@@ -7,8 +7,8 @@ import org.bukkit.command.CommandSender;
 
 public final class DataModule {
 	private DataModule() {}
-	private static final String PROJECT_PAGES = "BUKKIT_DEV:https://dev.bukkit.org/projects/lt-item-mail,SPIGOT_MC:https://www.spigotmc.org/resources/62294";
-	private static final String VERSIONS = "DATABASE:1,CONFIG_YML:7,ENGLISH_YML:6,PORTUGUESE_YML:6,VIETNAMESE_YML:3,MINECRAFT:1.19,JAVA:8+";
+	private static final String PROJECT_PAGES = "BUKKIT_DEV:dev.bukkit.org/projects/lt-item-mail,SPIGOT_MC:www.spigotmc.org/resources/62294";
+	private static final String VERSIONS = "DATABASE:2,CONFIG_YML:7,ENGLISH_YML:6,PORTUGUESE_YML:6,VIETNAMESE_YML:3,MINECRAFT:1.19,JAVA:8+";
 	private static final String Plugin_Date = "22/12/2023 01:39 (BRT)";
 	private static final String Minecraft_Build = "1.19-R0.1-SNAPSHOT";
 	private static final String Update_URL = "https://leothawne.github.io/LTItemMail/api/" + getVersion(VersionType.MINECRAFT) + ".html";
