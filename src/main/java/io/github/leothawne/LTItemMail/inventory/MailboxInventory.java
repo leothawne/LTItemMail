@@ -7,19 +7,19 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import io.github.leothawne.LTItemMail.LTItemMail;
+import io.github.leothawne.LTItemMail.module.ConfigurationModule;
 
 public final class MailboxInventory {
 	private MailboxInventory() {}
 	public static final String getMailboxName(final Type type, final Integer mailboxID, final OfflinePlayer player) {
 		if(type.equals(Type.IN)) {
 			if(mailboxID != null) {
-				return LTItemMail.getInstance().getConfiguration().getString("mailbox-name") + "#" + String.valueOf(mailboxID);
-			} else return LTItemMail.getInstance().getConfiguration().getString("mailbox-name") + "#";
+				return (String) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_NAME) + "#" + String.valueOf(mailboxID);
+			} else return (String) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_NAME) + "#";
 		} else if(type.equals(Type.OUT)) {
 			if(player != null) {
-				return LTItemMail.getInstance().getConfiguration().getString("mailbox-name") + "@" + player.getName();
-			} else return LTItemMail.getInstance().getConfiguration().getString("mailbox-name") + "@";
+				return (String) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_NAME) + "@" + player.getName();
+			} else return (String) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_NAME) + "@";
 		}
 		return null;
 	}

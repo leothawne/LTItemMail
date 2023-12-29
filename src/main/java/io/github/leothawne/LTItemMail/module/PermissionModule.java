@@ -58,6 +58,9 @@ public class PermissionModule {
 			case BLOCK_ADMIN_BREAK:
 				node = "ltitemmail.block.break-bypass";
 				break;
+			case CMD_ADMIN_RELOAD:
+				node = "ltitemmail.admin.reload";
+				break;
 		}
 		if(node != null) return sender.hasPermission(node);
 		return false;
@@ -79,6 +82,7 @@ public class PermissionModule {
 		BLOCK_PLAYER_PLACE,
 		BLOCK_PLAYER_BREAK,
 		BLOCK_PLAYER_USE,
-		BLOCK_ADMIN_BREAK
+		BLOCK_ADMIN_BREAK,
+		CMD_ADMIN_RELOAD
 	}
 }

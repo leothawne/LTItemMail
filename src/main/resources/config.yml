@@ -1,31 +1,33 @@
-#If for some reason you want to disable this plugin, just set this to 'false'. Default: true.
-enable-plugin: true
+plugin:
+    #Enable or disable this plugin. Default: true
+    enable: true
+    #INTERNAL languages support: portuguese, english, vietnamese. Default: english
+    language: english
+    #Here you can customize the name tag that appears in chat. Default: LTIM
+    tag: LTIM
 
-#INTERNAL languages available: portuguese, english, vietnamese. Default: english.
-language: "english"
+hook:
+    #Set 'true' if you wish to use area protection plugins. Defaults: true
+    vault: true #Set 'true' if you wish to use economy plugins (see mail costs below)
+    griefprevention: true
+    redprotect: true
+    towny: true
+    worldguard: true
 
-#Here you can customize the name that appears in the chat. Default: LTIM.
-plugin-tag: "LTIM"
+mail:
+    #If 'true' titles will be used instead of chat messages. Default: false
+    use-title: false
+    cost:
+        #If 'true' cost value will be multiplied by the number of items. Default: false
+        per-item: false
+        #Cost value to send items. Default: 1.5 (per item) and 30.0 (per mailbox)
+        value: 30.0
+    #Name of the mail inventory. Default: Mailbox.
+    name: Mailbox
 
-#If 'true', Vault will be integrated if its enabled on the server. Default: true.
-use-vault: true
-
-#If 'true', title will be used instead of chat messages. If 'false', chat messages will be used. Default: false.
-use-title: false
-
-#If 'true', the 'mail-cost' value will be multiplied by the number of items inside the mailbox. Default: true.
-cost-per-item: true
-
-#Cost to send items to another players. Default: 0.50 (per item), 50.0 (per mailbox).
-mail-cost: 0.50
-
-#Name of the mail inventory. Default: Mailbox.
-mailbox-name: "Mailbox"
-
-#Should administrators be warned about new updates? Default: true.
-#If 'true', this will not bother you while you are playing. I promisse!
+#Should administrators be warned about new updates? Default: true
 update:
     check: true
 
 #Do not change this under any circumstances!
-config-version: 7
+config-version: 8

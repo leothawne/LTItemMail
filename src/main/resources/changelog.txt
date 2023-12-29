@@ -1,6 +1,10 @@
-Changelog 0.3.0:
-- Added a permission system and implemented new permission nodes.
-- Improved language system and file structure. Missing lines will be automatically added instead of deleting the current yml file.
-- Economy fix (plugin creates a thread to keep waiting for an Economy plugin to be registered by Vault if there is any)
-- Now you can send items to offline players.
-- Now you can have a physical mailbox.
+Changelog 0.3.2:
+- Database corruption fix (0.3.1).
+- Added configuration fallback.
+- Added "/itemmailadmin reload" command.
+- Added "/itemmail costs" command.
+- Added support for GriefPrevention protection.
+- Added support for TownyAdvanced protection.
+- Added support for RedProtect protection.
+- Added support for WorldGuard protection.
+- Restructured config.yml file.

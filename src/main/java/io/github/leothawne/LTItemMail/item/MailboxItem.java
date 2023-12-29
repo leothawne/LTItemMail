@@ -16,11 +16,12 @@ import org.bukkit.scheduler.BukkitTask;
 import io.github.leothawne.LTItemMail.LTItemMail;
 import io.github.leothawne.LTItemMail.item.model.Item;
 import io.github.leothawne.LTItemMail.item.model.ItemType;
+import io.github.leothawne.LTItemMail.module.ConfigurationModule;
 
 public final class MailboxItem implements Item {
 	@Override
 	public final String getName() {
-		return LTItemMail.getInstance().getConfiguration().getString("mailbox-name");
+		return (String) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_NAME);
 	}
 	@Override
 	public final List<String> getDescription(String data) {

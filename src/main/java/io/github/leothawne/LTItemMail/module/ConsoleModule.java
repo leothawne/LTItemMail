@@ -28,4 +28,7 @@ public final class ConsoleModule {
 	public static final void severe(final String message) {
 		getConsoleSender().sendMessage(ChatColor.WHITE + "[" + ChatColor.AQUA + "LTIM " + ChatColor.RED + "E" + ChatColor.WHITE + "] " + ChatColor.RED + message);
 	}
+	public static final void debug(final String message) {
+		getConsoleSender().sendMessage("[" + ConsoleModule.class.getSimpleName() + "] " + message);
+	}
 }

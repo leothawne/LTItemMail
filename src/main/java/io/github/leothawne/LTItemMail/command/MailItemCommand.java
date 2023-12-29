@@ -8,8 +8,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import io.github.leothawne.LTItemMail.LTItemMail;
 import io.github.leothawne.LTItemMail.inventory.MailboxInventory;
+import io.github.leothawne.LTItemMail.module.ConfigurationModule;
 import io.github.leothawne.LTItemMail.module.LanguageModule;
 import io.github.leothawne.LTItemMail.module.PermissionModule;
 
@@ -21,20 +21,20 @@ public final class MailItemCommand implements CommandExecutor {
 			if(sender instanceof Player) {
 				final Player player = (Player) sender;
 				if(args.length == 0) {
-					player.sendMessage(ChatColor.DARK_GREEN + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + LanguageModule.get(LanguageModule.Type.PLAYER_MISSINGERROR));
+					player.sendMessage(ChatColor.DARK_GREEN + "[" + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + "] " + ChatColor.YELLOW + "" + LanguageModule.get(LanguageModule.Type.PLAYER_MISSINGERROR));
 				} else if(args.length == 1) {
 					final OfflinePlayer playerTo = Bukkit.getOfflinePlayer(args[0]);
 					if(playerTo.hasPlayedBefore()) {
 						if(playerTo.getUniqueId().equals(player.getUniqueId())) {
 							if(args.length == 2 && args[1].equalsIgnoreCase("--bypass") && PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_ADMIN_BYPASS)) {
-								player.sendMessage(ChatColor.DARK_GREEN + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.YELLOW + "Ok...");
+								player.sendMessage(ChatColor.DARK_GREEN + "[" + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + "] " + ChatColor.YELLOW + "Ok...");
 								player.openInventory(MailboxInventory.getMailboxInventory(MailboxInventory.Type.OUT, null, playerTo, null));
-							} else player.sendMessage(ChatColor.DARK_GREEN + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + LanguageModule.get(LanguageModule.Type.PLAYER_SELFERROR));
+							} else player.sendMessage(ChatColor.DARK_GREEN + "[" + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + "] " + ChatColor.YELLOW + "" + LanguageModule.get(LanguageModule.Type.PLAYER_SELFERROR));
 						} else player.openInventory(MailboxInventory.getMailboxInventory(MailboxInventory.Type.OUT, null, playerTo, null));
-					} else player.sendMessage(ChatColor.DARK_GREEN + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + LanguageModule.get(LanguageModule.Type.PLAYER_NEVERPLAYEDERROR));
-				} else player.sendMessage(ChatColor.DARK_GREEN + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + LanguageModule.get(LanguageModule.Type.PLAYER_SYNTAXERROR));
-			} else sender.sendMessage(ChatColor.DARK_GREEN + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + LanguageModule.get(LanguageModule.Type.PLAYER_ERROR));
-		} else sender.sendMessage(ChatColor.DARK_GREEN + "[" + LTItemMail.getInstance().getConfiguration().getString("plugin-tag") + "] " + ChatColor.YELLOW + "" + LanguageModule.get(LanguageModule.Type.PLAYER_PERMISSIONERROR));
+					} else player.sendMessage(ChatColor.DARK_GREEN + "[" + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + "] " + ChatColor.YELLOW + "" + LanguageModule.get(LanguageModule.Type.PLAYER_NEVERPLAYEDERROR));
+				} else player.sendMessage(ChatColor.DARK_GREEN + "[" + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + "] " + ChatColor.YELLOW + "" + LanguageModule.get(LanguageModule.Type.PLAYER_SYNTAXERROR));
+			} else sender.sendMessage(ChatColor.DARK_GREEN + "[" + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + "] " + ChatColor.YELLOW + "" + LanguageModule.get(LanguageModule.Type.PLAYER_ERROR));
+		} else sender.sendMessage(ChatColor.DARK_GREEN + "[" + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + "] " + ChatColor.YELLOW + "" + LanguageModule.get(LanguageModule.Type.PLAYER_PERMISSIONERROR));
 		return true;
 	}
 }

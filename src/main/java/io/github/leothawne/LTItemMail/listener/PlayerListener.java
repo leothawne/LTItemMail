@@ -8,6 +8,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
+import io.github.leothawne.LTItemMail.module.ConfigurationModule;
 import io.github.leothawne.LTItemMail.module.PermissionModule;
 
 public final class PlayerListener implements Listener {
@@ -17,7 +18,7 @@ public final class PlayerListener implements Listener {
 			@Override
 			public final void run() {
 				final Player player = (Player) event.getPlayer();
-				if(PermissionModule.hasPermission(player, PermissionModule.Type.CMD_ADMIN_NOTIFY) && PermissionModule.hasPermission(player, PermissionModule.Type.CMD_ADMIN_UPDATE)) if(LTItemMail.getInstance().getConfiguration().getBoolean("update.check")) player.performCommand("itemmailadmin update");
+				if(PermissionModule.hasPermission(player, PermissionModule.Type.CMD_ADMIN_NOTIFY) && PermissionModule.hasPermission(player, PermissionModule.Type.CMD_ADMIN_UPDATE)) if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_UPDATE_CHECK)) player.performCommand("itemmailadmin update");
 				if(PermissionModule.hasPermission(player, PermissionModule.Type.CMD_PLAYER_NOTIFY) && PermissionModule.hasPermission(player, PermissionModule.Type.CMD_PLAYER_LIST)) player.performCommand("itemmail list");
 			}
 		}.runTaskLater(LTItemMail.getInstance(), 20 * 5);

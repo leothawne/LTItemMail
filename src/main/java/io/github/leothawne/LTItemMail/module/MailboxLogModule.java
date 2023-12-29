@@ -18,11 +18,9 @@ import org.bukkit.OfflinePlayer;
 import io.github.leothawne.LTItemMail.LTItemMail;
 
 public final class MailboxLogModule {
-	private static MailboxLogModule instance;
+	private static MailboxLogModule instance = null;
 	private Logger log;
-	//private DateTimeFormatter time;
 	private MailboxLogModule() {
-		instance = this;
 		log = Logger.getLogger(MailboxLogModule.class.getName());
 		try {
 			Files.createDirectories(Paths.get(LTItemMail.getInstance().getDataFolder() + File.separator + "logs"));
@@ -34,13 +32,11 @@ public final class MailboxLogModule {
 		}
 	}
 	private static final MailboxLogModule getInstance() {
+		if(instance == null) instance = new MailboxLogModule();
 		return instance;
 	}
 	private final Logger getLogger() {
 		return log;
-	}
-	public static final void init() {
-		new MailboxLogModule();
 	}
 	public static final boolean log(final UUID playerFrom, UUID playerTo, final Action action, final Integer mailboxID, final Location mailboxBlock) {
 		if(playerFrom == null) return false;

@@ -11,24 +11,30 @@ import io.github.leothawne.LTItemMail.LTItemMail;
 
 public final class LanguageModule {
 	private LanguageModule() {}
-	private static File languageFile = new File(LTItemMail.getInstance().getDataFolder(), LTItemMail.getInstance().getConfiguration().getString("language") + ".yml");
+	private static File languageFile;
 	public static final void check() {
+		languageFile = new File(LTItemMail.getInstance().getDataFolder(), (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml");
 		if(!languageFile.exists()) {
-			ConsoleModule.warning("Extracting " + LTItemMail.getInstance().getConfiguration().getString("language") + ".yml file...");
-			if(LTItemMail.getInstance().getConfiguration().getString("language").equalsIgnoreCase("vietnamese") || LTItemMail.getInstance().getConfiguration().getString("language").equalsIgnoreCase("english") || LTItemMail.getInstance().getConfiguration().getString("language").equalsIgnoreCase("portuguese")) {
-				LTItemMail.getInstance().saveResource(LTItemMail.getInstance().getConfiguration().getString("language") + ".yml", false);
+			ConsoleModule.warning("Extracting " + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml file...");
+			if(((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE)).equalsIgnoreCase("vietnamese") || ((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE)).equalsIgnoreCase("english") || ((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE)).equalsIgnoreCase("portuguese")) {
+				LTItemMail.getInstance().saveResource((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml", false);
 				ConsoleModule.info("Done.");
-			} else ConsoleModule.warning(LTItemMail.getInstance().getConfiguration().getString("language") + ".yml file is not supported yet. I suggest you to manually create the language file and do manually the translation.");
-		} else ConsoleModule.info("Found " + LTItemMail.getInstance().getConfiguration().getString("language") + ".yml file.");
+			} else try {
+				languageFile.createNewFile();
+				ConsoleModule.warning((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + " is not integrated with internal language support. The yml file was created and new lines will be added while you play.");
+			} catch (final IOException e) {
+				e.printStackTrace();
+			}
+		} else ConsoleModule.info("Found " + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml file.");
 	}
 	public static final FileConfiguration load() {
 		if(languageFile.exists()) {
-			final FileConfiguration languageConfig = new YamlConfiguration();
+			final FileConfiguration language = new YamlConfiguration();
 			try {
-				languageConfig.load(languageFile);
-				ConsoleModule.info("Loaded " + LTItemMail.getInstance().getConfiguration().getString("language") + ".yml file.");
+				language.load(languageFile);
+				ConsoleModule.info("Loaded " + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml file.");
 				int languageVersion = 0;
-				switch(LTItemMail.getInstance().getConfiguration().getString("language").toLowerCase()) {
+				switch(((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE)).toLowerCase()) {
 					case "english":
 						languageVersion = Integer.parseInt(DataModule.getVersion(DataModule.VersionType.ENGLISH_YML));
 						break;
@@ -39,17 +45,15 @@ public final class LanguageModule {
 						languageVersion = Integer.parseInt(DataModule.getVersion(DataModule.VersionType.VIETNAMESE_YML));
 						break;
 				}
-				if(languageVersion != 0) if(languageConfig.getInt("language-version") != languageVersion) {
-					ConsoleModule.severe(LTItemMail.getInstance().getConfiguration().getString("language") + ".yml file outdated. New lines will be added to your current language file. Or you can manually delete the current language file and let the plugin extract the new one.");
-					languageConfig.set("language-version", languageVersion);
-					languageConfig.save(languageFile);
-				}
-				return languageConfig;
-			} catch(final IOException | InvalidConfigurationException exception) {
-				exception.printStackTrace();
+				if(language.getInt("language-version") != languageVersion) ConsoleModule.severe((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml file outdated. New lines will be added to your current language file. Or you can manually delete the current language file and let the plugin extract the new one.");
+				language.set("language-version", languageVersion);
+				language.save(languageFile);
+				return language;
+			} catch(final IOException | InvalidConfigurationException e) {
+				e.printStackTrace();
 			}
 		}
-		ConsoleModule.severe("Missing " + LTItemMail.getInstance().getConfiguration().getString("language") + ".yml file.");
+		ConsoleModule.severe("Missing " + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml file.");
 		return null;
 	}
 	public static final String get(final Type type) {
@@ -216,6 +220,7 @@ public final class LanguageModule {
 		if(path != null && result != null) if(LTItemMail.getInstance().getLanguage().isSet(path)) {
 			result = LTItemMail.getInstance().getLanguage().getString(path);
 		} else {
+			ConsoleModule.warning("Language fallback: [" + path + ":" + result + "]");
 			LTItemMail.getInstance().getLanguage().set(path, result);
 			try {
 				LTItemMail.getInstance().getLanguage().save(languageFile);

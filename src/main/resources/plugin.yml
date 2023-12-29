@@ -8,7 +8,7 @@ website: https://leothawne.github.io/LTItemMail/
 url: https://leothawne.github.io/LTItemMail/
 main: io.github.leothawne.LTItemMail.LTItemMail
 database: true
-soft-depend: [Vault]
+soft-depend: [Vault, GriefPrevention, RedProtect, Towny, WorldGuard]
 commands:
     itemmail:
         description: Commands for players.
@@ -50,6 +50,8 @@ permissions:
     ltitemmail.admin.list:
         default: op
     ltitemmail.admin.recover:
+        default: op
+    ltitemmail.admin.reload:
         default: op
     ltitemmail.admin.notify:
         default: op
