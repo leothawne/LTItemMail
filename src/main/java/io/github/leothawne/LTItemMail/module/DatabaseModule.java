@@ -23,8 +23,8 @@ import io.github.leothawne.LTItemMail.LTItemMail;
 
 public final class DatabaseModule {
 	private DatabaseModule() {}
+	private static final File databaseFile = new File(LTItemMail.getInstance().getDataFolder(), "mailboxes.db");
 	public static final void check() {
-		final File databaseFile = new File(LTItemMail.getInstance().getDataFolder(), "mailboxes.db");
 		if(!databaseFile.exists()) {
 			ConsoleModule.warning("Extracting mailboxes.db file...");
 			LTItemMail.getInstance().saveResource("mailboxes.db", false);
@@ -32,7 +32,6 @@ public final class DatabaseModule {
 		} else ConsoleModule.info("Found mailboxes.db file.");
 	}
 	public static final Connection load() {
-		final File databaseFile = new File(LTItemMail.getInstance().getDataFolder(), "mailboxes.db");
 		if(databaseFile.exists()) {
 			try {
 				final Connection con = DriverManager.getConnection("jdbc:sqlite:" + LTItemMail.getInstance().getDataFolder() + File.separator + "mailboxes.db");
@@ -203,7 +202,7 @@ public final class DatabaseModule {
 			final HashMap<Integer, String> mailboxes = new HashMap<>();
 			try {
 				final Statement statement = LTItemMail.getInstance().getConnection().createStatement();
-				final ResultSet results = statement.executeQuery("SELECT id,sent_date FROM mailbox WHERE uuid_to = '" + owner.toString() + "' AND opened = '0';");
+				final ResultSet results = statement.executeQuery("SELECT * FROM mailbox WHERE uuid_to = '" + owner.toString() + "' AND opened = '0';");
 				while(results.next()) mailboxes.putIfAbsent(results.getInt("id"), results.getString("sent_date"));
 				statement.closeOnCompletion();
 			} catch (final SQLException e) {

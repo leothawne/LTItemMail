@@ -18,16 +18,6 @@ public final class LTItemMailAPI {
 	private LTItemMailAPI() {}
 	/**
 	 * 
-	 * Method used to instantiate LT Item Mail API class.
-	 * 
-	 * @return The API class.
-	 * 
-	 */
-	public static final LTItemMailAPI getInstance() {
-		return new LTItemMailAPI();
-	}
-	/**
-	 * 
 	 * Method used to send items anonymously
 	 * to any player on the server. The mailbox
 	 * will be assigned as a "Special Mailbox".
@@ -38,7 +28,7 @@ public final class LTItemMailAPI {
 	 * @return "success" if it was successfully delivered. Otherwise it will return an error message.
 	 * 
 	 */
-	public final String sendSpecialMailbox(final OfflinePlayer player, final LinkedList<ItemStack> items) {
+	public static final String sendSpecialMailbox(final OfflinePlayer player, final LinkedList<ItemStack> items) {
 		return MailboxAPI.sendSpecial(player, items);
 	}
 	/**
@@ -53,7 +43,7 @@ public final class LTItemMailAPI {
 	 * @return "success" if it was successfully delivered. Otherwise it will return an error message.
 	 * 
 	 */
-	public final String sendSpecialMailbox(final UUID playerUUID, final LinkedList<ItemStack> items) {
+	public static final String sendSpecialMailbox(final UUID playerUUID, final LinkedList<ItemStack> items) {
 		return sendSpecialMailbox(Bukkit.getOfflinePlayer(playerUUID), items);
 	}
 	/**
@@ -69,7 +59,7 @@ public final class LTItemMailAPI {
 	 * 
 	 */
 	@SuppressWarnings("deprecation")
-	public final String sendSpecialMailbox(final String playerName, final LinkedList<ItemStack> items) {
+	public static final String sendSpecialMailbox(final String playerName, final LinkedList<ItemStack> items) {
 		return sendSpecialMailbox(Bukkit.getOfflinePlayer(playerName), items);
 	}
 }

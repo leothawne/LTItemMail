@@ -15,7 +15,6 @@
 package io.github.leothawne.LTItemMail;
 
 import java.sql.Connection;
-import java.util.Arrays;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -23,8 +22,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import io.github.leothawne.LTItemMail.api.LTItemMailAPI;
-import io.github.leothawne.LTItemMail.api.WarnIntegrationsAPI;
 import io.github.leothawne.LTItemMail.command.ItemMailAdminCommand;
 import io.github.leothawne.LTItemMail.command.ItemMailCommand;
 import io.github.leothawne.LTItemMail.command.MailItemCommand;
@@ -38,11 +35,11 @@ import io.github.leothawne.LTItemMail.module.ConfigurationModule;
 import io.github.leothawne.LTItemMail.module.ConsoleModule;
 import io.github.leothawne.LTItemMail.module.DataModule;
 import io.github.leothawne.LTItemMail.module.DatabaseModule;
+import io.github.leothawne.LTItemMail.module.IntegrationModule;
 import io.github.leothawne.LTItemMail.module.LanguageModule;
 import io.github.leothawne.LTItemMail.module.MailboxLogModule;
 import io.github.leothawne.LTItemMail.module.MetricsModule;
 import io.github.leothawne.LTItemMail.module.RecipeModule;
-import io.github.leothawne.LTItemMail.module.VaultModule;
 import io.github.leothawne.LTItemMail.task.MailboxItemTask;
 import io.github.leothawne.LTItemMail.task.VersionTask;
 import net.milkbowl.vault.economy.Economy;
@@ -55,7 +52,7 @@ public final class LTItemMail extends JavaPlugin {
 	private FileConfiguration configuration;
 	private FileConfiguration language;
 	private Connection con;
-	private Economy economyPlugin;
+	private Economy economy;
 	private Integer versionTaskID;
 	@Override
 	public final void onEnable() {
@@ -75,26 +72,26 @@ public final class LTItemMail extends JavaPlugin {
 		}
 		if(configuration.getBoolean("enable-plugin")) {
 			versionTaskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new VersionTask(), 0, 20 * 10);
-			MetricsModule.init();
+			MetricsModule.register();
 			LanguageModule.check();
 			language = LanguageModule.load();
-			economyPlugin = null;
+			economy = null;
 			if(configuration.getBoolean("use-vault")) {
 				ConsoleModule.info("Loading Vault...");
-				if(VaultModule.isVaultInstalled()) {
+				if(IntegrationModule.isInstalled(IntegrationModule.TPlugin.VAULT)) {
 					ConsoleModule.info("Vault loaded.");
-					new WarnIntegrationsAPI(Arrays.asList("Vault"));
+					IntegrationModule.warn(IntegrationModule.TPlugin.VAULT);
 					ConsoleModule.info("Looking for an Economy plugin...");
-					economyPlugin = VaultModule.getEconomy();
-					if(economyPlugin != null) {
+					economy = (Economy) IntegrationModule.register(IntegrationModule.FPlugin.VAULT_ECONOMY);
+					if(economy != null) {
 						ConsoleModule.info("Economy plugin found.");
 					} else {
 						ConsoleModule.warning("Economy plugin not found. Waiting for Vault registration.");
 						new BukkitRunnable() {
 							@Override
 							public final void run() {
-								economyPlugin = VaultModule.getEconomy();
-								if(economyPlugin != null) {
+								economy = (Economy) IntegrationModule.register(IntegrationModule.FPlugin.VAULT_ECONOMY);
+								if(economy != null) {
 									ConsoleModule.info("Economy plugin installed.");
 									this.cancel();
 								}
@@ -126,7 +123,7 @@ public final class LTItemMail extends JavaPlugin {
 			getCommand("itemmailadmin").setTabCompleter(new ItemMailAdminCommandTabCompleter());
 			getCommand("mailitem").setExecutor(new MailItemCommand());
 			getCommand("mailitem").setTabCompleter(new MailItemCommandTabCompleter());
-			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "itemmailadmin update");
+			if(configuration.getBoolean("update.check")) Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "itemmailadmin update");
 		} else {
 			ConsoleModule.severe("You've choosen to disable me.");
 			new BukkitRunnable() {
@@ -142,16 +139,6 @@ public final class LTItemMail extends JavaPlugin {
 		ConsoleModule.info("Disabling...");
 		Bukkit.getScheduler().cancelTasks(this);
 	}
-	/**
-	 * 
-	 * Method used to instantiate LT Item Mail API class.
-	 * 
-	 * @return The API class.
-	 * 
-	 */
-	public static final LTItemMailAPI getAPI() {
-		return LTItemMailAPI.getInstance();
-	}
 	public static final LTItemMail getInstance() {
 		return instance;
 	}
@@ -162,7 +149,7 @@ public final class LTItemMail extends JavaPlugin {
 		return language;
 	}
 	public final Economy getEconomy() {
-		return economyPlugin;
+		return economy;
 	}
 	public final Connection getConnection() {
 		return con;

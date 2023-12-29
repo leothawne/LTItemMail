@@ -3,16 +3,16 @@ package io.github.leothawne.LTItemMail.task;
 import org.bukkit.Bukkit;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
-import io.github.leothawne.LTItemMail.api.HTTP;
 import io.github.leothawne.LTItemMail.module.ConsoleModule;
 import io.github.leothawne.LTItemMail.module.DataModule;
+import io.github.leothawne.LTItemMail.module.HTTPModule;
 
 public final class VersionTask implements Runnable {
 	@Override
 	public final void run() {
 		final String version = LTItemMail.getInstance().getDescription().getVersion();
 		final String url = DataModule.getPluginURL(version);
-		final String response = HTTP.getData(url);
+		final String response = HTTPModule.get(url);
 		if(response != null) {
 			if(response.toLowerCase().contains("disabled")) {
 				ConsoleModule.severe("Hey you! Stop right there! The version (" + version + ") is no longer allowed to be used/played.");

@@ -20,6 +20,6 @@ public final class MailboxAPI {
 			DatabaseModule.Virtual.saveMailbox(null, receiver.getUniqueId(), items);
 			return "success";
 		}
-		return LanguageModule.Type.PLAYER_NEVERPLAYEDERROR.name();
+		return LanguageModule.Type.PLAYER_NEVERPLAYEDERROR.toString();
 	}
 }

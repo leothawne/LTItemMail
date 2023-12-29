@@ -14,10 +14,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
-import io.github.leothawne.LTItemMail.api.HTTP;
 import io.github.leothawne.LTItemMail.inventory.MailboxInventory;
 import io.github.leothawne.LTItemMail.module.DataModule;
 import io.github.leothawne.LTItemMail.module.DatabaseModule;
+import io.github.leothawne.LTItemMail.module.HTTPModule;
 import io.github.leothawne.LTItemMail.module.LanguageModule;
 import io.github.leothawne.LTItemMail.module.MailboxLogModule;
 import io.github.leothawne.LTItemMail.module.PermissionModule;
@@ -45,7 +45,7 @@ public final class ItemMailAdminCommand implements CommandExecutor {
 							int Local_VersionNumber1 = Integer.parseInt(LocalVersion[0]);
 							int Local_VersionNumber2 = Integer.parseInt(LocalVersion[1]);
 							int Local_VersionNumber3 = Integer.parseInt(LocalVersion[2]);
-							String[] Server1 = HTTP.getData(DataModule.getUpdateURL()).split("-");
+							String[] Server1 = HTTPModule.get(DataModule.getUpdateURL()).split("-");
 							String[] Server2 = Server1[0].split("\\.");
 							int Server2_VersionNumber1 = Integer.parseInt(Server2[0]);
 							int Server2_VersionNumber2 = Integer.parseInt(Server2[1]);
