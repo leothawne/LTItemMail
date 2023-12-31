@@ -216,6 +216,22 @@ public final class LanguageModule {
 				result = "You broke the mailbox of";
 				path = "block.adminbroke";
 				break;
+			case TRANSACTION_NOTINSTALLED:
+				result = "Vault is not installed!";
+				path = "transaction.notinstalled";
+				break;
+			case TRANSACTION_COSTS:
+				result = "Costs:";
+				path = "transaction.costs";
+				break;
+			case COMMAND_ADMIN_RELOAD:
+				result = "Reload plugin config and language settings.";
+				path = "command.admin.reload";
+				break;
+			case COMMAND_PLAYER_COSTS:
+				result = "Show mail costs.";
+				path = "command.player.costs";
+				break;
 		}
 		if(path != null && result != null) if(LTItemMail.getInstance().getLanguage().isSet(path)) {
 			result = LTItemMail.getInstance().getLanguage().getString(path);
@@ -269,6 +285,10 @@ public final class LanguageModule {
 		BLOCK_USEERROR,
 		BLOCK_OWNERERROR,
 		BLOCK_BELOWERROR,
-		BLOCK_ADMINBROKE
+		BLOCK_ADMINBROKE,
+		TRANSACTION_NOTINSTALLED,
+		TRANSACTION_COSTS,
+		COMMAND_ADMIN_RELOAD,
+		COMMAND_PLAYER_COSTS
 	}
 }

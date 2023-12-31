@@ -25,6 +25,8 @@ transaction:
     error: "Transaction not succeeded!"
     nomoney: "You do not have $% to pay to the post office."
     paid: "You paid $% to the post office."
+    notinstalled: "Vault is not installed!"
+    costs: "Costs:"
 
 block:
     breakerror: "You do not have permission to break that mailbox."
@@ -43,11 +45,13 @@ command:
         open: "Open a pending mailbox."
         delete: "Delete a pending mailbox."
         mailitem: "Open a new mailbox to put items inside and send it to another player."
+        costs: "Show mail costs."
     admin:
         itemmailadmin: "List of admin commands."
         update: "Check for new updates."
         list: "List deleted mailboxes of a player."
         recover: "Recover lost items from a deleted mailbox (if there is any)."
+        reload: "Reload plugin config and language settings."
 
 #Do not change it under any circumstances!
-language-version: 6
+language-version: 7

@@ -1,5 +1,7 @@
 package io.github.leothawne.LTItemMail.listener;
 
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -11,7 +13,11 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockExplodeEvent;
+import org.bukkit.event.block.BlockPistonExtendEvent;
+import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -34,7 +40,7 @@ import io.github.leothawne.LTItemMail.module.integration.WorldGuardAPI;
 
 public final class ItemMailboxListener implements Listener {
 	final Item mailbox = new MailboxItem();
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public final void onClick(final PlayerInteractEvent event) {
 		final Player player = event.getPlayer();
 		if(event.hasBlock() && event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && event.getHand().equals(EquipmentSlot.HAND) && !player.isSneaking()) {
@@ -50,7 +56,7 @@ public final class ItemMailboxListener implements Listener {
 			}
 		}
 	}
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public final void onPlace(final BlockPlaceEvent event) {
 		final ItemStack item = event.getItemInHand();
 		if(item != null && item.getItemMeta() != null) if(item.getType().equals(mailbox.getMaterial())) if(item.getItemMeta().getLore() != null && item.getItemMeta().getLore().size() == 1) if(item.getItemMeta().getLore().get(0).contains("Mailbox@") && item.getItemMeta().getLore().get(0).split("@").length == 2) {
@@ -74,10 +80,10 @@ public final class ItemMailboxListener implements Listener {
 			} else event.setCancelled(true);
 		}
 	}
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public final void onBreak(final BlockBreakEvent event) {
 		final Block block = event.getBlock();
-		if(block.getType().equals(mailbox.getMaterial()) && DatabaseModule.Block.isMailboxBlock(block.getLocation())) {
+		if(block != null && block.getType().equals(mailbox.getMaterial()) && DatabaseModule.Block.isMailboxBlock(block.getLocation())) {
 			final Player player = event.getPlayer();
 			if(canBuildBreak(player, block.getLocation()) && canBreak(player, block.getLocation())) {
 				if(PermissionModule.hasPermission(player, PermissionModule.Type.BLOCK_PLAYER_BREAK)) {
@@ -104,15 +110,75 @@ public final class ItemMailboxListener implements Listener {
 					player.sendMessage(ChatColor.AQUA + "[" + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + "] " + ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.BLOCK_BREAKERROR));
 				}
 			} else event.setCancelled(true);
-		} else if(block.getType().toString().toLowerCase().endsWith("_fence")) {
+		} else if(block != null && block.getType().toString().toLowerCase().endsWith("_fence")) {
 			final Block blockAbove = new Location(block.getLocation().getWorld(), block.getLocation().getBlockX(), (block.getLocation().getBlockY() + 1), block.getLocation().getBlockZ()).getBlock();
 			if(blockAbove.getType().equals(mailbox.getMaterial()) && DatabaseModule.Block.isMailboxBlock(blockAbove.getLocation())) event.setCancelled(true);
 		}
 	}
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-	public final void onMove(final InventoryMoveItemEvent event) {
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public final void onInventoryMove(final InventoryMoveItemEvent event) {
 		final Location block = event.getDestination().getLocation();
-		if(block != null && block.getBlock().getType().equals(mailbox.getMaterial())) if(DatabaseModule.Block.isMailboxBlock(block)) if(event.getSource().getType().equals(InventoryType.HOPPER)) event.setCancelled(true);
+		if(block != null && block.getBlock().getType().equals(mailbox.getMaterial()) && DatabaseModule.Block.isMailboxBlock(block)) if(event.getSource().getType().equals(InventoryType.HOPPER)) event.setCancelled(true);
+	}
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public final void onPistonExtend(final BlockPistonExtendEvent event) {
+		Boolean cancel = false;
+		final List<Block> blocks = event.getBlocks();
+		for(final Block block : blocks) {
+			if(block != null) {
+				if(block.getType().equals(mailbox.getMaterial()) && DatabaseModule.Block.isMailboxBlock(block.getLocation())) cancel = true;
+				if(block.getType().toString().toLowerCase().endsWith("_fence")) {
+					final Block blockAbove = new Location(block.getLocation().getWorld(), block.getLocation().getBlockX(), (block.getLocation().getBlockY() + 1), block.getLocation().getBlockZ()).getBlock();
+					if(blockAbove.getType().equals(mailbox.getMaterial()) && DatabaseModule.Block.isMailboxBlock(blockAbove.getLocation())) cancel = true;
+				}
+			}
+		}
+		event.setCancelled(cancel);
+	}
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public final void onPistonRetract(final BlockPistonRetractEvent event) {
+		Boolean cancel = false;
+		final List<Block> blocks = event.getBlocks();
+		for(final Block block : blocks) {
+			if(block != null) {
+				if(block.getType().equals(mailbox.getMaterial()) && DatabaseModule.Block.isMailboxBlock(block.getLocation())) cancel = true;
+				if(block.getType().toString().toLowerCase().endsWith("_fence")) {
+					final Block blockAbove = new Location(block.getLocation().getWorld(), block.getLocation().getBlockX(), (block.getLocation().getBlockY() + 1), block.getLocation().getBlockZ()).getBlock();
+					if(blockAbove.getType().equals(mailbox.getMaterial()) && DatabaseModule.Block.isMailboxBlock(blockAbove.getLocation())) cancel = true;
+				}
+			}
+		}
+		event.setCancelled(cancel);
+	}
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public final void onBlockExplode(final BlockExplodeEvent event) {
+		Boolean cancel = false;
+		final List<Block> blocks = event.blockList();
+		for(final Block block : blocks) {
+			if(block != null) {
+				if(block.getType().equals(mailbox.getMaterial()) && DatabaseModule.Block.isMailboxBlock(block.getLocation())) cancel = true;
+				if(block.getType().toString().toLowerCase().endsWith("_fence")) {
+					final Block blockAbove = new Location(block.getLocation().getWorld(), block.getLocation().getBlockX(), (block.getLocation().getBlockY() + 1), block.getLocation().getBlockZ()).getBlock();
+					if(blockAbove.getType().equals(mailbox.getMaterial()) && DatabaseModule.Block.isMailboxBlock(blockAbove.getLocation())) cancel = true;
+				}
+			}
+		}
+		event.setCancelled(cancel);
+	}
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public final void onEntityExplode(final EntityExplodeEvent event) {
+		Boolean cancel = false;
+		final List<Block> blocks = event.blockList();
+		for(final Block block : blocks) {
+			if(block != null) {
+				if(block.getType().equals(mailbox.getMaterial()) && DatabaseModule.Block.isMailboxBlock(block.getLocation())) cancel = true;
+				if(block.getType().toString().toLowerCase().endsWith("_fence")) {
+					final Block blockAbove = new Location(block.getLocation().getWorld(), block.getLocation().getBlockX(), (block.getLocation().getBlockY() + 1), block.getLocation().getBlockZ()).getBlock();
+					if(blockAbove.getType().equals(mailbox.getMaterial()) && DatabaseModule.Block.isMailboxBlock(blockAbove.getLocation())) cancel = true;
+				}
+			}
+		}
+		event.setCancelled(cancel);
 	}
 	private final GriefPreventionAPI griefPrevention = (GriefPreventionAPI) IntegrationModule.getInstance(false).get(IntegrationModule.FPlugin.GRIEF_PREVENTION_API);
 	private final RedProtectAPI redProtect = (RedProtectAPI) IntegrationModule.getInstance(false).get(IntegrationModule.FPlugin.RED_PROTECT_API);

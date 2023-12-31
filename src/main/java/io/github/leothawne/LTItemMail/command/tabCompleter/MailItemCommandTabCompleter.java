@@ -1,6 +1,6 @@
 package io.github.leothawne.LTItemMail.command.tabCompleter;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -22,6 +22,6 @@ public final class MailItemCommandTabCompleter implements TabCompleter {
 			for(final Player player : Bukkit.getOnlinePlayers()) response.add(player.getName());
 			return TabCompleterAPI.partial(args[0], response);
 		}
-		return new ArrayList<>();
+		return Collections.emptyList();
 	}
 }

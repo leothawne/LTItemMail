@@ -1,10 +1,11 @@
 Changelog 0.3.2:
 - Database corruption fix (0.3.1).
 - Added configuration fallback.
-- Added "/itemmailadmin reload" command.
-- Added "/itemmail costs" command.
+- Added "/itemmailadmin reload" command and translations.
+- Added "/itemmail costs" command and translations.
 - Added support for GriefPrevention protection.
 - Added support for TownyAdvanced protection.
 - Added support for RedProtect protection.
 - Added support for WorldGuard protection.
 - Restructured config.yml file.
+- Added own protections for physical mailboxes (prevent breaking, exploding and moving with a piston).

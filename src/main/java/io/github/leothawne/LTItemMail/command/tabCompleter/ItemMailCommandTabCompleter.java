@@ -1,6 +1,6 @@
 package io.github.leothawne.LTItemMail.command.tabCompleter;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -27,6 +27,6 @@ public final class ItemMailCommandTabCompleter implements TabCompleter {
 			for(final Integer i : mailboxes.keySet()) response.add(String.valueOf(i));
 			return TabCompleterAPI.partial(args[1], response);
 		}
-		return new ArrayList<>();
+		return Collections.emptyList();
 	}
 }

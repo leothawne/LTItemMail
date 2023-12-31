@@ -25,6 +25,8 @@ transaction:
     error: "Transação mal sucedida!"
     nomoney: "Você não tem $% para pagar ao corrêio."
     paid: "Você pagou $% ao corrêio."
+    notinstalled: "Vault não está instalado!"
+    costs: "Custos:"
 
 block:
     breakerror: "Você não tem permissão para quebrar esta caixa de corrêio."
@@ -43,11 +45,13 @@ command:
         open: "Abre uma caixa de corrêio pendente."
         delete: "Deleta uma caixa de corrêio pendente."
         mailitem: "Abre uma nova caixa de corrêio pra colocar itens dentro e enviar para outro jogador."
+        costs: "Mostra custos de envio."
     admin:
         itemmailadmin: "Lista de comandos para admins."
         update: "Verifica se há novas atualizações."
         list: "Lista de todas as caixas de corrêio deletadas de um jogador."
         recover: "Recupera items perdidos de caixas de corrêio deletadas (se houver algum)."
+        reload: "Recarrega a configuração do plugin e idioma/tradução."
 
 #Não mude isso sob nenhuma circunstância!
-language-version: 6
+language-version: 7

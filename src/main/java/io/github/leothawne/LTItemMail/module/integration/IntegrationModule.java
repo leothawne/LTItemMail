@@ -7,7 +7,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
-import io.github.leothawne.LTItemMail.module.ConsoleModule;
 import net.milkbowl.vault.economy.Economy;
 
 public final class IntegrationModule {
@@ -29,7 +28,7 @@ public final class IntegrationModule {
 	public final void warn(final TPlugin TPlugin) {
 		Plugin plugin = null;
 		if(plugins.containsKey(TPlugin)) plugin = plugins.get(TPlugin);
-		if(plugin != null && plugin.isEnabled()) ConsoleModule.info(LTItemMail.getInstance().getDescription().getName() + " successfully hooked into " + plugin.getDescription().getName());
+		if(plugin != null && plugin.isEnabled()) plugin.getLogger().info("Hooked into " + LTItemMail.getInstance().getDescription().getName());
 	}
 	public final boolean isInstalled(final TPlugin TPlugin) {
 		Plugin plugin = null;

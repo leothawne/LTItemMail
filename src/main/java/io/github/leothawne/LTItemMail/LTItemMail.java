@@ -15,6 +15,7 @@
 package io.github.leothawne.LTItemMail;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -98,6 +99,11 @@ public final class LTItemMail extends JavaPlugin {
 	public final void onDisable() {
 		ConsoleModule.info("Disabling...");
 		Bukkit.getScheduler().cancelTasks(this);
+		try {
+			connection.close();
+		} catch (final SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	public static final LTItemMail getInstance() {
 		return instance;
