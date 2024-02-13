@@ -67,3 +67,5 @@ mailboxes.db
 plugin.yml
 portuguese.yml
 vietnamese.yml
+.settings/org.eclipse.core.resources.prefs
+src/main/nms/remapped_server_1.20.4.jar
