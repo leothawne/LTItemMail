@@ -2,9 +2,11 @@ plugin:
     #Enable or disable this plugin. Default: true
     enable: true
     #INTERNAL languages support: portuguese, english, vietnamese. Default: english
-    language: english
+    language: "english"
     #Here you can customize the name tag that appears in chat. Default: LTIM
-    tag: LTIM
+    tag: "LTIM"
+    #Show error messages if something go wrong
+    debug: false
 
 hook:
     #Set 'true' if you wish to use area protection plugins. Defaults: true
@@ -23,11 +25,11 @@ mail:
         #Cost value to send items. Default: 1.5 (per item) and 30.0 (per mailbox)
         value: 30.0
     #Name of the mail inventory. Default: Mailbox.
-    name: Mailbox
+    name: "Mailbox"
 
 #Should administrators be warned about new updates? Default: true
 update:
     check: true
 
 #Do not change this under any circumstances!
-config-version: 8
+config-version: 9

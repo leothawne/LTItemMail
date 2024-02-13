@@ -233,9 +233,9 @@ public final class LanguageModule {
 				path = "command.player.costs";
 				break;
 		}
-		if(path != null && result != null) if(LTItemMail.getInstance().getLanguage().isSet(path)) {
+		if(path != null) if(LTItemMail.getInstance().getLanguage().isSet(path)) {
 			result = LTItemMail.getInstance().getLanguage().getString(path);
-		} else {
+		} else if(result != null) {
 			ConsoleModule.warning("Language fallback: [" + path + ":" + result + "]");
 			LTItemMail.getInstance().getLanguage().set(path, result);
 			try {

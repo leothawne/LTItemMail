@@ -98,10 +98,14 @@ public final class ConfigurationModule {
 				result = true;
 				path = "hook.worldguard";
 				break;
+			case PLUGIN_DEBUG:
+				result = false;
+				path = "plugin.debug";
+				break;
 		}
-		if(path != null && result != null) if(LTItemMail.getInstance().getConfiguration().isSet(path)) {
+		if(path != null) if(LTItemMail.getInstance().getConfiguration().isSet(path)) {
 			result = LTItemMail.getInstance().getConfiguration().get(path);
-		} else {
+		} else if(result != null) {
 			ConsoleModule.warning("Configuration fallback: [" + path + ":" + result + "]");
 			LTItemMail.getInstance().getConfiguration().set(path, result);
 			try {
@@ -121,6 +125,7 @@ public final class ConfigurationModule {
 		PLUGIN_HOOK_REDPROTECT,
 		PLUGIN_HOOK_TOWNYADVANCED,
 		PLUGIN_HOOK_WORLDGUARD,
+		PLUGIN_DEBUG,
 		MAILBOX_TITLE,
 		MAILBOX_TYPE_COST,
 		MAILBOX_COST,

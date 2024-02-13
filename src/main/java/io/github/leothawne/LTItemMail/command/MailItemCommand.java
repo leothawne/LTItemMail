@@ -22,7 +22,7 @@ public final class MailItemCommand implements CommandExecutor {
 				final Player player = (Player) sender;
 				if(args.length == 0) {
 					player.sendMessage(ChatColor.DARK_GREEN + "[" + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + "] " + ChatColor.YELLOW + "" + LanguageModule.get(LanguageModule.Type.PLAYER_MISSINGERROR));
-				} else if(args.length == 1) {
+				} else if(args.length >= 1) {
 					final OfflinePlayer playerTo = Bukkit.getOfflinePlayer(args[0]);
 					if(playerTo.hasPlayedBefore()) {
 						if(playerTo.getUniqueId().equals(player.getUniqueId())) {

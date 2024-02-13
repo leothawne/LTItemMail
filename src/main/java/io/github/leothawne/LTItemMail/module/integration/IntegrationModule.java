@@ -40,7 +40,7 @@ public final class IntegrationModule {
 			case VAULT_ECONOMY:
 				if(isInstalled(TPlugin.VAULT)) {
 					final RegisteredServiceProvider<Economy> rsp = Bukkit.getServicesManager().getRegistration(Economy.class);
-					if(rsp != null) register.putIfAbsent(FPlugin, rsp);
+					if(rsp != null) register.putIfAbsent(FPlugin, rsp.getProvider());
 				}
 				break;
 			case GRIEF_PREVENTION_API:

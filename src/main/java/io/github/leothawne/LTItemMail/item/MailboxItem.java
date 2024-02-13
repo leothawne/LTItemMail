@@ -29,7 +29,7 @@ public final class MailboxItem implements Item {
 	}
 	@Override
 	public final ItemType getType() {
-		return ItemType.MAILBOX_ITEM;
+		return ItemType.MAILBOX;
 	}
 	@Override
 	public final Material getMaterial() {
@@ -51,7 +51,7 @@ public final class MailboxItem implements Item {
 	}
 	@Override
 	public final ItemStack getItem(final String data) {
-		ItemStack item = new ItemStack(getMaterial());
+		final ItemStack item = new ItemStack(getMaterial(), 1);
 		final ItemMeta meta = item.getItemMeta();
 		meta.setDisplayName(getName());
 		meta.setLore(getDescription(data));
@@ -60,11 +60,12 @@ public final class MailboxItem implements Item {
 	}
 	@Override
 	public final Recipe getRecipe() {
-		final ShapedRecipe recipe = new ShapedRecipe(new NamespacedKey(LTItemMail.getInstance(), getType().toString().toLowerCase()), getItem(null));
-		recipe.shape("PPP", "PBP", "PFP");
-		recipe.setIngredient('P', Material.STONE);
-		recipe.setIngredient('B', Material.CHEST);
-		recipe.setIngredient('F', Material.IRON_INGOT);
+		final NamespacedKey key = new NamespacedKey(LTItemMail.getInstance(), getType().toString().toLowerCase());
+		final ShapedRecipe recipe = new ShapedRecipe(key, getItem(null));
+		recipe.shape("ppp", "pbp", "pgp");
+		recipe.setIngredient('p', Material.STONE);
+		recipe.setIngredient('b', Material.CHEST);
+		recipe.setIngredient('g', Material.IRON_INGOT);
 		return recipe;
 	}
 }

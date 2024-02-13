@@ -2,13 +2,13 @@ name: LTItemMail
 description: Have you ever imagined mailing items to your friends in Minecraft?
 version: ${project.version}
 api-version: 1.13
-load: POSTWORLD
+load: STARTUP
 author: [leothawne]
 website: https://leothawne.github.io/LTItemMail/
 url: https://leothawne.github.io/LTItemMail/
 main: io.github.leothawne.LTItemMail.LTItemMail
 database: true
-soft-depend: [Vault, GriefPrevention, RedProtect, Towny, WorldGuard]
+soft-depend: [Vault, Essentials, GriefPrevention, RedProtect, Towny, WorldGuard]
 commands:
     itemmail:
         description: Commands for players.

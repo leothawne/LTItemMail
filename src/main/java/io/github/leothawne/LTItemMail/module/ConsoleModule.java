@@ -14,7 +14,7 @@ public final class ConsoleModule {
 	public static final void Hello() {
 		getConsoleSender().sendMessage(ChatColor.AQUA + " _   _______ _____ __  __ ");
 		getConsoleSender().sendMessage(ChatColor.AQUA + "| | |__   __|_   _|  \\/  |");
-		getConsoleSender().sendMessage(ChatColor.AQUA + "| |    | |    | | | \\  / |" + ChatColor.WHITE + "  V: " + LTItemMail.getInstance().getDescription().getVersion() + " (Minecraft: " + DataModule.getVersion(DataModule.VersionType.MINECRAFT) + ")");
+		getConsoleSender().sendMessage(ChatColor.AQUA + "| |    | |    | | | \\  / |" + ChatColor.WHITE + "  V: " + LTItemMail.getInstance().getDescription().getVersion());
 		getConsoleSender().sendMessage(ChatColor.AQUA + "| |    | |    | | | |\\/| |" + ChatColor.WHITE + "  Requires Java: " + DataModule.getVersion(DataModule.VersionType.JAVA) + " (or higher)");
 		getConsoleSender().sendMessage(ChatColor.AQUA + "| |____| |   _| |_| |  | |" + ChatColor.WHITE + "  Released on: " + DataModule.getVersionDate());
 		getConsoleSender().sendMessage(ChatColor.AQUA + "|______|_|  |_____|_|  |_|" + ChatColor.WHITE + "  Creator's X (Twitter): @nc2ps");
