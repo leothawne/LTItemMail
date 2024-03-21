@@ -1,11 +1,5 @@
-Changelog 0.3.2:
-- Database corruption fix (0.3.1).
-- Added configuration fallback.
-- Added "/itemmailadmin reload" command and translations.
-- Added "/itemmail costs" command and translations.
-- Added support for GriefPrevention protection.
-- Added support for TownyAdvanced protection.
-- Added support for RedProtect protection.
-- Added support for WorldGuard protection.
-- Restructured config.yml file.
-- Added own protections for physical mailboxes (prevent breaking, exploding and moving with a piston).
+V0.3.4 Changelog:
+- Fixed integrations not being detected.
+- Added color customization (refer to https://htmlcolorcodes.com/bukkit-color-codes/) for plugin tag and mailbox name (see config.yml).
+- Removed unnecessary console messages.
+- Performed a few changes for stability.

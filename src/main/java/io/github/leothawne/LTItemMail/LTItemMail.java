@@ -41,25 +41,28 @@ public final class LTItemMail extends JavaPlugin {
 	public final void onEnable() {
 		instance = this;
 		ConsoleModule.Hello();
-		ConsoleModule.info("Enabling...");
 		loadConfig();
 		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_ENABLE)) {
 			VersionTask.run();
 			MetricsModule.register();
 			loadLang();
-			loadIntegrations(false);
+			new BukkitRunnable() {
+				@Override
+				public final void run() {
+					loadIntegrations();
+				}
+			}.runTaskTimer(this, 0, 20 * 15);
 			DatabaseModule.check();
 			connection = DatabaseModule.load();
 			final Integer dbVer = DatabaseModule.checkDbVer();
 			if(dbVer < Integer.valueOf(DataModule.getVersion(DataModule.VersionType.DATABASE))) {
 				for(Integer i = dbVer; i < Integer.valueOf(DataModule.getVersion(DataModule.VersionType.DATABASE)); i++) {
-					ConsoleModule.warning("Updating database... (" + i + " -> " + (i + 1) + ")");
+					ConsoleModule.warning("Updating database. (" + i + " -> " + (i + 1) + ")");
 					if(DatabaseModule.updateDb(i)) {
-						ConsoleModule.warning("Database updated! (" + i + " -> " + (i + 1) + ")");
-					} else ConsoleModule.severe("Database update failed! (" + i + " -> " + (i + 1) + ")");
+						ConsoleModule.warning("Database updated. (" + i + " -> " + (i + 1) + ")");
+					} else ConsoleModule.severe("Database update failed. (" + i + " -> " + (i + 1) + ")");
 				}
-			} else ConsoleModule.info("Database is up to date! (" + dbVer + ")");
-			RecipeModule.register();
+			} else ConsoleModule.info("Database up to date. (" + dbVer + ")");
 			RecipeModule.scheduleFailsafe();
 			MailboxItemTask.run();
 			registerEvents(new VirtualMailboxListener(),
@@ -84,7 +87,6 @@ public final class LTItemMail extends JavaPlugin {
 	}
 	@Override
 	public final void onDisable() {
-		ConsoleModule.info("Disabling...");
 		Bukkit.getScheduler().cancelTasks(this);
 		try {
 			connection.close();
@@ -107,7 +109,6 @@ public final class LTItemMail extends JavaPlugin {
 	public final void reload() {
 		loadConfig();
 		loadLang();
-		loadIntegrations(true);
 	}
 	private final void loadConfig() {
 		ConfigurationModule.check();
@@ -117,58 +118,41 @@ public final class LTItemMail extends JavaPlugin {
 		LanguageModule.check();
 		language = LanguageModule.load();
 	}
-	private final void loadIntegrations(boolean restart) {
+	private final IntegrationModule integration = IntegrationModule.getInstance();
+	private final void loadIntegrations() {
 		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_VAULT)) {
-			ConsoleModule.info("Loading Vault...");
-			if(IntegrationModule.getInstance(restart).isInstalled(IntegrationModule.TPlugin.VAULT)) {
-				ConsoleModule.info("Vault loaded.");
-				new BukkitRunnable() {
-					@Override
-					public final void run() {
-						Boolean waiting = false;
-						if(IntegrationModule.getInstance(false).register(IntegrationModule.FPlugin.VAULT_ECONOMY)) {
-							ConsoleModule.info("Economy plugin registered.");
-							IntegrationModule.getInstance(false).warn(IntegrationModule.TPlugin.VAULT);
-							this.cancel();
-						} else if(!waiting) {
-							ConsoleModule.warning("Economy plugin not found. Waiting for Vault registration.");
-							waiting = true;
-						}
-					}
-				}.runTaskTimer(this, 0, 20 * 5);
-			} else ConsoleModule.warning("Vault is not installed. Skipping.");
+			if(integration.isInstalled(IntegrationModule.TPlugin.VAULT)) {
+				if(!integration.isRegistered(IntegrationModule.FPlugin.VAULT_ECONOMY)) ConsoleModule.info("Vault found.");
+				if(!integration.isRegistered(IntegrationModule.FPlugin.VAULT_ECONOMY)) if(!integration.register(IntegrationModule.FPlugin.VAULT_ECONOMY)) ConsoleModule.warning("Economy plugin not found. Waiting.");
+			} else if(!integration.isRegistered(IntegrationModule.FPlugin.VAULT_ECONOMY)) ConsoleModule.warning("Vault not found. Waiting.");
 		}
 		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_GRIEFPREVENTION)) {
-			ConsoleModule.info("Loading GriefPrevention...");
-			if(IntegrationModule.getInstance(false).isInstalled(IntegrationModule.TPlugin.GRIEF_PREVENTION)) {
-				ConsoleModule.info("GriefPrevention loaded.");
-				IntegrationModule.getInstance(false).register(IntegrationModule.FPlugin.GRIEF_PREVENTION_API);
-				IntegrationModule.getInstance(false).warn(IntegrationModule.TPlugin.GRIEF_PREVENTION);
-			} else ConsoleModule.warning("GriefPrevention is not installed. Skipping.");
+			if(integration.isInstalled(IntegrationModule.TPlugin.GRIEF_PREVENTION)) {
+				if(!integration.isRegistered(IntegrationModule.FPlugin.GRIEF_PREVENTION_API)) ConsoleModule.info("GriefPrevention found.");
+				if(!integration.isRegistered(IntegrationModule.FPlugin.GRIEF_PREVENTION_API)) integration.warn(IntegrationModule.TPlugin.GRIEF_PREVENTION);
+				if(!integration.isRegistered(IntegrationModule.FPlugin.GRIEF_PREVENTION_API)) integration.register(IntegrationModule.FPlugin.GRIEF_PREVENTION_API);
+			} else if(!integration.isRegistered(IntegrationModule.FPlugin.GRIEF_PREVENTION_API)) ConsoleModule.warning("GriefPrevention not found. Waiting.");
 		}
 		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_REDPROTECT)) {
-			ConsoleModule.info("Loading RedProtect...");
-			if(IntegrationModule.getInstance(false).isInstalled(IntegrationModule.TPlugin.RED_PROTECT)) {
-				ConsoleModule.info("RedProtect loaded.");
-				IntegrationModule.getInstance(false).register(IntegrationModule.FPlugin.RED_PROTECT_API);
-				IntegrationModule.getInstance(false).warn(IntegrationModule.TPlugin.RED_PROTECT);
-			} else ConsoleModule.warning("RedProtect is not installed. Skipping.");
+			if(integration.isInstalled(IntegrationModule.TPlugin.RED_PROTECT)) {
+				if(!integration.isRegistered(IntegrationModule.FPlugin.RED_PROTECT_API)) ConsoleModule.info("RedProtect found.");
+				if(!integration.isRegistered(IntegrationModule.FPlugin.RED_PROTECT_API)) integration.warn(IntegrationModule.TPlugin.RED_PROTECT);
+				if(!integration.isRegistered(IntegrationModule.FPlugin.RED_PROTECT_API)) integration.register(IntegrationModule.FPlugin.RED_PROTECT_API);
+			} else if(!integration.isRegistered(IntegrationModule.FPlugin.RED_PROTECT_API)) ConsoleModule.warning("RedProtect not found. Waiting.");
 		}
 		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_TOWNYADVANCED)) {
-			ConsoleModule.info("Loading Towny...");
-			if(IntegrationModule.getInstance(false).isInstalled(IntegrationModule.TPlugin.TOWNY_ADVANCED)) {
-				ConsoleModule.info("Towny loaded.");
-				IntegrationModule.getInstance(false).register(IntegrationModule.FPlugin.TOWNY_ADVANCED_API);
-				IntegrationModule.getInstance(false).warn(IntegrationModule.TPlugin.TOWNY_ADVANCED);
-			} else ConsoleModule.warning("Towny is not installed. Skipping.");
+			if(integration.isInstalled(IntegrationModule.TPlugin.TOWNY_ADVANCED)) {
+				if(!integration.isRegistered(IntegrationModule.FPlugin.TOWNY_ADVANCED_API)) ConsoleModule.info("Towny found.");
+				if(!integration.isRegistered(IntegrationModule.FPlugin.TOWNY_ADVANCED_API)) integration.warn(IntegrationModule.TPlugin.TOWNY_ADVANCED);
+				if(!integration.isRegistered(IntegrationModule.FPlugin.TOWNY_ADVANCED_API)) integration.register(IntegrationModule.FPlugin.TOWNY_ADVANCED_API);
+			} else if(!integration.isRegistered(IntegrationModule.FPlugin.TOWNY_ADVANCED_API)) ConsoleModule.warning("Towny not found. Waiting.");
 		}
 		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_WORLDGUARD)) {
-			ConsoleModule.info("Loading WorldGuard...");
-			if(IntegrationModule.getInstance(false).isInstalled(IntegrationModule.TPlugin.WORLD_GUARD)) {
-				ConsoleModule.info("WorldGuard loaded.");
-				IntegrationModule.getInstance(false).register(IntegrationModule.FPlugin.WORLD_GUARD_API);
-				IntegrationModule.getInstance(false).warn(IntegrationModule.TPlugin.WORLD_GUARD);
-			} else ConsoleModule.warning("WorldGuard is not installed. Skipping.");
+			if(integration.isInstalled(IntegrationModule.TPlugin.WORLD_GUARD)) {
+				if(!integration.isRegistered(IntegrationModule.FPlugin.WORLD_GUARD_API)) ConsoleModule.info("WorldGuard found.");
+				if(!integration.isRegistered(IntegrationModule.FPlugin.WORLD_GUARD_API)) integration.warn(IntegrationModule.TPlugin.WORLD_GUARD);
+				if(!integration.isRegistered(IntegrationModule.FPlugin.WORLD_GUARD_API)) integration.register(IntegrationModule.FPlugin.WORLD_GUARD_API);
+			} else if(!integration.isRegistered(IntegrationModule.FPlugin.WORLD_GUARD_API)) ConsoleModule.warning("WorldGuard not found. Waiting.");
 		}
 	}
 }

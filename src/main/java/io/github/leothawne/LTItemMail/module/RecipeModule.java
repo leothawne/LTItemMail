@@ -10,7 +10,7 @@ import io.github.leothawne.LTItemMail.item.model.Item;
 public final class RecipeModule {
 	private RecipeModule() {}
 	private static final Item mailbox = new MailboxItem();
-	public static final void register() {
+	private static final void register() {
 		try {
 			Bukkit.addRecipe(mailbox.getRecipe());
 			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) ConsoleModule.debug(mailbox.getType().toString().toLowerCase() + " registered.");
@@ -24,6 +24,6 @@ public final class RecipeModule {
 			public final void run() {
 				RecipeModule.register();
 			}
-		}.runTaskTimer(LTItemMail.getInstance(), 20 * 15, 20 * 15);
+		}.runTaskTimer(LTItemMail.getInstance(), 0, 20 * 15);
 	}
 }

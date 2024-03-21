@@ -18,7 +18,7 @@ mailbox:
     iderror: "ID da caixa deve ser um número inteiro."
     deleted: "Deletado"
     empty: "Vazio"
-    nolost: "Não há itens perdidos nessa caixa."
+    nolost: "Não há itens perdidos nesta caixa."
     emptylist: "Não há caixas abertas do jogador"
 
 transaction:

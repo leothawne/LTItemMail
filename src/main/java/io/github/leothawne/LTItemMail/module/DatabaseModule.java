@@ -26,10 +26,10 @@ public final class DatabaseModule {
 	private static final File databaseFile = new File(LTItemMail.getInstance().getDataFolder(), "mailboxes.db");
 	public static final void check() {
 		if(!databaseFile.exists()) {
-			ConsoleModule.warning("Extracting mailboxes.db file...");
+			ConsoleModule.warning("Extracting mailboxes.db...");
 			LTItemMail.getInstance().saveResource("mailboxes.db", false);
 			ConsoleModule.info("Done.");
-		} else ConsoleModule.info("Found mailboxes.db file.");
+		}
 	}
 	public static final Connection load() {
 		if(databaseFile.exists()) {
@@ -42,7 +42,6 @@ public final class DatabaseModule {
 			}
 			return null;
 		}
-		ConsoleModule.severe("Missing mailboxes.db file.");
 		return null;
 	}
 	public static final int checkDbVer() {

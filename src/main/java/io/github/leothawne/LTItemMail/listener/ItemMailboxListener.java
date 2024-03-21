@@ -43,16 +43,17 @@ public final class ItemMailboxListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public final void onClick(final PlayerInteractEvent event) {
 		final Player player = event.getPlayer();
-		if(event.hasBlock() && event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && event.getHand().equals(EquipmentSlot.HAND) && !player.isSneaking()) {
+		if(event.hasBlock() && event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && event.getHand().equals(EquipmentSlot.HAND)) {
 			final Block block = event.getClickedBlock();
 			if(block.getType().equals(mailbox.getMaterial())) if(DatabaseModule.Block.isMailboxBlock(block.getLocation())) {
 				event.setCancelled(true);
+				if(player.isSneaking()) return;
 				if(PermissionModule.hasPermission(player, PermissionModule.Type.BLOCK_PLAYER_USE)) {
 					final OfflinePlayer owner = Bukkit.getOfflinePlayer(DatabaseModule.Block.getMailboxOwner(block.getLocation()));
 					if(owner.getUniqueId().equals(player.getUniqueId()) && !PermissionModule.hasPermission(player, PermissionModule.Type.CMD_ADMIN_BYPASS)) {
 						player.performCommand("itemmail list");
 					} else player.openInventory(MailboxInventory.getMailboxInventory(MailboxInventory.Type.OUT, null, owner, null));
-				} else player.sendMessage(ChatColor.AQUA + "[" + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + "] " + ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.BLOCK_USEERROR));
+				} else player.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.BLOCK_USEERROR));
 			}
 		}
 	}
@@ -71,11 +72,11 @@ public final class ItemMailboxListener implements Listener {
 						} else event.setCancelled(true);
 					} else {
 						event.setCancelled(true);
-						player.sendMessage(ChatColor.AQUA + "[" + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + "] " + ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.BLOCK_BELOWERROR));
+						player.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.BLOCK_BELOWERROR));
 					}
 				} else {
 					event.setCancelled(true);
-					player.sendMessage(ChatColor.AQUA + "[" + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + "] " + ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.BLOCK_PLACEERROR));
+					player.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.BLOCK_PLACEERROR));
 				}
 			} else event.setCancelled(true);
 		}
@@ -99,15 +100,15 @@ public final class ItemMailboxListener implements Listener {
 							event.setDropItems(false);
 							block.getWorld().dropItemNaturally(block.getLocation(), new MailboxItem().getItem(null));
 							MailboxLogModule.log(player.getUniqueId(), owner.getUniqueId(), MailboxLogModule.Action.ADMIN_BROKE, null, block.getLocation());
-							player.sendMessage(ChatColor.AQUA + "[" + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + "] " + ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.BLOCK_ADMINBROKE) + " " + owner.getName());
+							player.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.BLOCK_ADMINBROKE) + " " + owner.getName());
 						} else event.setCancelled(true);
 					} else {
 						event.setCancelled(true);
-						player.sendMessage(ChatColor.AQUA + "[" + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + "] " + ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.BLOCK_OWNERERROR));
+						player.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.BLOCK_OWNERERROR));
 					}
 				} else {
 					event.setCancelled(true);
-					player.sendMessage(ChatColor.AQUA + "[" + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + "] " + ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.BLOCK_BREAKERROR));
+					player.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.BLOCK_BREAKERROR));
 				}
 			} else event.setCancelled(true);
 		} else if(block != null && block.getType().toString().toLowerCase().endsWith("_fence")) {
@@ -180,10 +181,10 @@ public final class ItemMailboxListener implements Listener {
 		}
 		event.setCancelled(cancel);
 	}
-	private final GriefPreventionAPI griefPrevention = (GriefPreventionAPI) IntegrationModule.getInstance(false).get(IntegrationModule.FPlugin.GRIEF_PREVENTION_API);
-	private final RedProtectAPI redProtect = (RedProtectAPI) IntegrationModule.getInstance(false).get(IntegrationModule.FPlugin.RED_PROTECT_API);
-	private final TownyAdvancedAPI townyAdvanced = (TownyAdvancedAPI) IntegrationModule.getInstance(false).get(IntegrationModule.FPlugin.TOWNY_ADVANCED_API);
-	private final WorldGuardAPI worldGuard = (WorldGuardAPI) IntegrationModule.getInstance(false).get(IntegrationModule.FPlugin.WORLD_GUARD_API);
+	private final GriefPreventionAPI griefPrevention = (GriefPreventionAPI) IntegrationModule.getInstance().get(IntegrationModule.FPlugin.GRIEF_PREVENTION_API);
+	private final RedProtectAPI redProtect = (RedProtectAPI) IntegrationModule.getInstance().get(IntegrationModule.FPlugin.RED_PROTECT_API);
+	private final TownyAdvancedAPI townyAdvanced = (TownyAdvancedAPI) IntegrationModule.getInstance().get(IntegrationModule.FPlugin.TOWNY_ADVANCED_API);
+	private final WorldGuardAPI worldGuard = (WorldGuardAPI) IntegrationModule.getInstance().get(IntegrationModule.FPlugin.WORLD_GUARD_API);
 	private final boolean canBuildBreak(final Player player, final Location location) {
 		Boolean canBuildBreak = true;
 		if(canBuildBreak && griefPrevention != null) canBuildBreak = griefPrevention.canBuild(player, location);

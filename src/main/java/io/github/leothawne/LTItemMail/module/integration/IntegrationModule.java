@@ -20,8 +20,7 @@ public final class IntegrationModule {
 		plugins.putIfAbsent(TPlugin.TOWNY_ADVANCED, Bukkit.getPluginManager().getPlugin("Towny"));
 		plugins.putIfAbsent(TPlugin.WORLD_GUARD, Bukkit.getPluginManager().getPlugin("WorldGuard"));
 	}
-	public static final IntegrationModule getInstance(final boolean restart) {
-		if(restart && instance != null) instance = null;
+	public static final IntegrationModule getInstance() {
 		if(instance == null) instance = new IntegrationModule();
 		return instance;
 	}
@@ -56,6 +55,9 @@ public final class IntegrationModule {
 				register.putIfAbsent(FPlugin, new WorldGuardAPI());
 				break;
 		}
+		return isRegistered(FPlugin);
+	}
+	public final boolean isRegistered(final FPlugin FPlugin) {
 		return register.containsKey(FPlugin);
 	}
 	public final Object get(final FPlugin FPlugin) {

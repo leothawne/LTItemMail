@@ -8,23 +8,24 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
+import net.md_5.bungee.api.ChatColor;
 
 public final class ConfigurationModule {
 	private ConfigurationModule() {}
 	private static final File configFile = new File(LTItemMail.getInstance().getDataFolder(), "config.yml");
 	public static final void check() {
 		if(!configFile.exists()) {
-			ConsoleModule.warning("Extracting config.yml file...");
+			ConsoleModule.warning("Extracting config.yml...");
 			LTItemMail.getInstance().saveDefaultConfig();
 			ConsoleModule.info("Done.");
-		} else ConsoleModule.info("Found config.yml file.");
+		}
 	}
 	public static final FileConfiguration load() {
 		if(configFile.exists()) {
 			final FileConfiguration configuration = new YamlConfiguration();
 			try {
 				configuration.load(configFile);
-				ConsoleModule.info("Loaded config.yml file.");
+				ConsoleModule.info("Loaded config.yml.");
 				if(configuration.getInt("config-version") != Integer.valueOf(DataModule.getVersion(DataModule.VersionType.CONFIG_YML))) {
 					ConsoleModule.severe("config.yml file outdated. New settings will be added. Or you can manually delete the config file and let the plugin extract the new one.");
 					configuration.set("config-version", Integer.valueOf(DataModule.getVersion(DataModule.VersionType.CONFIG_YML)));
@@ -35,7 +36,6 @@ public final class ConfigurationModule {
 				e.printStackTrace();
 			}
 		}
-		ConsoleModule.severe("Missing config.yml file.");
 		return null;
 	}
 	public static final Object get(final Type type) {
@@ -105,6 +105,7 @@ public final class ConfigurationModule {
 		}
 		if(path != null) if(LTItemMail.getInstance().getConfiguration().isSet(path)) {
 			result = LTItemMail.getInstance().getConfiguration().get(path);
+			if(type.equals(Type.PLUGIN_TAG) || type.equals(Type.MAILBOX_NAME)) result = formatBukkitCodes((String) LTItemMail.getInstance().getConfiguration().get(path));
 		} else if(result != null) {
 			ConsoleModule.warning("Configuration fallback: [" + path + ":" + result + "]");
 			LTItemMail.getInstance().getConfiguration().set(path, result);
@@ -115,6 +116,9 @@ public final class ConfigurationModule {
 			}
 		}
 		return result;
+	}
+	private static final String formatBukkitCodes(final String text) {
+		return ChatColor.translateAlternateColorCodes('&', text);
 	}
 	public enum Type {
 		PLUGIN_ENABLE,

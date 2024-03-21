@@ -15,7 +15,7 @@ public final class LanguageModule {
 	public static final void check() {
 		languageFile = new File(LTItemMail.getInstance().getDataFolder(), (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml");
 		if(!languageFile.exists()) {
-			ConsoleModule.warning("Extracting " + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml file...");
+			ConsoleModule.warning("Extracting " + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml...");
 			if(((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE)).equalsIgnoreCase("vietnamese") || ((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE)).equalsIgnoreCase("english") || ((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE)).equalsIgnoreCase("portuguese")) {
 				LTItemMail.getInstance().saveResource((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml", false);
 				ConsoleModule.info("Done.");
@@ -25,14 +25,14 @@ public final class LanguageModule {
 			} catch (final IOException e) {
 				e.printStackTrace();
 			}
-		} else ConsoleModule.info("Found " + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml file.");
+		}
 	}
 	public static final FileConfiguration load() {
 		if(languageFile.exists()) {
 			final FileConfiguration language = new YamlConfiguration();
 			try {
 				language.load(languageFile);
-				ConsoleModule.info("Loaded " + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml file.");
+				ConsoleModule.info("Loaded " + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml.");
 				int languageVersion = 0;
 				switch(((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE)).toLowerCase()) {
 					case "english":
@@ -53,7 +53,6 @@ public final class LanguageModule {
 				e.printStackTrace();
 			}
 		}
-		ConsoleModule.severe("Missing " + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml file.");
 		return null;
 	}
 	public static final String get(final Type type) {
