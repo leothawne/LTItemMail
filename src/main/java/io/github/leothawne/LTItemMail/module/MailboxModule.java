@@ -17,11 +17,11 @@ import org.bukkit.OfflinePlayer;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
 
-public final class MailboxLogModule {
-	private static MailboxLogModule instance = null;
+public final class MailboxModule {
+	private static MailboxModule instance = null;
 	private Logger log;
-	private MailboxLogModule() {
-		log = Logger.getLogger(MailboxLogModule.class.getName());
+	private MailboxModule() {
+		log = Logger.getLogger(MailboxModule.class.getName());
 		try {
 			Files.createDirectories(Paths.get(LTItemMail.getInstance().getDataFolder() + File.separator + "logs"));
 			final FileHandler fh = new FileHandler(LTItemMail.getInstance().getDataFolder() + File.separator + "logs" + File.separator + "mailboxes_" + DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss").format(LocalDateTime.now()) + ".log");
@@ -31,17 +31,17 @@ public final class MailboxLogModule {
 			e.printStackTrace();
 		}
 	}
-	private static final MailboxLogModule getInstance() {
-		if(instance == null) instance = new MailboxLogModule();
+	private static final MailboxModule getInstance() {
+		if(instance == null) instance = new MailboxModule();
 		return instance;
 	}
 	private final Logger getLogger() {
 		return log;
 	}
-	public static final boolean log(final UUID playerFrom, UUID playerTo, final Action action, final Integer mailboxID, final Location mailboxBlock) {
-		if(playerFrom == null) return false;
+	public static final boolean log(final UUID from, UUID playerTo, final Action action, final Integer mailboxID, final Location mailboxBlock) {
+		if(from == null) return false;
 		if(action == null) return false;
-		String log = Bukkit.getOfflinePlayer(playerFrom).getName() + " ";
+		String log = Bukkit.getOfflinePlayer(from).getName() + " ";
 		switch(action) {
 			case RECOVERED:
 				log = log + "recovered lost items of Mailbox#" + mailboxID;
@@ -68,7 +68,7 @@ public final class MailboxLogModule {
 				log = log + "broke the mailbox of " + Bukkit.getOfflinePlayer(playerTo).getName() + " at X: " + mailboxBlock.getBlockX() + ", Y: " + mailboxBlock.getBlockY() + ", Z: " + mailboxBlock.getBlockZ();
 				break;
 		}
-		MailboxLogModule.getInstance().getLogger().info(log);
+		MailboxModule.getInstance().getLogger().info(log);
 		return true;
 	}
 	public enum Action {

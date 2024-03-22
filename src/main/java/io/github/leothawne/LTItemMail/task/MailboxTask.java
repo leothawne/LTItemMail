@@ -13,8 +13,8 @@ import io.github.leothawne.LTItemMail.LTItemMail;
 import io.github.leothawne.LTItemMail.item.MailboxItem;
 import io.github.leothawne.LTItemMail.item.model.Item;
 
-public final class MailboxItemTask {
-	private MailboxItemTask() {}
+public final class MailboxTask {
+	private MailboxTask() {}
 	private static final Item mailbox = new MailboxItem();
 	public static final void run() {
 		new BukkitRunnable() {

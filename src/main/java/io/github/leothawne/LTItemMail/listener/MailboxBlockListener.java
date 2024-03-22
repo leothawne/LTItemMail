@@ -3,7 +3,6 @@ package io.github.leothawne.LTItemMail.listener;
 import java.util.List;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
@@ -30,15 +29,16 @@ import io.github.leothawne.LTItemMail.item.model.Item;
 import io.github.leothawne.LTItemMail.module.ConfigurationModule;
 import io.github.leothawne.LTItemMail.module.DatabaseModule;
 import io.github.leothawne.LTItemMail.module.LanguageModule;
-import io.github.leothawne.LTItemMail.module.MailboxLogModule;
+import io.github.leothawne.LTItemMail.module.MailboxModule;
 import io.github.leothawne.LTItemMail.module.PermissionModule;
 import io.github.leothawne.LTItemMail.module.integration.GriefPreventionAPI;
 import io.github.leothawne.LTItemMail.module.integration.IntegrationModule;
 import io.github.leothawne.LTItemMail.module.integration.RedProtectAPI;
 import io.github.leothawne.LTItemMail.module.integration.TownyAdvancedAPI;
 import io.github.leothawne.LTItemMail.module.integration.WorldGuardAPI;
+import net.md_5.bungee.api.ChatColor;
 
-public final class ItemMailboxListener implements Listener {
+public final class MailboxBlockListener implements Listener {
 	final Item mailbox = new MailboxItem();
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public final void onClick(final PlayerInteractEvent event) {
@@ -52,7 +52,7 @@ public final class ItemMailboxListener implements Listener {
 					final OfflinePlayer owner = Bukkit.getOfflinePlayer(DatabaseModule.Block.getMailboxOwner(block.getLocation()));
 					if(owner.getUniqueId().equals(player.getUniqueId()) && !PermissionModule.hasPermission(player, PermissionModule.Type.CMD_ADMIN_BYPASS)) {
 						player.performCommand("itemmail list");
-					} else player.openInventory(MailboxInventory.getMailboxInventory(MailboxInventory.Type.OUT, null, owner, null));
+					} else player.openInventory(MailboxInventory.getMailboxInventory(MailboxInventory.Type.OUT, null, owner, null, ""));
 				} else player.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.BLOCK_USEERROR));
 			}
 		}
@@ -68,7 +68,7 @@ public final class ItemMailboxListener implements Listener {
 					final Block blockBelow = new Location(block.getLocation().getWorld(), block.getLocation().getBlockX(), (block.getLocation().getBlockY() - 1), block.getLocation().getBlockZ()).getBlock();
 					if(blockBelow.getType().toString().toLowerCase().endsWith("_fence")) {
 						if(!DatabaseModule.Block.isMailboxBlock(block.getLocation()) && DatabaseModule.Block.placeMailbox(player.getUniqueId(), block.getLocation())) {
-							MailboxLogModule.log(player.getUniqueId(), null, MailboxLogModule.Action.PLACED, null, block.getLocation());
+							MailboxModule.log(player.getUniqueId(), null, MailboxModule.Action.PLACED, null, block.getLocation());
 						} else event.setCancelled(true);
 					} else {
 						event.setCancelled(true);
@@ -92,14 +92,14 @@ public final class ItemMailboxListener implements Listener {
 						if(DatabaseModule.Block.breakMailbox(block.getLocation())) {
 							event.setDropItems(false);
 							block.getWorld().dropItemNaturally(block.getLocation(), new MailboxItem().getItem(null));
-							MailboxLogModule.log(player.getUniqueId(), null, MailboxLogModule.Action.BROKE, null, block.getLocation());
+							MailboxModule.log(player.getUniqueId(), null, MailboxModule.Action.BROKE, null, block.getLocation());
 						} else event.setCancelled(true);
 					} else if(PermissionModule.hasPermission(player, PermissionModule.Type.BLOCK_ADMIN_BREAK)){
 						final OfflinePlayer owner = Bukkit.getOfflinePlayer(DatabaseModule.Block.getMailboxOwner(block.getLocation()));
 						if(DatabaseModule.Block.breakMailbox(block.getLocation())) {
 							event.setDropItems(false);
 							block.getWorld().dropItemNaturally(block.getLocation(), new MailboxItem().getItem(null));
-							MailboxLogModule.log(player.getUniqueId(), owner.getUniqueId(), MailboxLogModule.Action.ADMIN_BROKE, null, block.getLocation());
+							MailboxModule.log(player.getUniqueId(), owner.getUniqueId(), MailboxModule.Action.ADMIN_BROKE, null, block.getLocation());
 							player.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.BLOCK_ADMINBROKE) + " " + owner.getName());
 						} else event.setCancelled(true);
 					} else {

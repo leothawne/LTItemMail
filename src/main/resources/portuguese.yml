@@ -20,6 +20,7 @@ mailbox:
     empty: "Vazio"
     nolost: "Não há itens perdidos nesta caixa."
     emptylist: "Não há caixas abertas do jogador"
+    blocked: "Algo impediu este corrêio. Entrega cancelada."
 
 transaction:
     error: "Transação mal sucedida!"
@@ -54,4 +55,4 @@ command:
         reload: "Recarrega a configuração do plugin e idioma/tradução."
 
 #Não mude isso sob nenhuma circunstância!
-language-version: 7
+language-version: 8

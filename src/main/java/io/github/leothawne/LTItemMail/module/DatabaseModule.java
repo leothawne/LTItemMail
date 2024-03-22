@@ -35,7 +35,7 @@ public final class DatabaseModule {
 		if(databaseFile.exists()) {
 			try {
 				final Connection con = DriverManager.getConnection("jdbc:sqlite:" + LTItemMail.getInstance().getDataFolder() + File.separator + "mailboxes.db");
-				ConsoleModule.info("Database loaded.");
+				ConsoleModule.info("Loaded database.");
 				return con;
 			} catch (final SQLException e) {
 				e.printStackTrace();
@@ -77,6 +77,10 @@ public final class DatabaseModule {
 						+ ");");
 				sqlList.add("UPDATE config SET version = '2';");
 				break;
+			case 2:
+				sqlList.add("ALTER TABLE mailbox ADD label TEXT;");
+				sqlList.add("UPDATE config SET version = '3';");
+				break;
 		}
 		if(sqlList.size() > 0) try {
 			for(final String sql : sqlList) {
@@ -91,10 +95,10 @@ public final class DatabaseModule {
 		return false;
 	}
 	public static final class Virtual {
-		public static final int saveMailbox(final UUID playerFrom, UUID playerTo, final LinkedList<ItemStack> items) {
+		public static final int saveMailbox(final UUID playerFrom, UUID playerTo, final LinkedList<ItemStack> items, final String label) {
 			final String time = DateTimeFormatter.ofPattern("dd/MM/yyyy").format(LocalDateTime.now());
 			try {
-				final PreparedStatement insert = LTItemMail.getInstance().getConnection().prepareStatement("INSERT INTO mailbox(uuid_from, uuid_to, sent_date, items) VALUES(?, ?, ?, ?);");
+				final PreparedStatement insert = LTItemMail.getInstance().getConnection().prepareStatement("INSERT INTO mailbox(uuid_from, uuid_to, sent_date, items, label) VALUES(?, ?, ?, ?, ?);");
 				if(playerFrom != null) {
 					insert.setString(1, playerFrom.toString());
 				} else insert.setString(1, "");
@@ -103,6 +107,7 @@ public final class DatabaseModule {
 				final YamlConfiguration itemString = new YamlConfiguration();
 				for(Integer i = 0; i < items.size(); i++) itemString.set("i_" + String.valueOf(i), items.get(i));
 				insert.setString(4, itemString.saveToString());
+				insert.setString(5, label);
 				insert.executeUpdate();
 				insert.closeOnCompletion();
 				final Statement get = LTItemMail.getInstance().getConnection().createStatement();
@@ -185,6 +190,38 @@ public final class DatabaseModule {
 				e.printStackTrace();
 			}
 			return null;
+		}
+		public static final UUID getMailboxFrom(final Integer mailboxID) {
+			try {
+				final Statement statement = LTItemMail.getInstance().getConnection().createStatement();
+				final ResultSet results = statement.executeQuery("SELECT uuid_from FROM mailbox WHERE id = '" + mailboxID + "';");
+				statement.closeOnCompletion();
+				if(results.next()) {
+					try {
+						final UUID from = UUID.fromString(results.getString("uuid_from"));
+						return from;
+					} catch(final IllegalArgumentException exception) {}
+					return null;
+				}
+			} catch (final SQLException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+		public static final String getMailboxLabel(final Integer mailboxID) {
+			try {
+				final Statement statement = LTItemMail.getInstance().getConnection().createStatement();
+				final ResultSet results = statement.executeQuery("SELECT label FROM mailbox WHERE id = '" + mailboxID + "';");
+				statement.closeOnCompletion();
+				if(results.next()) {
+					String label = results.getString("label");
+					if(label == null) label = "";
+					return label;
+				}
+			} catch (final SQLException e) {
+				e.printStackTrace();
+			}
+			return "";
 		}
 		public static final boolean isMailboxOpened(final Integer mailboxID) {
 			try {

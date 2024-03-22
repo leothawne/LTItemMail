@@ -147,6 +147,10 @@ public final class LanguageModule {
 				result = "No opened mailboxes for player";
 				path = "mailbox.emptylist";
 				break;
+			case MAILBOX_BLOCKED:
+				result = "Something blocked this mail. Delivery cancelled.";
+				path = "mailbox.blocked";
+				break;
 			case COMMAND_PLAYER_ITEMMAIL:
 				result = "List of player commands.";
 				path = "command.player.itemmail";
@@ -276,6 +280,7 @@ public final class LanguageModule {
 		MAILBOX_NOLOST,
 		MAILBOX_EMPTYLIST,
 		MAILBOX_NONEW,
+		MAILBOX_BLOCKED,
 		TRANSACTION_PAID,
 		TRANSACTION_ERROR,
 		TRANSACTION_NOMONEY,

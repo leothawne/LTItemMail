@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -15,14 +14,15 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
 import io.github.leothawne.LTItemMail.inventory.MailboxInventory;
+import io.github.leothawne.LTItemMail.lib.Fetch;
 import io.github.leothawne.LTItemMail.module.ConfigurationModule;
 import io.github.leothawne.LTItemMail.module.ConsoleModule;
 import io.github.leothawne.LTItemMail.module.DataModule;
 import io.github.leothawne.LTItemMail.module.DatabaseModule;
-import io.github.leothawne.LTItemMail.module.HTTPModule;
 import io.github.leothawne.LTItemMail.module.LanguageModule;
-import io.github.leothawne.LTItemMail.module.MailboxLogModule;
+import io.github.leothawne.LTItemMail.module.MailboxModule;
 import io.github.leothawne.LTItemMail.module.PermissionModule;
+import net.md_5.bungee.api.ChatColor;
 
 public final class ItemMailAdminCommand implements CommandExecutor {
 	@SuppressWarnings("deprecation")
@@ -48,7 +48,7 @@ public final class ItemMailAdminCommand implements CommandExecutor {
 							int Local_VersionNumber1 = Integer.parseInt(LocalVersion[0]);
 							int Local_VersionNumber2 = Integer.parseInt(LocalVersion[1]);
 							int Local_VersionNumber3 = Integer.parseInt(LocalVersion[2]);
-							String[] Server1 = HTTPModule.get(DataModule.getUpdateURL()).split("-");
+							String[] Server1 = Fetch.get(DataModule.getUpdateURL()).split("-");
 							String[] Server2 = Server1[0].split("\\.");
 							int Server2_VersionNumber1 = Integer.parseInt(Server2[0]);
 							int Server2_VersionNumber2 = Integer.parseInt(Server2[1]);
@@ -76,7 +76,7 @@ public final class ItemMailAdminCommand implements CommandExecutor {
 							String x = "";
 							final LinkedList<ItemStack> items = DatabaseModule.Virtual.getMailbox(mailboxID);
 							if(items.size() == 0) x = " [" + LanguageModule.get(LanguageModule.Type.MAILBOX_EMPTY) + "]";
-							sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_NAME) + " #" + mailboxID + " : " + mailboxes.get(mailboxID) + x); 
+							sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_NAME) + " #" + mailboxID + "" + ChatColor.RESET + " <= " + mailboxes.get(mailboxID) + x); 
 						}
 					} else sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.MAILBOX_EMPTYLIST) + " " + offPlayer.getName());
 				} else sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.PLAYER_SYNTAXERROR));
@@ -90,8 +90,8 @@ public final class ItemMailAdminCommand implements CommandExecutor {
 							final Integer mailboxID = Integer.valueOf(args[1]);
 							final LinkedList<ItemStack> items = DatabaseModule.Virtual.getMailbox(mailboxID);
 							if(items.size() > 0) {
-								player.openInventory(MailboxInventory.getMailboxInventory(MailboxInventory.Type.IN, mailboxID, null, items));
-								MailboxLogModule.log(player.getUniqueId(), null, MailboxLogModule.Action.RECOVERED, mailboxID, null);
+								player.openInventory(MailboxInventory.getMailboxInventory(MailboxInventory.Type.IN, mailboxID, null, items, DatabaseModule.Virtual.getMailboxLabel(mailboxID)));
+								MailboxModule.log(player.getUniqueId(), null, MailboxModule.Action.RECOVERED, mailboxID, null);
 							} else player.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + "" + LanguageModule.get(LanguageModule.Type.MAILBOX_NOLOST));
 						} catch (final NumberFormatException e) {
 							player.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + "" + LanguageModule.get(LanguageModule.Type.MAILBOX_IDERROR));

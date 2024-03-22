@@ -4,9 +4,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
+import io.github.leothawne.LTItemMail.lib.Fetch;
 import io.github.leothawne.LTItemMail.module.ConsoleModule;
 import io.github.leothawne.LTItemMail.module.DataModule;
-import io.github.leothawne.LTItemMail.module.HTTPModule;
 
 public final class VersionTask {
 	private VersionTask() {}
@@ -16,7 +16,7 @@ public final class VersionTask {
 			public final void run() {
 				final String version = LTItemMail.getInstance().getDescription().getVersion();
 				final String url = DataModule.getPluginURL(version);
-				final String response = HTTPModule.get(url);
+				final String response = Fetch.get(url);
 				if(response != null) {
 					if(response.toLowerCase().contains("disabled")) {
 						ConsoleModule.severe("Hey you! Stop right there! The version (" + version + ") is no longer allowed to be used/played.");

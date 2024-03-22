@@ -68,6 +68,17 @@
 		        <targetPath>${basedir}</targetPath>
 		        <directory>${basedir}/src/main/resources</directory>
 		        <filtering>true</filtering>
+		        <excludes>
+					<exclude>mailboxes.db</exclude>
+				</excludes>
+		    </resource>
+		    <resource>
+		        <targetPath>${basedir}</targetPath>
+		        <directory>${basedir}/src/main/resources</directory>
+		        <filtering>false</filtering>
+		        <includes>
+					<include>mailboxes.db</include>
+				</includes>
 		    </resource>
 		</resources>
 	</build>

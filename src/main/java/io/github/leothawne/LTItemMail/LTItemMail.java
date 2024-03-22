@@ -15,18 +15,18 @@ import io.github.leothawne.LTItemMail.command.MailItemCommand;
 import io.github.leothawne.LTItemMail.command.tabCompleter.ItemMailAdminCommandTabCompleter;
 import io.github.leothawne.LTItemMail.command.tabCompleter.ItemMailCommandTabCompleter;
 import io.github.leothawne.LTItemMail.command.tabCompleter.MailItemCommandTabCompleter;
-import io.github.leothawne.LTItemMail.listener.ItemMailboxListener;
+import io.github.leothawne.LTItemMail.lib.BStats;
+import io.github.leothawne.LTItemMail.listener.MailboxBlockListener;
+import io.github.leothawne.LTItemMail.listener.MailboxListener;
 import io.github.leothawne.LTItemMail.listener.PlayerListener;
-import io.github.leothawne.LTItemMail.listener.VirtualMailboxListener;
 import io.github.leothawne.LTItemMail.module.ConfigurationModule;
 import io.github.leothawne.LTItemMail.module.ConsoleModule;
 import io.github.leothawne.LTItemMail.module.DataModule;
 import io.github.leothawne.LTItemMail.module.DatabaseModule;
 import io.github.leothawne.LTItemMail.module.LanguageModule;
-import io.github.leothawne.LTItemMail.module.MetricsModule;
 import io.github.leothawne.LTItemMail.module.RecipeModule;
 import io.github.leothawne.LTItemMail.module.integration.IntegrationModule;
-import io.github.leothawne.LTItemMail.task.MailboxItemTask;
+import io.github.leothawne.LTItemMail.task.MailboxTask;
 import io.github.leothawne.LTItemMail.task.VersionTask;
 
 public final class LTItemMail extends JavaPlugin {
@@ -40,11 +40,11 @@ public final class LTItemMail extends JavaPlugin {
 	@Override
 	public final void onEnable() {
 		instance = this;
+		new BStats(LTItemMail.getInstance(), 3647);
 		ConsoleModule.Hello();
 		loadConfig();
 		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_ENABLE)) {
 			VersionTask.run();
-			MetricsModule.register();
 			loadLang();
 			new BukkitRunnable() {
 				@Override
@@ -63,11 +63,11 @@ public final class LTItemMail extends JavaPlugin {
 					} else ConsoleModule.severe("Database update failed. (" + i + " -> " + (i + 1) + ")");
 				}
 			} else ConsoleModule.info("Database up to date. (" + dbVer + ")");
-			RecipeModule.scheduleFailsafe();
-			MailboxItemTask.run();
-			registerEvents(new VirtualMailboxListener(),
+			RecipeModule.scheduleRegister();
+			MailboxTask.run();
+			registerEvents(new MailboxListener(),
 					new PlayerListener(),
-					new ItemMailboxListener());
+					new MailboxBlockListener());
 			getCommand("itemmail").setExecutor(new ItemMailCommand());
 			getCommand("itemmail").setTabCompleter(new ItemMailCommandTabCompleter());
 			getCommand("itemmailadmin").setExecutor(new ItemMailAdminCommand());

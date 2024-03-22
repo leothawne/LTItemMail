@@ -1,4 +1,4 @@
-package io.github.leothawne.LTItemMail.module;
+package io.github.leothawne.LTItemMail.lib;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -6,8 +6,8 @@ import java.net.URI;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 
-public final class HTTPModule {
-	private HTTPModule() {}
+public final class Fetch {
+	private Fetch() {}
 	public static final String get(final String url) {
 		try {
 			final URLConnection connection = URI.create(url).toURL().openConnection();

@@ -20,6 +20,7 @@ mailbox:
     empty: "Empty"
     nolost: "There is no lost items in this box."
     emptylist: "No opened mailboxes for player"
+    blocked: "Something blocked this mail. Delivery cancelled."
 
 transaction:
     error: "Transaction not succeeded!"
@@ -54,4 +55,4 @@ command:
         reload: "Reload plugin config and language settings."
 
 #Do not change it under any circumstances!
-language-version: 7
+language-version: 8

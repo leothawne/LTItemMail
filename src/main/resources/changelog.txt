@@ -1,5 +1,4 @@
-V0.3.4 Changelog:
-- Fixed integrations not being detected.
-- Added color customization (refer to https://htmlcolorcodes.com/bukkit-color-codes/) for plugin tag and mailbox name (see config.yml).
-- Removed unnecessary console messages.
-- Performed a few changes for stability.
+A few additions before release V0.3.4:
+- Mail list (/itemmail list) shows who sent the mail.
+- If is not possible to send a mail box (lack of money or other motive), it will be sent back to you in your mail list.
+- Added the possibility of write a label on the mail box (/mailitem <player> [text]).

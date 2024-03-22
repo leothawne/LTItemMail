@@ -18,7 +18,7 @@ public final class RecipeModule {
 			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) ConsoleModule.debug(mailbox.getType().toString().toLowerCase() + " is registered already.");
 		}
 	}
-	public static final void scheduleFailsafe() {
+	public static final void scheduleRegister() {
 		new BukkitRunnable() {
 			@Override
 			public final void run() {
