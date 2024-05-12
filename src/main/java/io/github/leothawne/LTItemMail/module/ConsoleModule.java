@@ -29,6 +29,9 @@ public final class ConsoleModule {
 		getConsoleSender().sendMessage(ChatColor.WHITE + "[" + ChatColor.AQUA + "LTIM " + ChatColor.RED + "ERROR" + ChatColor.WHITE + "] " + ChatColor.RED + message);
 	}
 	public static final void debug(final String message) {
-		getConsoleSender().sendMessage("[" + ConsoleModule.class.getSimpleName() + "] " + message);
+		getConsoleSender().sendMessage("[" + LTItemMail.class.getName() + "] " + message);
+	}
+	public static final void mailbox(final String message) {
+		getConsoleSender().sendMessage("[Mailbox-Log-Worker] " + message);
 	}
 }
