@@ -71,6 +71,7 @@
 		        <excludes>
 					<exclude>mailboxes.db</exclude>
 					<exclude>ideias.txt</exclude>
+					<exclude>LT Item Mail Resources.zip</exclude>
 				</excludes>
 		    </resource>
 		    <resource>
@@ -79,6 +80,7 @@
 		        <filtering>false</filtering>
 		        <includes>
 					<include>mailboxes.db</include>
+					<include>LT Item Mail Resources.zip</include>
 				</includes>
 		    </resource>
 		</resources>
