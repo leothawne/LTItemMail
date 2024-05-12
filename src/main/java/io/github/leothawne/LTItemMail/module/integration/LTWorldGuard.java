@@ -10,8 +10,8 @@ import com.sk89q.worldguard.protection.flags.Flags;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
 
-public final class WorldGuardAPI {
-	protected WorldGuardAPI() {}
+public final class LTWorldGuard {
+	public LTWorldGuard() {}
 	public final boolean canBuild(final Player player, final Location location) {
 		final RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
 		final RegionQuery query = container.createQuery();

@@ -2,8 +2,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.leothawne</groupId>
 	<artifactId>LTItemMail</artifactId>
-	<version>0.3.4</version>
-	<name>LT Item Mail</name>
+	<version>0.4.0</version>
+	<name>LTItemMail</name>
 	<description>Have you ever imagined mailing items to your friends in Minecraft?</description>
 	<build>
 		<finalName>LT Item Mail</finalName>
@@ -70,6 +70,7 @@
 		        <filtering>true</filtering>
 		        <excludes>
 					<exclude>mailboxes.db</exclude>
+					<exclude>ideias.txt</exclude>
 				</excludes>
 		    </resource>
 		    <resource>
@@ -112,9 +113,14 @@
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
-			<version>1.13-R0.1-SNAPSHOT</version>
-			<type>jar</type>
+			<version>1.14-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+    		<groupId>com.googlecode.json-simple</groupId>
+    		<artifactId>json-simple</artifactId>
+    		<version>1.1</version>
+    		<scope>provided</scope>
 		</dependency>
 		<dependency>
 	        <groupId>net.milkbowl.vault</groupId>
@@ -152,5 +158,11 @@
 	        <version>7.0.9</version>
 	        <scope>provided</scope>
     	</dependency>
+    	<!--<dependency>
+	        <groupId>de.griefed</groupId>
+	        <artifactId>versionchecker</artifactId>
+	        <version>1.1.9</version>
+	        <scope>compile</scope>
+    	</dependency>-->
 	</dependencies>
 </project>
