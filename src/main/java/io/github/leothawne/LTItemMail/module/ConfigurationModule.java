@@ -27,13 +27,13 @@ public final class ConfigurationModule {
 				configuration.load(configFile);
 				ConsoleModule.info("Loaded config.yml.");
 				if(configuration.getInt("config-version") != Integer.valueOf(DataModule.getVersion(DataModule.VersionType.CONFIG_YML))) {
-					ConsoleModule.severe("config.yml file outdated. New settings will be added. Or you can manually delete the config file and let the plugin extract the new one.");
+					ConsoleModule.severe("config.yml outdated. New settings will be added.");
 					configuration.set("config-version", Integer.valueOf(DataModule.getVersion(DataModule.VersionType.CONFIG_YML)));
 					configuration.save(configFile);
 				}
 				return configuration;
 			} catch (final IOException | InvalidConfigurationException e) {
-				e.printStackTrace();
+				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 			}
 		}
 		return null;
@@ -47,7 +47,7 @@ public final class ConfigurationModule {
 				path = "mail.cost.value";
 				break;
 			case MAILBOX_NAME:
-				result = "Mailbox";
+				result = "&3&lMail&r&4";
 				path = "mail.name";
 				break;
 			case MAILBOX_TITLE:
@@ -67,11 +67,11 @@ public final class ConfigurationModule {
 				path = "plugin.enable";
 				break;
 			case PLUGIN_HOOK_VAULT:
-				result = true;
+				result = false;
 				path = "hook.vault";
 				break;
 			case PLUGIN_TAG:
-				result = "LTIM";
+				result = "&6[LTIM]";
 				path = "plugin.tag";
 				break;
 			case PLUGIN_TYPE_LANGUAGE:
@@ -82,25 +82,57 @@ public final class ConfigurationModule {
 				result = true;
 				path = "update.check";
 				break;
-			case PLUGIN_HOOK_GRIEFPREVENTION:
+			case PLUGIN_UPDATE_PERIODIC_NOTIFICATION:
 				result = true;
+				path = "update.periodic-notification";
+				break;
+			case PLUGIN_HOOK_GRIEFPREVENTION:
+				result = false;
 				path = "hook.griefprevention";
 				break;
 			case PLUGIN_HOOK_REDPROTECT:
-				result = true;
+				result = false;
 				path = "hook.redprotect";
 				break;
 			case PLUGIN_HOOK_TOWNYADVANCED:
-				result = true;
+				result = false;
 				path = "hook.towny";
 				break;
 			case PLUGIN_HOOK_WORLDGUARD:
-				result = true;
+				result = false;
 				path = "hook.worldguard";
 				break;
 			case PLUGIN_DEBUG:
 				result = false;
 				path = "plugin.debug";
+				break;
+			case DATABASE_TYPE:
+				result = "flatfile";
+				path = "database.type";
+				break;
+			case DATABASE_FLATFILE_FILE:
+				result = "mailboxes.db";
+				path = "database.flatfile.file";
+				break;
+			case DATABASE_MYSQL_HOST:
+				result = "127.0.0.1:3306";
+				path = "database.mysql.host";
+				break;
+			case DATABASE_MYSQL_USER:
+				result = "root";
+				path = "database.mysql.user";
+				break;
+			case DATABASE_MYSQL_PASSWORD:
+				result = "pass";
+				path = "database.mysql.password";
+				break;
+			case DATABASE_MYSQL_NAME:
+				result = "ltitemmail";
+				path = "database.mysql.database";
+				break;
+			case BUNGEE_MODE:
+				result = false;
+				path = "plugin.bungee-mode";
 				break;
 		}
 		if(path != null) if(LTItemMail.getInstance().getConfiguration().isSet(path)) {
@@ -112,7 +144,7 @@ public final class ConfigurationModule {
 			try {
 				LTItemMail.getInstance().getConfiguration().save(configFile);
 			} catch (final IOException e) {
-				e.printStackTrace();
+				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 			}
 		}
 		return result;
@@ -135,6 +167,14 @@ public final class ConfigurationModule {
 		MAILBOX_COST,
 		MAILBOX_NAME,
 		PLUGIN_UPDATE_CHECK,
-		PLUGIN_CONFIG
+		PLUGIN_UPDATE_PERIODIC_NOTIFICATION,
+		PLUGIN_CONFIG,
+		DATABASE_TYPE,
+		DATABASE_FLATFILE_FILE,
+		DATABASE_MYSQL_HOST,
+		DATABASE_MYSQL_USER,
+		DATABASE_MYSQL_PASSWORD,
+		DATABASE_MYSQL_NAME,
+		BUNGEE_MODE
 	}
 }
