@@ -1,59 +1,76 @@
 package io.github.leothawne.LTItemMail.inventory;
 
+import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import io.github.leothawne.LTItemMail.LTPlayer;
+import io.github.leothawne.LTItemMail.item.model.ModelData;
 import io.github.leothawne.LTItemMail.module.ConfigurationModule;
+import io.github.leothawne.LTItemMail.module.LanguageModule;
+import net.md_5.bungee.api.ChatColor;
 
 public final class MailboxInventory {
 	private MailboxInventory() {}
-	public static final String getMailboxName(final Type type, final Integer mailboxID, final OfflinePlayer player) {
-		if(type.equals(Type.IN)) {
-			if(mailboxID != null) {
-				return (String) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_NAME) + "#" + String.valueOf(mailboxID);
-			} else return (String) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_NAME) + "#";
-		} else if(type.equals(Type.OUT)) {
-			if(player != null) {
-				return (String) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_NAME) + "@" + player.getName();
-			} else return (String) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_NAME) + "@";
+	public static final String getName(final Type type, final Integer mailboxID, final LTPlayer player) {
+		switch(type) {
+			case IN:
+				if(mailboxID != null) {
+					return (String) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_NAME) + "#" + String.valueOf(mailboxID);
+				} else return (String) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_NAME) + "#";
+			case OUT:
+				if(player != null) {
+					return (String) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_NAME) + "@" + player.getName();
+				} else return (String) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_NAME) + "@";
 		}
 		return null;
 	}
-	public static final Inventory getMailboxInventory(final Type type, final Integer mailboxID, OfflinePlayer player, final LinkedList<ItemStack> contents, final String label) {
-		if(type.equals(Type.IN)) {
-			final Inventory inventory = Bukkit.createInventory(null, 36, getMailboxName(type, mailboxID, null));
-			for(int i = 0; i < 27; i++) inventory.setItem(i, contents.get(i));
-			addLabel(inventory, label);
-			return inventory;
-		} else if(type.equals(Type.OUT)) {
-			final Inventory inventory = Bukkit.createInventory(null, 36, getMailboxName(type, mailboxID, player));
-			addLabel(inventory, label);
-			return inventory;
+	public static final Inventory getInventory(final Type type, final Integer mailboxID, LTPlayer player, final LinkedList<ItemStack> contents, final String label) {
+		Inventory inventory = null;
+		switch(type) {
+			case IN:
+				inventory = Bukkit.createInventory(null, 36, getName(type, mailboxID, null));
+				for(int i = 0; i < 27; i++) inventory.setItem(i, contents.get(i));
+				buildGUI(inventory, label);
+				break;
+			case OUT:
+				inventory = Bukkit.createInventory(null, 36, getName(type, mailboxID, player));
+				buildGUI(inventory, label);
+				break;
 		}
-		return null;
+		return inventory;
 	}
-	private static final void addLabel(final Inventory inventory, final String label) {
-		inventory.setItem(27, new ItemStack(Material.BLUE_STAINED_GLASS_PANE, 1));
-		inventory.setItem(28, new ItemStack(Material.BLUE_STAINED_GLASS_PANE, 1));
-		inventory.setItem(29, new ItemStack(Material.BLUE_STAINED_GLASS_PANE, 1));
-		inventory.setItem(30, new ItemStack(Material.BLUE_STAINED_GLASS_PANE, 1));
-		final ItemStack book = new ItemStack(Material.BOOK, 1);
-		final ItemMeta bookMeta = book.getItemMeta();
-		if(label.isEmpty()) {
-			bookMeta.setDisplayName(" ");
-		} else bookMeta.setDisplayName(label);
-		book.setItemMeta(bookMeta);
-		inventory.setItem(31, book);
-		inventory.setItem(32, new ItemStack(Material.BLUE_STAINED_GLASS_PANE, 1));
-		inventory.setItem(33, new ItemStack(Material.BLUE_STAINED_GLASS_PANE, 1));
-		inventory.setItem(34, new ItemStack(Material.BLUE_STAINED_GLASS_PANE, 1));
-		inventory.setItem(35, new ItemStack(Material.BLUE_STAINED_GLASS_PANE, 1));
+	private static final void buildGUI(final Inventory inventory, final String message) {
+		final ItemStack gui = new ItemStack(Material.BLUE_STAINED_GLASS_PANE, 1);
+		final ItemStack limiter = new ItemStack(Material.BLUE_STAINED_GLASS_PANE, 1);
+		final ItemStack cost = new ItemStack(Material.EMERALD, 1);
+		final ItemStack label = new ItemStack(Material.BOOK, 1);
+		gui.setItemMeta(prepareItem(gui.getItemMeta(), ModelData.INV_GUI.value, " ", Arrays.asList("")));
+		limiter.setItemMeta(prepareItem(limiter.getItemMeta(), ModelData.INV_LIMITER.value, " ", Arrays.asList("")));
+		cost.setItemMeta(prepareItem(cost.getItemMeta(), ModelData.INV_COSTBUTTON.value, ChatColor.RESET + LanguageModule.get(LanguageModule.Type.MAILBOX_COST), Arrays.asList(ChatColor.RESET + "" + ChatColor.GREEN + "$0.0", ChatColor.RESET + "" + ChatColor.WHITE + LanguageModule.get(LanguageModule.Type.MAILBOX_COSTUPDATE))));
+		String bookLore = " ";
+		if(!message.isEmpty()) bookLore = ChatColor.RESET + "" + ChatColor.YELLOW + message;
+		label.setItemMeta(prepareItem(label.getItemMeta(), ModelData.INV_LABELBUTTON.value, ChatColor.RESET + LanguageModule.get(LanguageModule.Type.MAILBOX_LABEL), Arrays.asList(bookLore)));
+		inventory.setItem(27, gui);
+		for(int i = 28; i < 30; i++) inventory.setItem(i, limiter);
+		inventory.setItem(30, cost);
+		inventory.setItem(31, limiter);
+		inventory.setItem(32, label);
+		for(int i = 33; i < 36; i++) inventory.setItem(i, limiter);
+	}
+	private static final ItemMeta prepareItem(final ItemMeta meta, final int model, final String name, final List<String> lore) {
+		if(model <= 0) {
+			meta.setCustomModelData(null);
+		} else meta.setCustomModelData(model);
+		meta.setDisplayName(name);
+		meta.setLore(lore);
+		return meta;
 	}
 	public enum Type {
 		IN,
