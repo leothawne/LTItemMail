@@ -1,29 +1,54 @@
-name: LTItemMail
-description: Have you ever imagined mailing items to your friends in Minecraft?
+name: ${project.name}
+description: ${project.description}
 version: ${project.version}
-api-version: "1.13"
-api: "1.13"
+api-version: "1.14"
 load: POSTWORLD
 author: leothawne
 website: https://leothawne.github.io/LTItemMail/
 url: https://leothawne.github.io/LTItemMail/
-main: io.github.leothawne.LTItemMail.LTItemMail
+main: ${project.groupId}.${project.artifactId}.${project.name}
 database: true
 softdepend: [Vault, Essentials, GriefPrevention, RedProtect, Towny, WorldGuard]
 commands:
     itemmail:
-        description: Commands for players.
+        description: Used to send items and to check your mailbox.
         aliases: [ima, imail]
         usage: /<command>
     mailitem:
-        description: Command for players.
+        description: Used to send items.
         aliases: [mit, enviaritem, mail]
         usage: /<command>
     itemmailadmin:
-        description: Commands for admins.
+        description: For administration purposes.
         aliases: [imad, imadmin]
         usage: /<command>
 permissions:
+    ltitemmail.player.all:
+        default: true
+        children:
+            ltitemmail.player: true
+            ltitemmail.player.version: true
+            ltitemmail.player.list: true
+            ltitemmail.player.open: true
+            ltitemmail.player.delete: true
+            ltitemmail.player.send: true
+            ltitemmail.player.info: true
+            ltitemmail.player.notify: true
+            ltitemmail.block.place: true
+            ltitemmail.block.break: true
+            ltitemmail.block.use: true
+    ltitemmail.admin.all:
+        default: op
+        children:
+           ltitemmail.admin: true
+           ltitemmail.admin.update: true
+           ltitemmail.admin.list: true
+           ltitemmail.admin.recover: true
+           ltitemmail.admin.reload: true
+           ltitemmail.admin.notify: true
+           ltitemmail.admin.ban: true
+           ltitemmail.admin.unban: true
+           ltitemmail.block.break-bypass: true
     ltitemmail.player:
         default: true
     ltitemmail.player.version:
@@ -35,6 +60,8 @@ permissions:
     ltitemmail.player.delete:
         default: true
     ltitemmail.player.send:
+        default: true
+    ltitemmail.player.info:
         default: true
     ltitemmail.player.notify:
         default: true
@@ -55,6 +82,10 @@ permissions:
     ltitemmail.admin.reload:
         default: op
     ltitemmail.admin.notify:
+        default: op
+    ltitemmail.admin.ban:
+        default: op
+    ltitemmail.admin.unban:
         default: op
     ltitemmail.block.break-bypass:
         default: op
