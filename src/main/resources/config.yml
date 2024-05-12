@@ -1,16 +1,31 @@
 plugin:
-    #Enable or disable this plugin. Default: true
+    #Enable or disable LTItemMail. Default: true
     enable: true
     #INTERNAL languages support: portuguese, english, vietnamese. Default: english
     language: "english"
-    #Here you can customize the name tag that appears in chat. Default: LTIM
+    #Here you can customize the name tag that appears in chat. Default: [LTIM]
     tag: "&6[LTIM]"
-    #Show error messages if something go wrong
+    #Choose if you want to use LTItemMail in your Bungee network. Default: false
+    bungee-mode: false
     debug: false
+
+database:
+    type: "flatfile" #"flatfile" or "mysql".
+    #You can use my plugin in bungee mode as long as it is installed on every server you want to use (except proxies).
+    #And you must use the same MySQL database.
+    #Remember to set bungee-mode 'true'.
+    flatfile:
+        file: "mailboxes.db" #Do not change it unless you have manually changed the name of the actual database file.
+    mysql:
+        host: "127.0.0.1:3306"
+        user: "root"
+        password: "pass"
+        database: "ltitemmail"
 
 hook:
     #Set 'true' if you wish to use area protection plugins. Defaults: false
     vault: false #Set 'true' if you wish to use economy plugins (see mail costs below)
+    #My plugin has an in-built protection for the physical mailboxes, but you can use some extra protection with the plugins listed below:
     griefprevention: false
     redprotect: false
     towny: false
@@ -24,12 +39,13 @@ mail:
         per-item: false
         #Cost value to send items. Default: 1.5 (per item) and 30.0 (per mailbox)
         value: 30.0
-    #Name of the mail inventory. Default: Mailbox.
+    #Name of the mail inventory. Default: Mail
     name: "&3&lMail&r&4"
 
 #Should administrators be warned about new updates? Default: true
 update:
     check: true
+    periodic-notification: true
 
-#Do not change this under any circumstances!
-config-version: 9
+#Do not touch it!
+config-version: 11
