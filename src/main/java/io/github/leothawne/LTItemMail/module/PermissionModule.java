@@ -37,6 +37,9 @@ public class PermissionModule {
 			case CMD_PLAYER_VERSION:
 				node = "ltitemmail.player.version";
 				break;
+			case CMD_PLAYER_INFO:
+				node = "ltitemmail.player.info";
+				break;
 			case CMD_ADMIN_BYPASS:
 				node = "ltitemmail.admin.bypass";
 				break;
@@ -61,6 +64,12 @@ public class PermissionModule {
 			case CMD_ADMIN_RELOAD:
 				node = "ltitemmail.admin.reload";
 				break;
+			case CMD_ADMIN_BAN:
+				node = "ltitemmail.admin.ban";
+				break;
+			case CMD_ADMIN_UNBAN:
+				node = "ltitemmail.admin.unban";
+				break;
 		}
 		if(node != null) return sender.hasPermission(node);
 		return false;
@@ -72,6 +81,7 @@ public class PermissionModule {
 		CMD_PLAYER_OPEN,
 		CMD_PLAYER_DELETE,
 		CMD_PLAYER_SEND,
+		CMD_PLAYER_INFO,
 		CMD_ADMIN_MAIN,
 		CMD_ADMIN_UPDATE,
 		CMD_ADMIN_LIST,
@@ -79,6 +89,8 @@ public class PermissionModule {
 		CMD_ADMIN_BYPASS,
 		CMD_PLAYER_NOTIFY,
 		CMD_ADMIN_NOTIFY,
+		CMD_ADMIN_BAN,
+		CMD_ADMIN_UNBAN,
 		BLOCK_PLAYER_PLACE,
 		BLOCK_PLAYER_BREAK,
 		BLOCK_PLAYER_USE,
