@@ -1,24 +1,21 @@
 main:
-    enabled: false
-    warnings:
-        - Estou desabilitando o plugin puramente por teste XD
-        - E se funcionar, eu vou ficar com cara de palhaço por nunca ter pensado em algo assim
-        - Aff mano to achando que vai funcionar mesmo :')
+    enabled: true
+    warnings: []
 boards:
     0:
-        title: "Teste 1"
+        title: Teste 1
         contents:
             - teste 1
             - teste 1
             - teste 1
     1:
-        title: "Teste 2"
+        title: Teste 2
         contents:
             - teste 2
             - teste 2
             - teste 2
     2:
-        title: "Teste 3"
+        title: Teste 3
         contents:
             - teste 3
             - teste 3
