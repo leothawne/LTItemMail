@@ -4,18 +4,21 @@ main:
 boards:
     0:
         title: '1# Teste 1'
+		datetime: '21/05/2024 03:10 (BRT)'
         contents:
             - 'teste 1'
             - 'teste 1'
             - 'teste 1'
     1:
         title: '2# Teste 2'
+		datetime: '21/05/2024 03:10 (BRT)'
         contents:
             - 'teste 2'
             - 'teste 2'
             - 'teste 2'
     2:
         title: '3# Teste 3'
+		datetime: '21/05/2024 03:10 (BRT)'
         contents:
             - 'teste 3'
             - 'teste 3'
