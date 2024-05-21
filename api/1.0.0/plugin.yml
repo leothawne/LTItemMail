@@ -1,6 +1,7 @@
 main:
-    enabled: true
-    warnings: []
+    enabled: false
+    warnings:
+        - Estou desabilitando para fazer um teste.
 boards:
     0:
         title: Teste 1
