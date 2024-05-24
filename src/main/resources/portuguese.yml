@@ -1,58 +1,81 @@
 player:
-    permissionerror: "Você não tem permissão para fazer isso."
-    inventoryfull: "% não tem % slot(s) livre(s)."
-    missingerror: "Você deve especificar o nome do jogador."
-    neverplayederror: "O jogador especificado nunca entrou neste servidor."
-    error: "Você precisa ser um jogador para fazer isso!"
-    syntaxerror: "Erro de sintaxe!"
-    selferror: "Você não pode enviar itens para você mesmo."
-    openedboxes: "Caixas abertas de"
-
+    permissionerror: 'Você não tem permissão para fazer isso.'
+    inventoryfull: '% não tem % slot(s) livre(s).'
+    missingerror: 'Você deve especificar o nome do jogador.'
+    neverplayederror: 'O jogador especificado nunca entrou neste servidor.'
+    error: 'Você precisa ser um jogador para fazer isso!'
+    syntaxerror: 'Erro de sintaxe!'
+    selferror: 'Você não pode enviar itens para você mesmo.'
+    openedboxes: 'Corrêios deletados de'
+    banned: 'Você está banido! O motivo pode ser visto digitando /itemmail info'
 mailbox:
-    closed: "Caixa fechada."
-    sent: "Enviando caixa para %..."
-    from: "Novo corrêio de"
-    special: "Corrêio especial!!!"
-    aborted: "Envio cancelado."
-    nonew: "Não há novas caixas."
-    iderror: "ID da caixa deve ser um número inteiro."
-    deleted: "Deletado"
-    empty: "Vazio"
-    nolost: "Não há itens perdidos nesta caixa."
-    emptylist: "Não há caixas abertas do jogador"
-    blocked: "Algo impediu este corrêio. Entrega cancelada."
-
+    closed: 'Caixa fechada.'
+    sent: 'Enviando corrêio para %...'
+    from: 'Novo corrêio de'
+    special: 'Corrêio especial!!!'
+    aborted: 'Envio cancelado.'
+    nonew: 'Não há novos corrêios.'
+    iderror: 'ID do corrêio deve ser um número inteiro.'
+    deleted: 'Deletado'
+    empty: 'Vazio'
+    nolost: 'Não há itens perdidos neste corrêio.'
+    emptylist: 'Não há corrêios deletados do jogador'
+    blocked: 'Algo impediu este corrêio. Entrega cancelada.'
+    label: '&6&lEtiqueta:'
+    cost: '&a&lCusto:'
+    costerror: 'Plugin de economia não encontrado.'
+    costupdate: 'Clique para atualizar o preço atual do corrêio.'
+    returned: 'enviou de volta pra você.'
 transaction:
-    error: "Transação mal sucedida!"
-    nomoney: "Você não tem $% para pagar ao corrêio."
-    paid: "Você pagou $% ao corrêio."
-    notinstalled: "Vault não está instalado!"
-    costs: "Custos:"
-
+    error: 'Transação mal sucedida!'
+    nomoney: 'Você não tem $% para pagar ao corrêio.'
+    paid: 'Você pagou $% ao corrêio.'
+    notinstalled: 'Vault não está instalado!'
+    costs: 'Preço:'
 block:
-    breakerror: "Você não tem permissão para quebrar esta caixa de corrêio."
-    placeerror: "Você não tem permissão para colocar uma caixa de corrêio."
-    useerror: "Você não tem permissão para usar uma caixa de corrêio."
-    ownererror: "Você não é o dono desta caixa de corrêio para fazer isso."
-    belowerror: "O bloco debaixo deve ser uma cerca."
-    adminbroke: "Você quebrou a caixa de corrêio de"
-
+    breakerror: 'Você não tem permissão para quebrar esta caixa de corrêio.'
+    placeerror: 'Você não tem permissão para colocar uma caixa de corrêio.'
+    useerror: 'Você não tem permissão para usar uma caixa de corrêio.'
+    ownererror: 'Você não é o dono desta caixa de corrêio para fazer isso.'
+    belowerror: 'O bloco debaixo deve ser uma cerca.'
+    adminbroke: 'Você quebrou a caixa de corrêio de'
 command:
-    invalid: "Comando inválido. Digite % para ver a lista de comandos."
+    invalid: 'Comando inválido. Digite % para ver a lista de comandos.'
     player:
-        itemmail: "Lista de comandos para jogadores."
-        version: "Mostra a versão atual do plugin."
-        list: "Lista de todas as caixas de corrêio pendentes recebidas."
-        open: "Abre uma caixa de corrêio pendente."
-        delete: "Deleta uma caixa de corrêio pendente."
-        mailitem: "Abre uma nova caixa de corrêio pra colocar itens dentro e enviar para outro jogador."
-        costs: "Mostra custos de envio."
+        itemmail: 'Lista de comandos para jogadores.'
+        version: 'Mostra a versão atual do plugin.'
+        list: 'Lista de todos os corrêios recebidos.'
+        open: 'Abre um corrêio.'
+        delete: 'Deleta um corrêio.'
+        mailitem: 'Inicia um novo corrêio pra colocar itens dentro e enviar para outro jogador.'
+        costs: 'Mostra preço de envio.'
+        info:
+            info: 'Mostra informações relevantes sobre o jogador.'
+            registry: 'Data de registro:'
+            banned:
+                banned: 'Banido:'
+                nop: 'Não'
+                yep: 'Sim'
+                reason: 'Motivo do banimento:'
+            sent: 'Corrêios enviados:'
+            received: 'Corrêios recebidos:'
     admin:
-        itemmailadmin: "Lista de comandos para admins."
-        update: "Verifica se há novas atualizações."
-        list: "Lista de todas as caixas de corrêio deletadas de um jogador."
-        recover: "Recupera items perdidos de caixas de corrêio deletadas (se houver algum)."
-        reload: "Recarrega a configuração do plugin e idioma/tradução."
-
-#Não mude isso sob nenhuma circunstância!
-language-version: 8
+        itemmailadmin: 'Lista de comandos para admins.'
+        update: 'Verifica se há novas atualizações.'
+        list: 'Lista de todos os corrêios deletados de um jogador.'
+        recover: 'Recupera items perdidos de corrêios deletados (se houver algum).'
+        reload: 'Recarrega as configurações do plugin e idioma/tradução.'
+        ban:
+            ban: 'Bane um jogador específico.'
+            banned: 'banido!'
+            already: 'já está banido!'
+        unban:
+            unban: 'Desbane um jogador específico.'
+            unbanned: 'desbanido!'
+            already: 'já está desbanido!'
+        banlist:
+            banlist: 'Lista de banimentos.'
+            list: 'Jogadores banidos:'
+            empty: 'Não há jogadores banidos.'
+#Não toque nisso!
+language-version: 9

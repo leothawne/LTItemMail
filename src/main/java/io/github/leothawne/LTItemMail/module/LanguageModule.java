@@ -8,6 +8,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
+import io.github.leothawne.LTItemMail.lib.BukkitUtils;
+import io.github.leothawne.LTItemMail.module.DataModule.VersionType;
 
 public final class LanguageModule {
 	private LanguageModule() {}
@@ -16,14 +18,14 @@ public final class LanguageModule {
 		languageFile = new File(LTItemMail.getInstance().getDataFolder(), (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml");
 		if(!languageFile.exists()) {
 			ConsoleModule.warning("Extracting " + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml...");
-			if(((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE)).equalsIgnoreCase("vietnamese") || ((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE)).equalsIgnoreCase("english") || ((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE)).equalsIgnoreCase("portuguese")) {
+			if(LTItemMail.getInstance().getResource((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml") != null) {
 				LTItemMail.getInstance().saveResource((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml", false);
 				ConsoleModule.info("Done.");
 			} else try {
 				languageFile.createNewFile();
 				ConsoleModule.warning((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + " is not integrated with internal language support. The yml file was created and new lines will be added while you play.");
 			} catch (final IOException e) {
-				e.printStackTrace();
+				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 			}
 		}
 	}
@@ -33,24 +35,21 @@ public final class LanguageModule {
 			try {
 				language.load(languageFile);
 				ConsoleModule.info("Loaded " + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml.");
-				int languageVersion = 0;
-				switch(((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE)).toLowerCase()) {
-					case "english":
-						languageVersion = Integer.parseInt(DataModule.getVersion(DataModule.VersionType.ENGLISH_YML));
-						break;
-					case "portuguese":
-						languageVersion = Integer.parseInt(DataModule.getVersion(DataModule.VersionType.PORTUGUESE_YML));
-						break;
-					case "vietnamese":
-						languageVersion = Integer.parseInt(DataModule.getVersion(DataModule.VersionType.VIETNAMESE_YML));
-						break;
+				try {
+					final VersionType type = DataModule.VersionType.valueOf(((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE)).toUpperCase() + "_YML");
+					final int languageVersion = Integer.parseInt(DataModule.getVersion(type));
+					if(language.getInt("language-version") != languageVersion) {
+						ConsoleModule.severe((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml outdated. New lines will be added to your current translation file.");
+						language.set("language-version", languageVersion);
+						language.save(languageFile);
+					}
+				} catch(final IllegalArgumentException e) {
+					language.set("language-version", 0);
+					language.save(languageFile);
 				}
-				if(language.getInt("language-version") != languageVersion) ConsoleModule.severe((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml file outdated. New lines will be added to your current language file. Or you can manually delete the current language file and let the plugin extract the new one.");
-				language.set("language-version", languageVersion);
-				language.save(languageFile);
 				return language;
 			} catch(final IOException | InvalidConfigurationException e) {
-				e.printStackTrace();
+				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 			}
 		}
 		return null;
@@ -64,7 +63,7 @@ public final class LanguageModule {
 				path = "player.permissionerror";
 				break;
 			case MAILBOX_CLOSED:
-				result = "Box closed.";
+				result = "Mail closed.";
 				path = "mailbox.closed";
 				break;
 			case TRANSACTION_PAID:
@@ -72,15 +71,15 @@ public final class LanguageModule {
 				path = "transaction.paid";
 				break;
 			case MAILBOX_SENT:
-				result = "Sending box to %...";
+				result = "Sending mail to %...";
 				path = "mailbox.sent";
 				break;
 			case MAILBOX_FROM:
-				result = "New mailbox from";
+				result = "New mail from";
 				path = "mailbox.from";
 				break;
 			case MAILBOX_SPECIAL:
-				result = "Special Mailbox!!!";
+				result = "Special Mail!!!";
 				path = "mailbox.special";
 				break;
 			case MAILBOX_ABORTED:
@@ -119,12 +118,16 @@ public final class LanguageModule {
 				result = "You can not send items to yourself.";
 				path = "player.selferror";
 				break;
+			case PLAYER_BANNED:
+				result = "You are banned! Ban reason available in /itemmail info";
+				path = "player.banned";
+				break;
 			case MAILBOX_NONEW:
-				result = "No new boxes.";
+				result = "No new mails.";
 				path = "mailbox.nonew";
 				break;
 			case MAILBOX_IDERROR:
-				result = "Mailbox ID must be a number.";
+				result = "Mail ID must be a number.";
 				path = "mailbox.iderror";
 				break;
 			case MAILBOX_DELETED:
@@ -132,7 +135,7 @@ public final class LanguageModule {
 				path = "mailbox.deleted";
 				break;
 			case PLAYER_OPENEDBOXES:
-				result = "Opened boxes of";
+				result = "Deleted mails of";
 				path = "player.openedboxes";
 				break;
 			case MAILBOX_EMPTY:
@@ -140,56 +143,152 @@ public final class LanguageModule {
 				path = "mailbox.empty";
 				break;
 			case MAILBOX_NOLOST:
-				result = "There is no lost items in this box.";
+				result = "There is no lost items in this mail.";
 				path = "mailbox.nolost";
 				break;
 			case MAILBOX_EMPTYLIST:
-				result = "No opened mailboxes for player";
+				result = "No opened mails for player";
 				path = "mailbox.emptylist";
 				break;
 			case MAILBOX_BLOCKED:
 				result = "Something blocked this mail. Delivery cancelled.";
 				path = "mailbox.blocked";
 				break;
+			case MAILBOX_LABEL:
+				result = "&6Label:";
+				path = "mailbox.label";
+				break;
+			case MAILBOX_COST:
+				result = "&aCost:";
+				path = "mailbox.cost";
+				break;
+			case MAILBOX_COSTERROR:
+				result = "Economy plugin not found.";
+				path = "mailbox.costerror";
+				break;
+			case MAILBOX_COSTUPDATE:
+				result = "Click to update the current mail price.";
+				path = "mailbox.costupdate";
+				break;
+			case MAILBOX_RETURNED:
+				result = "sent it back to you.";
+				path = "mailbox.returned";
+				break;
+			case MAILBOX_ACCEPT:
+				result = "Accept";
+				path = "mailbox.accept";
+				break;
+			case MAILBOX_DENY:
+				result = "Deny";
+				path = "mailbox.deny";
+				break;
 			case COMMAND_PLAYER_ITEMMAIL:
-				result = "List of player commands.";
+				result = "Lists player commands.";
 				path = "command.player.itemmail";
 				break;
 			case COMMAND_PLAYER_VERSION:
-				result = "Show the current plugin version.";
+				result = "Shows the current plugin version.";
 				path = "command.player.version";
 				break;
 			case COMMAND_PLAYER_LIST:
-				result = "List all pending mailboxes received.";
+				result = "Lists all pending mailboxes received.";
 				path = "command.player.list";
 				break;
 			case COMMAND_PLAYER_OPEN:
-				result = "Open a pending mailbox.";
+				result = "Opens a mail.";
 				path = "command.player.open";
 				break;
 			case COMMAND_PLAYER_DELETE:
-				result = "Delete a pending mailbox.";
+				result = "Deletes a mail.";
 				path = "command.player.delete";
 				break;
+			case COMMAND_PLAYER_INFO_MAIN:
+				result = "Shows relevant informations about the player.";
+				path = "command.player.info.info";
+				break;
+			case COMMAND_PLAYER_INFO_REGISTRY:
+				result = "Registry date:";
+				path = "command.player.info.registry";
+				break;
+			case COMMAND_PLAYER_INFO_BANNED_MAIN:
+				result = "Banned:";
+				path = "command.player.info.banned.banned";
+				break;
+			case COMMAND_PLAYER_INFO_BANNED_NO:
+				result = "No";
+				path = "command.player.info.banned.nop";
+				break;
+			case COMMAND_PLAYER_INFO_BANNED_YES:
+				result = "Yes";
+				path = "command.player.info.banned.yep";
+				break;
+			case COMMAND_PLAYER_INFO_BANNED_REASON:
+				result = "Ban reason:";
+				path = "command.player.info.banned.reason";
+				break;
+			case COMMAND_PLAYER_INFO_SENT:
+				result = "Mails sent:";
+				path = "command.player.info.sent";
+				break;
+			case COMMAND_PLAYER_INFO_RECEIVED:
+				result = "Mails received:";
+				path = "command.player.info.received";
+				break;
 			case COMMAND_PLAYER_MAILITEM:
-				result = "Open a new mailbox to put items inside and send it to another player.";
+				result = "Opens a new mail to put items inside and send it to another player.";
 				path = "command.player.mailitem";
 				break;
 			case COMMAND_ADMIN_ITEMMAILADMIN:
-				result = "List of admin commands.";
+				result = "Lists admin commands.";
 				path = "command.admin.itemmailadmin";
 				break;
 			case COMMAND_ADMIN_UPDATE:
-				result = "Check for new updates.";
+				result = "Checks for new updates.";
 				path = "command.admin.update";
 				break;
 			case COMMAND_ADMIN_LIST:
-				result = "List deleted mailboxes of a player.";
+				result = "Lists deleted mails of a player.";
 				path = "command.admin.list";
 				break;
 			case COMMAND_ADMIN_RECOVER:
-				result = "Recover lost items from a deleted mailbox (if there is any).";
+				result = "Recovers lost items from a deleted mail (if there is any).";
 				path = "command.admin.recover";
+				break;
+			case COMMAND_ADMIN_BAN_MAIN:
+				result = "Bans a specific player.";
+				path = "command.admin.ban.ban";
+				break;
+			case COMMAND_ADMIN_BAN_BANNED:
+				result = "banned!";
+				path = "command.admin.ban.banned";
+				break;
+			case COMMAND_ADMIN_BAN_ALREADY:
+				result = "is banned already!";
+				path = "command.admin.ban.already";
+				break;
+			case COMMAND_ADMIN_UNBAN_MAIN:
+				result = "Unbans a specific player.";
+				path = "command.admin.unban.unban";
+				break;
+			case COMMAND_ADMIN_UNBAN_UNBANNED:
+				result = "unbanned!";
+				path = "command.admin.unban.unbanned";
+				break;
+			case COMMAND_ADMIN_UNBAN_ALREADY:
+				result = "is unbanned already!";
+				path = "command.admin.unban.already";
+				break;
+			case COMMAND_ADMIN_BANLIST_MAIN:
+				result = "Gets the banned list.";
+				path = "command.admin.banlist.banlist";
+				break;
+			case COMMAND_ADMIN_BANLIST_LIST:
+				result = "Players banned:";
+				path = "command.admin.banlist.list";
+				break;
+			case COMMAND_ADMIN_BANLIST_EMPTY:
+				result = "No players banned.";
+				path = "command.admin.banlist.empty";
 				break;
 			case COMMAND_INVALID:
 				result = "Invalid command. Type % to see the command list.";
@@ -224,27 +323,28 @@ public final class LanguageModule {
 				path = "transaction.notinstalled";
 				break;
 			case TRANSACTION_COSTS:
-				result = "Costs:";
+				result = "Price:";
 				path = "transaction.costs";
 				break;
 			case COMMAND_ADMIN_RELOAD:
-				result = "Reload plugin config and language settings.";
+				result = "Reloads plugin config and language settings.";
 				path = "command.admin.reload";
 				break;
 			case COMMAND_PLAYER_COSTS:
-				result = "Show mail costs.";
+				result = "Shows mail price.";
 				path = "command.player.costs";
 				break;
 		}
 		if(path != null) if(LTItemMail.getInstance().getLanguage().isSet(path)) {
 			result = LTItemMail.getInstance().getLanguage().getString(path);
+			if(type.equals(Type.MAILBOX_COST) || type.equals(Type.MAILBOX_LABEL)) result = BukkitUtils.format((String) result);
 		} else if(result != null) {
 			ConsoleModule.warning("Language fallback: [" + path + ":" + result + "]");
 			LTItemMail.getInstance().getLanguage().set(path, result);
 			try {
 				LTItemMail.getInstance().getLanguage().save(languageFile);
 			} catch (final IOException e) {
-				e.printStackTrace();
+				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 			}
 		}
 		return result;
@@ -257,10 +357,27 @@ public final class LanguageModule {
 		COMMAND_PLAYER_OPEN,
 		COMMAND_PLAYER_DELETE,
 		COMMAND_PLAYER_MAILITEM,
+		COMMAND_PLAYER_INFO_MAIN,
+		COMMAND_PLAYER_INFO_REGISTRY,
+		COMMAND_PLAYER_INFO_BANNED_MAIN,
+		COMMAND_PLAYER_INFO_BANNED_NO,
+		COMMAND_PLAYER_INFO_BANNED_YES,
+		COMMAND_PLAYER_INFO_BANNED_REASON,
+		COMMAND_PLAYER_INFO_SENT,
+		COMMAND_PLAYER_INFO_RECEIVED,
 		COMMAND_ADMIN_ITEMMAILADMIN,
 		COMMAND_ADMIN_UPDATE,
 		COMMAND_ADMIN_LIST,
 		COMMAND_ADMIN_RECOVER,
+		COMMAND_ADMIN_BAN_MAIN,
+		COMMAND_ADMIN_BAN_BANNED,
+		COMMAND_ADMIN_BAN_ALREADY,
+		COMMAND_ADMIN_UNBAN_MAIN,
+		COMMAND_ADMIN_UNBAN_UNBANNED,
+		COMMAND_ADMIN_UNBAN_ALREADY,
+		COMMAND_ADMIN_BANLIST_MAIN,
+		COMMAND_ADMIN_BANLIST_LIST,
+		COMMAND_ADMIN_BANLIST_EMPTY,
 		PLAYER_PERMISSIONERROR,
 		PLAYER_INVENTORYFULL,
 		PLAYER_MISSINGERROR,
@@ -269,6 +386,7 @@ public final class LanguageModule {
 		PLAYER_SYNTAXERROR,
 		PLAYER_SELFERROR,
 		PLAYER_OPENEDBOXES,
+		PLAYER_BANNED,
 		MAILBOX_CLOSED,
 		MAILBOX_SENT,
 		MAILBOX_FROM,
@@ -281,6 +399,13 @@ public final class LanguageModule {
 		MAILBOX_EMPTYLIST,
 		MAILBOX_NONEW,
 		MAILBOX_BLOCKED,
+		MAILBOX_LABEL,
+		MAILBOX_COST,
+		MAILBOX_COSTERROR,
+		MAILBOX_COSTUPDATE,
+		MAILBOX_RETURNED,
+		MAILBOX_ACCEPT,
+		MAILBOX_DENY,
 		TRANSACTION_PAID,
 		TRANSACTION_ERROR,
 		TRANSACTION_NOMONEY,

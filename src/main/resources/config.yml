@@ -1,51 +1,88 @@
 plugin:
     #Enable or disable LTItemMail. Default: true
+    #
+    #Habilita ou desabilita o LTItemMail. Padrão: true
     enable: true
-    #INTERNAL languages support: portuguese, english, vietnamese. Default: english
-    language: "english"
-    #Here you can customize the name tag that appears in chat. Default: [LTIM]
-    tag: "&6[LTIM]"
-    #Choose if you want to use LTItemMail in your Bungee network. Default: false
+    #Pre-installed languages support: portuguese, english, vietnamese. Default: english
+    #
+    #Suporte de idiomas pré-instalados: portuguese, english, vietnamese. Padrão: english
+    #Para pt-BR, selecione: portuguese
+    language: 'english'
+    #Here you can customize the plugin tag that appears in chat. Default: [LTIM]
+    #
+    #Aqui você pode customizar a tag do plugin que aparece no chat. Padrão: [LTIM]
+    tag: '&6[LTIM]'
+    #Choose if you want to use LTItemMail in your Bungee network.
+    #
+    #Escolha se quer usar o LTItemMail na sua rede Bungee.
     bungee-mode: false
     debug: false
-
 database:
-    type: "flatfile" #"flatfile" or "mysql".
-    #You can use my plugin in bungee mode as long as it is installed on every server you want to use (except proxies).
+    type: 'flatfile' #'flatfile' or 'mysql' | 'flatfile' ou 'mysql'
+    #You can use my plugin in bungee mode as long as it is installed on every server you want to use (except proxy).
     #And you must use the same MySQL database.
     #Remember to set bungee-mode 'true'.
+    #
+    #Você pode usar meu plugin no modo Bungee desde que ele esteja instalado em todos os servidores que você irá utilizá-lo (exceto na proxy).
+    #E o mesmo banco de dados MySQL deve estar sendo usado.
+    #Lembre-se de definir bungee-mode 'true'.
     flatfile:
-        file: "mailboxes.db" #Do not change it unless you have manually changed the name of the actual database file.
+        #Do not change it unless you have manually changed the name of the database file.
+        #
+        #Não mude a menos que tenha mudado manualmente o nome do arquivo banco de dados.
+        file: 'mailboxes.db'
     mysql:
-        host: "127.0.0.1:3306"
-        user: "root"
-        password: "pass"
-        database: "ltitemmail"
-
+        host: '127.0.0.1:3306'
+        user: 'root'
+        password: ''
+        database: 'ltitemmail'
 hook:
-    #Set 'true' if you wish to use area protection plugins. Defaults: false
-    vault: false #Set 'true' if you wish to use economy plugins (see mail costs below)
-    #My plugin has an in-built protection for the physical mailboxes, but you can use some extra protection with the plugins listed below:
+    #Set 'true' if you wish to use economy plugins (set the mail price).
+    #
+    #Defina 'true' se desejar usar um plugin de economia (defina o preço do corrêio).
+    vault: false
+    #Set 'true' if you wish to show mailbox blocks on the map.
+    #
+    #Defina 'true' se desejar mostrar blocos de caixa de corrêio no mapa.
+    dynmap: false
+    #Set 'true' if you wish to show mailbox blocks on the map.
+    #
+    #Defina 'true' se desejar mostrar blocos de caixa de corrêio no mapa.
+    bluemap: false
+    #Set 'true' if you wish to show holograms above mailbox blocks.
+    #
+    #Defina 'true' se desejar mostrar hologramas acima do blocos de caixa de corrêio.
+    decentholograms: false
+    #My plugin has an in-built protection for mailbox blocks, but you can use some extra protection with the plugins listed below:
+    #
+    #Meu plugin tem uma proteção imbutida para blocos de caixa de corrêio, mas você pode usar uma proteção extra com os plugins abaixo:
     griefprevention: false
     redprotect: false
     towny: false
     worldguard: false
-
 mail:
-    #If 'true' titles will be used instead of chat messages. Default: false
+    #Set 'true' if you wish to show titles instead of chat messages. Default: false
+    #
+    #Defina 'true' de desejar mostrar títulos em vez de mensagens no chat. Padrão: false
     use-title: false
     cost:
-        #If 'true' cost value will be multiplied by the number of items. Default: false
+        #Set 'true' to multiply the price by the number of items. Default: false
+        #
+        #Defina 'true' para multiplicar o preço pelo número de itens. Padrão: false
         per-item: false
-        #Cost value to send items. Default: 1.5 (per item) and 30.0 (per mailbox)
+        #Price to send items. Default: 1.5 (per item) and 30.0 (per mail)
+        #
+        #Preço para enviar itens. Padrão: 1.5 (por item) e 30.0 (por corrêio)
         value: 30.0
     #Name of the mail inventory. Default: Mail
-    name: "&3&lMail&r&4"
-
+    #
+    #Nome do inventário de corrêio. Padrão: Mail
+    name: '&3&lMail&r&4'
 #Should administrators be warned about new updates? Default: true
+#
+#Os administratores devem ser notificados sobre novas atualizações? Padrão: true
 update:
     check: true
     periodic-notification: true
-
 #Do not touch it!
 config-version: 11
