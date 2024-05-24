@@ -13,17 +13,20 @@ public final class RecipeModule {
 	private static final void register() {
 		try {
 			Bukkit.addRecipe(mailbox.getRecipe());
-			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) ConsoleModule.debug(mailbox.getType().toString().toLowerCase() + " registered.");
-		} catch(final IllegalStateException exception) {
-			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) ConsoleModule.debug(mailbox.getType().toString().toLowerCase() + " is registered already.");
+			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) ConsoleModule.debug(mailbox.getType().toString() + " registered.");
+		} catch(final IllegalStateException e) {
+			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) {
+				ConsoleModule.debug(mailbox.getType().toString() + " is registered already.");
+				e.printStackTrace();
+			}
 		}
 	}
-	public static final void scheduleRegister() {
+	public static final void schedule() {
 		new BukkitRunnable() {
 			@Override
 			public final void run() {
 				RecipeModule.register();
 			}
-		}.runTaskTimer(LTItemMail.getInstance(), 0, 20 * 15);
+		}.runTaskTimer(LTItemMail.getInstance(), 0, 20 * 30);
 	}
 }

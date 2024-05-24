@@ -28,7 +28,7 @@ public final class MailboxModule {
 	private static final void write(final String content) {
 		try {
 			Files.createDirectories(Paths.get(LTItemMail.getInstance().getDataFolder() + File.separator + "logs"));
-			final BufferedWriter writer = new BufferedWriter(new FileWriter(LTItemMail.getInstance().getDataFolder() + File.separator + "logs" + File.separator + "mailboxes_" + DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDateTime.now()) + ".log", true));
+			final BufferedWriter writer = new BufferedWriter(new FileWriter(LTItemMail.getInstance().getDataFolder() + File.separator + "logs" + File.separator + DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDateTime.now()) + ".log", true));
 			writer.write("[" + DateTimeFormatter.ofPattern("HH:mm:ss").format(LocalDateTime.now()) + "] " + content);
 			writer.newLine();
 			writer.close();
@@ -37,14 +37,23 @@ public final class MailboxModule {
 		}
 		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) ConsoleModule.mailbox(content);
 	}
-	/*private final Logger getLogger() {
-		return log;
-	}*/
-	public static final boolean log(final UUID from, UUID playerTo, final Action action, final Integer mailboxID, final LinkedList<ItemStack> contents, final Location mailboxBlock) {
+	public static final boolean log(final UUID from, UUID playerTo, final Action action, final Integer mailboxID, final Double mailboxCost, final LinkedList<ItemStack> contents, final Location mailboxBlock) {
 		if(from == null || action == null) return false;
 		String log = LTPlayer.fromUUID(from).getName() + " ";
 		String contentString = "";
 		switch(action) {
+			case CANCELED:
+				log = log + "prevented from sending a mailbox";
+				break;
+			case GAVE_BACK:
+				log = log + "gave back Mailbox#" + mailboxID + " to " + LTPlayer.fromUUID(playerTo).getName();
+				break;
+			case PAID:
+				log = log + "paid $" + mailboxCost;
+				break;
+			case REFUNDED:
+				log = log + "was refunded $" + mailboxCost;
+				break;
 			case RECOVERED:
 				log = log + "recovered lost items of Mailbox#" + mailboxID;
 				break;
@@ -65,16 +74,10 @@ public final class MailboxModule {
 							contentString = contentString + itemName + "[" + content.getAmount() + "]";
 						} else contentString = contentString + itemName + "[" + content.getAmount() + "], ";
 					}
-				} else contentString = "#Bungee-LimitationError";
+				} else contentString = "#BungeeLimitation";
 				log = log + "received Mailbox#" + mailboxID + " (Contents: " + contentString + ")";
 				break;
 			case SENT:
-				String offlineFrom = "";
-				String offlineTo = "";
-				final LTPlayer ltPlayerFrom = LTPlayer.fromUUID(from);
-				if(ltPlayerFrom.getBukkitPlayer().getPlayer() == null) offlineFrom = " (offline)";
-				final LTPlayer ltPlayerTo = LTPlayer.fromUUID(playerTo);
-				if(ltPlayerTo.getBukkitPlayer().getPlayer() == null) offlineTo = " (offline)";
 				if(contents != null) {
 					for(final ItemStack content : contents) if(content != null && !content.getType().equals(Material.AIR)) {
 						String itemName = "";
@@ -85,8 +88,8 @@ public final class MailboxModule {
 							contentString = contentString + itemName + "[" + content.getAmount() + "]";
 						} else contentString = contentString + itemName + "[" + content.getAmount() + "], ";
 					}
-				} else contentString = "#Bungee-LimitationError";
-				log = log + offlineFrom + "sent to " + ltPlayerTo.getName() + offlineTo + ": Mailbox#" + mailboxID + " (Contents: " + contentString + ")";
+				} else contentString = "#BungeeLimitation";
+				log = log + "sent to " + LTPlayer.fromUUID(playerTo).getName() + ": Mailbox#" + mailboxID + " (Contents: " + contentString + ")";
 				break;
 			case PLACED:
 				log = log + "placed a mailbox at X: " + mailboxBlock.getBlockX() + ", Y: " + mailboxBlock.getBlockY() + ", Z: " + mailboxBlock.getBlockZ();
@@ -95,23 +98,23 @@ public final class MailboxModule {
 				log = log + "broke a mailbox at X: " + mailboxBlock.getBlockX() + ", Y: " + mailboxBlock.getBlockY() + ", Z: " + mailboxBlock.getBlockZ();
 				break;
 			case ADMIN_BROKE:
-				log = log + "broke the mailbox of " + Bukkit.getOfflinePlayer(playerTo).getName() + " at X: " + mailboxBlock.getBlockX() + ", Y: " + mailboxBlock.getBlockY() + ", Z: " + mailboxBlock.getBlockZ();
+				log = log + "broke the mailbox of " + LTPlayer.fromUUID(playerTo).getName() + " at X: " + mailboxBlock.getBlockX() + ", Y: " + mailboxBlock.getBlockY() + ", Z: " + mailboxBlock.getBlockZ();
 				break;
 		}
 		write(log);
 		return true;
 	}
-	public static final void send(final CommandSender sender, final LTPlayer receiver, final LinkedList<ItemStack> contentsarray, final String label) {
+	public static final int send(final CommandSender sender, final LTPlayer receiver, final LinkedList<ItemStack> contentsarray, final String label) {
 		Player senderPlayer = null;
 		if(sender instanceof Player) senderPlayer = (Player) sender;
 		UUID senderPlayerID = null;
 		if(senderPlayer != null) senderPlayerID = senderPlayer.getUniqueId();
 		final Integer mailboxID = DatabaseModule.Virtual.saveMailbox(senderPlayerID, receiver.getUniqueId(), contentsarray, label);
-		log(senderPlayerID, receiver.getUniqueId(), Action.SENT, mailboxID, contentsarray, null);
+		log(senderPlayerID, receiver.getUniqueId(), Action.SENT, mailboxID, null, contentsarray, null);
 		final String[] mailboxSent = LanguageModule.get(LanguageModule.Type.MAILBOX_SENT).split("%");
 		sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + "" + mailboxSent[0] + "" + ChatColor.AQUA + "" + receiver.getName() + "" + ChatColor.YELLOW + "" + mailboxSent[1]);
 		if(receiver.getBukkitPlayer().getPlayer() != null) {
-			log(receiver.getUniqueId(), null, Action.RECEIVED, mailboxID, contentsarray, null);
+			log(receiver.getUniqueId(), null, Action.RECEIVED, mailboxID, null, contentsarray, null);
 			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_TITLE)) {
 				receiver.getBukkitPlayer().getPlayer().sendTitle(ChatColor.AQUA + "" + LanguageModule.get(LanguageModule.Type.MAILBOX_FROM) +  " " + ChatColor.GREEN + "" + sender.getName(), "", 20 * 1, 20 * 5, 20 * 1);
 			} else receiver.getBukkitPlayer().getPlayer().sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.AQUA + "" + LanguageModule.get(LanguageModule.Type.MAILBOX_FROM) + " " + ChatColor.GREEN + "" + sender.getName());
@@ -119,15 +122,13 @@ public final class MailboxModule {
 			try {
 				final ByteArrayOutputStream bungee = new ByteArrayOutputStream();
 				final DataOutputStream bungeeOut = new DataOutputStream(bungee);
-				//código pra obter o nome do servidor que o destinatário está e gravar no log
-				// escrever aqui
 				if(senderPlayer != null) {
 					bungeeOut.writeUTF("Forward");
 					bungeeOut.writeUTF("ALL");
 					bungeeOut.writeUTF("LTItemMail_MailboxReceived");
 					final ByteArrayOutputStream function = new ByteArrayOutputStream();
 					final DataOutputStream functionOut = new DataOutputStream(function);
-					String data = senderPlayer.getName() + ";" + receiver.getName() + ";" + mailboxID;
+					final String data = senderPlayer.getName() + ";" + receiver.getName() + ";" + mailboxID;
 					functionOut.writeUTF(data);
 					bungeeOut.writeShort(function.toByteArray().length);
 					bungeeOut.write(function.toByteArray());
@@ -141,8 +142,11 @@ public final class MailboxModule {
 				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 			}
 		}
+		return mailboxID;
 	}
 	public enum Action {
+		PAID,
+		REFUNDED,
 		RECOVERED,
 		DELETED,
 		OPENED,
@@ -150,6 +154,8 @@ public final class MailboxModule {
 		SENT,
 		PLACED,
 		BROKE,
-		ADMIN_BROKE
+		ADMIN_BROKE,
+		CANCELED,
+		GAVE_BACK
 	}
 }

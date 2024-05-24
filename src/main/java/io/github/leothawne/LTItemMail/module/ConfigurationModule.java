@@ -2,13 +2,15 @@ package io.github.leothawne.LTItemMail.module;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
-import net.md_5.bungee.api.ChatColor;
+import io.github.leothawne.LTItemMail.lib.BukkitUtils;
 
 public final class ConfigurationModule {
 	private ConfigurationModule() {}
@@ -37,6 +39,25 @@ public final class ConfigurationModule {
 			}
 		}
 		return null;
+	}
+	public static final void setBoardRead(final Integer id) {
+		final List<Integer> boards = getBoardsRead();
+		if(!boards.contains(id)) {
+			boards.add(id);
+			LTItemMail.getInstance().getConfiguration().set("boards-read", boards);
+			try {
+				LTItemMail.getInstance().getConfiguration().save(configFile);
+			} catch (final IOException e) {
+				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
+			}
+		}
+	}
+	public static final List<Integer> getBoardsRead(){
+		List<Integer> boards;
+		if(LTItemMail.getInstance().getConfiguration().isSet("boards-read")) {
+			boards = LTItemMail.getInstance().getConfiguration().getIntegerList("boards-read");
+		} else boards = new ArrayList<>();
+		return boards;
 	}
 	public static final Object get(final Type type) {
 		Object result = null;
@@ -102,6 +123,18 @@ public final class ConfigurationModule {
 				result = false;
 				path = "hook.worldguard";
 				break;
+			case PLUGIN_HOOK_DYNMAP:
+				result = false;
+				path = "hook.dynmap";
+				break;
+			case PLUGIN_HOOK_BLUEMAP:
+				result = false;
+				path = "hook.bluemap";
+				break;
+			case PLUGIN_HOOK_DECENTHOLOGRAMS:
+				result = false;
+				path = "hook.decentholograms";
+				break;
 			case PLUGIN_DEBUG:
 				result = false;
 				path = "plugin.debug";
@@ -137,7 +170,7 @@ public final class ConfigurationModule {
 		}
 		if(path != null) if(LTItemMail.getInstance().getConfiguration().isSet(path)) {
 			result = LTItemMail.getInstance().getConfiguration().get(path);
-			if(type.equals(Type.PLUGIN_TAG) || type.equals(Type.MAILBOX_NAME)) result = formatBukkitCodes((String) LTItemMail.getInstance().getConfiguration().get(path));
+			if(type.equals(Type.PLUGIN_TAG) || type.equals(Type.MAILBOX_NAME) || type.equals(Type.MAILBOX_NAME)) result = BukkitUtils.format((String) result);
 		} else if(result != null) {
 			ConsoleModule.warning("Configuration fallback: [" + path + ":" + result + "]");
 			LTItemMail.getInstance().getConfiguration().set(path, result);
@@ -149,9 +182,6 @@ public final class ConfigurationModule {
 		}
 		return result;
 	}
-	private static final String formatBukkitCodes(final String text) {
-		return ChatColor.translateAlternateColorCodes('&', text);
-	}
 	public enum Type {
 		PLUGIN_ENABLE,
 		PLUGIN_TYPE_LANGUAGE,
@@ -161,6 +191,9 @@ public final class ConfigurationModule {
 		PLUGIN_HOOK_REDPROTECT,
 		PLUGIN_HOOK_TOWNYADVANCED,
 		PLUGIN_HOOK_WORLDGUARD,
+		PLUGIN_HOOK_DYNMAP,
+		PLUGIN_HOOK_BLUEMAP,
+		PLUGIN_HOOK_DECENTHOLOGRAMS,
 		PLUGIN_DEBUG,
 		MAILBOX_TITLE,
 		MAILBOX_TYPE_COST,
