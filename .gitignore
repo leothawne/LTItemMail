@@ -90,9 +90,6 @@ target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.l
 target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
 src/main/resources/ideias.txt
 /target/
-src/main/java/.vs/slnx.sqlite
-src/main/java/.vs/VSWorkspaceState.json
-src/main/java/.vs/java/FileContentIndex/76660002-b4d3-498d-b10d-c7bdd1e4ecf4.vsidx
-src/main/java/.vs/java/v17/.wsuo
-src/main/java/.vs/java/v17/DocumentLayout.json
-LT Item Mail Resources.zip
+src/main/resources/atualizar-paginas.txt
+mailbox_icon.png
+LT Item Mail Resource Pack.zip
