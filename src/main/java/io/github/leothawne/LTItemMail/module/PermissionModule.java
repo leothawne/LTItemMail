@@ -1,6 +1,9 @@
 package io.github.leothawne.LTItemMail.module;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import io.github.leothawne.LTItemMail.module.integration.LTLuckPerms;
 
 public class PermissionModule {
 	private PermissionModule() {}
@@ -24,6 +27,9 @@ public class PermissionModule {
 				break;
 			case CMD_PLAYER_LIST:
 				node = "ltitemmail.player.list";
+				break;
+			case CMD_PLAYER_COLOR:
+				node = "ltitemmail.player.color";
 				break;
 			case CMD_PLAYER_MAIN:
 				node = "ltitemmail.player";
@@ -70,14 +76,25 @@ public class PermissionModule {
 			case CMD_ADMIN_UNBAN:
 				node = "ltitemmail.admin.unban";
 				break;
+			case CMD_ADMIN_BANLIST:
+				node = "ltitemmail.admin.banlist";
+				break;
+			case CMD_ADMIN_INFO:
+				node = "ltitemmail.admin.info";
+				break;
 		}
-		if(node != null) return sender.hasPermission(node);
+		if(node != null) {
+			final LTLuckPerms luckPerms = (LTLuckPerms) IntegrationModule.getInstance().get(IntegrationModule.Function.LUCKPERMS);
+			if(luckPerms != null && sender instanceof Player) return luckPerms.hasPermission((Player) sender, node);
+			return sender.hasPermission(node);
+		}
 		return false;
 	}
 	public enum Type {
 		CMD_PLAYER_MAIN,
 		CMD_PLAYER_VERSION,
 		CMD_PLAYER_LIST,
+		CMD_PLAYER_COLOR,
 		CMD_PLAYER_OPEN,
 		CMD_PLAYER_DELETE,
 		CMD_PLAYER_SEND,
@@ -91,10 +108,12 @@ public class PermissionModule {
 		CMD_ADMIN_NOTIFY,
 		CMD_ADMIN_BAN,
 		CMD_ADMIN_UNBAN,
+		CMD_ADMIN_BANLIST,
+		CMD_ADMIN_INFO,
+		CMD_ADMIN_RELOAD,
 		BLOCK_PLAYER_PLACE,
 		BLOCK_PLAYER_BREAK,
 		BLOCK_PLAYER_USE,
-		BLOCK_ADMIN_BREAK,
-		CMD_ADMIN_RELOAD
+		BLOCK_ADMIN_BREAK
 	}
 }

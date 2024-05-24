@@ -20,7 +20,7 @@ import io.github.leothawne.LTItemMail.module.PermissionModule;
 public final class ItemMailAdminCommandTabCompleter implements TabCompleter {
 	@Override
 	public final List<String> onTabComplete(final CommandSender sender, Command cmd, final String commandLabel, final String[] args){
-		if(args.length == 1) if(PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_ADMIN_MAIN)) return Completer.partial(args[0], ImmutableList.of("update", "list", "recover", "reload", "ban", "unban", "banlist"));
+		if(args.length == 1) if(PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_ADMIN_MAIN)) return Completer.partial(args[0], ImmutableList.of("info", "help", "update", "list", "recover", "reload", "ban", "unban", "banlist"));
 		if(args.length == 2) if(PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_ADMIN_LIST)) if(args[0].equals("list") || args[0].equals("ban") || args[0].equals("unban")) {
 			final LinkedList<String> response = new LinkedList<>();
 			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.BUNGEE_MODE)) {
