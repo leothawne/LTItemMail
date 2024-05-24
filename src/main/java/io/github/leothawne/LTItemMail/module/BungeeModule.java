@@ -40,7 +40,7 @@ public final class BungeeModule implements PluginMessageListener {
 					if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 				}
 			}
-		}.runTaskTimer(LTItemMail.getInstance(), 0, 20);
+		}.runTaskTimer(LTItemMail.getInstance(), 0, 20 * 3);
 	}
 	@Override
 	public final void onPluginMessageReceived(final String channel, final Player player, final byte[] message) {
@@ -60,7 +60,7 @@ public final class BungeeModule implements PluginMessageListener {
 					String type = "chat";
 					if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_TITLE)) type = "title";
 					if(receiver != null && receiver.getBukkitPlayer().getPlayer() != null) {
-						MailboxModule.log(receiver.getUniqueId(), null, Action.RECEIVED, mailboxID, null, null);
+						MailboxModule.log(receiver.getUniqueId(), null, Action.RECEIVED, mailboxID, null, null, null);
 						switch(type) {
 							case "chat":
 								receiver.getBukkitPlayer().getPlayer().sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.AQUA + "" + LanguageModule.get(LanguageModule.Type.MAILBOX_FROM) + " " + ChatColor.GREEN + "" + sender.getName());
