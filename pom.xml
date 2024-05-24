@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.leothawne</groupId>
 	<artifactId>LTItemMail</artifactId>
-	<version>0.4.0</version>
+	<version>1.0.0</version>
 	<name>LTItemMail</name>
 	<description>Have you ever imagined mailing items to your friends in Minecraft?</description>
 	<build>
@@ -71,7 +71,9 @@
 		        <excludes>
 					<exclude>mailboxes.db</exclude>
 					<exclude>ideias.txt</exclude>
-					<exclude>LT Item Mail Resources.zip</exclude>
+					<exclude>LT Item Mail Resource Pack.zip</exclude>
+					<exclude>mailbox_icon.png</exclude>
+					<exclude>atualizar-paginas.txt</exclude>
 				</excludes>
 		    </resource>
 		    <resource>
@@ -80,36 +82,53 @@
 		        <filtering>false</filtering>
 		        <includes>
 					<include>mailboxes.db</include>
-					<include>LT Item Mail Resources.zip</include>
+					<include>LT Item Mail Resource Pack.zip</include>
+					<include>mailbox_icon.png</include>
 				</includes>
 		    </resource>
 		</resources>
 	</build>
 	<repositories>
 		<repository>
-			<id>spigotmc.org</id>
+			<id>SpigotMC</id>
 			<url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
 		</repository>
 		<repository>
-	    	<id>vault</id>
+	    	<id>Nexus</id>
 	    	<url>http://nexus.hc.to/content/repositories/pub_releases/</url>
     	</repository>
 		<repository>
-		    <id>jitpack.io</id>
+		    <id>JitPack</id>
 		    <url>https://jitpack.io</url>
 		</repository>
 	    <repository>
-	        <id>redprotect</id>
+	        <id>FabioZumbi12</id>
 	        <url>https://raw.githubusercontent.com/FabioZumbi12/RedProtect/mvn-repo/</url>
 	    </repository>
 	     <repository>
-	     	<id>glaremasters</id>
+	     	<id>GlareMasters</id>
 	     	<url>https://repo.glaremasters.me/repository/towny/</url>
 	    </repository>
 	    <repository>
-        	<id>sk89q</id>
+        	<id>EngineHub</id>
         	<url>https://maven.enginehub.org/repo/</url>
     	</repository>
+    	<repository>
+        	<id>MikePrimm</id>
+        	<url>https://repo.mikeprimm.com/</url>
+    	</repository>
+    	<repository>
+        	<id>bluecolored</id>
+        	<url>https://repo.bluecolored.de/releases</url>
+    	</repository>
+    	<repository>
+			<id>codemc-repo</id>
+			<url>https://repo.codemc.io/repository/maven-public/</url>
+		</repository>
+		<repository>
+            <id>placeholderapi</id>
+            <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
+        </repository>
 	</repositories>
 	<dependencies>
 		<dependency>
@@ -133,7 +152,7 @@
     	<dependency>
 	    	<groupId>com.github.TechFortress</groupId>
 	    	<artifactId>GriefPrevention</artifactId>
-	    	<version>16.18.1</version>
+	    	<version>16.18.3</version>
             <scope>provided</scope>
 		</dependency>
 	    <dependency>
@@ -151,7 +170,7 @@
 	    <dependency>
 	    	<groupId>com.palmergames.bukkit.towny</groupId>
 	    	<artifactId>towny</artifactId>
-	    	<version>0.100.0.0</version>
+	    	<version>0.100.2.0</version>
 	    	<scope>provided</scope>
 	    </dependency>
 	    <dependency>
@@ -160,11 +179,41 @@
 	        <version>7.0.9</version>
 	        <scope>provided</scope>
     	</dependency>
-    	<!--<dependency>
-	        <groupId>de.griefed</groupId>
-	        <artifactId>versionchecker</artifactId>
-	        <version>1.1.9</version>
-	        <scope>compile</scope>
-    	</dependency>-->
+    	<dependency>
+	        <groupId>us.dynmap</groupId>
+	        <artifactId>dynmap-api</artifactId>
+	        <version>3.6-beta-1</version>
+	        <scope>provided</scope>
+    	</dependency>
+    	<dependency>
+	        <groupId>net.luckperms</groupId>
+	        <artifactId>api</artifactId>
+	        <version>5.4</version>
+	        <scope>provided</scope>
+    	</dependency>
+    	<dependency>
+		    <groupId>de.bluecolored.bluemap</groupId>
+		    <artifactId>BlueMapAPI</artifactId>
+		    <version>2.7.1</version>
+		    <scope>provided</scope>
+		</dependency>
+		<dependency>
+		    <groupId>com.github.decentsoftware-eu</groupId>
+		    <artifactId>decentholograms</artifactId>
+		    <version>2.8.6</version>
+		    <scope>provided</scope>
+	  	</dependency>
+	  	<dependency>
+			<groupId>de.tr7zw</groupId>
+			<artifactId>item-nbt-api</artifactId>
+			<version>2.12.4</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+	         <groupId>me.clip</groupId>
+	         <artifactId>placeholderapi</artifactId>
+	         <version>2.11.5</version>
+	         <scope>provided</scope>
+        </dependency>
 	</dependencies>
 </project>
