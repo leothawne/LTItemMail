@@ -20,6 +20,7 @@ import de.bluecolored.bluemap.api.markers.Marker;
 import de.bluecolored.bluemap.api.markers.MarkerSet;
 import de.bluecolored.bluemap.api.markers.POIMarker;
 import io.github.leothawne.LTItemMail.LTItemMail;
+import io.github.leothawne.LTItemMail.module.ConfigurationModule;
 
 public final class LTBlueMap {
 	private BlueMapAPI api = null;
@@ -41,11 +42,9 @@ public final class LTBlueMap {
 		if(api != null) {
 			final BlueMapWorld world = api.getWorld(location.getWorld()).get();
 			MarkerSet set = null;
-			for(final BlueMapMap map : world.getMaps()) for(final String setId: map.getMarkerSets().keySet()) {
-				if(setId.equals("ltitemmail_markers")) {
-					set = map.getMarkerSets().get(setId);
-					break;
-				}
+			for(final BlueMapMap map : world.getMaps()) for(final String setId: map.getMarkerSets().keySet()) if(setId.equals("ltitemmail_markers")) {
+				set = map.getMarkerSets().get(setId);
+				break;
 			}
 			if(set == null) set = MarkerSet.builder().label("Mailboxes").build();
 			final String worldId = world.getId();
@@ -68,11 +67,9 @@ public final class LTBlueMap {
 		if(api != null) {
 			final BlueMapWorld world = api.getWorld(location.getWorld()).get();
 			MarkerSet set = null;
-			for(final BlueMapMap map : world.getMaps()) for(final String setId: map.getMarkerSets().keySet()) {
-				if(setId.equals("ltitemmail_markers")) {
-					set = map.getMarkerSets().get(setId);
-					break;
-				}
+			for(final BlueMapMap map : world.getMaps()) for(final String setId: map.getMarkerSets().keySet()) if(setId.equals("ltitemmail_markers")) {
+				set = map.getMarkerSets().get(setId);
+				break;
 			}
 			if(set != null) {
 				final String worldId = world.getId();
@@ -94,7 +91,7 @@ public final class LTBlueMap {
 			MarkerGson.INSTANCE.toJson(set, writer);
 			writer.close();
 		} catch (final IOException e) {
-			e.printStackTrace();
+			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 		}
 	}
 	private final MarkerSet loadFromFile() {
@@ -105,7 +102,7 @@ public final class LTBlueMap {
 			set = MarkerGson.INSTANCE.fromJson(reader, MarkerSet.class);
 			reader.close();
 		} catch (final IOException e) {
-			e.printStackTrace();
+			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 		}
 		return set;
 	}
