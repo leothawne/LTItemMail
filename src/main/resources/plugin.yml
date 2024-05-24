@@ -8,20 +8,20 @@ website: https://leothawne.github.io/LTItemMail/
 url: https://leothawne.github.io/LTItemMail/
 main: ${project.groupId}.${project.artifactId}.${project.name}
 database: true
-softdepend: [Vault, Essentials, GriefPrevention, RedProtect, Towny, WorldGuard]
+softdepend: [LuckPerms, Vault, Essentials, CMI, CoinsEngine, lightEconomy, PlayerPoints, WorldGuard, GriefPrevention, RedProtect, Towny, dynmap, BlueMap, DecentHolograms, PlaceholderAPI]
 commands:
     itemmail:
         description: Used to send items and to check your mailbox.
         aliases: [ima, imail]
-        usage: /<command>
+        usage: /itemmail [args]
     mailitem:
         description: Used to send items.
         aliases: [mit, enviaritem, mail]
-        usage: /<command>
+        usage: /mailitem [args]
     itemmailadmin:
         description: For administration purposes.
         aliases: [imad, imadmin]
-        usage: /<command>
+        usage: /itemmailadmin [args]
 permissions:
     ltitemmail.player.all:
         default: true
@@ -29,7 +29,9 @@ permissions:
             ltitemmail.player: true
             ltitemmail.player.version: true
             ltitemmail.player.list: true
+            ltitemmail.player.color: true
             ltitemmail.player.open: true
+            ltitemmail.player.costs: true
             ltitemmail.player.delete: true
             ltitemmail.player.send: true
             ltitemmail.player.info: true
@@ -48,46 +50,56 @@ permissions:
            ltitemmail.admin.notify: true
            ltitemmail.admin.ban: true
            ltitemmail.admin.unban: true
+           ltitemmail.admin.banlist: true
+           ltitemmail.admin.info: true
            ltitemmail.block.break-bypass: true
     ltitemmail.player:
-        default: true
+        default: false
     ltitemmail.player.version:
-        default: true
+        default: false
     ltitemmail.player.list:
-        default: true
+        default: false
+    ltitemmail.player.color:
+        default: false
+    ltitemmail.player.costs:
+        default: false
     ltitemmail.player.open:
-        default: true
+        default: false
     ltitemmail.player.delete:
-        default: true
+        default: false
     ltitemmail.player.send:
-        default: true
+        default: false
     ltitemmail.player.info:
-        default: true
+        default: false
     ltitemmail.player.notify:
-        default: true
+        default: false
     ltitemmail.block.place:
-        default: true
+        default: false
     ltitemmail.block.break:
-        default: true
+        default: false
     ltitemmail.block.use:
-        default: true
+        default: false
     ltitemmail.admin:
-        default: op
+        default: false
     ltitemmail.admin.update:
-        default: op
+        default: false
     ltitemmail.admin.list:
-        default: op
+        default: false
     ltitemmail.admin.recover:
-        default: op
+        default: false
     ltitemmail.admin.reload:
-        default: op
+        default: false
     ltitemmail.admin.notify:
-        default: op
+        default: false
     ltitemmail.admin.ban:
-        default: op
+        default: false
     ltitemmail.admin.unban:
-        default: op
+        default: false
+    ltitemmail.admin.banlist:
+        default: false
+    ltitemmail.admin.info:
+        default: false
     ltitemmail.block.break-bypass:
-        default: op
+        default: false
     ltitemmail.admin.bypass:
         default: false
