@@ -24,18 +24,17 @@ import io.github.leothawne.LTItemMail.LTPlayer;
 
 public final class DatabaseModule {
 	private DatabaseModule() {}
-	
-	public static final class FlatFile {
-		private static final File databaseFile = new File(LTItemMail.getInstance().getDataFolder(), (String) ConfigurationModule.get(ConfigurationModule.Type.DATABASE_FLATFILE_FILE));
-		public static final void check() {
-			if(!databaseFile.exists()) {
+	private static final class FlatFile {
+		private static final File file = new File(LTItemMail.getInstance().getDataFolder(), (String) ConfigurationModule.get(ConfigurationModule.Type.DATABASE_FLATFILE_FILE));
+		private static final void check() {
+			if(!file.exists()) {
 				ConsoleModule.warning("Extracting " + (String) ConfigurationModule.get(ConfigurationModule.Type.DATABASE_FLATFILE_FILE) + "...");
 				LTItemMail.getInstance().saveResource((String) ConfigurationModule.get(ConfigurationModule.Type.DATABASE_FLATFILE_FILE), false);
 				ConsoleModule.info("Done.");
 			}
 		}
-		public static final void connect() {
-			if(databaseFile.exists()) {
+		private static final void connect() {
+			if(file.exists()) {
 				try {
 					LTItemMail.getInstance().connection = DriverManager.getConnection("jdbc:sqlite:" + LTItemMail.getInstance().getDataFolder() + File.separator + (String) ConfigurationModule.get(ConfigurationModule.Type.DATABASE_FLATFILE_FILE));
 					if(LTItemMail.getInstance().connection != null) ConsoleModule.info("Loaded FlatFile database.");
@@ -46,24 +45,29 @@ public final class DatabaseModule {
 			}
 		}
 	}
-	public static final class MySQL {
-		public static final void connect() {
+	private static final class MySQL {
+		private static final void connect() {
 			try {
 				LTItemMail.getInstance().connection = DriverManager.getConnection("jdbc:mysql://" + (String) ConfigurationModule.get(ConfigurationModule.Type.DATABASE_MYSQL_HOST) + "/" + (String) ConfigurationModule.get(ConfigurationModule.Type.DATABASE_MYSQL_NAME), (String) ConfigurationModule.get(ConfigurationModule.Type.DATABASE_MYSQL_USER), (String) ConfigurationModule.get(ConfigurationModule.Type.DATABASE_MYSQL_PASSWORD));
 				if(LTItemMail.getInstance().connection != null) ConsoleModule.info("Opened MySQL connection.");
 			} catch (final SQLException | NullPointerException e) {
 				ConsoleModule.severe("Could not open MySQL connection.");
-				ConsoleModule.severe("Check the MySQL login information in config.yml and restart the Minecraft server.");
-				ConsoleModule.severe("Is it the MySQL server set up correctly?");
+				ConsoleModule.severe("Check the MySQL login information in config.yml and restart your Minecraft server.");
+				ConsoleModule.severe("Is the MySQL server set up correctly?");
+				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 			}
 			new BukkitRunnable() {
 				@Override
 				public final void run() {
 					try {
-						if(LTItemMail.getInstance().connection == null || (LTItemMail.getInstance().connection != null && !LTItemMail.getInstance().connection.isValid(15))) LTItemMail.getInstance().connection = DriverManager.getConnection("jdbc:mysql://" + (String) ConfigurationModule.get(ConfigurationModule.Type.DATABASE_MYSQL_HOST) + "/" + (String) ConfigurationModule.get(ConfigurationModule.Type.DATABASE_MYSQL_NAME), (String) ConfigurationModule.get(ConfigurationModule.Type.DATABASE_MYSQL_USER), (String) ConfigurationModule.get(ConfigurationModule.Type.DATABASE_MYSQL_PASSWORD));
+						if(LTItemMail.getInstance().connection == null || (LTItemMail.getInstance().connection != null && !LTItemMail.getInstance().connection.isValid(15))) {
+							if(LTItemMail.getInstance().connection != null) LTItemMail.getInstance().connection.close();
+							LTItemMail.getInstance().connection = DriverManager.getConnection("jdbc:mysql://" + (String) ConfigurationModule.get(ConfigurationModule.Type.DATABASE_MYSQL_HOST) + "/" + (String) ConfigurationModule.get(ConfigurationModule.Type.DATABASE_MYSQL_NAME), (String) ConfigurationModule.get(ConfigurationModule.Type.DATABASE_MYSQL_USER), (String) ConfigurationModule.get(ConfigurationModule.Type.DATABASE_MYSQL_PASSWORD));
+							ConsoleModule.info("Re-opened MySQL connection.");
+						}
 					} catch (final SQLException | NullPointerException e) {
-						ConsoleModule.severe("MySQL connection closed and could not be opened again.");
-						ConsoleModule.severe("Is it your MySQL server set up correctly?");
+						ConsoleModule.severe("MySQL connection was closed and could not be opened again.");
+						ConsoleModule.severe("Is the MySQL server set up correctly?");
 						if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 						this.cancel();
 					}
@@ -71,11 +75,29 @@ public final class DatabaseModule {
 			}.runTaskTimer(LTItemMail.getInstance(), 20 * 60, 20 * 60);
 		}
 	}
-	public static final int checkVer(final String dbType) {
+	public static final void connect() {
+		switch(((String) ConfigurationModule.get(ConfigurationModule.Type.DATABASE_TYPE)).toLowerCase()) {
+			case "flatfile":
+				FlatFile.check();
+				FlatFile.connect();
+				break;
+			case "mysql":
+				MySQL.connect();
+				break;
+		}
+	}
+	public static final void disconnect() {
+		try {
+			LTItemMail.getInstance().connection.close();
+		} catch (final SQLException | NullPointerException e) {
+			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
+		}
+	}
+	private static final int getCurrentVersion() {
 		try {
 			ResultSet results = null;
 			Boolean exists = false;
-			switch(dbType) {
+			switch(((String) ConfigurationModule.get(ConfigurationModule.Type.DATABASE_TYPE)).toLowerCase()) {
 				case "flatfile":
 					final DatabaseMetaData meta = LTItemMail.getInstance().connection.getMetaData();
 					results = meta.getTables(null, null, "config", new String[] {"TABLE"});
@@ -85,15 +107,12 @@ public final class DatabaseModule {
 					final Statement statement = LTItemMail.getInstance().connection.createStatement();
 					results = statement.executeQuery("SHOW TABLES;");
 					statement.closeOnCompletion();
-					while(results.next()) {
-						if(results.getString(1).equals("config")) {
-							exists = true;
-							break;
-						}
+					while(results.next()) if(results.getString(1).equals("config")) {
+						exists = true;
+						break;
 					}
 					break;
 			}
-			
 			if(exists) {
 				final Statement statement = LTItemMail.getInstance().connection.createStatement();
 				results = statement.executeQuery("SELECT version FROM config;");
@@ -105,11 +124,23 @@ public final class DatabaseModule {
 		}
 		return 0;
 	}
-	public static final boolean updateDb(final int ver, final String type) {
+	public static final void checkForUpdates() {
+		final Integer dbVer = getCurrentVersion();
+		if(dbVer < Integer.valueOf(DataModule.getVersion(DataModule.VersionType.DATABASE))) {
+			for(Integer i = dbVer; i < Integer.valueOf(DataModule.getVersion(DataModule.VersionType.DATABASE)); i++) {
+				if(((String) ConfigurationModule.get(ConfigurationModule.Type.DATABASE_TYPE)).toLowerCase().equals("mysql") && i > 0 && i < 5) continue;
+				ConsoleModule.info("Updating database... (" + i + " -> " + (i + 1) + ")");
+				if(DatabaseModule.runSQL(i)) {
+					ConsoleModule.info("Database updated! (" + i + " -> " + (i + 1) + ")");
+				} else ConsoleModule.severe("Database update failed! (" + i + " -> " + (i + 1) + ")");
+			}
+		} else ConsoleModule.info("Database is up to date! (" + dbVer + ")");
+	}
+	private static final boolean runSQL(final int version) {
 		final LinkedList<String> sql = new LinkedList<>();
-		switch(type) {
+		switch(((String) ConfigurationModule.get(ConfigurationModule.Type.DATABASE_TYPE)).toLowerCase()) {
 			case "flatfile":
-				switch(ver) {
+				switch(version) {
 					case 0:
 						sql.add("CREATE TABLE config(version INTEGER NOT NULL);");
 						sql.add("INSERT INTO config(version) VALUES('1');");
@@ -140,17 +171,22 @@ public final class DatabaseModule {
 							+ ");");
 						sql.add("UPDATE config SET version = '4';");
 						break;
+					case 4:
+						sql.add("ALTER TABLE mailbox ADD status TEXT NOT NULL DEFAULT 'PENDING';");
+						sql.add("ALTER TABLE mailbox RENAME COLUMN opened TO deleted;");
+						sql.add("UPDATE config SET version = '5';");
+						break;
 				}
 				break;
 			case "mysql":
-				switch(ver) {
+				switch(version) {
 					case 0:
 						sql.add("DROP TABLE IF EXISTS config;");
 						sql.add("CREATE TABLE config ("
 								+ "version int NOT NULL"
 								+ ") ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;");
 						sql.add("LOCK TABLES config WRITE;");
-						sql.add("INSERT INTO config VALUES(4);");
+						sql.add("INSERT INTO config VALUES(5);");
 						sql.add("UNLOCK TABLES;");
 						
 						sql.add("DROP TABLE IF EXISTS mailbox;");
@@ -160,8 +196,9 @@ public final class DatabaseModule {
 								+ "uuid_to longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,"
 								+ "sent_date longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,"
 								+ "items longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,"
-								+ "opened int NOT NULL DEFAULT '0',"
+								+ "deleted int NOT NULL DEFAULT '0',"
 								+ "label longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,"
+								+ "status tinytext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,"
 								+ "PRIMARY KEY (id)"
 								+ ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;");
 
@@ -205,7 +242,7 @@ public final class DatabaseModule {
 		public static final int saveMailbox(final UUID playerFrom, UUID playerTo, final LinkedList<ItemStack> items, final String label) {
 			final String time = DateTimeFormatter.ofPattern("dd/MM/yyyy").format(LocalDateTime.now());
 			try {
-				final PreparedStatement insert = LTItemMail.getInstance().connection.prepareStatement("INSERT INTO mailbox(uuid_from, uuid_to, sent_date, items, label) VALUES(?, ?, ?, ?, ?);");
+				final PreparedStatement insert = LTItemMail.getInstance().connection.prepareStatement("INSERT INTO mailbox(uuid_from, uuid_to, sent_date, items, label, status) VALUES(?, ?, ?, ?, ?, ?);");
 				if(playerFrom != null) {
 					insert.setString(1, playerFrom.toString());
 				} else insert.setString(1, "");
@@ -215,6 +252,7 @@ public final class DatabaseModule {
 				for(Integer i = 0; i < items.size(); i++) itemString.set("i_" + String.valueOf(i), items.get(i));
 				insert.setString(4, itemString.saveToString());
 				insert.setString(5, label);
+				insert.setString(6, Status.PENDING.toString());
 				insert.executeUpdate();
 				insert.closeOnCompletion();
 				final Statement get = LTItemMail.getInstance().connection.createStatement();
@@ -228,7 +266,7 @@ public final class DatabaseModule {
 		}
 		public static final boolean updateMailbox(final Integer mailboxID, final LinkedList<ItemStack> items) {
 			try {
-				final PreparedStatement statement = LTItemMail.getInstance().connection.prepareStatement("UPDATE mailbox SET items = ?, opened = ? WHERE id = ?;");
+				final PreparedStatement statement = LTItemMail.getInstance().connection.prepareStatement("UPDATE mailbox SET items = ?, deleted = ? WHERE id = ?;");
 				if(items.size() > 0) {
 					final YamlConfiguration itemString = new YamlConfiguration();
 					for(Integer i = 0; i < items.size(); i++) itemString.set("i_" + String.valueOf(i), items.get(i));
@@ -264,10 +302,10 @@ public final class DatabaseModule {
 			}
 			return items;
 		}
-		public static final boolean setMailboxOpened(final Integer mailboxID) {
+		public static final boolean setMailboxDeleted(final Integer mailboxID) {
 			try {
 				final Statement statement = LTItemMail.getInstance().connection.createStatement();
-				statement.executeUpdate("UPDATE mailbox SET opened = '1' WHERE id = '" + mailboxID + "';");
+				statement.executeUpdate("UPDATE mailbox SET deleted = '1' WHERE id = '" + mailboxID + "';");
 				statement.closeOnCompletion();
 				return true;
 			} catch (final SQLException | NullPointerException e) {
@@ -329,11 +367,11 @@ public final class DatabaseModule {
 			}
 			return "";
 		}
-		public static final boolean isMailboxOpened(final Integer mailboxID) {
+		public static final boolean isMailboxDeleted(final Integer mailboxID) {
 			try {
 				final Statement statement = LTItemMail.getInstance().connection.createStatement();
-				final ResultSet results = statement.executeQuery("SELECT opened FROM mailbox WHERE id = '" + mailboxID + "';");
-				if(results.next()) if(results.getInt("opened") == 1) return true;
+				final ResultSet results = statement.executeQuery("SELECT deleted FROM mailbox WHERE id = '" + mailboxID + "';");
+				if(results.next()) if(results.getInt("deleted") == 1) return true;
 				statement.closeOnCompletion();
 			} catch (final SQLException | NullPointerException e) {
 				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
@@ -344,7 +382,7 @@ public final class DatabaseModule {
 			final HashMap<Integer, String> mailboxes = new HashMap<>();
 			try {
 				final Statement statement = LTItemMail.getInstance().connection.createStatement();
-				final ResultSet results = statement.executeQuery("SELECT * FROM mailbox WHERE uuid_to = '" + owner.toString() + "' AND opened = '0';");
+				final ResultSet results = statement.executeQuery("SELECT * FROM mailbox WHERE uuid_to = '" + owner.toString() + "' AND deleted = '0';");
 				while(results.next()) mailboxes.putIfAbsent(results.getInt("id"), results.getString("sent_date"));
 				statement.closeOnCompletion();
 			} catch (final SQLException | NullPointerException e) {
@@ -352,17 +390,43 @@ public final class DatabaseModule {
 			}
 			return mailboxes;
 		}
-		public static final HashMap<Integer, String> getOpenedMailboxesList(final UUID owner){
+		public static final HashMap<Integer, String> getDeletedMailboxesList(final UUID owner){
 			final HashMap<Integer, String> mailboxes = new HashMap<>();
 			try {
 				final Statement statement = LTItemMail.getInstance().connection.createStatement();
-				final ResultSet results = statement.executeQuery("SELECT id,sent_date FROM mailbox WHERE uuid_to = '" + owner.toString() + "' AND opened = '1';");
+				final ResultSet results = statement.executeQuery("SELECT id,sent_date FROM mailbox WHERE uuid_to = '" + owner.toString() + "' AND deleted = '1';");
 				while(results.next()) mailboxes.putIfAbsent(results.getInt("id"), results.getString("sent_date"));
 				statement.closeOnCompletion();
 			} catch (final SQLException | NullPointerException e) {
 				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 			}
 			return mailboxes;
+		}
+		public static final void setStatus(final Integer mailboxID, final Status status) {
+			try {
+				final Statement statement = LTItemMail.getInstance().connection.createStatement();
+				statement.executeUpdate("UPDATE mailbox SET status = '" + status.toString() + "' WHERE id = '" + mailboxID + "';");
+				statement.closeOnCompletion();
+			} catch (final SQLException | NullPointerException e) {
+				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
+			}
+		}
+		public static final Status getStatus(final Integer mailboxID) {
+			try {
+				final Statement statement = LTItemMail.getInstance().connection.createStatement();
+				final ResultSet results = statement.executeQuery("SELECT status FROM mailbox WHERE id = '" + mailboxID + "';");
+				if(results.next()) return Status.valueOf(results.getString("status"));
+				statement.closeOnCompletion();
+			} catch (final SQLException | NullPointerException e) {
+				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
+			}
+			return Status.UNDEFINED;
+		}
+		public enum Status {
+			PENDING,
+			DENIED,
+			ACCEPTED,
+			UNDEFINED
 		}
 	}
 	public static final class Block {
@@ -452,7 +516,7 @@ public final class DatabaseModule {
 			}
 			return false;
 		}
-		public static final boolean setSent(final UUID user, final Integer sent) {
+		public static final boolean setSentCount(final UUID user, final Integer sent) {
 			try {
 				final Statement statement = LTItemMail.getInstance().connection.createStatement();
 				statement.executeUpdate("UPDATE users SET sent_count = '" + sent + "' WHERE uuid = '" + user + "';");
@@ -463,7 +527,7 @@ public final class DatabaseModule {
 			}
 			return false;
 		}
-		public static final boolean setReceived(final UUID user, final Integer received) {
+		public static final boolean setReceivedCount(final UUID user, final Integer received) {
 			try {
 				final Statement statement = LTItemMail.getInstance().connection.createStatement();
 				statement.executeUpdate("UPDATE users SET received_count = '" + received + "' WHERE uuid = '" + user + "';");
@@ -474,7 +538,7 @@ public final class DatabaseModule {
 			}
 			return false;
 		}
-		public static final boolean banned(final UUID user) {
+		public static final boolean isBanned(final UUID user) {
 			try {
 				final Statement statement = LTItemMail.getInstance().connection.createStatement();
 				final ResultSet results = statement.executeQuery("SELECT ban FROM users WHERE uuid = '" + user + "';");
@@ -485,7 +549,7 @@ public final class DatabaseModule {
 			}
 			return false;
 		}
-		public static final LinkedList<String> banlist(){
+		public static final LinkedList<String> getBansList(){
 			final LinkedList<String> banlist = new LinkedList<>();
 			try {
 				final Statement statement = LTItemMail.getInstance().connection.createStatement();
@@ -497,7 +561,7 @@ public final class DatabaseModule {
 			}
 			return banlist;
 		}
-		public static final String banreason(final UUID user) {
+		public static final String getBanReason(final UUID user) {
 			try {
 				final Statement statement = LTItemMail.getInstance().connection.createStatement();
 				final ResultSet results = statement.executeQuery("SELECT ban_reason FROM users WHERE uuid = '" + user + "';");
@@ -525,7 +589,7 @@ public final class DatabaseModule {
 			}
 			return false;
 		}
-		public static final boolean registered(final UUID user) {
+		public static final boolean isRegistered(final UUID user) {
 			try {
 				final Statement statement = LTItemMail.getInstance().connection.createStatement();
 				final ResultSet results = statement.executeQuery("SELECT * FROM users WHERE uuid = '" + user + "';");
@@ -536,7 +600,7 @@ public final class DatabaseModule {
 			}
 			return false;
 		}
-		public static final int sent(final UUID user) {
+		public static final int getSentCount(final UUID user) {
 			try {
 				final Statement statement = LTItemMail.getInstance().connection.createStatement();
 				final ResultSet results = statement.executeQuery("SELECT sent_count FROM users WHERE uuid = '" + user + "';");
@@ -547,7 +611,7 @@ public final class DatabaseModule {
 			}
 			return 0;
 		}
-		public static final int received(final UUID user) {
+		public static final int getReceivedCount(final UUID user) {
 			try {
 				final Statement statement = LTItemMail.getInstance().connection.createStatement();
 				final ResultSet results = statement.executeQuery("SELECT received_count FROM users WHERE uuid = '" + user + "';");
@@ -558,7 +622,7 @@ public final class DatabaseModule {
 			}
 			return 0;
 		}
-		public static final String date(final UUID user) {
+		public static final String getRegistryDate(final UUID user) {
 			try {
 				final Statement statement = LTItemMail.getInstance().connection.createStatement();
 				final ResultSet results = statement.executeQuery("SELECT registered_date FROM users WHERE uuid = '" + user + "';");
