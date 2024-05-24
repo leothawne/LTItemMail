@@ -16,21 +16,23 @@ import io.github.leothawne.LTItemMail.LTPlayer;
  * @author leothawne
  * 
  */
-public final class PlayerSendMailEvent extends Event implements Cancellable {
+public final class EntitySendMailEvent extends Event implements Cancellable {
 	private final CommandSender from;
 	private final LTPlayer playerTo;
 	private final LinkedList<ItemStack> contents;
-	private final boolean hasCost;
-	private final double cost;
+	private final Boolean hasCost;
+	private final Double cost;
 	private static final HandlerList handlers = new HandlerList();
-	private boolean cancelled;
-	public PlayerSendMailEvent(final CommandSender from, final LTPlayer playerTo, final LinkedList<ItemStack> contents, final boolean hasCost, final double cost) {
+	private Boolean cancelled;
+	private String cancelreason;
+	public EntitySendMailEvent(final CommandSender from, final LTPlayer playerTo, final LinkedList<ItemStack> contents, final Boolean hasCost, final Double cost) {
 		this.from = from;
 		this.playerTo = playerTo;
 		this.contents = contents;
 		this.hasCost = hasCost;
 		this.cost = cost;
 		cancelled = false;
+		cancelreason = "";
 	}
 	/**
 	 * 
@@ -61,7 +63,7 @@ public final class PlayerSendMailEvent extends Event implements Cancellable {
 	 * Returns "true" if the mailbox was paid to be sent.
 	 * 
 	 */
-	public final boolean hasCost() {
+	public final Boolean hasCost() {
 		return hasCost;
 	}
 	/**
@@ -69,7 +71,7 @@ public final class PlayerSendMailEvent extends Event implements Cancellable {
 	 * If the mailbox was paid, returns the paid value, otherwise it will return "0.0".
 	 * 
 	 */
-	public final double cost() {
+	public final Double cost() {
 		return cost;
 	}
 	@Override
@@ -90,11 +92,17 @@ public final class PlayerSendMailEvent extends Event implements Cancellable {
 	}
 	/**
 	 * 
-	 * Cancels the event. If cancelled, mailbox deliver is stopped before it reaches the addressee.
+	 * Cancels the event. If cancelled, mailbox deliver is stopped before it reaches the addressee and returns to the sender.
 	 * 
 	 */
 	@Override
 	public final void setCancelled(final boolean cancel) {
 		cancelled = cancel;
+	}
+	public final String getCancelReason() {
+		return cancelreason;
+	}
+	public final void setCancelReason(final String reason) {
+		cancelreason = reason;
 	}
 }
