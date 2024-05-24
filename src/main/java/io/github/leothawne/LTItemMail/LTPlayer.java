@@ -5,6 +5,8 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -102,7 +104,11 @@ public final class LTPlayer {
 	 */
 	public final boolean giveMailboxBlock() {
 		final Player player = this.player.getPlayer();
-		if(player != null) player.getWorld().dropItemNaturally(player.getLocation(), new MailboxItem().getItem(null));
+		if(player != null && player.getInventory().firstEmpty() != -1) {
+			player.getInventory().addItem(new MailboxItem().getItem(null));
+			player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, SoundCategory.AMBIENT, 1, 1);
+			return true;
+		}
 		return false;
 	}
 	/**
@@ -127,7 +133,7 @@ public final class LTPlayer {
 	 * 
 	 */
 	public final String getBanReason() {
-		if(isRegistered()) return DatabaseModule.User.banreason(uuid);
+		if(isRegistered()) return DatabaseModule.User.getBanReason(uuid);
 		return null;
 	}
 	/**
@@ -138,7 +144,7 @@ public final class LTPlayer {
 	 * 
 	 */
 	public final boolean isBanned() {
-		if(isRegistered()) return DatabaseModule.User.banned(uuid);
+		if(isRegistered()) return DatabaseModule.User.isBanned(uuid);
 		return false;
 	}
 	/**
@@ -147,7 +153,7 @@ public final class LTPlayer {
 	 * 
 	 */
 	public final int getMailSentCount() {
-		if(isRegistered()) return DatabaseModule.User.sent(uuid);
+		if(isRegistered()) return DatabaseModule.User.getSentCount(uuid);
 		return 0;
 	}
 	/**
@@ -156,7 +162,7 @@ public final class LTPlayer {
 	 * 
 	 */
 	public final int getMailReceivedCount() {
-		if(isRegistered()) return DatabaseModule.User.received(uuid);
+		if(isRegistered()) return DatabaseModule.User.getReceivedCount(uuid);
 		return 0;
 	}
 	/**
@@ -167,7 +173,7 @@ public final class LTPlayer {
 	 * 
 	 */
 	public final boolean isRegistered() {
-		return DatabaseModule.User.registered(uuid);
+		return DatabaseModule.User.isRegistered(uuid);
 	}
 	/**
 	 * 
@@ -175,6 +181,6 @@ public final class LTPlayer {
 	 * 
 	 */
 	public final String getRegistryDate() {
-		return DatabaseModule.User.date(uuid);
+		return DatabaseModule.User.getRegistryDate(uuid);
 	}
 }
