@@ -18,8 +18,8 @@ public final class PlayerListener implements Listener {
 			@Override
 			public final void run() {
 				final Player player = (Player) event.getPlayer();
-				if(PermissionModule.hasPermission(player, PermissionModule.Type.CMD_ADMIN_NOTIFY) && PermissionModule.hasPermission(player, PermissionModule.Type.CMD_ADMIN_UPDATE)) if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_UPDATE_CHECK)) player.performCommand("itemmailadmin update");
-				if(PermissionModule.hasPermission(player, PermissionModule.Type.CMD_PLAYER_NOTIFY) && PermissionModule.hasPermission(player, PermissionModule.Type.CMD_PLAYER_LIST)) player.performCommand("itemmail list");
+				if(PermissionModule.hasPermission(player, PermissionModule.Type.CMD_ADMIN_NOTIFY) && PermissionModule.hasPermission(player, PermissionModule.Type.CMD_ADMIN_UPDATE)) if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_UPDATE_CHECK)) player.performCommand("ltitemmail:itemmailadmin update");
+				if(PermissionModule.hasPermission(player, PermissionModule.Type.CMD_PLAYER_NOTIFY) && PermissionModule.hasPermission(player, PermissionModule.Type.CMD_PLAYER_LIST)) player.performCommand("ltitemmail:itemmail list");
 			}
 		}.runTaskLater(LTItemMail.getInstance(), 20 * 5);
 	}
