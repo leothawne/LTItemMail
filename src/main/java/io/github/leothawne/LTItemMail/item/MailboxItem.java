@@ -29,11 +29,11 @@ public final class MailboxItem implements Item {
 	}
 	@Override
 	public final ItemType getType() {
-		return ItemType.MAILBOX;
+		return ItemType.MAILBOX_BLOCK;
 	}
 	@Override
 	public final Material getMaterial() {
-		return Material.LIGHT_GRAY_SHULKER_BOX;
+		return Material.WHITE_SHULKER_BOX;
 	}
 	@Override
 	public final String[] getData() {

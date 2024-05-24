@@ -23,9 +23,9 @@ public final class MailboxTask {
 				for(final Player player : Bukkit.getOnlinePlayers()) {
 					final PlayerInventory inventory = player.getInventory();
 					for(final ItemStack item : inventory.getContents()) {
-						if(item != null && item.getItemMeta() != null) if(item.getType().equals(mailbox.getMaterial())) if(item.getItemMeta().getLore() != null) if(item.getItemMeta().getLore().size() == 1) if(item.getItemMeta().getLore().get(0).contains("Mailbox@")) {
+						if(item != null && item.getItemMeta() != null) if(item.getType().toString().endsWith("_SHULKER_BOX")) if(item.getItemMeta().getLore() != null) if(item.getItemMeta().getLore().size() == 1) if(item.getItemMeta().getLore().get(0).contains(mailbox.getDescription(null).get(0))) {
 							final ItemMeta meta = item.getItemMeta();
-							meta.setLore(Arrays.asList("Mailbox@" + player.getName()));
+							meta.setLore(Arrays.asList(mailbox.getDescription(null).get(0) + player.getName()));
 							item.setItemMeta(meta);
 						}
 					}
