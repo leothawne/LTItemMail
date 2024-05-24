@@ -1,7 +1,6 @@
 package io.github.leothawne.LTItemMail;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -19,15 +18,15 @@ import io.github.leothawne.LTItemMail.lib.BStats;
 import io.github.leothawne.LTItemMail.listener.MailboxBlockListener;
 import io.github.leothawne.LTItemMail.listener.MailboxListener;
 import io.github.leothawne.LTItemMail.listener.PlayerListener;
+import io.github.leothawne.LTItemMail.module.BungeeModule;
 import io.github.leothawne.LTItemMail.module.ConfigurationModule;
 import io.github.leothawne.LTItemMail.module.ConsoleModule;
-import io.github.leothawne.LTItemMail.module.DataModule;
 import io.github.leothawne.LTItemMail.module.DatabaseModule;
+import io.github.leothawne.LTItemMail.module.IntegrationModule;
 import io.github.leothawne.LTItemMail.module.LanguageModule;
 import io.github.leothawne.LTItemMail.module.RecipeModule;
-import io.github.leothawne.LTItemMail.module.integration.IntegrationModule;
+import io.github.leothawne.LTItemMail.task.VersionControlTask;
 import io.github.leothawne.LTItemMail.task.MailboxTask;
-import io.github.leothawne.LTItemMail.task.VersionTask;
 
 public final class LTItemMail extends JavaPlugin {
 	private static LTItemMail instance;
@@ -36,34 +35,24 @@ public final class LTItemMail extends JavaPlugin {
 	}
 	private FileConfiguration configuration;
 	private FileConfiguration language;
-	private Connection connection;
+	public Connection connection = null;
 	@Override
 	public final void onEnable() {
 		instance = this;
-		new BStats(LTItemMail.getInstance(), 3647);
-		ConsoleModule.Hello();
+		new BStats(this, 3647);
+		saveResource("LT Item Mail Resource Pack.zip", true);
+		ConsoleModule.hello();
 		loadConfig();
 		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_ENABLE)) {
-			VersionTask.run();
 			loadLang();
-			new BukkitRunnable() {
-				@Override
-				public final void run() {
-					loadIntegrations();
-				}
-			}.runTaskTimer(this, 0, 20 * 15);
-			DatabaseModule.check();
-			connection = DatabaseModule.load();
-			final Integer dbVer = DatabaseModule.checkDbVer();
-			if(dbVer < Integer.valueOf(DataModule.getVersion(DataModule.VersionType.DATABASE))) {
-				for(Integer i = dbVer; i < Integer.valueOf(DataModule.getVersion(DataModule.VersionType.DATABASE)); i++) {
-					ConsoleModule.warning("Updating database. (" + i + " -> " + (i + 1) + ")");
-					if(DatabaseModule.updateDb(i)) {
-						ConsoleModule.warning("Database updated. (" + i + " -> " + (i + 1) + ")");
-					} else ConsoleModule.severe("Database update failed. (" + i + " -> " + (i + 1) + ")");
-				}
-			} else ConsoleModule.info("Database up to date. (" + dbVer + ")");
-			RecipeModule.scheduleRegister();
+			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.BUNGEE_MODE)) {
+				getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+				getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", new BungeeModule());
+			}
+			DatabaseModule.connect();
+			DatabaseModule.checkForUpdates();
+			IntegrationModule.getInstance().load();
+			RecipeModule.schedule();
 			MailboxTask.run();
 			registerEvents(new MailboxListener(),
 					new PlayerListener(),
@@ -74,25 +63,33 @@ public final class LTItemMail extends JavaPlugin {
 			getCommand("itemmailadmin").setTabCompleter(new ItemMailAdminCommandTabCompleter());
 			getCommand("mailitem").setExecutor(new MailItemCommand());
 			getCommand("mailitem").setTabCompleter(new MailItemCommandTabCompleter());
-			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_UPDATE_CHECK)) Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "itemmailadmin update");
+			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_UPDATE_CHECK)) {
+				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ltitemmail:itemmailadmin update");
+				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_UPDATE_PERIODIC_NOTIFICATION)) new BukkitRunnable() {
+					@Override
+					public final void run() {
+						Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ltitemmail:itemmailadmin update");
+					}
+				}.runTaskTimer(this, 20 * 60 * 60 * 3, 20 * 60 * 60 * 3);
+			}
+			VersionControlTask.run();
 		} else {
-			ConsoleModule.severe("You've choosen to disable me.");
 			new BukkitRunnable() {
 				@Override
 				public final void run() {
+					ConsoleModule.severe("Plugin disabled in config.yml.");
 					Bukkit.getPluginManager().disablePlugin(instance);
 				}
-			}.runTaskTimer(this, 0, 20);
+			}.runTaskTimerAsynchronously(this, 0, 0);
 		}
 	}
 	@Override
 	public final void onDisable() {
 		Bukkit.getScheduler().cancelTasks(this);
-		try {
-			connection.close();
-		} catch (final SQLException e) {
-			e.printStackTrace();
-		}
+		IntegrationModule.getInstance().unload();
+		DatabaseModule.disconnect();
+		getServer().getMessenger().unregisterOutgoingPluginChannel(this, "BungeeCord");
+		getServer().getMessenger().unregisterIncomingPluginChannel(this, "BungeeCord");
 	}
 	public static final LTItemMail getInstance() {
 		return instance;
@@ -102,9 +99,6 @@ public final class LTItemMail extends JavaPlugin {
 	}
 	public final FileConfiguration getLanguage() {
 		return language;
-	}
-	public final Connection getConnection() {
-		return connection;
 	}
 	public final void reload() {
 		loadConfig();
@@ -117,42 +111,5 @@ public final class LTItemMail extends JavaPlugin {
 	private final void loadLang() {
 		LanguageModule.check();
 		language = LanguageModule.load();
-	}
-	private final IntegrationModule integration = IntegrationModule.getInstance();
-	private final void loadIntegrations() {
-		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_VAULT)) {
-			if(integration.isInstalled(IntegrationModule.TPlugin.VAULT)) {
-				if(!integration.isRegistered(IntegrationModule.FPlugin.VAULT_ECONOMY)) ConsoleModule.info("Vault found.");
-				if(!integration.isRegistered(IntegrationModule.FPlugin.VAULT_ECONOMY)) if(!integration.register(IntegrationModule.FPlugin.VAULT_ECONOMY)) ConsoleModule.warning("Economy plugin not found. Waiting.");
-			} else if(!integration.isRegistered(IntegrationModule.FPlugin.VAULT_ECONOMY)) ConsoleModule.warning("Vault not found. Waiting.");
-		}
-		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_GRIEFPREVENTION)) {
-			if(integration.isInstalled(IntegrationModule.TPlugin.GRIEF_PREVENTION)) {
-				if(!integration.isRegistered(IntegrationModule.FPlugin.GRIEF_PREVENTION_API)) ConsoleModule.info("GriefPrevention found.");
-				if(!integration.isRegistered(IntegrationModule.FPlugin.GRIEF_PREVENTION_API)) integration.warn(IntegrationModule.TPlugin.GRIEF_PREVENTION);
-				if(!integration.isRegistered(IntegrationModule.FPlugin.GRIEF_PREVENTION_API)) integration.register(IntegrationModule.FPlugin.GRIEF_PREVENTION_API);
-			} else if(!integration.isRegistered(IntegrationModule.FPlugin.GRIEF_PREVENTION_API)) ConsoleModule.warning("GriefPrevention not found. Waiting.");
-		}
-		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_REDPROTECT)) {
-			if(integration.isInstalled(IntegrationModule.TPlugin.RED_PROTECT)) {
-				if(!integration.isRegistered(IntegrationModule.FPlugin.RED_PROTECT_API)) ConsoleModule.info("RedProtect found.");
-				if(!integration.isRegistered(IntegrationModule.FPlugin.RED_PROTECT_API)) integration.warn(IntegrationModule.TPlugin.RED_PROTECT);
-				if(!integration.isRegistered(IntegrationModule.FPlugin.RED_PROTECT_API)) integration.register(IntegrationModule.FPlugin.RED_PROTECT_API);
-			} else if(!integration.isRegistered(IntegrationModule.FPlugin.RED_PROTECT_API)) ConsoleModule.warning("RedProtect not found. Waiting.");
-		}
-		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_TOWNYADVANCED)) {
-			if(integration.isInstalled(IntegrationModule.TPlugin.TOWNY_ADVANCED)) {
-				if(!integration.isRegistered(IntegrationModule.FPlugin.TOWNY_ADVANCED_API)) ConsoleModule.info("Towny found.");
-				if(!integration.isRegistered(IntegrationModule.FPlugin.TOWNY_ADVANCED_API)) integration.warn(IntegrationModule.TPlugin.TOWNY_ADVANCED);
-				if(!integration.isRegistered(IntegrationModule.FPlugin.TOWNY_ADVANCED_API)) integration.register(IntegrationModule.FPlugin.TOWNY_ADVANCED_API);
-			} else if(!integration.isRegistered(IntegrationModule.FPlugin.TOWNY_ADVANCED_API)) ConsoleModule.warning("Towny not found. Waiting.");
-		}
-		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_WORLDGUARD)) {
-			if(integration.isInstalled(IntegrationModule.TPlugin.WORLD_GUARD)) {
-				if(!integration.isRegistered(IntegrationModule.FPlugin.WORLD_GUARD_API)) ConsoleModule.info("WorldGuard found.");
-				if(!integration.isRegistered(IntegrationModule.FPlugin.WORLD_GUARD_API)) integration.warn(IntegrationModule.TPlugin.WORLD_GUARD);
-				if(!integration.isRegistered(IntegrationModule.FPlugin.WORLD_GUARD_API)) integration.register(IntegrationModule.FPlugin.WORLD_GUARD_API);
-			} else if(!integration.isRegistered(IntegrationModule.FPlugin.WORLD_GUARD_API)) ConsoleModule.warning("WorldGuard not found. Waiting.");
-		}
 	}
 }
