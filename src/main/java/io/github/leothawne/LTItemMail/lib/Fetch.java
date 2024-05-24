@@ -2,12 +2,18 @@ package io.github.leothawne.LTItemMail.lib;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URLConnection;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
+import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -16,23 +22,59 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import io.github.leothawne.LTItemMail.LTItemMail;
 import io.github.leothawne.LTItemMail.module.ConfigurationModule;
 
 public final class Fetch {
 	private Fetch() {}
 	public static final class URL {
-		public static final String get(final String url) {
+		private static final URLConnection connect(final String url) {
+			URLConnection connection = null;
 			try {
-				final URLConnection connection = URI.create(url).toURL().openConnection();
+				connection = URI.create(url).toURL().openConnection();
 				connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36");
 				connection.setUseCaches(false);
 				connection.connect();
-				final BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), Charset.forName("UTF-8")));
+			} catch (final IOException e) {
+				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
+			}
+			return connection;
+		}
+		public static final String get(final String url) {
+			try {
+				final InputStreamReader input = new InputStreamReader(connect(url).getInputStream(), Charset.forName("UTF-8"));
+				final BufferedReader reader = new BufferedReader(input);
 				final StringBuilder builder = new StringBuilder();
 				String string;
 				while((string = reader.readLine()) != null) builder.append(string);
+				reader.close();
+				input.close();
 				return builder.toString();
-			} catch(final Exception exception) {
+			} catch(final IOException e) {
+				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
+			}
+			return null;
+		}
+		public static final class Cache {
+			public static final boolean download(final String url, final String name) {
+				try {
+					Files.createDirectories(Paths.get(LTItemMail.getInstance().getDataFolder() + File.separator + "cache"));
+					final ReadableByteChannel byteChannel = Channels.newChannel(connect(url).getInputStream());
+					final FileOutputStream output = new FileOutputStream(new File(LTItemMail.getInstance().getDataFolder() + File.separator + "cache", name + ".tmp"));
+					final FileChannel fileChannel = output.getChannel();
+					fileChannel.transferFrom(byteChannel, 0, Long.MAX_VALUE);
+					fileChannel.close();
+					output.close();
+					byteChannel.close();
+					return true;
+				} catch (final IOException e) {
+					if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
+				}
+				return false;
+			}
+			public static final File get(final String name) {
+				final File file = new File(LTItemMail.getInstance().getDataFolder() + File.separator + "cache", name + ".tmp");
+				if(file.exists() && file.isFile()) return file;
 				return null;
 			}
 		}
