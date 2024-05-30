@@ -1,9 +1,8 @@
 package io.github.leothawne.LTItemMail.module;
 
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
-import io.github.leothawne.LTItemMail.module.integration.LTLuckPerms;
+import io.github.leothawne.LTItemMail.module.integration.LTVault;
 
 public class PermissionModule {
 	private PermissionModule() {}
@@ -39,6 +38,9 @@ public class PermissionModule {
 				break;
 			case CMD_PLAYER_SEND:
 				node = "ltitemmail.player.send";
+				break;
+			case CMD_PLAYER_PRICE:
+				node = "ltitemmail.player.price";
 				break;
 			case CMD_PLAYER_VERSION:
 				node = "ltitemmail.player.version";
@@ -84,8 +86,8 @@ public class PermissionModule {
 				break;
 		}
 		if(node != null) {
-			final LTLuckPerms luckPerms = (LTLuckPerms) IntegrationModule.getInstance().get(IntegrationModule.Function.LUCKPERMS);
-			if(luckPerms != null && sender instanceof Player) return luckPerms.hasPermission((Player) sender, node);
+			final LTVault.PermissionHolder permissionHolder = (LTVault.PermissionHolder) IntegrationModule.getInstance().get(IntegrationModule.Function.VAULT_PERMISSION);
+			if(permissionHolder != null) return permissionHolder.getAPI().has(sender, node);
 			return sender.hasPermission(node);
 		}
 		return false;
@@ -98,6 +100,7 @@ public class PermissionModule {
 		CMD_PLAYER_OPEN,
 		CMD_PLAYER_DELETE,
 		CMD_PLAYER_SEND,
+		CMD_PLAYER_PRICE,
 		CMD_PLAYER_INFO,
 		CMD_ADMIN_MAIN,
 		CMD_ADMIN_UPDATE,

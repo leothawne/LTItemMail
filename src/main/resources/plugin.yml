@@ -8,7 +8,7 @@ website: https://leothawne.github.io/LTItemMail/
 url: https://leothawne.github.io/LTItemMail/
 main: ${project.groupId}.${project.artifactId}.${project.name}
 database: true
-softdepend: [LuckPerms, Vault, Essentials, CMI, CoinsEngine, lightEconomy, PlayerPoints, WorldGuard, GriefPrevention, RedProtect, Towny, dynmap, BlueMap, DecentHolograms, PlaceholderAPI]
+softdepend: [Vault, WorldGuard, GriefPrevention, RedProtect, Towny, dynmap, BlueMap, DecentHolograms, PlaceholderAPI]
 commands:
     itemmail:
         description: Used to send items and to check your mailbox.
@@ -31,7 +31,7 @@ permissions:
             ltitemmail.player.list: true
             ltitemmail.player.color: true
             ltitemmail.player.open: true
-            ltitemmail.player.costs: true
+            ltitemmail.player.price: true
             ltitemmail.player.delete: true
             ltitemmail.player.send: true
             ltitemmail.player.info: true
@@ -61,7 +61,7 @@ permissions:
         default: false
     ltitemmail.player.color:
         default: false
-    ltitemmail.player.costs:
+    ltitemmail.player.price:
         default: false
     ltitemmail.player.open:
         default: false

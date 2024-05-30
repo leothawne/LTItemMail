@@ -1,6 +1,7 @@
 package io.github.leothawne.LTItemMail.module;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
@@ -12,19 +13,18 @@ import io.github.leothawne.LTItemMail.module.integration.LTBlueMap;
 import io.github.leothawne.LTItemMail.module.integration.LTDecentHolograms;
 import io.github.leothawne.LTItemMail.module.integration.LTDynmap;
 import io.github.leothawne.LTItemMail.module.integration.LTGriefPrevention;
-import io.github.leothawne.LTItemMail.module.integration.LTLuckPerms;
 import io.github.leothawne.LTItemMail.module.integration.LTPlaceholderAPI;
 import io.github.leothawne.LTItemMail.module.integration.LTRedProtect;
 import io.github.leothawne.LTItemMail.module.integration.LTTownyAdvanced;
 import io.github.leothawne.LTItemMail.module.integration.LTVault;
 import io.github.leothawne.LTItemMail.module.integration.LTWorldGuard;
-import net.luckperms.api.LuckPerms;
 import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.permission.Permission;
 
 public final class IntegrationModule {
 	private static IntegrationModule instance = null;
-	private final HashMap<Name, Plugin> plugins = new HashMap<>();
-	private final HashMap<Function, Object> register = new HashMap<>();
+	private final Map<Name, Plugin> plugins = new HashMap<>();
+	private final Map<Function, Object> register = new HashMap<>();
 	private IntegrationModule() {
 		final PluginManager manager = Bukkit.getPluginManager();
 		plugins.putIfAbsent(Name.VAULT, manager.getPlugin("Vault"));
@@ -33,29 +33,36 @@ public final class IntegrationModule {
 		plugins.putIfAbsent(Name.TOWNYADVANCED, manager.getPlugin("Towny"));
 		plugins.putIfAbsent(Name.WORLDGUARD, manager.getPlugin("WorldGuard"));
 		plugins.putIfAbsent(Name.DYNMAP, manager.getPlugin("dynmap"));
-		plugins.putIfAbsent(Name.LUCKPERMS, manager.getPlugin("LuckPerms"));
 		plugins.putIfAbsent(Name.BLUEMAP, manager.getPlugin("BlueMap"));
 		plugins.putIfAbsent(Name.DECENTHOLOGRAMS, manager.getPlugin("DecentHolograms"));
 		plugins.putIfAbsent(Name.PLACEHOLDERAPI, manager.getPlugin("PlaceholderAPI"));
 	}
-	private final void warn(final Name name) {
+	private final void warn(final Name sourceName, final Name pluginName) {
+		Plugin source = null;
 		Plugin plugin = null;
-		if(plugins.containsKey(name)) plugin = plugins.get(name);
-		warn(plugin);
+		if(plugins.containsKey(sourceName)) source = plugins.get(sourceName);
+		if(plugins.containsKey(pluginName)) plugin = plugins.get(pluginName);
+		warn(source, plugin);
 	}
-	private final void warn(final Plugin plugin) {
-		if(plugin != null && plugin.isEnabled()) plugin.getLogger().info("Hooked into " + LTItemMail.getInstance().getDescription().getName());
+	private final void warn(final Name sourceName, final Plugin plugin) {
+		Plugin source = null;
+		if(plugins.containsKey(sourceName)) source = plugins.get(sourceName);
+		warn(source, plugin);
+	}
+	private final void warn(final Plugin source, final Plugin plugin) {
+		String sourceName = "";
+		if(source != null && source.isEnabled()) sourceName = " through " + source.getDescription().getName();
+		if(plugin != null && plugin.isEnabled()) plugin.getLogger().info("Hooked into " + LTItemMail.getInstance().getDescription().getName() + sourceName);
 	}
 	private final boolean register(final Function function) {
 		switch(function) {
 			case VAULT_ECONOMY:
-				final RegisteredServiceProvider<Economy> vaultEconomy = Bukkit.getServicesManager().getRegistration(Economy.class);
-				if(vaultEconomy != null) {
-					final LTVault vault = new LTVault();
-					vault.setEconomyPlugin(vaultEconomy.getPlugin());
-					vault.setEconomy(vaultEconomy.getProvider());
-					register.putIfAbsent(function, vault);
-				}
+				final RegisteredServiceProvider<Economy> economy = Bukkit.getServicesManager().getRegistration(Economy.class);
+				if(economy != null) register.putIfAbsent(function, LTVault.EconomyHolder.create(economy.getProvider(), economy.getPlugin()));
+				break;
+			case VAULT_PERMISSION:
+				final RegisteredServiceProvider<Permission> permission = Bukkit.getServicesManager().getRegistration(Permission.class);
+				if(permission != null) register.putIfAbsent(function, LTVault.PermissionHolder.create(permission.getProvider(), permission.getPlugin()));
 				break;
 			case GRIEFPREVENTION:
 				register.putIfAbsent(function, new LTGriefPrevention());
@@ -71,10 +78,6 @@ public final class IntegrationModule {
 				break;
 			case DYNMAP:
 				register.putIfAbsent(function, new LTDynmap());
-				break;
-			case LUCKPERMS:
-				final RegisteredServiceProvider<LuckPerms> luckPerms = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
-				if(luckPerms != null) register.putIfAbsent(function, new LTLuckPerms(luckPerms.getProvider()));
 				break;
 			case BLUEMAP:
 				register.putIfAbsent(function, new LTBlueMap());
@@ -108,46 +111,50 @@ public final class IntegrationModule {
 		return null;
 	}
 	public final void load() {
-		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_VAULT)) if(isInstalled(IntegrationModule.Name.VAULT)) if(!isRegistered(IntegrationModule.Function.VAULT_ECONOMY)) {
-			warn(IntegrationModule.Name.VAULT);
-			if(register(IntegrationModule.Function.VAULT_ECONOMY)) warn(((LTVault) get(IntegrationModule.Function.VAULT_ECONOMY)).getEconomyPlugin());
+		Boolean detected = false;
+		for(final Name name : plugins.keySet()) if(isInstalled(name)) {
+			detected = true;
+			break;
+		}
+		if(detected) ConsoleModule.info("Loading integrations...");
+		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_VAULT)) if(isInstalled(IntegrationModule.Name.VAULT)) {
+			warn(null, IntegrationModule.Name.VAULT);
+			if(!isRegistered(IntegrationModule.Function.VAULT_ECONOMY)) if(register(IntegrationModule.Function.VAULT_ECONOMY)) warn(IntegrationModule.Name.VAULT, ((LTVault.EconomyHolder) get(IntegrationModule.Function.VAULT_ECONOMY)).getPlugin());
+			if(!isRegistered(IntegrationModule.Function.VAULT_PERMISSION)) if(register(IntegrationModule.Function.VAULT_PERMISSION)) warn(IntegrationModule.Name.VAULT, ((LTVault.PermissionHolder) get(IntegrationModule.Function.VAULT_PERMISSION)).getPlugin());
 		}
 		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_GRIEFPREVENTION)) if(isInstalled(IntegrationModule.Name.GRIEFPREVENTION)) if(!isRegistered(IntegrationModule.Function.GRIEFPREVENTION)) {
-			warn(IntegrationModule.Name.GRIEFPREVENTION);
+			warn(null, IntegrationModule.Name.GRIEFPREVENTION);
 			register(IntegrationModule.Function.GRIEFPREVENTION);
 		}
 		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_REDPROTECT)) if(isInstalled(IntegrationModule.Name.REDPROTECT)) if(!isRegistered(IntegrationModule.Function.REDPROTECT)) {
-			warn(IntegrationModule.Name.REDPROTECT);
+			warn(null, IntegrationModule.Name.REDPROTECT);
 			register(IntegrationModule.Function.REDPROTECT);
 		}
 		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_TOWNYADVANCED)) if(isInstalled(IntegrationModule.Name.TOWNYADVANCED)) if(!isRegistered(IntegrationModule.Function.TOWNYADVANCED)) {
-			warn(IntegrationModule.Name.TOWNYADVANCED);
+			warn(null, IntegrationModule.Name.TOWNYADVANCED);
 			register(IntegrationModule.Function.TOWNYADVANCED);
 		}
 		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_WORLDGUARD)) if(isInstalled(IntegrationModule.Name.WORLDGUARD)) if(!isRegistered(IntegrationModule.Function.WORLDGUARD)) {
-			warn(IntegrationModule.Name.WORLDGUARD);
+			warn(null, IntegrationModule.Name.WORLDGUARD);
 			register(IntegrationModule.Function.WORLDGUARD);
 		}
 		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_DYNMAP)) if(isInstalled(IntegrationModule.Name.DYNMAP)) if(!isRegistered(IntegrationModule.Function.DYNMAP)) {
-			warn(IntegrationModule.Name.DYNMAP);
+			warn(null, IntegrationModule.Name.DYNMAP);
 			register(IntegrationModule.Function.DYNMAP);
 		}
-		if(isInstalled(IntegrationModule.Name.LUCKPERMS)) if(!isRegistered(IntegrationModule.Function.LUCKPERMS)) {
-			warn(IntegrationModule.Name.LUCKPERMS);
-			register(IntegrationModule.Function.LUCKPERMS);
-		}
 		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_BLUEMAP)) if(isInstalled(IntegrationModule.Name.BLUEMAP)) if(!isRegistered(IntegrationModule.Function.BLUEMAP)) {
-			warn(IntegrationModule.Name.BLUEMAP);
+			warn(null, IntegrationModule.Name.BLUEMAP);
 			register(IntegrationModule.Function.BLUEMAP);
 		}
 		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_DECENTHOLOGRAMS)) if(isInstalled(IntegrationModule.Name.DECENTHOLOGRAMS)) if(!isRegistered(IntegrationModule.Function.DECENTHOLOGRAMS)) {
-			warn(IntegrationModule.Name.DECENTHOLOGRAMS);
+			warn(null, IntegrationModule.Name.DECENTHOLOGRAMS);
 			register(IntegrationModule.Function.DECENTHOLOGRAMS);
 		}
 		if(isInstalled(IntegrationModule.Name.PLACEHOLDERAPI)) if(!isRegistered(IntegrationModule.Function.PLACEHOLDERAPI)) {
-			warn(IntegrationModule.Name.PLACEHOLDERAPI);
+			warn(null, IntegrationModule.Name.PLACEHOLDERAPI);
 			register(IntegrationModule.Function.PLACEHOLDERAPI);
 		}
+		if(detected) ConsoleModule.info("Integrations loaded.");
 	}
 	public enum Name {
 		VAULT,
@@ -156,19 +163,18 @@ public final class IntegrationModule {
 		TOWNYADVANCED,
 		WORLDGUARD,
 		DYNMAP,
-		LUCKPERMS,
 		BLUEMAP,
 		DECENTHOLOGRAMS,
 		PLACEHOLDERAPI
 	}
 	public enum Function {
 		VAULT_ECONOMY,
+		VAULT_PERMISSION,
 		GRIEFPREVENTION,
 		REDPROTECT,
 		TOWNYADVANCED,
 		WORLDGUARD,
 		DYNMAP,
-		LUCKPERMS,
 		BLUEMAP,
 		DECENTHOLOGRAMS,
 		PLACEHOLDERAPI
