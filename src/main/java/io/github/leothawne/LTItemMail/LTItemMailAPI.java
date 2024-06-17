@@ -1,16 +1,21 @@
 package io.github.leothawne.LTItemMail;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.util.LinkedList;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
 
 import io.github.leothawne.LTItemMail.module.ConfigurationModule;
+import io.github.leothawne.LTItemMail.module.ConsoleModule;
 import io.github.leothawne.LTItemMail.module.DatabaseModule;
 import io.github.leothawne.LTItemMail.module.LanguageModule;
+import io.github.leothawne.LTItemMail.module.MailboxModule;
+import io.github.leothawne.LTItemMail.util.Toasts;
 import net.md_5.bungee.api.ChatColor;
 
 /**
@@ -35,26 +40,47 @@ public final class LTItemMailAPI {
 	 */
 	public static final String sendSpecialMailbox(final LTPlayer player, final LinkedList<ItemStack> items, String label) {
 		if(player != null) {
-			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.BUNGEE_MODE)) {
-				try {
-					final ByteArrayOutputStream bungee = new ByteArrayOutputStream();
-					final DataOutputStream bungeeOut = new DataOutputStream(bungee);
-					bungeeOut.writeUTF("Message");
-					bungeeOut.writeUTF(player.getName());
-					bungeeOut.writeUTF((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.AQUA + "" + LanguageModule.get(LanguageModule.Type.MAILBOX_SPECIAL));
-					Bukkit.getServer().sendPluginMessage(LTItemMail.getInstance(), "BungeeCord", bungee.toByteArray());
-				} catch (final IOException e) {
-					if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
-				}
-			} else {
-				if(player.getBukkitPlayer().getPlayer() != null) {
-					if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_TITLE)) {
-						player.getBukkitPlayer().getPlayer().sendTitle(ChatColor.AQUA + "" + LanguageModule.get(LanguageModule.Type.MAILBOX_SPECIAL), "", 20 * 1, 20 * 5, 20 * 1);
-					} else player.getBukkitPlayer().getPlayer().sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.AQUA + "" + LanguageModule.get(LanguageModule.Type.MAILBOX_SPECIAL));
-				}
-			}
+			final Player bukkitPlayer = player.getBukkitPlayer().getPlayer();
 			if(label == null) label = "";
 			DatabaseModule.Virtual.saveMailbox(null, player.getBukkitPlayer().getUniqueId(), items, label);
+			if(bukkitPlayer != null) {
+				MailboxModule.Display display;
+				try {
+					display = MailboxModule.Display.valueOf(((String) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_DISPLAY)).toUpperCase());
+				} catch(final IllegalArgumentException e) {
+					if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) {
+						ConsoleModule.severe("New mail display must be CHAT, TITLE or TOAST");
+						e.printStackTrace();
+					}
+					display = MailboxModule.Display.CHAT;
+				}
+				switch(display) {
+					case CHAT:
+						bukkitPlayer.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.AQUA + "" + LanguageModule.get(LanguageModule.Type.MAILBOX_SPECIAL));
+						break;
+					case TITLE:
+						bukkitPlayer.sendTitle(ChatColor.AQUA + "" + LanguageModule.get(LanguageModule.Type.MAILBOX_SPECIAL), "", 20 * 1, 20 * 5, 20 * 1);
+						break;
+					case TOAST:
+						Toasts.display(player, LanguageModule.get(LanguageModule.Type.MAILBOX_SPECIAL), Toasts.Type.MAILBOX);
+						if(!label.isEmpty()) {
+							final String l = label;
+							new BukkitRunnable() {
+								@Override
+								public final void run() {
+									Toasts.display(player, l, Toasts.Type.MAILBOX);
+								}
+							}.runTaskLater(LTItemMail.getInstance(), 20 * 3);
+						}
+						break;
+				}
+			} else if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.BUNGEE_MODE)) {
+				final ByteArrayDataOutput bungee = ByteStreams.newDataOutput();
+				bungee.writeUTF("Message");
+				bungee.writeUTF(player.getName());
+				bungee.writeUTF((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.AQUA + "" + LanguageModule.get(LanguageModule.Type.MAILBOX_SPECIAL));
+				Bukkit.getServer().sendPluginMessage(LTItemMail.getInstance(), "BungeeCord", bungee.toByteArray());
+			}
 			return "success";
 		}
 		return LanguageModule.Type.PLAYER_NEVERPLAYEDERROR.toString();

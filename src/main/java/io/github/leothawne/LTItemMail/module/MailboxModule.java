@@ -1,8 +1,6 @@
 package io.github.leothawne.LTItemMail.module;
 
 import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -19,9 +17,14 @@ import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
 import io.github.leothawne.LTItemMail.LTPlayer;
+import io.github.leothawne.LTItemMail.util.Toasts;
 import net.md_5.bungee.api.ChatColor;
 
 public final class MailboxModule {
@@ -114,33 +117,52 @@ public final class MailboxModule {
 		final String[] mailboxSent = LanguageModule.get(LanguageModule.Type.MAILBOX_SENT).split("%");
 		sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + "" + mailboxSent[0] + "" + ChatColor.AQUA + "" + receiver.getName() + "" + ChatColor.YELLOW + "" + mailboxSent[1]);
 		if(receiver.getBukkitPlayer().getPlayer() != null) {
+			final Player bukkitReceiver = receiver.getBukkitPlayer().getPlayer();
 			log(receiver.getUniqueId(), null, Action.RECEIVED, mailboxID, null, contentsarray, null);
-			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_TITLE)) {
-				receiver.getBukkitPlayer().getPlayer().sendTitle(ChatColor.AQUA + "" + LanguageModule.get(LanguageModule.Type.MAILBOX_FROM) +  " " + ChatColor.GREEN + "" + sender.getName(), "", 20 * 1, 20 * 5, 20 * 1);
-			} else receiver.getBukkitPlayer().getPlayer().sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.AQUA + "" + LanguageModule.get(LanguageModule.Type.MAILBOX_FROM) + " " + ChatColor.GREEN + "" + sender.getName());
-		} else if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.BUNGEE_MODE)) {
+			MailboxModule.Display display;
 			try {
-				final ByteArrayOutputStream bungee = new ByteArrayOutputStream();
-				final DataOutputStream bungeeOut = new DataOutputStream(bungee);
-				if(senderPlayer != null) {
-					bungeeOut.writeUTF("Forward");
-					bungeeOut.writeUTF("ALL");
-					bungeeOut.writeUTF("LTItemMail_MailboxReceived");
-					final ByteArrayOutputStream function = new ByteArrayOutputStream();
-					final DataOutputStream functionOut = new DataOutputStream(function);
-					final String data = senderPlayer.getName() + ";" + receiver.getName() + ";" + mailboxID;
-					functionOut.writeUTF(data);
-					bungeeOut.writeShort(function.toByteArray().length);
-					bungeeOut.write(function.toByteArray());
-				} else {
-					bungeeOut.writeUTF("Message");
-					bungeeOut.writeUTF(receiver.getName());
-					bungeeOut.writeUTF((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.AQUA + "" + LanguageModule.get(LanguageModule.Type.MAILBOX_FROM) + " " + ChatColor.GREEN + "" + sender.getName());
+				display = MailboxModule.Display.valueOf(((String) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_DISPLAY)).toUpperCase());
+			} catch(final IllegalArgumentException e) {
+				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) {
+					ConsoleModule.severe("New mail display must be CHAT, TITLE or TOAST");
+					e.printStackTrace();
 				}
-				Bukkit.getServer().sendPluginMessage(LTItemMail.getInstance(), "BungeeCord", bungee.toByteArray());
-			} catch (final IOException e) {
-				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
+				display = MailboxModule.Display.CHAT;
 			}
+			switch(display) {
+				case CHAT:
+					bukkitReceiver.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.AQUA + "" + LanguageModule.get(LanguageModule.Type.MAILBOX_FROM) + " " + ChatColor.GREEN + "" + sender.getName());
+					break;
+				case TITLE:
+					bukkitReceiver.sendTitle(ChatColor.AQUA + "" + LanguageModule.get(LanguageModule.Type.MAILBOX_FROM) +  " " + ChatColor.GREEN, sender.getName(), 20 * 1, 20 * 5, 20 * 1);
+					break;
+				case TOAST:
+					Toasts.display(receiver, LanguageModule.get(LanguageModule.Type.MAILBOX_FROM) + " " + sender.getName(), Toasts.Type.MAILBOX);
+					if(!label.isEmpty()) new BukkitRunnable() {
+						@Override
+						public final void run() {
+							Toasts.display(receiver, label, Toasts.Type.MAILBOX);
+						}
+					}.runTaskLater(LTItemMail.getInstance(), 20 * 3);
+					break;
+			}
+		} else if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.BUNGEE_MODE)) {
+			final ByteArrayDataOutput bungee = ByteStreams.newDataOutput();
+			if(senderPlayer != null) {
+				bungee.writeUTF("Forward");
+				bungee.writeUTF("ALL");
+				bungee.writeUTF("LTItemMail_MailboxReceived");
+				final ByteArrayDataOutput function = ByteStreams.newDataOutput();
+				final String data = senderPlayer.getName() + ";" + receiver.getName() + ";" + mailboxID;
+				function.writeUTF(data);
+				bungee.writeShort(function.toByteArray().length);
+				bungee.write(function.toByteArray());
+			} else {
+				bungee.writeUTF("Message");
+				bungee.writeUTF(receiver.getName());
+				bungee.writeUTF((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.AQUA + "" + LanguageModule.get(LanguageModule.Type.MAILBOX_FROM) + " " + ChatColor.GREEN + "" + sender.getName());
+			}
+			Bukkit.getServer().sendPluginMessage(LTItemMail.getInstance(), "BungeeCord", bungee.toByteArray());
 		}
 		return mailboxID;
 	}
@@ -157,5 +179,10 @@ public final class MailboxModule {
 		ADMIN_BROKE,
 		CANCELED,
 		GAVE_BACK
+	}
+	public enum Display {
+		CHAT,
+		TITLE,
+		TOAST
 	}
 }

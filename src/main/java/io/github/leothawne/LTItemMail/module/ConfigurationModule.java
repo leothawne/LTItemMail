@@ -10,14 +10,14 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
-import io.github.leothawne.LTItemMail.lib.BukkitUtils;
+import io.github.leothawne.LTItemMail.util.BukkitUtil;
 
 public final class ConfigurationModule {
 	private ConfigurationModule() {}
 	private static final File configFile = new File(LTItemMail.getInstance().getDataFolder(), "config.yml");
 	public static final void check() {
 		if(!configFile.exists()) {
-			ConsoleModule.warning("Extracting config.yml...");
+			ConsoleModule.info("Extracting config.yml...");
 			LTItemMail.getInstance().saveDefaultConfig();
 			ConsoleModule.info("Done.");
 		}
@@ -27,9 +27,10 @@ public final class ConfigurationModule {
 			final FileConfiguration configuration = new YamlConfiguration();
 			try {
 				configuration.load(configFile);
-				ConsoleModule.info("Loaded config.yml.");
+				ConsoleModule.info("Configuration loaded.");
 				if(configuration.getInt("config-version") != Integer.valueOf(DataModule.getVersion(DataModule.VersionType.CONFIG_YML))) {
-					ConsoleModule.severe("config.yml outdated. New settings will be added.");
+					ConsoleModule.warning("Configuration outdated!");
+					ConsoleModule.warning("New settings will be added.");
 					configuration.set("config-version", Integer.valueOf(DataModule.getVersion(DataModule.VersionType.CONFIG_YML)));
 					configuration.save(configFile);
 				}
@@ -52,6 +53,14 @@ public final class ConfigurationModule {
 			}
 		}
 	}
+	public static final void disableDatabaseConversion() {
+		LTItemMail.getInstance().getConfiguration().set("database.convert", false);
+		try {
+			LTItemMail.getInstance().getConfiguration().save(configFile);
+		} catch (final IOException e) {
+			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
+		}
+	}
 	public static final List<Integer> getBoardsRead(){
 		List<Integer> boards;
 		if(LTItemMail.getInstance().getConfiguration().isSet("boards-read")) {
@@ -63,17 +72,21 @@ public final class ConfigurationModule {
 		Object result = null;
 		String path = null;
 		switch(type) {
+			case MAILBOX_TEXTURES:
+				result = false;
+				path = "mail.textures";
+				break;
 			case MAILBOX_COST:
 				result = 30.0;
 				path = "mail.cost.value";
 				break;
 			case MAILBOX_NAME:
-				result = "&3&lMail&r&4";
+				result = "&3&lMailbox&r&4";
 				path = "mail.name";
 				break;
-			case MAILBOX_TITLE:
-				result = false;
-				path = "mail.use-title";
+			case MAILBOX_DISPLAY:
+				result = "CHAT";
+				path = "mail.display";
 				break;
 			case MAILBOX_TYPE_COST:
 				result = false;
@@ -143,6 +156,10 @@ public final class ConfigurationModule {
 				result = "flatfile";
 				path = "database.type";
 				break;
+			case DATABASE_CONVERT:
+				result = false;
+				path = "database.convert";
+				break;
 			case DATABASE_FLATFILE_FILE:
 				result = "mailboxes.db";
 				path = "database.flatfile.file";
@@ -170,9 +187,9 @@ public final class ConfigurationModule {
 		}
 		if(path != null) if(LTItemMail.getInstance().getConfiguration().isSet(path)) {
 			result = LTItemMail.getInstance().getConfiguration().get(path);
-			if(type.equals(Type.PLUGIN_TAG) || type.equals(Type.MAILBOX_NAME) || type.equals(Type.MAILBOX_NAME)) result = BukkitUtils.format((String) result);
+			if(type.equals(Type.PLUGIN_TAG) || type.equals(Type.MAILBOX_NAME) || type.equals(Type.MAILBOX_NAME)) result = BukkitUtil.format((String) result);
 		} else if(result != null) {
-			ConsoleModule.warning("Configuration fallback: [" + path + ":" + result + "]");
+			ConsoleModule.info("Configuration fallback: [" + path + ":" + result + "]");
 			LTItemMail.getInstance().getConfiguration().set(path, result);
 			try {
 				LTItemMail.getInstance().getConfiguration().save(configFile);
@@ -181,6 +198,9 @@ public final class ConfigurationModule {
 			}
 		}
 		return result;
+	}
+	public static final void addMissing() {
+		for(final Type type : Type.values()) get(type);
 	}
 	public enum Type {
 		PLUGIN_ENABLE,
@@ -195,14 +215,16 @@ public final class ConfigurationModule {
 		PLUGIN_HOOK_BLUEMAP,
 		PLUGIN_HOOK_DECENTHOLOGRAMS,
 		PLUGIN_DEBUG,
-		MAILBOX_TITLE,
+		MAILBOX_DISPLAY,
 		MAILBOX_TYPE_COST,
 		MAILBOX_COST,
 		MAILBOX_NAME,
+		MAILBOX_TEXTURES,
 		PLUGIN_UPDATE_CHECK,
 		PLUGIN_UPDATE_PERIODIC_NOTIFICATION,
 		PLUGIN_CONFIG,
 		DATABASE_TYPE,
+		DATABASE_CONVERT,
 		DATABASE_FLATFILE_FILE,
 		DATABASE_MYSQL_HOST,
 		DATABASE_MYSQL_USER,

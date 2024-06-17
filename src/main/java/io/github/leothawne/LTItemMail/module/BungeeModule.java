@@ -1,9 +1,7 @@
 package io.github.leothawne.LTItemMail.module;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,11 +12,13 @@ import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.google.common.io.ByteArrayDataInput;
+import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
 import io.github.leothawne.LTItemMail.LTPlayer;
 import io.github.leothawne.LTItemMail.module.MailboxModule.Action;
+import io.github.leothawne.LTItemMail.util.Toasts;
 import net.md_5.bungee.api.ChatColor;
 
 public final class BungeeModule implements PluginMessageListener {
@@ -27,18 +27,13 @@ public final class BungeeModule implements PluginMessageListener {
 		return onlinePlayers;
 	}
 	public BungeeModule() {
-		new BukkitRunnable() {
+		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.BUNGEE_MODE)) new BukkitRunnable() {
 			@Override
 			public final void run() {
-				try {
-					final ByteArrayOutputStream bungee = new ByteArrayOutputStream();
-					final DataOutputStream bungeeOut = new DataOutputStream(bungee);
-					bungeeOut.writeUTF("PlayerList");
-					bungeeOut.writeUTF("ALL");
-					Bukkit.getServer().sendPluginMessage(LTItemMail.getInstance(), "BungeeCord", bungee.toByteArray());
-				} catch (final IOException e) {
-					if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
-				}
+				final ByteArrayDataOutput bungee = ByteStreams.newDataOutput();
+				bungee.writeUTF("PlayerList");
+				bungee.writeUTF("ALL");
+				Bukkit.getServer().sendPluginMessage(LTItemMail.getInstance(), "BungeeCord", bungee.toByteArray());
 			}
 		}.runTaskTimer(LTItemMail.getInstance(), 0, 20 * 3);
 	}
@@ -57,16 +52,28 @@ public final class BungeeModule implements PluginMessageListener {
 					final LTPlayer sender = LTPlayer.fromName(function[0]);
 					final LTPlayer receiver = LTPlayer.fromName(function[1]);
 					final Integer mailboxID = Integer.parseInt(function[2]);
-					String type = "chat";
-					if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_TITLE)) type = "title";
 					if(receiver != null && receiver.getBukkitPlayer().getPlayer() != null) {
+						final Player bukkitReceiver = receiver.getBukkitPlayer().getPlayer();
 						MailboxModule.log(receiver.getUniqueId(), null, Action.RECEIVED, mailboxID, null, null, null);
-						switch(type) {
-							case "chat":
-								receiver.getBukkitPlayer().getPlayer().sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.AQUA + "" + LanguageModule.get(LanguageModule.Type.MAILBOX_FROM) + " " + ChatColor.GREEN + "" + sender.getName());
+						MailboxModule.Display display;
+						try {
+							display = MailboxModule.Display.valueOf(((String) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_DISPLAY)).toUpperCase());
+						} catch(final IllegalArgumentException e) {
+							if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) {
+								ConsoleModule.severe("New mail display must be CHAT, TITLE or TOAST");
+								e.printStackTrace();
+							}
+							display = MailboxModule.Display.CHAT;
+						}
+						switch(display) {
+							case CHAT:
+								bukkitReceiver.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.AQUA + "" + LanguageModule.get(LanguageModule.Type.MAILBOX_FROM) + " " + ChatColor.GREEN + "" + sender.getName());
 								break;
-							case "title":
-								receiver.getBukkitPlayer().getPlayer().sendTitle(ChatColor.AQUA + "" + LanguageModule.get(LanguageModule.Type.MAILBOX_FROM) +  " " + ChatColor.GREEN + "" + sender.getName(), "", 20 * 1, 20 * 5, 20 * 1);
+							case TITLE:
+								bukkitReceiver.sendTitle(ChatColor.AQUA + "" + LanguageModule.get(LanguageModule.Type.MAILBOX_FROM) +  " " + ChatColor.GREEN, sender.getName(), 20 * 1, 20 * 5, 20 * 1);
+								break;
+							case TOAST:
+								Toasts.display(receiver, LanguageModule.get(LanguageModule.Type.MAILBOX_FROM) + " " + sender.getName(), Toasts.Type.MAILBOX);
 								break;
 						}
 					}
