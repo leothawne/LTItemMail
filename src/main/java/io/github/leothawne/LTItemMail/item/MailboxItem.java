@@ -15,7 +15,6 @@ import org.bukkit.scheduler.BukkitTask;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
 import io.github.leothawne.LTItemMail.item.model.Item;
-import io.github.leothawne.LTItemMail.item.model.ItemType;
 import io.github.leothawne.LTItemMail.module.ConfigurationModule;
 
 public final class MailboxItem implements Item {
@@ -28,8 +27,8 @@ public final class MailboxItem implements Item {
 		return Arrays.asList("Mailbox@");
 	}
 	@Override
-	public final ItemType getType() {
-		return ItemType.MAILBOX_BLOCK;
+	public final Item.Type getType() {
+		return Item.Type.MAILBOX_BLOCK;
 	}
 	@Override
 	public final Material getMaterial() {

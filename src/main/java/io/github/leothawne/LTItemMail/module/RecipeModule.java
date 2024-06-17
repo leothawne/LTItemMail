@@ -1,5 +1,8 @@
 package io.github.leothawne.LTItemMail.module;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -9,14 +12,14 @@ import io.github.leothawne.LTItemMail.item.model.Item;
 
 public final class RecipeModule {
 	private RecipeModule() {}
-	private static final Item mailbox = new MailboxItem();
+	private static final List<Item> items = Arrays.asList(new MailboxItem());
 	private static final void register() {
-		try {
-			Bukkit.addRecipe(mailbox.getRecipe());
-			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) ConsoleModule.debug(mailbox.getType().toString() + " registered.");
+		for(final Item item : items) try {
+			Bukkit.addRecipe(item.getRecipe());
+			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) ConsoleModule.debug(item.getType().toString() + " registered.");
 		} catch(final IllegalStateException e) {
 			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) {
-				ConsoleModule.debug(mailbox.getType().toString() + " is registered already.");
+				ConsoleModule.debug(item.getType().toString() + " is registered already.");
 				e.printStackTrace();
 			}
 		}
