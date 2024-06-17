@@ -1,6 +1,7 @@
 package io.github.leothawne.LTItemMail.module;
 
 import java.io.File;
+import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -33,30 +34,35 @@ public final class DatabaseModule {
 				ConsoleModule.info("Done.");
 			}
 		}
-		private static final void connect() {
+		private static final Connection connect() {
+			Connection connection = null;
 			if(file.exists()) {
 				try {
-					LTItemMail.getInstance().connection = DriverManager.getConnection("jdbc:sqlite:" + LTItemMail.getInstance().getDataFolder() + File.separator + (String) ConfigurationModule.get(ConfigurationModule.Type.DATABASE_FLATFILE_FILE));
-					if(LTItemMail.getInstance().connection != null) ConsoleModule.info("Loaded FlatFile database.");
+					connection = DriverManager.getConnection("jdbc:sqlite:" + LTItemMail.getInstance().getDataFolder() + File.separator + (String) ConfigurationModule.get(ConfigurationModule.Type.DATABASE_FLATFILE_FILE));
+					if(connection != null) ConsoleModule.info("Loaded FlatFile database.");
 				} catch (final SQLException | NullPointerException e) {
 					ConsoleModule.severe("Could not load FlatFile database.");
 					if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 				}
 			}
+			return connection;
 		}
 	}
 	private static final class MySQL {
-		private static final void connect() {
+		private static final Connection connect(final Boolean convert) {
+			Connection connection = null;
 			try {
-				LTItemMail.getInstance().connection = DriverManager.getConnection("jdbc:mysql://" + (String) ConfigurationModule.get(ConfigurationModule.Type.DATABASE_MYSQL_HOST) + "/" + (String) ConfigurationModule.get(ConfigurationModule.Type.DATABASE_MYSQL_NAME), (String) ConfigurationModule.get(ConfigurationModule.Type.DATABASE_MYSQL_USER), (String) ConfigurationModule.get(ConfigurationModule.Type.DATABASE_MYSQL_PASSWORD));
-				if(LTItemMail.getInstance().connection != null) ConsoleModule.info("Opened MySQL connection.");
+				connection = DriverManager.getConnection("jdbc:mysql://" + (String) ConfigurationModule.get(ConfigurationModule.Type.DATABASE_MYSQL_HOST) + "/" + (String) ConfigurationModule.get(ConfigurationModule.Type.DATABASE_MYSQL_NAME), (String) ConfigurationModule.get(ConfigurationModule.Type.DATABASE_MYSQL_USER), (String) ConfigurationModule.get(ConfigurationModule.Type.DATABASE_MYSQL_PASSWORD));
+				if(connection != null && !convert) ConsoleModule.info("Opened MySQL connection.");
 			} catch (final SQLException | NullPointerException e) {
-				ConsoleModule.severe("Could not open MySQL connection.");
-				ConsoleModule.severe("Check the MySQL login information in config.yml and restart your Minecraft server.");
-				ConsoleModule.severe("Is the MySQL server set up correctly?");
-				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
+				if(!convert) {
+					ConsoleModule.severe("Could not open MySQL connection.");
+					ConsoleModule.severe("Check the MySQL login information in config.yml and restart your Minecraft server.");
+					ConsoleModule.severe("Is the MySQL server set up correctly?");
+					if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
+				}
 			}
-			new BukkitRunnable() {
+			if(!convert) new BukkitRunnable() {
 				@Override
 				public final void run() {
 					try {
@@ -73,18 +79,89 @@ public final class DatabaseModule {
 					}
 				}
 			}.runTaskTimer(LTItemMail.getInstance(), 20 * 60, 20 * 60);
+			return connection;
 		}
 	}
-	public static final void connect() {
+	public static final Connection connect() {
 		switch(((String) ConfigurationModule.get(ConfigurationModule.Type.DATABASE_TYPE)).toLowerCase()) {
 			case "flatfile":
 				FlatFile.check();
-				FlatFile.connect();
-				break;
+				return FlatFile.connect();
 			case "mysql":
-				MySQL.connect();
-				break;
+				return MySQL.connect(false);
 		}
+		return null;
+	}
+	public static final void convert() {
+		Connection connection = null;
+		switch(((String) ConfigurationModule.get(ConfigurationModule.Type.DATABASE_TYPE)).toLowerCase()) {
+		case "flatfile":
+			ConsoleModule.info("Starting database conversion... (MySQL => FlatFile)");
+			connection = MySQL.connect(true);
+			break;
+		case "mysql":
+			ConsoleModule.info("Starting database conversion... (FlatFile => MySQL)");
+			connection = FlatFile.connect();
+			break;
+		}
+		Statement statement = null;
+		ResultSet results = null;
+		PreparedStatement prepared = null;
+		if(connection != null) {
+			try {
+				for(int i = 4; i <= getCurrentVersion(); i++) switch(i) {
+					case 4:
+						LTItemMail.getInstance().connection.createStatement().executeLargeUpdate("DELETE FROM mailbox;");
+						statement = connection.createStatement();
+						results = statement.executeQuery("SELECT * FROM mailbox;");
+						while(results.next()) {
+							prepared = LTItemMail.getInstance().connection.prepareStatement("INSERT INTO mailbox(id, uuid_from, uuid_to, sent_date, items, deleted, label, status) VALUES(?, ?, ?, ?, ?, ?, ?, ?);");
+							prepared.setInt(1, results.getInt("id"));
+							prepared.setString(2, results.getString("uuid_from"));
+							prepared.setString(3, results.getString("uuid_to"));
+							prepared.setString(4, results.getString("sent_date"));
+							prepared.setString(5, results.getString("items"));
+							prepared.setInt(6, results.getInt("deleted"));
+							prepared.setString(7, results.getString("label"));
+							prepared.setString(8, results.getString("status"));
+							prepared.executeUpdate();
+						}
+						LTItemMail.getInstance().connection.createStatement().executeLargeUpdate("DELETE FROM mailbox_block;");
+						statement = connection.createStatement();
+						results = statement.executeQuery("SELECT * FROM mailbox_block;");
+						while(results.next()) {
+							prepared = LTItemMail.getInstance().connection.prepareStatement("INSERT INTO mailbox_block(id, owner_uuid, mailbox_x, mailbox_y, mailbox_z) VALUES(?, ?, ?, ?, ?);");
+							prepared.setInt(1, results.getInt("id"));
+							prepared.setString(2, results.getString("owner_uuid"));
+							prepared.setInt(3, results.getInt("mailbox_x"));
+							prepared.setInt(4, results.getInt("mailbox_y"));
+							prepared.setInt(5, results.getInt("mailbox_z"));
+							prepared.executeUpdate();
+						}
+						LTItemMail.getInstance().connection.createStatement().executeLargeUpdate("DELETE FROM users;");
+						statement = connection.createStatement();
+						results = statement.executeQuery("SELECT * FROM users;");
+						while(results.next()) {
+							prepared = LTItemMail.getInstance().connection.prepareStatement("INSERT INTO users(uuid, name, sent_count, received_count, ban, ban_reason, registered_date) VALUES(?, ?, ?, ?, ?, ?, ?);");
+							prepared.setString(1, results.getString("uuid"));
+							prepared.setString(2, results.getString("name"));
+							prepared.setInt(3, results.getInt("sent_count"));
+							prepared.setInt(4, results.getInt("received_count"));
+							prepared.setInt(5, results.getInt("ban"));
+							prepared.setString(6, results.getString("ban_reason"));
+							prepared.setString(7, results.getString("registered_date"));
+							prepared.executeUpdate();
+						}
+						break;
+				}
+				connection.close();
+				ConfigurationModule.disableDatabaseConversion();
+				ConsoleModule.info("Database conversion: Done!");
+			} catch (final SQLException | NullPointerException e) {
+				ConsoleModule.severe("Database conversion error: Could not convert");
+				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
+			}
+		} else ConsoleModule.warning("Database conversion error: FlatFile or MySQL not reachable");
 	}
 	public static final void disconnect() {
 		try {
@@ -128,7 +205,7 @@ public final class DatabaseModule {
 		final Integer dbVer = getCurrentVersion();
 		if(dbVer < Integer.valueOf(DataModule.getVersion(DataModule.VersionType.DATABASE))) {
 			for(Integer i = dbVer; i < Integer.valueOf(DataModule.getVersion(DataModule.VersionType.DATABASE)); i++) {
-				if(((String) ConfigurationModule.get(ConfigurationModule.Type.DATABASE_TYPE)).toLowerCase().equals("mysql") && i > 0 && i < 5) continue;
+				if(((String) ConfigurationModule.get(ConfigurationModule.Type.DATABASE_TYPE)).toLowerCase().equals("mysql") && i > 0 && i < 4) continue;
 				ConsoleModule.info("Updating database... (" + i + " -> " + (i + 1) + ")");
 				if(DatabaseModule.runSQL(i)) {
 					ConsoleModule.info("Database updated! (" + i + " -> " + (i + 1) + ")");
@@ -162,19 +239,17 @@ public final class DatabaseModule {
 						break;
 					case 3:
 						sql.add("CREATE TABLE users ("
-							+ "uuid TEXT PRIMARY KEY NOT NULL,"
+							+ "uuid TEXT PRIMARY KEY NOT NULL UNIQUE,"
+							+ "name TEXT NOT NULL,"
 							+ "sent_count INTEGER NOT NULL,"
 							+ "received_count INTEGER NOT NULL,"
 							+ "ban INTEGER NOT NULL,"
 							+ "ban_reason TEXT,"
 							+ "registered_date TEXT NOT NULL"
 							+ ");");
-						sql.add("UPDATE config SET version = '4';");
-						break;
-					case 4:
 						sql.add("ALTER TABLE mailbox ADD status TEXT NOT NULL DEFAULT 'PENDING';");
 						sql.add("ALTER TABLE mailbox RENAME COLUMN opened TO deleted;");
-						sql.add("UPDATE config SET version = '5';");
+						sql.add("UPDATE config SET version = '4';");
 						break;
 				}
 				break;
@@ -186,7 +261,7 @@ public final class DatabaseModule {
 								+ "version int NOT NULL"
 								+ ") ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;");
 						sql.add("LOCK TABLES config WRITE;");
-						sql.add("INSERT INTO config VALUES(5);");
+						sql.add("INSERT INTO config VALUES(4);");
 						sql.add("UNLOCK TABLES;");
 						
 						sql.add("DROP TABLE IF EXISTS mailbox;");
@@ -215,12 +290,14 @@ public final class DatabaseModule {
 						sql.add("DROP TABLE IF EXISTS users;");
 						sql.add("CREATE TABLE users ("
 								+ "uuid varchar(36) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,"
+								+ "name varchar(25) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,"
 								+ "sent_count int NOT NULL DEFAULT '0',"
 								+ "received_count int NOT NULL DEFAULT '0',"
 								+ "ban int NOT NULL DEFAULT '0',"
 								+ "ban_reason longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,"
 								+ "registered_date longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,"
-								+ "PRIMARY KEY (uuid)"
+								+ "PRIMARY KEY (uuid),"
+								+ "UNIQUE KEY name_UNIQUE (name)"
 								+ ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;");
 						break;
 				}
@@ -572,15 +649,16 @@ public final class DatabaseModule {
 			}
 			return null;
 		}
-		public static final boolean register(final UUID user) {
+		public static final boolean register(final LTPlayer player) {
 			final String time = DateTimeFormatter.ofPattern("dd/MM/yyyy").format(LocalDateTime.now());
 			try {
-				final PreparedStatement insert = LTItemMail.getInstance().connection.prepareStatement("INSERT INTO users(uuid, sent_count, received_count, ban, registered_date) VALUES(?, ?, ?, ?, ?);");
-				insert.setString(1, user.toString());
-				insert.setInt(2, 0);
+				final PreparedStatement insert = LTItemMail.getInstance().connection.prepareStatement("INSERT INTO users(uuid, name, sent_count, received_count, ban, registered_date) VALUES(?, ?, ?, ?, ?, ?);");
+				insert.setString(1, player.getUniqueId().toString());
+				insert.setString(2, player.getName());
 				insert.setInt(3, 0);
 				insert.setInt(4, 0);
-				insert.setString(5, time);
+				insert.setInt(5, 0);
+				insert.setString(6, time);
 				insert.executeUpdate();
 				insert.closeOnCompletion();
 				return true;
@@ -592,7 +670,7 @@ public final class DatabaseModule {
 		public static final boolean isRegistered(final UUID user) {
 			try {
 				final Statement statement = LTItemMail.getInstance().connection.createStatement();
-				final ResultSet results = statement.executeQuery("SELECT * FROM users WHERE uuid = '" + user + "';");
+				final ResultSet results = statement.executeQuery("SELECT name FROM users WHERE uuid = '" + user + "';");
 				statement.closeOnCompletion();
 				return results.next();
 			} catch (final SQLException | NullPointerException e) {
@@ -632,6 +710,30 @@ public final class DatabaseModule {
 				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 			}
 			return null;
+		}
+		public static final class Cache {
+			public static final String getName(final UUID uuid) {
+				try {
+					final Statement statement = LTItemMail.getInstance().connection.createStatement();
+					final ResultSet results = statement.executeQuery("SELECT name FROM users WHERE uuid = '" + uuid + "';");
+					statement.closeOnCompletion();
+					if(results.next()) return results.getString("name");
+				} catch (final SQLException | NullPointerException e) {
+					if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
+				}
+				return null;
+			}
+			public static final UUID getUUID(final String name) {
+				try {
+					final Statement statement = LTItemMail.getInstance().connection.createStatement();
+					final ResultSet results = statement.executeQuery("SELECT uuid FROM users WHERE name = '" + name + "';");
+					statement.closeOnCompletion();
+					if(results.next()) return UUID.fromString(results.getString("uuid"));
+				} catch (final SQLException | NullPointerException e) {
+					if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
+				}
+				return null;
+			}
 		}
 	}
 }
