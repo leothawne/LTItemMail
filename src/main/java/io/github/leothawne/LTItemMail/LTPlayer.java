@@ -11,22 +11,23 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import io.github.leothawne.LTItemMail.item.MailboxItem;
-import io.github.leothawne.LTItemMail.lib.Fetch;
 import io.github.leothawne.LTItemMail.module.DatabaseModule;
 import io.github.leothawne.LTItemMail.module.LanguageModule;
 import io.github.leothawne.LTItemMail.module.MailboxModule;
+import io.github.leothawne.LTItemMail.util.FetchUtil;
+import io.github.leothawne.LTItemMail.util.Toasts;
 
 /**
  * 
- * {@link Bukkit#getOfflinePlayer(String)} requires a case sensitive name. This class avoids that method using the username cache of the server.
+ * {@link Bukkit#getOfflinePlayer(String)} requires a case sensitive name. This class avoids that method using the LT Item Mail database first or the username cache of the server.
  * 
  * @author leothawne
  * 
  */
 public final class LTPlayer {
-	private OfflinePlayer player;
-	private String name;
-	private UUID uuid;
+	private final OfflinePlayer player;
+	private final String name;
+	private final UUID uuid;
 	private LTPlayer(final OfflinePlayer player, final String name, final UUID uuid) {
 		this.player = player;
 		this.name = name;
@@ -40,8 +41,8 @@ public final class LTPlayer {
 	 * 
 	 */
 	public static final LTPlayer fromName(final String name) {
-		final UUID uuid = Fetch.Player.fromName(name);
-		if(uuid != null) return new LTPlayer(Bukkit.getOfflinePlayer(uuid), Fetch.Player.fromUUID(uuid), uuid);
+		final UUID uuid = FetchUtil.Player.fromName(name);
+		if(uuid != null) return new LTPlayer(Bukkit.getOfflinePlayer(uuid), FetchUtil.Player.fromUUID(uuid), uuid);
 		return null;
 	}
 	/**
@@ -52,18 +53,17 @@ public final class LTPlayer {
 	 * 
 	 */
 	public static final LTPlayer fromUUID(final UUID uuid) {
-		final String name = Fetch.Player.fromUUID(uuid);
-		if(name != null) return new LTPlayer(Bukkit.getOfflinePlayer(Fetch.Player.fromName(name)), name, Fetch.Player.fromName(name));
+		final String name = FetchUtil.Player.fromUUID(uuid);
+		if(name != null) return new LTPlayer(Bukkit.getOfflinePlayer(FetchUtil.Player.fromName(name)), name, FetchUtil.Player.fromName(name));
 		return null;
 	}
 	/**
 	 * 
 	 * Converts Bukkit player into LTPlayer.
 	 * 
-	 * @deprecated Not recommended. Bukkit requires case sensitive to get offline players with {@link Bukkit#getOfflinePlayer(String)}. Use {@link LTPlayer#fromName(String)} instead.
+	 * @deprecated Not recommended. Bukkit requires case sensitive to get offline players with {@link Bukkit#getOfflinePlayer(String)}. Use {@link LTPlayer#fromName(String)} or {@link LTPlayer#fromUUID(UUID)} instead.
 	 * 
 	 */
-	@Deprecated
 	public static final LTPlayer fromBukkitPlayer(final OfflinePlayer player) {
 		return new LTPlayer(player, player.getName(), player.getUniqueId());
 	}
@@ -97,7 +97,7 @@ public final class LTPlayer {
 	}
 	/**
 	 * 
-	 * Gives the LTPlayer a mailbox block.
+	 * Gives to the LTPlayer a mailbox block.
 	 * 
 	 * @return true if the player is online and received the mailbox block. Otherwise, it will return false.
 	 * 
@@ -182,5 +182,16 @@ public final class LTPlayer {
 	 */
 	public final String getRegistryDate() {
 		return DatabaseModule.User.getRegistryDate(uuid);
+	}
+	/**
+	 * 
+	 * Sends a toast message to the LTPlayer.
+	 * 
+	 * @param message The message that will be shown.
+	 * @param type The toast type.
+	 * 
+	 */
+	public final void sendToastMessage(final String message, final Toasts.Type type) {
+		Toasts.display(this, message, type);
 	}
 }
