@@ -61,7 +61,6 @@ public final class FetchUtil {
 				try {
 					Files.createDirectories(Paths.get(LTItemMail.getInstance().getDataFolder() + File.separator + "cache"));
 					final ReadableByteChannel byteChannel = Channels.newChannel(connect(url).getInputStream());
-					
 					final FileOutputStream output = new FileOutputStream(new File(LTItemMail.getInstance().getDataFolder() + File.separator + "cache", name + ".tmp"));
 					final FileChannel fileChannel = output.getChannel();
 					fileChannel.transferFrom(byteChannel, 0, Long.MAX_VALUE);
