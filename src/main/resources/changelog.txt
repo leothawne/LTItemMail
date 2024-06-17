@@ -8,12 +8,12 @@ Update notes:
 - Player names do not need to be case sensitive anymore (ref. to "/mailitem" and "/itemmailadmin list");
 - Now you can prevent specific players from sending mails (use "/itemmailadmin ban");
 - Added option to accept (keep) or deny (give back) mails after receiving it;
+- You can set new mail notification as CHAT, TITLE or TOAST (see config.yml);
 - Towny support updated to latest version 0.100.2.0;
 - GriefPrevention support updated to latest version 16.18.3;
 - Added Dynmap 3.6-beta-1 (or higher) support;
 - Added BlueMap 3.20 (or higher) support;
 - Added DecentHolograms 2.8.6 (or higher) support;
-- Added LuckPerms 5.4.x (or higher) support;
 - Added useful placeholders (requires PlaceholderAPI 2.11.5 or higher);
 - Added some useful buttons inside mail inventories, and you can optionally use my newest resource pack (W.I.P, extracted inside plugin folder) to add custom button textures and mailbox gui;
 - Added new messages/translations;
@@ -21,24 +21,25 @@ Update notes:
 - Added periodic update notification (check for new updates and shows a notification in the console every 3 hour, see in config.yml);
 - Fixed a potentially prevention of mailbox functionality by other plugins;
 - Enhanced Mailbox Log Worker. Log files inside LTItemMail/logs folder will be handled optimally;
-- Mailbox Log Worker now detects money transactions and log them too (mail costs).
+- Mailbox Log Worker now detects money transactions and log them too (mail prices);
+- Now you can place mailbox blocks above walls and fences.
 
 Notas de atualização:
 - Minecraft 1.13 não é mais suportado (incompatível);
-- Adicionado suporte a Bungee (confira o config.yml);
-- Adicionado suporte a MySQL (confira o config.yml);
+- Adicionado suporte a Bungee (veja em config.yml);
+- Adicionado suporte a MySQL (veja em config.yml);
 - Agora é possível mudar a cor do bloco caixa de corrêio (se você estiver segurando o bloco na sua mão principal) com o comando "/itemmail color";
 - Pra ficar mais fácil, você pode abrir instantaneamente o corrêio pendente mais antigo recebido clicando no seu bloco caixa de corrêio ou digitando "/itemmail";
 - Lembrando que você pode sempre usar os comandos encurtados como por exemplo "/ima" (representa "/itemmail"), "/imad" (representa "/itemmailadmin") e "/mit" ou "/mail" (representa "/mailitem"). Para brasileiros (assim como eu), adicionei dois comandos encurtados: "/enviaritem" ou "/enviar" (representa "/mailitem");
 - Nomes de jogadores não precisam mais ser escritos no caso-sensível (com letras maiúsculas e minúsculas, ref. à "/mailitem" e "/itemmailadmin list");
 - Agora é possível impedir jogadores especificos de enviar corrêios (use "/itemmailadmin ban");
 - Adicionado a opção de aceitar (ficar) ou recusar (devolver) corrêios após receber;
+- Você pode definir a notificação de novo corrêio como CHAT, TITLE ou TOAST (veja em config.yml);
 - Suporte ao Towny atualizado para a última versão 0.100.2.0;
 - Suporte ao GriefPrevention atualizado para a última versão 16.18.3;
 - Adicionado suporte ao Dynmap 3.6-beta-1 ou superior;
 - Adicionado suporte ao BlueMap 3.20 ou superior;
 - Adicionado suporte ao DecentHolograms 2.8.6 ou superior;
-- Adicionado suporte ao LuckPerms 5.4.x ou superior;
 - Adicionado placeholders úteis (requer PlaceholderAPI 2.11.5 ou superior);
 - Adicionado alguns botões úteis dentro do inventário de corrêio, e você pode optar por usar o mais novo resource pack (funcional mas ainda em desenvolvimento, extraído dentro da pasta do plugin) para adicionar texturas customizadas aos botões e interface do corrêio;
 - Adicionado novas mensagens/traduções;
@@ -46,6 +47,7 @@ Notas de atualização:
 - Adicionado uma notificação de atualização periódica (verifica por novas atualizações e mostra uma notificação no console a cada 3 horas, veja em config.yml);
 - Corrigido uma possível prevenção da funcionalidade do corrêio por outros plugins;
 - Aprimorado o módulo de logs dos corrêios (Mailbox Log Worker). Arquivos de log dentro da pasta LTItemMail/logs serão tratados de forma otimizada;
-- O módulo de logs agora detecta transações monetárias e também as grava no log (custos de corrêio).
+- O módulo de logs agora detecta transações monetárias e também as grava no log (preços de corrêio);
+- Agora você pode colocar blocos caixa de corrêio em cima de muros e cercas.
 
 Espero que meu plugin chegue a mais servidores brasileiros, meu objetivo nunca foi focar apenas em jogadores estrangeiros. Em caso de dúvidas ou suporte, meu Discord está sempre disponível: 
