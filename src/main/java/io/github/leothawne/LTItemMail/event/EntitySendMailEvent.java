@@ -24,7 +24,7 @@ public final class EntitySendMailEvent extends Event implements Cancellable {
 	private final Double cost;
 	private static final HandlerList handlers = new HandlerList();
 	private Boolean cancelled;
-	private String cancelreason;
+	private String cancelReason;
 	public EntitySendMailEvent(final CommandSender from, final LTPlayer playerTo, final LinkedList<ItemStack> contents, final Boolean hasCost, final Double cost) {
 		this.from = from;
 		this.playerTo = playerTo;
@@ -32,7 +32,7 @@ public final class EntitySendMailEvent extends Event implements Cancellable {
 		this.hasCost = hasCost;
 		this.cost = cost;
 		cancelled = false;
-		cancelreason = "";
+		cancelReason = "";
 	}
 	/**
 	 * 
@@ -99,10 +99,20 @@ public final class EntitySendMailEvent extends Event implements Cancellable {
 	public final void setCancelled(final boolean cancel) {
 		cancelled = cancel;
 	}
+	/**
+	 * 
+	 * If the event is cancelled, gets the cancel reason.
+	 * 
+	 */
 	public final String getCancelReason() {
-		return cancelreason;
+		return cancelReason;
 	}
+	/**
+	 * 
+	 * Sets the event cancel reason.
+	 * 
+	 */
 	public final void setCancelReason(final String reason) {
-		cancelreason = reason;
+		cancelReason = reason;
 	}
 }
