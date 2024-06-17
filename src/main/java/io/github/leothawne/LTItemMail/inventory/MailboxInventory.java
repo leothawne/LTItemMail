@@ -12,7 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import io.github.leothawne.LTItemMail.LTPlayer;
-import io.github.leothawne.LTItemMail.item.model.Item;
+import io.github.leothawne.LTItemMail.item.Item;
 import io.github.leothawne.LTItemMail.module.ConfigurationModule;
 import io.github.leothawne.LTItemMail.module.LanguageModule;
 import net.md_5.bungee.api.ChatColor;

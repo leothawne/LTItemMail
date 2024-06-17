@@ -10,8 +10,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
+import io.github.leothawne.LTItemMail.item.Item;
 import io.github.leothawne.LTItemMail.item.MailboxItem;
-import io.github.leothawne.LTItemMail.item.model.Item;
 
 public final class MailboxTask {
 	private MailboxTask() {}

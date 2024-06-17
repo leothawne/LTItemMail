@@ -14,7 +14,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitTask;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
-import io.github.leothawne.LTItemMail.item.model.Item;
 import io.github.leothawne.LTItemMail.module.ConfigurationModule;
 
 public final class MailboxItem implements Item {

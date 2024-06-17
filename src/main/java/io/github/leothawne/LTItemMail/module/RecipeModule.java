@@ -7,8 +7,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
+import io.github.leothawne.LTItemMail.item.Item;
 import io.github.leothawne.LTItemMail.item.MailboxItem;
-import io.github.leothawne.LTItemMail.item.model.Item;
 
 public final class RecipeModule {
 	private RecipeModule() {}

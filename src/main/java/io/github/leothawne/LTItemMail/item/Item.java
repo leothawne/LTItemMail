@@ -1,4 +1,4 @@
-package io.github.leothawne.LTItemMail.item.model;
+package io.github.leothawne.LTItemMail.item;
 
 import java.util.LinkedList;
 import java.util.List;
