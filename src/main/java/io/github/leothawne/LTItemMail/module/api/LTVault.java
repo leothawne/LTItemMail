@@ -2,8 +2,6 @@ package io.github.leothawne.LTItemMail.module.api;
 
 import org.bukkit.plugin.Plugin;
 
-import io.github.leothawne.LTItemMail.module.api.model.IVault;
-
 public final class LTVault {
 	public static final class Economy implements IVault.Economy {
 		private final net.milkbowl.vault.economy.Economy api;
