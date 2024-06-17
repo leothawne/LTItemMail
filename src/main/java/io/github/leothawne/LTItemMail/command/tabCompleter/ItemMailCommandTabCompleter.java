@@ -14,14 +14,14 @@ import org.bukkit.entity.Player;
 
 import com.google.common.collect.ImmutableList;
 
-import io.github.leothawne.LTItemMail.lib.Completer;
 import io.github.leothawne.LTItemMail.module.DatabaseModule;
 import io.github.leothawne.LTItemMail.module.PermissionModule;
+import io.github.leothawne.LTItemMail.util.TabUtil;
 
 public final class ItemMailCommandTabCompleter implements TabCompleter {
 	@Override
 	public final List<String> onTabComplete(final CommandSender sender, final Command cmd, final String commandLabel, final String[] args){
-		if(args.length == 1) if(PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_PLAYER_MAIN)) return Completer.partial(args[0], ImmutableList.of("help", "version", "list", "open", "delete", "info", "costs", "color"));
+		if(args.length == 1) if(PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_PLAYER_MAIN)) return TabUtil.partial(args[0], ImmutableList.of("help", "version", "list", "open", "delete", "info", "price", "color"));
 		if(args.length == 2) {
 			if(PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_PLAYER_OPEN) || PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_PLAYER_DELETE)) if(args[0].equals("open") || args[0].equals("delete")) if(sender instanceof Player) {
 				final Player player = (Player) sender;
@@ -29,13 +29,13 @@ public final class ItemMailCommandTabCompleter implements TabCompleter {
 				final LinkedList<String> response = new LinkedList<>();
 				for(final Integer i : mailboxes.keySet()) response.add(String.valueOf(i));
 				response.sort(Comparator.naturalOrder());
-				return Completer.partial(args[1], response);
+				return TabUtil.partial(args[1], response);
 			}
 			if(PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_PLAYER_COLOR)) if(args[0].equals("color")) {
 				final LinkedList<String> colors = new LinkedList<>();
 				for(Material color : Material.values()) if(color.toString().endsWith("_SHULKER_BOX")) colors.add(color.toString().replace("_SHULKER_BOX", "").toLowerCase());
 				colors.sort(Comparator.naturalOrder());
-				return Completer.partial(args[1], colors);
+				return TabUtil.partial(args[1], colors);
 			}
 		}
 		return Collections.emptyList();

@@ -19,7 +19,7 @@ public final class MailItemCommand implements CommandExecutor {
 		if(PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_PLAYER_SEND)) {
 			if(sender instanceof Player) {
 				final LTPlayer player = LTPlayer.fromUUID(((Player) sender).getUniqueId());
-				if(!player.isRegistered()) DatabaseModule.User.register(player.getUniqueId());
+				if(!player.isRegistered()) DatabaseModule.User.register(player);
 				if(!player.isBanned()) {
 					if(args.length == 0) {
 						player.getBukkitPlayer().getPlayer().sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + "" + LanguageModule.get(LanguageModule.Type.PLAYER_MISSINGERROR));

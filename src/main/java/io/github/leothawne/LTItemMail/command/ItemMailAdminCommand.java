@@ -18,7 +18,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import io.github.leothawne.LTItemMail.LTItemMail;
 import io.github.leothawne.LTItemMail.LTPlayer;
 import io.github.leothawne.LTItemMail.inventory.MailboxInventory;
-import io.github.leothawne.LTItemMail.lib.Fetch;
 import io.github.leothawne.LTItemMail.module.ConfigurationModule;
 import io.github.leothawne.LTItemMail.module.ConsoleModule;
 import io.github.leothawne.LTItemMail.module.DataModule;
@@ -26,6 +25,7 @@ import io.github.leothawne.LTItemMail.module.DatabaseModule;
 import io.github.leothawne.LTItemMail.module.LanguageModule;
 import io.github.leothawne.LTItemMail.module.MailboxModule;
 import io.github.leothawne.LTItemMail.module.PermissionModule;
+import io.github.leothawne.LTItemMail.util.FetchUtil;
 import net.md_5.bungee.api.ChatColor;
 
 public final class ItemMailAdminCommand implements CommandExecutor {
@@ -33,6 +33,7 @@ public final class ItemMailAdminCommand implements CommandExecutor {
 	public final boolean onCommand(final CommandSender sender, final Command cmd, final String commandLabel, final String[] args) {
 		Boolean hasPermission = false;
 		if(args.length == 0) {
+			hasPermission = true;
 			Bukkit.dispatchCommand(sender, "ltitemmail:itemmailadmin help");
 		} else if(args[0].equalsIgnoreCase("help")) {
 			if(hasPermission = PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_ADMIN_MAIN)) {
@@ -40,7 +41,7 @@ public final class ItemMailAdminCommand implements CommandExecutor {
 				sender.sendMessage(ChatColor.GREEN + "/itemmailadmin help " + ChatColor.AQUA + "- " + LanguageModule.get(LanguageModule.Type.COMMAND_ADMIN_ITEMMAILADMIN));
 				sender.sendMessage(ChatColor.GREEN + "/itemmailadmin update " + ChatColor.AQUA + "- " + LanguageModule.get(LanguageModule.Type.COMMAND_ADMIN_UPDATE));
 				sender.sendMessage(ChatColor.GREEN + "/itemmailadmin list <player> " + ChatColor.AQUA + "- " + LanguageModule.get(LanguageModule.Type.COMMAND_ADMIN_LIST));
-				sender.sendMessage(ChatColor.GREEN + "/itemmailadmin recover <mailbox id> " + ChatColor.AQUA + "- " + LanguageModule.get(LanguageModule.Type.COMMAND_ADMIN_RECOVER));
+				sender.sendMessage(ChatColor.GREEN + "/itemmailadmin recover <id> " + ChatColor.AQUA + "- " + LanguageModule.get(LanguageModule.Type.COMMAND_ADMIN_RECOVER));
 				sender.sendMessage(ChatColor.GREEN + "/itemmailadmin reload " + ChatColor.AQUA + "- " + LanguageModule.get(LanguageModule.Type.COMMAND_ADMIN_RELOAD));
 				sender.sendMessage(ChatColor.GREEN + "/itemmailadmin ban <player> " + ChatColor.AQUA + "- " + LanguageModule.get(LanguageModule.Type.COMMAND_ADMIN_BAN_MAIN));
 				sender.sendMessage(ChatColor.GREEN + "/itemmailadmin unban <player> " + ChatColor.AQUA + "- " + LanguageModule.get(LanguageModule.Type.COMMAND_ADMIN_UNBAN_MAIN));
@@ -55,7 +56,7 @@ public final class ItemMailAdminCommand implements CommandExecutor {
 						public final void run() {
 							final String[] local = LTItemMail.getInstance().getDescription().getVersion().split("\\.");
 							final List<Integer> lStorage = Arrays.asList(Integer.parseInt(local[0]), Integer.parseInt(local[1]), Integer.parseInt(local[2]));
-							final String[] server = Fetch.URL.get(DataModule.getUpdateURL()).split("-");
+							final String[] server = FetchUtil.URL.get(DataModule.getUpdatePath()).split("-");
 							final String[] split = server[0].split("\\.");
 							final List<Integer> rStorage = Arrays.asList(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]));
 							if((rStorage.get(0) > lStorage.get(0)) || (rStorage.get(0) == lStorage.get(0) && rStorage.get(1) > lStorage.get(1)) || (rStorage.get(0) == lStorage.get(0) && rStorage.get(1) == lStorage.get(1) && rStorage.get(2) > lStorage.get(2))) {
@@ -95,9 +96,12 @@ public final class ItemMailAdminCommand implements CommandExecutor {
 				if(args.length == 2) {
 					final LTPlayer ltPlayer = LTPlayer.fromName(args[1]);
 					if(ltPlayer != null) {
-						if(!ltPlayer.isRegistered()) DatabaseModule.User.register(ltPlayer.getUniqueId());
-						sender.sendMessage(ltPlayer.getName() + ":");
+						if(!ltPlayer.isRegistered()) DatabaseModule.User.register(ltPlayer);
 						sender.sendMessage("");
+						sender.sendMessage(ChatColor.YELLOW + ltPlayer.getName());
+						String divider = "";
+						for(int i = 0; i < ltPlayer.getName().toCharArray().length; i++) divider = divider + "-";
+						sender.sendMessage(ChatColor.YELLOW + divider);
 						sender.sendMessage(ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_INFO_REGISTRY) + " " + ltPlayer.getRegistryDate());
 						String banned = ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_INFO_BANNED_NO);
 						String banreason = "";
@@ -135,8 +139,8 @@ public final class ItemMailAdminCommand implements CommandExecutor {
 			if(hasPermission = PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_ADMIN_RELOAD)) {
 				if(args.length == 1) {
 					LTItemMail.getInstance().reload();
-					ConsoleModule.warning(sender.getName() + " called plugin reload");
-					sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + "Plugin reloaded!");
+					ConsoleModule.warning(LTItemMail.getInstance().getDescription().getName() + " reloaded!");
+					sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + "Reloaded!");
 				} else sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.PLAYER_SYNTAXERROR));
 			}
 		} else if(args[0].equalsIgnoreCase("ban")) {
@@ -146,7 +150,7 @@ public final class ItemMailAdminCommand implements CommandExecutor {
 					String banreason = "";
 					for(int i = 2; i < args.length; i++) banreason = banreason + args[i] + " ";
 					if(ltPlayer != null) {
-						if(!ltPlayer.isRegistered()) DatabaseModule.User.register(ltPlayer.getUniqueId());
+						if(!ltPlayer.isRegistered()) DatabaseModule.User.register(ltPlayer);
 						if(!ltPlayer.isBanned()) {
 							DatabaseModule.User.ban(ltPlayer.getUniqueId(), banreason);
 							banreason = " => " + banreason;
@@ -160,7 +164,7 @@ public final class ItemMailAdminCommand implements CommandExecutor {
 				if(args.length == 2) {
 					final LTPlayer ltPlayer = LTPlayer.fromName(args[1]);
 					if(ltPlayer != null) {
-						if(!ltPlayer.isRegistered()) DatabaseModule.User.register(ltPlayer.getUniqueId());
+						if(!ltPlayer.isRegistered()) DatabaseModule.User.register(ltPlayer);
 						if(ltPlayer.isBanned()) {
 							DatabaseModule.User.unban(ltPlayer.getUniqueId());
 							sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + ltPlayer.getName() + " " + LanguageModule.get(LanguageModule.Type.COMMAND_ADMIN_UNBAN_UNBANNED));

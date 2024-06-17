@@ -52,9 +52,9 @@ public final class ItemMailCommand implements CommandExecutor {
 				sender.sendMessage(ChatColor.GREEN + "/itemmail help " + ChatColor.AQUA + "- " + LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_ITEMMAIL));
 				sender.sendMessage(ChatColor.GREEN + "/itemmail version " + ChatColor.AQUA + "- " + LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_VERSION));
 				sender.sendMessage(ChatColor.GREEN + "/itemmail list " + ChatColor.AQUA + "- " + LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_LIST));
-				sender.sendMessage(ChatColor.GREEN + "/itemmail open <mailbox id> " + ChatColor.AQUA + "- " + LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_OPEN));
-				sender.sendMessage(ChatColor.GREEN + "/itemmail delete <mailbox id> " + ChatColor.AQUA + "- " + LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_DELETE));
-				sender.sendMessage(ChatColor.GREEN + "/itemmail costs " + ChatColor.AQUA + "- " + LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_COSTS));
+				sender.sendMessage(ChatColor.GREEN + "/itemmail open <id> " + ChatColor.AQUA + "- " + LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_OPEN));
+				sender.sendMessage(ChatColor.GREEN + "/itemmail delete <id> " + ChatColor.AQUA + "- " + LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_DELETE));
+				sender.sendMessage(ChatColor.GREEN + "/itemmail price " + ChatColor.AQUA + "- " + LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_COSTS));
 				sender.sendMessage(ChatColor.GREEN + "/itemmail info " + ChatColor.AQUA + "- " + LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_INFO_MAIN));
 				sender.sendMessage(ChatColor.GREEN + "/itemmail color <color> " + ChatColor.AQUA + "- ");
 				sender.sendMessage(ChatColor.GREEN + "/mailitem <player> [label] " + ChatColor.AQUA + "- " + LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_MAILITEM));
@@ -102,7 +102,7 @@ public final class ItemMailCommand implements CommandExecutor {
 							for(final Integer mailboxID : mailboxes.keySet()) {
 								String from = "CONSOLE";
 								final UUID uuidFrom = DatabaseModule.Virtual.getMailboxFrom(mailboxID);
-								if(uuidFrom != null) from = Bukkit.getOfflinePlayer(uuidFrom).getName();
+								if(uuidFrom != null) from = LTPlayer.fromUUID(uuidFrom).getName();
 								String label = "";
 								if(!DatabaseModule.Virtual.getMailboxLabel(mailboxID).isEmpty()) label = ": " + DatabaseModule.Virtual.getMailboxLabel(mailboxID);
 								player.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_NAME) + " #" + mailboxID + "" + ChatColor.RESET + " <= " + mailboxes.get(mailboxID) + " (@" + from + ")" + label);
@@ -129,8 +129,8 @@ public final class ItemMailCommand implements CommandExecutor {
 					} else player.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.PLAYER_SYNTAXERROR));
 				} else sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.PLAYER_ERROR));
 			}
-		} else if(args[0].equalsIgnoreCase("costs")) {
-			if(hasPermission = PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_PLAYER_SEND)) {
+		} else if(args[0].equalsIgnoreCase("price")) {
+			if(hasPermission = PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_PLAYER_PRICE)) {
 				if(args.length == 1) {
 					if(IntegrationModule.getInstance().isInstalled(IntegrationModule.Name.VAULT)) {
 						String costs = null;
@@ -147,7 +147,7 @@ public final class ItemMailCommand implements CommandExecutor {
 					final Player player = (Player) sender;
 					final LTPlayer ltPlayer = LTPlayer.fromUUID(player.getUniqueId());
 					if(args.length == 1) {
-						if(!ltPlayer.isRegistered()) DatabaseModule.User.register(ltPlayer.getUniqueId());
+						if(!ltPlayer.isRegistered()) DatabaseModule.User.register(ltPlayer);
 						player.sendMessage("");
 						player.sendMessage(ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_INFO_REGISTRY) + " " + ltPlayer.getRegistryDate());
 						String banned = ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_INFO_BANNED_NO);

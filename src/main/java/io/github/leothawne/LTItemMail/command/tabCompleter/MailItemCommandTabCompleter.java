@@ -10,10 +10,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
-import io.github.leothawne.LTItemMail.lib.Completer;
 import io.github.leothawne.LTItemMail.module.BungeeModule;
 import io.github.leothawne.LTItemMail.module.ConfigurationModule;
 import io.github.leothawne.LTItemMail.module.PermissionModule;
+import io.github.leothawne.LTItemMail.util.TabUtil;
 
 public final class MailItemCommandTabCompleter implements TabCompleter {
 	public MailItemCommandTabCompleter() {}
@@ -32,7 +32,7 @@ public final class MailItemCommandTabCompleter implements TabCompleter {
 				if(onlinePlayer.getName().equals(player.getName())) continue;
 				response.add(onlinePlayer.getName());
 			}
-			return Completer.partial(args[0], response);
+			return TabUtil.partial(args[0], response);
 		}
 		return Collections.emptyList();
 	}
