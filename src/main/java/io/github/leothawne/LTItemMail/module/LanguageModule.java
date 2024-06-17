@@ -8,8 +8,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
-import io.github.leothawne.LTItemMail.lib.BukkitUtils;
 import io.github.leothawne.LTItemMail.module.DataModule.VersionType;
+import io.github.leothawne.LTItemMail.util.BukkitUtil;
 
 public final class LanguageModule {
 	private LanguageModule() {}
@@ -17,13 +17,14 @@ public final class LanguageModule {
 	public static final void check() {
 		languageFile = new File(LTItemMail.getInstance().getDataFolder(), (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml");
 		if(!languageFile.exists()) {
-			ConsoleModule.warning("Extracting " + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml...");
+			ConsoleModule.info("Extracting " + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml...");
 			if(LTItemMail.getInstance().getResource((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml") != null) {
 				LTItemMail.getInstance().saveResource((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml", false);
 				ConsoleModule.info("Done.");
 			} else try {
 				languageFile.createNewFile();
-				ConsoleModule.warning((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + " is not integrated with internal language support. The yml file was created and new lines will be added while you play.");
+				ConsoleModule.warning("Language " + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + " not found!");
+				ConsoleModule.warning("A new yml file was created and all translations will be added with default value for you to modify/translate.");
 			} catch (final IOException e) {
 				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 			}
@@ -34,12 +35,13 @@ public final class LanguageModule {
 			final FileConfiguration language = new YamlConfiguration();
 			try {
 				language.load(languageFile);
-				ConsoleModule.info("Loaded " + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml.");
+				ConsoleModule.info((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml loaded.");
 				try {
 					final VersionType type = DataModule.VersionType.valueOf(((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE)).toUpperCase() + "_YML");
 					final int languageVersion = Integer.parseInt(DataModule.getVersion(type));
 					if(language.getInt("language-version") != languageVersion) {
-						ConsoleModule.severe((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml outdated. New lines will be added to your current translation file.");
+						ConsoleModule.warning("Language " + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml outdated!");
+						ConsoleModule.warning("Missing translations will be added with default value.");
 						language.set("language-version", languageVersion);
 						language.save(languageFile);
 					}
@@ -337,9 +339,9 @@ public final class LanguageModule {
 		}
 		if(path != null) if(LTItemMail.getInstance().getLanguage().isSet(path)) {
 			result = LTItemMail.getInstance().getLanguage().getString(path);
-			if(type.equals(Type.MAILBOX_COST) || type.equals(Type.MAILBOX_LABEL)) result = BukkitUtils.format((String) result);
+			if(type.equals(Type.MAILBOX_COST) || type.equals(Type.MAILBOX_LABEL)) result = BukkitUtil.format((String) result);
 		} else if(result != null) {
-			ConsoleModule.warning("Language fallback: [" + path + ":" + result + "]");
+			ConsoleModule.info("Language fallback: [" + path + ":" + result + "]");
 			LTItemMail.getInstance().getLanguage().set(path, result);
 			try {
 				LTItemMail.getInstance().getLanguage().save(languageFile);
@@ -348,6 +350,9 @@ public final class LanguageModule {
 			}
 		}
 		return result;
+	}
+	public static final void addMissing() {
+		for(final Type type : Type.values()) get(type);
 	}
 	public enum Type {
 		COMMAND_INVALID,
