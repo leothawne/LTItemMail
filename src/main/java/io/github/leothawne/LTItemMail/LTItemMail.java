@@ -14,7 +14,6 @@ import io.github.leothawne.LTItemMail.command.MailItemCommand;
 import io.github.leothawne.LTItemMail.command.tabCompleter.ItemMailAdminCommandTabCompleter;
 import io.github.leothawne.LTItemMail.command.tabCompleter.ItemMailCommandTabCompleter;
 import io.github.leothawne.LTItemMail.command.tabCompleter.MailItemCommandTabCompleter;
-import io.github.leothawne.LTItemMail.lib.BStats;
 import io.github.leothawne.LTItemMail.listener.MailboxBlockListener;
 import io.github.leothawne.LTItemMail.listener.MailboxListener;
 import io.github.leothawne.LTItemMail.listener.PlayerListener;
@@ -25,8 +24,9 @@ import io.github.leothawne.LTItemMail.module.DatabaseModule;
 import io.github.leothawne.LTItemMail.module.IntegrationModule;
 import io.github.leothawne.LTItemMail.module.LanguageModule;
 import io.github.leothawne.LTItemMail.module.RecipeModule;
-import io.github.leothawne.LTItemMail.task.VersionControlTask;
 import io.github.leothawne.LTItemMail.task.MailboxTask;
+import io.github.leothawne.LTItemMail.task.VersionControlTask;
+import io.github.leothawne.LTItemMail.util.BStats;
 
 public final class LTItemMail extends JavaPlugin {
 	private static LTItemMail instance;
@@ -40,7 +40,6 @@ public final class LTItemMail extends JavaPlugin {
 	public final void onEnable() {
 		instance = this;
 		new BStats(this, 3647);
-		saveResource("LT Item Mail Resource Pack.zip", true);
 		ConsoleModule.hello();
 		loadConfig();
 		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_ENABLE)) {
@@ -49,11 +48,12 @@ public final class LTItemMail extends JavaPlugin {
 				getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 				getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", new BungeeModule());
 			}
-			DatabaseModule.connect();
+			connection = DatabaseModule.connect();
 			DatabaseModule.checkForUpdates();
-			IntegrationModule.getInstance().load();
+			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.DATABASE_CONVERT)) DatabaseModule.convert();
 			RecipeModule.schedule();
 			MailboxTask.run();
+			IntegrationModule.getInstance().load();
 			registerEvents(new MailboxListener(),
 					new PlayerListener(),
 					new MailboxBlockListener());
@@ -107,9 +107,11 @@ public final class LTItemMail extends JavaPlugin {
 	private final void loadConfig() {
 		ConfigurationModule.check();
 		configuration = ConfigurationModule.load();
+		ConfigurationModule.addMissing();
 	}
 	private final void loadLang() {
 		LanguageModule.check();
 		language = LanguageModule.load();
+		LanguageModule.addMissing();
 	}
 }
