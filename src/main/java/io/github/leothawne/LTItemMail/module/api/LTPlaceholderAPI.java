@@ -1,4 +1,4 @@
-package io.github.leothawne.LTItemMail.module.integration;
+package io.github.leothawne.LTItemMail.module.api;
 
 import org.bukkit.OfflinePlayer;
 

@@ -1,4 +1,4 @@
-package io.github.leothawne.LTItemMail.module.integration;
+package io.github.leothawne.LTItemMail.module.api;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,12 +15,15 @@ import eu.decentsoftware.holograms.api.holograms.Hologram;
 import net.md_5.bungee.api.ChatColor;
 
 public final class LTDecentHolograms {
-	private final List<Material> randomItems = new ArrayList<>();
+	private final List<Material> randomItems;
+	private final Random random;
 	public LTDecentHolograms() {
-		randomItems.add(Material.STONE_AXE);
-		randomItems.add(Material.STONE_SHOVEL);
-		randomItems.add(Material.STONE_AXE);
-		randomItems.add(Material.STONE_PICKAXE);
+		randomItems = new ArrayList<>();
+		random = new Random();
+		for(final Material material : Material.values()) {
+			final String name = material.toString();
+			if(name.endsWith("_AXE") || name.endsWith("_PICKAXE") || name.endsWith("_SHOVEL") || name.endsWith("_HOE")) randomItems.add(material);
+		}
 	}
 	public final void createHolo(final Player player, final Location location) {
 		final World world = location.getWorld();
@@ -31,7 +34,7 @@ public final class LTDecentHolograms {
 		final Location holoLocation = new Location(world, x + 0.5, y + 0.5, z + 0.5);
 		if(DHAPI.getHologram(id) != null) deleteHolo(player, location);
 		final Hologram holo = DHAPI.createHologram(id, holoLocation, true);
-		DHAPI.addHologramLine(holo, randomItems.get(new Random().nextInt(randomItems.size() - 1)));
+		DHAPI.addHologramLine(holo, randomItems.get(random.nextInt(randomItems.size() - 1)));
 		DHAPI.addHologramLine(holo, ChatColor.GOLD + player.getName() + "'s Mailbox");
 	}
 	public final void deleteHolo(final OfflinePlayer player, final Location location) {

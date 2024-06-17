@@ -9,15 +9,16 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
-import io.github.leothawne.LTItemMail.module.integration.LTBlueMap;
-import io.github.leothawne.LTItemMail.module.integration.LTDecentHolograms;
-import io.github.leothawne.LTItemMail.module.integration.LTDynmap;
-import io.github.leothawne.LTItemMail.module.integration.LTGriefPrevention;
-import io.github.leothawne.LTItemMail.module.integration.LTPlaceholderAPI;
-import io.github.leothawne.LTItemMail.module.integration.LTRedProtect;
-import io.github.leothawne.LTItemMail.module.integration.LTTownyAdvanced;
-import io.github.leothawne.LTItemMail.module.integration.LTVault;
-import io.github.leothawne.LTItemMail.module.integration.LTWorldGuard;
+import io.github.leothawne.LTItemMail.module.api.LTBlueMap;
+import io.github.leothawne.LTItemMail.module.api.LTDecentHolograms;
+import io.github.leothawne.LTItemMail.module.api.LTDynmap;
+import io.github.leothawne.LTItemMail.module.api.LTEssentialsX;
+import io.github.leothawne.LTItemMail.module.api.LTGriefPrevention;
+import io.github.leothawne.LTItemMail.module.api.LTPlaceholderAPI;
+import io.github.leothawne.LTItemMail.module.api.LTRedProtect;
+import io.github.leothawne.LTItemMail.module.api.LTTownyAdvanced;
+import io.github.leothawne.LTItemMail.module.api.LTVault;
+import io.github.leothawne.LTItemMail.module.api.LTWorldGuard;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
@@ -36,6 +37,7 @@ public final class IntegrationModule {
 		plugins.putIfAbsent(Name.BLUEMAP, manager.getPlugin("BlueMap"));
 		plugins.putIfAbsent(Name.DECENTHOLOGRAMS, manager.getPlugin("DecentHolograms"));
 		plugins.putIfAbsent(Name.PLACEHOLDERAPI, manager.getPlugin("PlaceholderAPI"));
+		plugins.putIfAbsent(Name.ESSENTIALSX_ANTIBUILD, manager.getPlugin("EssentialsAntiBuild"));
 	}
 	private final void warn(final Name sourceName, final Name pluginName) {
 		Plugin source = null;
@@ -58,11 +60,11 @@ public final class IntegrationModule {
 		switch(function) {
 			case VAULT_ECONOMY:
 				final RegisteredServiceProvider<Economy> economy = Bukkit.getServicesManager().getRegistration(Economy.class);
-				if(economy != null) register.putIfAbsent(function, LTVault.EconomyHolder.create(economy.getProvider(), economy.getPlugin()));
+				if(economy != null) register.putIfAbsent(function, new LTVault.Economy(economy.getProvider(), economy.getPlugin()));
 				break;
 			case VAULT_PERMISSION:
 				final RegisteredServiceProvider<Permission> permission = Bukkit.getServicesManager().getRegistration(Permission.class);
-				if(permission != null) register.putIfAbsent(function, LTVault.PermissionHolder.create(permission.getProvider(), permission.getPlugin()));
+				if(permission != null) register.putIfAbsent(function, new LTVault.Permission(permission.getProvider(), permission.getPlugin()));
 				break;
 			case GRIEFPREVENTION:
 				register.putIfAbsent(function, new LTGriefPrevention());
@@ -87,6 +89,9 @@ public final class IntegrationModule {
 				break;
 			case PLACEHOLDERAPI:
 				register.putIfAbsent(function, new LTPlaceholderAPI());
+				break;
+			case ESSENTIALSX_ANTIBUILD:
+				register.putIfAbsent(function, new LTEssentialsX.AntiBuild());
 				break;
 		}
 		return isRegistered(function);
@@ -119,8 +124,8 @@ public final class IntegrationModule {
 		if(detected) ConsoleModule.info("Loading integrations...");
 		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_VAULT)) if(isInstalled(IntegrationModule.Name.VAULT)) {
 			warn(null, IntegrationModule.Name.VAULT);
-			if(!isRegistered(IntegrationModule.Function.VAULT_ECONOMY)) if(register(IntegrationModule.Function.VAULT_ECONOMY)) warn(IntegrationModule.Name.VAULT, ((LTVault.EconomyHolder) get(IntegrationModule.Function.VAULT_ECONOMY)).getPlugin());
-			if(!isRegistered(IntegrationModule.Function.VAULT_PERMISSION)) if(register(IntegrationModule.Function.VAULT_PERMISSION)) warn(IntegrationModule.Name.VAULT, ((LTVault.PermissionHolder) get(IntegrationModule.Function.VAULT_PERMISSION)).getPlugin());
+			if(!isRegistered(IntegrationModule.Function.VAULT_ECONOMY)) if(register(IntegrationModule.Function.VAULT_ECONOMY)) warn(IntegrationModule.Name.VAULT, ((LTVault.Economy) get(IntegrationModule.Function.VAULT_ECONOMY)).getPlugin());
+			if(!isRegistered(IntegrationModule.Function.VAULT_PERMISSION)) if(register(IntegrationModule.Function.VAULT_PERMISSION)) warn(IntegrationModule.Name.VAULT, ((LTVault.Permission) get(IntegrationModule.Function.VAULT_PERMISSION)).getPlugin());
 		}
 		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_GRIEFPREVENTION)) if(isInstalled(IntegrationModule.Name.GRIEFPREVENTION)) if(!isRegistered(IntegrationModule.Function.GRIEFPREVENTION)) {
 			warn(null, IntegrationModule.Name.GRIEFPREVENTION);
@@ -165,7 +170,8 @@ public final class IntegrationModule {
 		DYNMAP,
 		BLUEMAP,
 		DECENTHOLOGRAMS,
-		PLACEHOLDERAPI
+		PLACEHOLDERAPI,
+		ESSENTIALSX_ANTIBUILD
 	}
 	public enum Function {
 		VAULT_ECONOMY,
@@ -177,6 +183,7 @@ public final class IntegrationModule {
 		DYNMAP,
 		BLUEMAP,
 		DECENTHOLOGRAMS,
-		PLACEHOLDERAPI
+		PLACEHOLDERAPI,
+		ESSENTIALSX_ANTIBUILD
 	}
 }
