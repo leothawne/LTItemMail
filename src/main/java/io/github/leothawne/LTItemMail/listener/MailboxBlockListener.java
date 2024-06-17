@@ -36,13 +36,13 @@ import io.github.leothawne.LTItemMail.module.IntegrationModule;
 import io.github.leothawne.LTItemMail.module.LanguageModule;
 import io.github.leothawne.LTItemMail.module.MailboxModule;
 import io.github.leothawne.LTItemMail.module.PermissionModule;
-import io.github.leothawne.LTItemMail.module.integration.LTBlueMap;
-import io.github.leothawne.LTItemMail.module.integration.LTDecentHolograms;
-import io.github.leothawne.LTItemMail.module.integration.LTDynmap;
-import io.github.leothawne.LTItemMail.module.integration.LTGriefPrevention;
-import io.github.leothawne.LTItemMail.module.integration.LTRedProtect;
-import io.github.leothawne.LTItemMail.module.integration.LTTownyAdvanced;
-import io.github.leothawne.LTItemMail.module.integration.LTWorldGuard;
+import io.github.leothawne.LTItemMail.module.api.LTBlueMap;
+import io.github.leothawne.LTItemMail.module.api.LTDecentHolograms;
+import io.github.leothawne.LTItemMail.module.api.LTDynmap;
+import io.github.leothawne.LTItemMail.module.api.LTGriefPrevention;
+import io.github.leothawne.LTItemMail.module.api.LTRedProtect;
+import io.github.leothawne.LTItemMail.module.api.LTTownyAdvanced;
+import io.github.leothawne.LTItemMail.module.api.LTWorldGuard;
 import net.md_5.bungee.api.ChatColor;
 
 public final class MailboxBlockListener implements Listener {
@@ -90,7 +90,7 @@ public final class MailboxBlockListener implements Listener {
 			if(canBuildBreak(player, block.getLocation()) && canBuild(player, block.getLocation())) {
 				if(PermissionModule.hasPermission(player, PermissionModule.Type.BLOCK_PLAYER_PLACE)) {
 					final Block blockBelow = new Location(block.getLocation().getWorld(), block.getLocation().getBlockX(), (block.getLocation().getBlockY() - 1), block.getLocation().getBlockZ()).getBlock();
-					if(blockBelow.getType().toString().toLowerCase().endsWith("_fence")) {
+					if(blockBelow.getType().toString().endsWith("_FENCE") || blockBelow.getType().toString().endsWith("_WALL")) {
 						if(!DatabaseModule.Block.isMailboxBlock(block.getLocation()) && DatabaseModule.Block.placeMailbox(player.getUniqueId(), block.getLocation())) {
 							if(dynmap != null) dynmap.createMarker(player, block.getLocation());
 							if(blueMap != null) blueMap.createMarker(player, block.getLocation());
@@ -146,7 +146,7 @@ public final class MailboxBlockListener implements Listener {
 					player.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.BLOCK_BREAKERROR));
 				}
 			} else event.setCancelled(true);
-		} else if(block != null && block.getType().toString().toLowerCase().endsWith("_fence")) {
+		} else if(block != null && (block.getType().toString().endsWith("_FENCE") || block.getType().toString().endsWith("_WALL"))) {
 			final Block blockAbove = new Location(block.getLocation().getWorld(), block.getLocation().getBlockX(), (block.getLocation().getBlockY() + 1), block.getLocation().getBlockZ()).getBlock();
 			if(blockAbove.getType().toString().endsWith("_SHULKER_BOX") && DatabaseModule.Block.isMailboxBlock(blockAbove.getLocation())) event.setCancelled(true);
 		}
@@ -163,7 +163,7 @@ public final class MailboxBlockListener implements Listener {
 		for(final Block block : blocks) {
 			if(block != null) {
 				if(block.getType().toString().endsWith("_SHULKER_BOX") && DatabaseModule.Block.isMailboxBlock(block.getLocation())) cancel = true;
-				if(block.getType().toString().toLowerCase().endsWith("_fence")) {
+				if(block.getType().toString().endsWith("_FENCE") || block.getType().toString().endsWith("_WALL")) {
 					final Block blockAbove = new Location(block.getLocation().getWorld(), block.getLocation().getBlockX(), (block.getLocation().getBlockY() + 1), block.getLocation().getBlockZ()).getBlock();
 					if(blockAbove.getType().toString().endsWith("_SHULKER_BOX") && DatabaseModule.Block.isMailboxBlock(blockAbove.getLocation())) cancel = true;
 				}
@@ -178,7 +178,7 @@ public final class MailboxBlockListener implements Listener {
 		for(final Block block : blocks) {
 			if(block != null) {
 				if(block.getType().toString().endsWith("_SHULKER_BOX") && DatabaseModule.Block.isMailboxBlock(block.getLocation())) cancel = true;
-				if(block.getType().toString().toLowerCase().endsWith("_fence")) {
+				if(block.getType().toString().endsWith("_FENCE") || block.getType().toString().endsWith("_WALL")) {
 					final Block blockAbove = new Location(block.getLocation().getWorld(), block.getLocation().getBlockX(), (block.getLocation().getBlockY() + 1), block.getLocation().getBlockZ()).getBlock();
 					if(blockAbove.getType().toString().endsWith("_SHULKER_BOX") && DatabaseModule.Block.isMailboxBlock(blockAbove.getLocation())) cancel = true;
 				}
@@ -196,7 +196,7 @@ public final class MailboxBlockListener implements Listener {
 					blocks.remove(block);
 					cancel = true;
 				}
-				if(block.getType().toString().toLowerCase().endsWith("_fence")) {
+				if(block.getType().toString().endsWith("_FENCE") || block.getType().toString().endsWith("_WALL")) {
 					final Block blockAbove = new Location(block.getLocation().getWorld(), block.getLocation().getBlockX(), (block.getLocation().getBlockY() + 1), block.getLocation().getBlockZ()).getBlock();
 					if(blockAbove.getType().toString().endsWith("_SHULKER_BOX") && DatabaseModule.Block.isMailboxBlock(blockAbove.getLocation())) {
 						blocks.remove(block);
@@ -225,7 +225,7 @@ public final class MailboxBlockListener implements Listener {
 					blocks.remove(block);
 					cancel = true;
 				}
-				if(block.getType().toString().toLowerCase().endsWith("_fence")) {
+				if(block.getType().toString().endsWith("_FENCE") || block.getType().toString().endsWith("_WALL")) {
 					final Block blockAbove = new Location(block.getLocation().getWorld(), block.getLocation().getBlockX(), (block.getLocation().getBlockY() + 1), block.getLocation().getBlockZ()).getBlock();
 					if(blockAbove.getType().toString().endsWith("_SHULKER_BOX") && DatabaseModule.Block.isMailboxBlock(blockAbove.getLocation())) {
 						blocks.remove(block);
