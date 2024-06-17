@@ -1,4 +1,4 @@
-package io.github.leothawne.LTItemMail.lib;
+package io.github.leothawne.LTItemMail.util;
 
 import java.util.LinkedList;
 
@@ -7,8 +7,8 @@ import org.bukkit.inventory.ItemStack;
 
 import net.md_5.bungee.api.ChatColor;
 
-public final class BukkitUtils {
-	private BukkitUtils() {}
+public final class BukkitUtil {
+	private BukkitUtil() {}
 	public static final String format(final String text) {
 		return ChatColor.translateAlternateColorCodes('&', text);
 	}

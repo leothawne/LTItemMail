@@ -1,4 +1,4 @@
-package io.github.leothawne.LTItemMail.lib;
+package io.github.leothawne.LTItemMail.util;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -24,9 +24,10 @@ import org.json.simple.parser.ParseException;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
 import io.github.leothawne.LTItemMail.module.ConfigurationModule;
+import io.github.leothawne.LTItemMail.module.DatabaseModule;
 
-public final class Fetch {
-	private Fetch() {}
+public final class FetchUtil {
+	private FetchUtil() {}
 	public static final class URL {
 		private static final URLConnection connect(final String url) {
 			URLConnection connection = null;
@@ -60,6 +61,7 @@ public final class Fetch {
 				try {
 					Files.createDirectories(Paths.get(LTItemMail.getInstance().getDataFolder() + File.separator + "cache"));
 					final ReadableByteChannel byteChannel = Channels.newChannel(connect(url).getInputStream());
+					
 					final FileOutputStream output = new FileOutputStream(new File(LTItemMail.getInstance().getDataFolder() + File.separator + "cache", name + ".tmp"));
 					final FileChannel fileChannel = output.getChannel();
 					fileChannel.transferFrom(byteChannel, 0, Long.MAX_VALUE);
@@ -90,14 +92,20 @@ public final class Fetch {
 			return null;
 		}
 		public static final UUID fromName(final String name) {
-			if(array() != null) for(int i = 0; i < array().size(); i++) {
+			final UUID uuid = DatabaseModule.User.Cache.getUUID(name);
+			if(uuid != null) {
+				return uuid;
+			} else if(array() != null) for(int i = 0; i < array().size(); i++) {
 				final JSONObject user = (JSONObject) array().get(i);
 				if(name.equalsIgnoreCase((String) user.get("name"))) return UUID.fromString((String) user.get("uuid"));
 			}
 			return null;
 		}
 		public static final String fromUUID(final UUID uuid) {
-			if(array() != null) for(int i = 0; i < array().size(); i++) {
+			final String name = DatabaseModule.User.Cache.getName(uuid);
+			if(name != null) {
+				return name;
+			} else if(array() != null) for(int i = 0; i < array().size(); i++) {
 				final JSONObject user = (JSONObject) array().get(i);
 				if(uuid.equals(UUID.fromString((String) user.get("uuid")))) return (String) user.get("name");
 			}

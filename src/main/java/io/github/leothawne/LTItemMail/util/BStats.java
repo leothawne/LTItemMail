@@ -12,7 +12,7 @@
  *
  * Violations will result in a ban of your plugin and account from bStats.
  */
-package io.github.leothawne.LTItemMail.lib;
+package io.github.leothawne.LTItemMail.util;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
