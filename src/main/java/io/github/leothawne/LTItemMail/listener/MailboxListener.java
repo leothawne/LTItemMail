@@ -32,7 +32,7 @@ import io.github.leothawne.LTItemMail.module.IntegrationModule;
 import io.github.leothawne.LTItemMail.module.LanguageModule;
 import io.github.leothawne.LTItemMail.module.MailboxModule;
 import io.github.leothawne.LTItemMail.module.PermissionModule;
-import io.github.leothawne.LTItemMail.module.api.LTVault;
+import io.github.leothawne.LTItemMail.module.api.IVault;
 import io.github.leothawne.LTItemMail.util.BukkitUtil;
 import net.md_5.bungee.api.ChatColor;
 import net.milkbowl.vault.economy.Economy;
@@ -70,7 +70,7 @@ public final class MailboxListener implements Listener {
 					newcost = (Double) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_COST) * count;
 				} else newcost = (Double) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_COST);
 				Economy economy = null;
-				if(IntegrationModule.getInstance().isRegistered(IntegrationModule.Function.VAULT_ECONOMY)) economy = ((LTVault.Economy) IntegrationModule.getInstance().get(IntegrationModule.Function.VAULT_ECONOMY)).getAPI();
+				if(IntegrationModule.getInstance().isRegistered(IntegrationModule.Function.VAULT_ECONOMY)) economy = ((IVault.Economy) IntegrationModule.getInstance().get(IntegrationModule.Function.VAULT_ECONOMY)).getAPI();
 				if(economy != null) {
 					if(economy.has(sender, newcost)) {
 						final EconomyResponse er = economy.withdrawPlayer(sender, newcost);

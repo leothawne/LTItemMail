@@ -2,7 +2,7 @@ package io.github.leothawne.LTItemMail.module;
 
 import org.bukkit.command.CommandSender;
 
-import io.github.leothawne.LTItemMail.module.api.LTVault;
+import io.github.leothawne.LTItemMail.module.api.IVault;
 
 public class PermissionModule {
 	private PermissionModule() {}
@@ -86,7 +86,7 @@ public class PermissionModule {
 				break;
 		}
 		if(node != null) {
-			if(IntegrationModule.getInstance().isRegistered(IntegrationModule.Function.VAULT_PERMISSION)) return ((LTVault.Permission) IntegrationModule.getInstance().get(IntegrationModule.Function.VAULT_PERMISSION)).getAPI().has(sender, node);
+			if(IntegrationModule.getInstance().isRegistered(IntegrationModule.Function.VAULT_PERMISSION)) return ((IVault.Permission) IntegrationModule.getInstance().get(IntegrationModule.Function.VAULT_PERMISSION)).getAPI().has(sender, node);
 			return sender.hasPermission(node);
 		}
 		return false;
