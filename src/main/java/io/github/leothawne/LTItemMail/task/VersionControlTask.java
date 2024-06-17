@@ -12,10 +12,10 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
-import io.github.leothawne.LTItemMail.lib.Fetch;
 import io.github.leothawne.LTItemMail.module.ConfigurationModule;
 import io.github.leothawne.LTItemMail.module.ConsoleModule;
 import io.github.leothawne.LTItemMail.module.DataModule;
+import io.github.leothawne.LTItemMail.util.FetchUtil;
 
 public final class VersionControlTask {
 	private VersionControlTask() {}
@@ -23,10 +23,10 @@ public final class VersionControlTask {
 		new BukkitRunnable() {
 			@Override
 			public final void run() {
-				if(Fetch.URL.Cache.download(DataModule.getPluginURL(LTItemMail.getInstance().getDescription().getVersion()), "cfg-" + LTItemMail.getInstance().getDescription().getVersion())) {
+				if(FetchUtil.URL.Cache.download(DataModule.getPluginPath(LTItemMail.getInstance().getDescription().getVersion()), "cfg-" + LTItemMail.getInstance().getDescription().getVersion())) {
 					try {
 						final YamlConfiguration info = new YamlConfiguration();
-						info.load(Fetch.URL.Cache.get("cfg-" + LTItemMail.getInstance().getDescription().getVersion()));
+						info.load(FetchUtil.URL.Cache.get("cfg-" + LTItemMail.getInstance().getDescription().getVersion()));
 						if(!info.getBoolean("main.enabled")) {
 							final List<String> warnings = info.getStringList("main.warnings");
 							if(warnings.size() > 0) ConsoleModule.server(warnings);
