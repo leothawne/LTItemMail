@@ -16,7 +16,7 @@ commands:
         usage: /itemmail [args]
     mailitem:
         description: Used to send items.
-        aliases: [mit, enviaritem, mail]
+        aliases: [mit, enviaritem]
         usage: /mailitem [args]
     itemmailadmin:
         description: For administration purposes.
@@ -35,6 +35,7 @@ permissions:
             ltitemmail.player.delete: true
             ltitemmail.player.send: true
             ltitemmail.player.info: true
+            ltitemmail.player.blocks: true
             ltitemmail.player.notify: true
             ltitemmail.block.place: true
             ltitemmail.block.break: true
@@ -52,6 +53,7 @@ permissions:
            ltitemmail.admin.unban: true
            ltitemmail.admin.banlist: true
            ltitemmail.admin.info: true
+           ltitemmail.admin.blocks: true
            ltitemmail.block.break-bypass: true
     ltitemmail.player:
         default: false
@@ -70,6 +72,8 @@ permissions:
     ltitemmail.player.send:
         default: false
     ltitemmail.player.info:
+        default: false
+    ltitemmail.player.blocks:
         default: false
     ltitemmail.player.notify:
         default: false
@@ -98,6 +102,8 @@ permissions:
     ltitemmail.admin.banlist:
         default: false
     ltitemmail.admin.info:
+        default: false
+    ltitemmail.admin.blocks:
         default: false
     ltitemmail.block.break-bypass:
         default: false

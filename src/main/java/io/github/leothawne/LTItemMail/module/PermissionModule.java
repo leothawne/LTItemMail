@@ -84,6 +84,12 @@ public class PermissionModule {
 			case CMD_ADMIN_INFO:
 				node = "ltitemmail.admin.info";
 				break;
+			case CMD_PLAYER_BLOCKS:
+				node = "ltitemmail.player.blocks";
+				break;
+			case CMD_ADMIN_BLOCKS:
+				node = "ltitemmail.admin.blocks";
+				break;
 		}
 		if(node != null) {
 			if(IntegrationModule.getInstance().isRegistered(IntegrationModule.Function.VAULT_PERMISSION)) return ((IVault.Permission) IntegrationModule.getInstance().get(IntegrationModule.Function.VAULT_PERMISSION)).getAPI().has(sender, node);
@@ -101,6 +107,7 @@ public class PermissionModule {
 		CMD_PLAYER_SEND,
 		CMD_PLAYER_PRICE,
 		CMD_PLAYER_INFO,
+		CMD_PLAYER_BLOCKS,
 		CMD_ADMIN_MAIN,
 		CMD_ADMIN_UPDATE,
 		CMD_ADMIN_LIST,
@@ -113,6 +120,7 @@ public class PermissionModule {
 		CMD_ADMIN_BANLIST,
 		CMD_ADMIN_INFO,
 		CMD_ADMIN_RELOAD,
+		CMD_ADMIN_BLOCKS,
 		BLOCK_PLAYER_PLACE,
 		BLOCK_PLAYER_BREAK,
 		BLOCK_PLAYER_USE,
