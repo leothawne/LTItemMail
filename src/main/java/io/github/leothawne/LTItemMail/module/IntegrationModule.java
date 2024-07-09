@@ -12,7 +12,6 @@ import io.github.leothawne.LTItemMail.LTItemMail;
 import io.github.leothawne.LTItemMail.module.api.LTBlueMap;
 import io.github.leothawne.LTItemMail.module.api.LTDecentHolograms;
 import io.github.leothawne.LTItemMail.module.api.LTDynmap;
-import io.github.leothawne.LTItemMail.module.api.LTEssentialsX;
 import io.github.leothawne.LTItemMail.module.api.LTGriefPrevention;
 import io.github.leothawne.LTItemMail.module.api.LTPlaceholderAPI;
 import io.github.leothawne.LTItemMail.module.api.LTRedProtect;
@@ -37,7 +36,6 @@ public final class IntegrationModule {
 		plugins.putIfAbsent(Name.BLUEMAP, manager.getPlugin("BlueMap"));
 		plugins.putIfAbsent(Name.DECENTHOLOGRAMS, manager.getPlugin("DecentHolograms"));
 		plugins.putIfAbsent(Name.PLACEHOLDERAPI, manager.getPlugin("PlaceholderAPI"));
-		plugins.putIfAbsent(Name.ESSENTIALSX_ANTIBUILD, manager.getPlugin("EssentialsAntiBuild"));
 	}
 	private final void warn(final Name sourceName, final Name pluginName) {
 		Plugin source = null;
@@ -90,18 +88,13 @@ public final class IntegrationModule {
 			case PLACEHOLDERAPI:
 				register.putIfAbsent(function, new LTPlaceholderAPI());
 				break;
-			case ESSENTIALSX_ANTIBUILD:
-				register.putIfAbsent(function, new LTEssentialsX.AntiBuild());
-				break;
 		}
 		return isRegistered(function);
 	}
 	public final void unload() {
-		if(isRegistered(Function.DYNMAP)) ((LTDynmap) get(Function.DYNMAP)).unregister();
-	}
-	public static final IntegrationModule getInstance() {
-		if(instance == null) instance = new IntegrationModule();
-		return instance;
+		if(isRegistered(Function.DYNMAP)) ((LTDynmap) get(Function.DYNMAP)).unload();
+		if(isRegistered(Function.BLUEMAP)) ((LTBlueMap) get(Function.BLUEMAP)).unload();
+		if(isRegistered(Function.PLACEHOLDERAPI)) ((LTPlaceholderAPI) get(Function.PLACEHOLDERAPI)).unload();
 	}
 	public final boolean isInstalled(final Name name) {
 		Plugin plugin = null;
@@ -154,12 +147,26 @@ public final class IntegrationModule {
 		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_DECENTHOLOGRAMS)) if(isInstalled(IntegrationModule.Name.DECENTHOLOGRAMS)) if(!isRegistered(IntegrationModule.Function.DECENTHOLOGRAMS)) {
 			warn(null, IntegrationModule.Name.DECENTHOLOGRAMS);
 			register(IntegrationModule.Function.DECENTHOLOGRAMS);
+			if(isRegistered(Function.DECENTHOLOGRAMS)) ((LTDecentHolograms) get(Function.DECENTHOLOGRAMS)).cleanup();
 		}
 		if(isInstalled(IntegrationModule.Name.PLACEHOLDERAPI)) if(!isRegistered(IntegrationModule.Function.PLACEHOLDERAPI)) {
 			warn(null, IntegrationModule.Name.PLACEHOLDERAPI);
 			register(IntegrationModule.Function.PLACEHOLDERAPI);
 		}
 		if(detected) ConsoleModule.info("Integrations loaded.");
+	}
+	public static final IntegrationModule reload() {
+		if(instance != null) {
+			instance.unload();
+			instance = null;
+			instance = new IntegrationModule();
+			return instance;
+		}
+		return getInstance();
+	}
+	public static final IntegrationModule getInstance() {
+		if(instance == null) instance = new IntegrationModule();
+		return instance;
 	}
 	public enum Name {
 		VAULT,
@@ -170,8 +177,7 @@ public final class IntegrationModule {
 		DYNMAP,
 		BLUEMAP,
 		DECENTHOLOGRAMS,
-		PLACEHOLDERAPI,
-		ESSENTIALSX_ANTIBUILD
+		PLACEHOLDERAPI
 	}
 	public enum Function {
 		VAULT_ECONOMY,
@@ -183,7 +189,6 @@ public final class IntegrationModule {
 		DYNMAP,
 		BLUEMAP,
 		DECENTHOLOGRAMS,
-		PLACEHOLDERAPI,
-		ESSENTIALSX_ANTIBUILD
+		PLACEHOLDERAPI
 	}
 }

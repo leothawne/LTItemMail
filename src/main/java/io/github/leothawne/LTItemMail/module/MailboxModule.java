@@ -17,7 +17,6 @@ import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
@@ -138,12 +137,12 @@ public final class MailboxModule {
 					break;
 				case TOAST:
 					Toasts.display(receiver, LanguageModule.get(LanguageModule.Type.MAILBOX_FROM) + " " + sender.getName(), Toasts.Type.MAILBOX);
-					if(!label.isEmpty()) new BukkitRunnable() {
+					if(!label.isEmpty()) Bukkit.getScheduler().runTaskLater(LTItemMail.getInstance(), new Runnable() {
 						@Override
 						public final void run() {
 							Toasts.display(receiver, label, Toasts.Type.MAILBOX);
 						}
-					}.runTaskLater(LTItemMail.getInstance(), 20 * 3);
+					}, 20 * 3);
 					break;
 			}
 		} else if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.BUNGEE_MODE)) {

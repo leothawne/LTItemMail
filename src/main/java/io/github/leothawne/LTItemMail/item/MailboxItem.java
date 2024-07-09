@@ -27,7 +27,7 @@ public final class MailboxItem implements Item {
 	}
 	@Override
 	public final Item.Type getType() {
-		return Item.Type.MAILBOX_BLOCK;
+		return Item.Type.MAILBOX_ITEM;
 	}
 	@Override
 	public final Material getMaterial() {

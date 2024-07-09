@@ -9,7 +9,7 @@ import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
 import io.github.leothawne.LTItemMail.module.ConfigurationModule;
@@ -19,8 +19,9 @@ import io.github.leothawne.LTItemMail.util.FetchUtil;
 
 public final class VersionControlTask {
 	private VersionControlTask() {}
+	private static BukkitTask task = null;
 	public static final void run() {
-		new BukkitRunnable() {
+		task = Bukkit.getScheduler().runTaskTimer(LTItemMail.getInstance(), new Runnable() {
 			@Override
 			public final void run() {
 				if(FetchUtil.URL.Cache.download(DataModule.getPluginPath(LTItemMail.getInstance().getDescription().getVersion()), "cfg-" + LTItemMail.getInstance().getDescription().getVersion())) {
@@ -54,10 +55,9 @@ public final class VersionControlTask {
 					}
 				} else {
 					ConsoleModule.warning("Unable to contact Version Control server. Are you offline?");
-					this.cancel();
+					if(task != null) task.cancel();
 				}
-				Runtime.getRuntime().gc();
 			}
-		}.runTaskTimerAsynchronously(LTItemMail.getInstance(), 0, 20 * 60);
+		}, 1, 20 * 60);
 	}
 }

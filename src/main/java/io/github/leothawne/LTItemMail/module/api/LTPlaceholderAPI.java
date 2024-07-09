@@ -9,8 +9,10 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 
 public final class LTPlaceholderAPI extends PlaceholderExpansion {
 	public LTPlaceholderAPI() {
-		if(isRegistered()) unregister();
 		register();
+	}
+	public final void unload() {
+		unregister();
 	}
 	@Override
 	public final String getIdentifier() {

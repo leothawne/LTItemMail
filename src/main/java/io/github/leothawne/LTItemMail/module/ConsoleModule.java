@@ -1,10 +1,13 @@
 package io.github.leothawne.LTItemMail.module;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
@@ -33,7 +36,7 @@ public final class ConsoleModule {
 		sender().sendMessage(ChatColor.WHITE + "[" + ChatColor.DARK_AQUA + "LTIM " + ChatColor.DARK_RED + "ERROR" + ChatColor.WHITE + "] " + ChatColor.RED + message);
 	}
 	public static final void debug(final String message) {
-		sender().sendMessage(ChatColor.DARK_GRAY + "[" + LTItemMail.class.getName() + "] " + message);
+		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) sender().sendMessage(ChatColor.GRAY + "[" + LTItemMail.class.getSimpleName() + "] " + message);
 	}
 	public static final void mailbox(final String message) {
 		sender().sendMessage(ChatColor.WHITE + "[Mailbox-Log-Worker] " + message);
@@ -44,35 +47,46 @@ public final class ConsoleModule {
 		sender().sendMessage(ChatColor.WHITE + "==================================================");
 	}
 	public static final void server(final Map<Integer, Map<String, Map<String, List<String>>>> messages) {
-		sender().sendMessage(ChatColor.WHITE + "========== " + ChatColor.DARK_AQUA + "LT Item Mail " + ChatColor.LIGHT_PURPLE + "Messages Board" + ChatColor.WHITE + " ==========");
-		sender().sendMessage("");
-		for(final Integer id : messages.keySet()) {
-			final Map<String, Map<String, List<String>>> contents1 = messages.get(id);
-			for(final String title : contents1.keySet()) {
-				final Map<String, List<String>> contents2 = contents1.get(title);
-				for(final String datetime : contents2.keySet()) {
-					sender().sendMessage(ChatColor.WHITE + "[" + datetime + " | " + title + "]");
-					for(final String message : contents2.get(datetime)) sender().sendMessage(ChatColor.WHITE + "  " + message);
-				}
-				sender().sendMessage("");
-			}
-		}
-		sender().sendMessage(ChatColor.WHITE + "=================================================");
-		for(final Player player : Bukkit.getOnlinePlayers()) if(PermissionModule.hasPermission(player, PermissionModule.Type.CMD_ADMIN_NOTIFY)) {
-			player.sendMessage(ChatColor.WHITE + "========== " + ChatColor.DARK_AQUA + "LT Item Mail " + ChatColor.LIGHT_PURPLE + "Messages Board" + ChatColor.WHITE + " ==========");
-			player.sendMessage("");
+		final List<CommandSender> receivers = new ArrayList<>();
+		receivers.add(sender());
+		for(final Player player : Bukkit.getOnlinePlayers()) if(PermissionModule.hasPermission(player, PermissionModule.Type.CMD_ADMIN_NOTIFY)) receivers.add(player);
+		for(final CommandSender receiver : receivers) {
+			receiver.sendMessage(ChatColor.WHITE + "========== " + ChatColor.DARK_AQUA + "LT Item Mail " + ChatColor.LIGHT_PURPLE + "Messages Board" + ChatColor.WHITE + " ==========");
+			receiver.sendMessage("");
 			for(final Integer id : messages.keySet()) {
 				final Map<String, Map<String, List<String>>> contents1 = messages.get(id);
 				for(final String title : contents1.keySet()) {
 					final Map<String, List<String>> contents2 = contents1.get(title);
 					for(final String datetime : contents2.keySet()) {
-						player.sendMessage(ChatColor.WHITE + "[" + datetime + " | " + title + "]");
-						for(final String message : contents2.get(datetime)) player.sendMessage(ChatColor.WHITE + "  " + message);
+						receiver.sendMessage(ChatColor.WHITE + "[" + datetime + " | " + title + "]");
+						for(final String message : contents2.get(datetime)) receiver.sendMessage(ChatColor.WHITE + "  " + message);
 					}
-					player.sendMessage("");
+					receiver.sendMessage("");
 				}
 			}
-			player.sendMessage(ChatColor.WHITE + "=================================================");
+			receiver.sendMessage(ChatColor.WHITE + "=================================================");
 		}
+	}
+	public static final void br() {
+		sender().sendMessage("⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣴⣾⣷⣦⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀");
+		sender().sendMessage("⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⣾⡿⠿⠟⠻⠿⢿⣷⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀");
+		sender().sendMessage("⠀⠀⠀⠀⠀⠀⣀⣤⣾⣿⠟⠁⠀⠀⠀⠀⠀⠀⠈⠻⣿⣷⣤⣀⠀⠀⠀⠀⠀⠀");
+		sender().sendMessage("⠀⠀⠀⣀⣴⣾⣿⣿⣿⡿⠿⠿⠿⠶⢶⣦⣤⣀⠀⠀⢹⣿⣿⣿⣷⣦⣀⠀⠀⠀");
+		sender().sendMessage("⠀⠰⢾⣿⣿⣿⣿⣿⣿⡁⠀⠀⠀⠀⠀⠀⠈⠙⠳⣦⣈⣿⣿⣿⣿⣿⣿⡷⠆⠀");
+		sender().sendMessage("⠀⠀⠀⠉⠻⢿⣿⣿⣿⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣹⣿⣿⣿⡿⠟⠉⠀⠀⠀");
+		sender().sendMessage("⠀⠀⠀⠀⠀⠀⠉⠛⢿⣿⣦⡀⠀⠀⠀⠀⠀⠀⢀⣴⣿⡿⠛⠉⠀⠀⠀⠀⠀⠀");
+		sender().sendMessage("⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⢿⣷⣶⣦⣴⣶⣾⡿⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀");
+		sender().sendMessage("⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠻⢿⡿⠟⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀");
+		sender().sendMessage("");
+		final List<ChatColor> cores = Arrays.asList(ChatColor.GREEN,
+				ChatColor.YELLOW);
+		int n = 0;
+		String obrigado = "";
+		for(char letra : new String("Obrigado por instalar o meu plugin! Aproveite =D").toCharArray()) {
+			obrigado = obrigado + cores.get(n) + letra;
+			n++;
+			if(n >= cores.size()) n = 0;
+		}
+		sender().sendMessage(obrigado);
 	}
 }

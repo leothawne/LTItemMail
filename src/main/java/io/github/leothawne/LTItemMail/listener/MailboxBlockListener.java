@@ -3,6 +3,7 @@ package io.github.leothawne.LTItemMail.listener;
 import java.util.HashMap;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -26,6 +27,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
+import io.github.leothawne.LTItemMail.LTItemMail;
 import io.github.leothawne.LTItemMail.LTPlayer;
 import io.github.leothawne.LTItemMail.inventory.MailboxInventory;
 import io.github.leothawne.LTItemMail.item.Item;
@@ -46,6 +48,9 @@ import io.github.leothawne.LTItemMail.module.api.LTWorldGuard;
 import net.md_5.bungee.api.ChatColor;
 
 public final class MailboxBlockListener implements Listener {
+	public MailboxBlockListener() {
+		Bukkit.getServer().getPluginManager().registerEvents(this, LTItemMail.getInstance());
+	}
 	private final Item mailbox = new MailboxItem();
 	private final LTDynmap dynmap = (LTDynmap) IntegrationModule.getInstance().get(IntegrationModule.Function.DYNMAP);
 	private final LTBlueMap blueMap = (LTBlueMap) IntegrationModule.getInstance().get(IntegrationModule.Function.BLUEMAP);
@@ -122,7 +127,7 @@ public final class MailboxBlockListener implements Listener {
 							event.setDropItems(false);
 							block.getWorld().dropItem(block.getLocation(), newMailbox);
 							if(dynmap != null) dynmap.deleteMarker(player, block.getLocation());
-							if(blueMap != null) blueMap.deleteMarker(player, block.getLocation());
+							if(blueMap != null) blueMap.deleteMarker(player, block.getLocation(), false);
 							if(decentHolograms != null) decentHolograms.deleteHolo(player, block.getLocation());
 							MailboxModule.log(player.getUniqueId(), null, MailboxModule.Action.BROKE, null, null, null, block.getLocation());
 						} else event.setCancelled(true);
@@ -132,7 +137,7 @@ public final class MailboxBlockListener implements Listener {
 							event.setDropItems(false);
 							block.getWorld().dropItem(block.getLocation(), newMailbox);
 							if(dynmap != null) dynmap.deleteMarker(owner.getBukkitPlayer(), block.getLocation());
-							if(blueMap != null) blueMap.deleteMarker(owner.getBukkitPlayer(), block.getLocation());
+							if(blueMap != null) blueMap.deleteMarker(owner.getBukkitPlayer(), block.getLocation(), false);
 							if(decentHolograms != null) decentHolograms.deleteHolo(owner.getBukkitPlayer(), block.getLocation());
 							MailboxModule.log(player.getUniqueId(), owner.getUniqueId(), MailboxModule.Action.ADMIN_BROKE, null, null, null, block.getLocation());
 							player.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.BLOCK_ADMINBROKE) + " " + owner.getName());

@@ -21,6 +21,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import io.github.leothawne.LTItemMail.LTItemMail;
 import io.github.leothawne.LTItemMail.LTPlayer;
 import io.github.leothawne.LTItemMail.event.EntitySendMailEvent;
 import io.github.leothawne.LTItemMail.inventory.MailboxInventory;
@@ -39,6 +40,9 @@ import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 
 public final class MailboxListener implements Listener {
+	public MailboxListener() {
+		Bukkit.getServer().getPluginManager().registerEvents(this, LTItemMail.getInstance());
+	}
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
 	public final void onInventoryClose(final InventoryCloseEvent event) {
 		final Player player = (Player) event.getPlayer();

@@ -6,9 +6,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 
 import com.flowpowered.math.vector.Vector3d;
 
@@ -20,7 +20,11 @@ import de.bluecolored.bluemap.api.markers.Marker;
 import de.bluecolored.bluemap.api.markers.MarkerSet;
 import de.bluecolored.bluemap.api.markers.POIMarker;
 import io.github.leothawne.LTItemMail.LTItemMail;
+import io.github.leothawne.LTItemMail.block.MailboxBlock;
 import io.github.leothawne.LTItemMail.module.ConfigurationModule;
+import io.github.leothawne.LTItemMail.module.ConsoleModule;
+import io.github.leothawne.LTItemMail.module.DatabaseModule;
+import io.github.leothawne.LTItemMail.module.LanguageModule;
 
 public final class LTBlueMap {
 	private BlueMapAPI api = null;
@@ -29,16 +33,20 @@ public final class LTBlueMap {
 			this.api = api;
 			final MarkerSet loadedSet = loadFromFile();
 			if(loadedSet != null) for(final BlueMapWorld world : api.getWorlds()) for(final BlueMapMap map : world.getMaps()) {
-				final MarkerSet set = MarkerSet.builder().label("Mailboxes").build();
+				final MarkerSet set = MarkerSet.builder().label(LanguageModule.get(LanguageModule.Type.BLOCK_NAME)).build();
 				for(final String id : loadedSet.getMarkers().keySet()) {
 					final String[] args = id.split("_");
 					if(args[1].equals(world.getId())) set.getMarkers().put(id, loadedSet.getMarkers().get(id));
 				}
 				map.getMarkerSets().put("ltitemmail_markers", set);
 			}
+			for(final MailboxBlock block : DatabaseModule.Block.getMailboxBlocks()) createMarker(Bukkit.getOfflinePlayer(block.getOwner()), block.getLocation());
 		});
 	}
-	public final void createMarker(final Player player, final Location location) {
+	public final void unload() {
+		for(final MailboxBlock block : DatabaseModule.Block.getMailboxBlocks()) deleteMarker(Bukkit.getOfflinePlayer(block.getOwner()), block.getLocation(), true);
+	}
+	public final void createMarker(final OfflinePlayer player, final Location location) {
 		if(api != null) {
 			final BlueMapWorld world = api.getWorld(location.getWorld()).get();
 			MarkerSet set = null;
@@ -46,24 +54,27 @@ public final class LTBlueMap {
 				set = map.getMarkerSets().get(setId);
 				break;
 			}
-			if(set == null) set = MarkerSet.builder().label("Mailboxes").build();
+			if(set == null) set = MarkerSet.builder().label(LanguageModule.get(LanguageModule.Type.BLOCK_NAME)).build();
 			final String worldId = world.getId();
 			final Integer x = location.getBlockX();
 			final Integer y = location.getBlockY();
 			final Integer z = location.getBlockZ();
 			final String id = player.getName() + "_" + worldId + "_" + x + "_" + y + "_" + z;
-			final POIMarker marker = new POIMarker(player.getName() + "'s Mailbox (" + x + ", " + y + ", " + z + ")", new Vector3d(x, y, z));
+			final POIMarker marker = new POIMarker(LanguageModule.get(LanguageModule.Type.BLOCK_NAME) + " | " + LanguageModule.get(LanguageModule.Type.BLOCK_OWNER) + " " + player.getName() + " (" + x + ", " + y + ", " + z + ")", new Vector3d(x, y, z));
 			marker.setMaxDistance(1000);
-			if(set.getMarkers().containsKey(id)) set.getMarkers().remove(id);
-			set.getMarkers().put(id, marker);
+			if(set.getMarkers().containsKey(id)) {
+				set.getMarkers().replace(id, marker);
+			} else set.getMarkers().put(id, marker);
 			for(final BlueMapMap cachedMap : world.getMaps()) {
-				if(cachedMap.getMarkerSets().containsKey("ltitemmail_markers")) cachedMap.getMarkerSets().remove("ltitemmail_markers");
-				cachedMap.getMarkerSets().put("ltitemmail_markers", set);
+				if(cachedMap.getMarkerSets().containsKey("ltitemmail_markers")) {
+					cachedMap.getMarkerSets().replace("ltitemmail_markers", set);
+				} else cachedMap.getMarkerSets().put("ltitemmail_markers", set);
 			}
 			saveToFile();
+			ConsoleModule.debug(getClass().getName() + "#createMarker: " + id);
 		}
 	}
-	public final void deleteMarker(final OfflinePlayer player, final Location location) {
+	public final void deleteMarker(final OfflinePlayer player, final Location location, Boolean doNotSave) {
 		if(api != null) {
 			final BlueMapWorld world = api.getWorld(location.getWorld()).get();
 			MarkerSet set = null;
@@ -77,20 +88,25 @@ public final class LTBlueMap {
 				final Integer y = location.getBlockY();
 				final Integer z = location.getBlockZ();
 				final String id = player.getName() + "_" + worldId + "_" + x + "_" + y + "_" + z;
-				if(set.getMarkers().containsKey(id)) set.getMarkers().remove(id);
-				for(final BlueMapMap cachedMap : world.getMaps()) if(cachedMap.getMarkerSets().containsKey("ltitemmail_markers")) cachedMap.getMarkerSets().remove("ltitemmail_markers");
-				saveToFile();
+				if(set.getMarkers().containsKey(id)) {
+					set.getMarkers().remove(id);
+					for(final BlueMapMap cachedMap : world.getMaps()) if(cachedMap.getMarkerSets().containsKey("ltitemmail_markers")) cachedMap.getMarkerSets().replace("ltitemmail_markers", set);
+					if(!doNotSave) saveToFile();
+					ConsoleModule.debug(getClass().getName() + "#deleteMarker: " + id);
+				}
 			}
 		}
 	}
 	private final void saveToFile() {
-		final MarkerSet set = MarkerSet.builder().label("Mailboxes").build();
+		final MarkerSet set = MarkerSet.builder().label(LanguageModule.get(LanguageModule.Type.BLOCK_NAME)).build();
 		for(final BlueMapWorld world : api.getWorlds()) for(final BlueMapMap map : world.getMaps()) for(final Map.Entry<String, MarkerSet> currentSet : map.getMarkerSets().entrySet()) if(currentSet.getKey().equals("ltitemmail_markers")) for(final Map.Entry<String, Marker> currentMarker : currentSet.getValue().getMarkers().entrySet()) set.getMarkers().put(currentMarker.getKey(), currentMarker.getValue());
 		try {
 			final FileWriter writer = new FileWriter(new File(LTItemMail.getInstance().getDataFolder(), "bluemap-markers.json"));
 			MarkerGson.INSTANCE.toJson(set, writer);
 			writer.close();
+			ConsoleModule.debug(getClass().getName() + "#saveToFile: saved");
 		} catch (final IOException e) {
+			ConsoleModule.debug(getClass().getName() + "#saveToFile: error");
 			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 		}
 	}
@@ -101,7 +117,9 @@ public final class LTBlueMap {
 			final FileReader reader = new FileReader(markers);
 			set = MarkerGson.INSTANCE.fromJson(reader, MarkerSet.class);
 			reader.close();
+			ConsoleModule.debug(getClass().getName() + "#loadFromFile: loaded");
 		} catch (final IOException e) {
+			ConsoleModule.debug(getClass().getName() + "#loadFromFile: error");
 			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 		}
 		return set;

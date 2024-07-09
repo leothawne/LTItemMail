@@ -9,7 +9,6 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
@@ -22,12 +21,9 @@ import io.github.leothawne.LTItemMail.util.Toasts;
 import net.md_5.bungee.api.ChatColor;
 
 public final class BungeeModule implements PluginMessageListener {
-	private static final List<String> onlinePlayers = new ArrayList<>();
-	public static final List<String> getOnlinePlayers(){
-		return onlinePlayers;
-	}
+	private static final List<String> players = new ArrayList<>();
 	public BungeeModule() {
-		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.BUNGEE_MODE)) new BukkitRunnable() {
+		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.BUNGEE_MODE)) Bukkit.getScheduler().runTaskTimer(LTItemMail.getInstance(), new Runnable() {
 			@Override
 			public final void run() {
 				final ByteArrayDataOutput bungee = ByteStreams.newDataOutput();
@@ -35,7 +31,7 @@ public final class BungeeModule implements PluginMessageListener {
 				bungee.writeUTF("ALL");
 				Bukkit.getServer().sendPluginMessage(LTItemMail.getInstance(), "BungeeCord", bungee.toByteArray());
 			}
-		}.runTaskTimer(LTItemMail.getInstance(), 0, 20 * 3);
+		}, 1, 5);
 	}
 	@Override
 	public final void onPluginMessageReceived(final String channel, final Player player, final byte[] message) {
@@ -81,14 +77,17 @@ public final class BungeeModule implements PluginMessageListener {
 				case "PlayerList":
 					final String server = in.readUTF();
 					if(server.equals("ALL")) {
-						final String[] players = in.readUTF().split(", ");
-						onlinePlayers.clear();
-						for(final String bungeePlayer : players) onlinePlayers.add(bungeePlayer);
+						players.clear();
+						final String[] playerList = in.readUTF().split(", ");
+						for(final String bungeePlayer : playerList) players.add(bungeePlayer);
 					}
 					break;
 			}
 		} catch(final IOException e) {
 			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 		}
+	}
+	public static final List<String> getOnlinePlayers(){
+		return players;
 	}
 }

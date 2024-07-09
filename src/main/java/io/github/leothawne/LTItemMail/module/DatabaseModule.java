@@ -10,8 +10,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Location;
@@ -22,6 +24,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
 import io.github.leothawne.LTItemMail.LTPlayer;
+import io.github.leothawne.LTItemMail.block.MailboxBlock;
 
 public final class DatabaseModule {
 	private DatabaseModule() {}
@@ -130,12 +133,13 @@ public final class DatabaseModule {
 						statement = connection.createStatement();
 						results = statement.executeQuery("SELECT * FROM mailbox_block;");
 						while(results.next()) {
-							prepared = LTItemMail.getInstance().connection.prepareStatement("INSERT INTO mailbox_block(id, owner_uuid, mailbox_x, mailbox_y, mailbox_z) VALUES(?, ?, ?, ?, ?);");
+							prepared = LTItemMail.getInstance().connection.prepareStatement("INSERT INTO mailbox_block(id, owner_uuid, mailbox_world, mailbox_x, mailbox_y, mailbox_z) VALUES(?, ?, ?, ?, ?, ?);");
 							prepared.setInt(1, results.getInt("id"));
 							prepared.setString(2, results.getString("owner_uuid"));
-							prepared.setInt(3, results.getInt("mailbox_x"));
-							prepared.setInt(4, results.getInt("mailbox_y"));
-							prepared.setInt(5, results.getInt("mailbox_z"));
+							prepared.setString(3, results.getString("mailbox_world"));
+							prepared.setInt(4, results.getInt("mailbox_x"));
+							prepared.setInt(5, results.getInt("mailbox_y"));
+							prepared.setInt(6, results.getInt("mailbox_z"));
 							prepared.executeUpdate();
 						}
 						LTItemMail.getInstance().connection.createStatement().executeLargeUpdate("DELETE FROM users;");
@@ -249,6 +253,7 @@ public final class DatabaseModule {
 							+ ");");
 						sql.add("ALTER TABLE mailbox ADD status TEXT NOT NULL DEFAULT 'PENDING';");
 						sql.add("ALTER TABLE mailbox RENAME COLUMN opened TO deleted;");
+						sql.add("ALTER TABLE mailbox_block ADD mailbox_world TEXT NOT NULL DEFAULT 'world';");
 						sql.add("UPDATE config SET version = '4';");
 						break;
 				}
@@ -281,6 +286,7 @@ public final class DatabaseModule {
 						sql.add("CREATE TABLE mailbox_block ("
 								+ "id int NOT NULL AUTO_INCREMENT,"
 								+ "owner_uuid longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,"
+								+ "mailbox_world longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL DEFAULT 'world',"
 								+ "mailbox_x int NOT NULL,"
 								+ "mailbox_y int NOT NULL,"
 								+ "mailbox_z int NOT NULL,"
@@ -459,7 +465,7 @@ public final class DatabaseModule {
 			final HashMap<Integer, String> mailboxes = new HashMap<>();
 			try {
 				final Statement statement = LTItemMail.getInstance().connection.createStatement();
-				final ResultSet results = statement.executeQuery("SELECT * FROM mailbox WHERE uuid_to = '" + owner.toString() + "' AND deleted = '0';");
+				final ResultSet results = statement.executeQuery("SELECT * FROM mailbox WHERE uuid_to = '" + owner.toString() + "' AND deleted = '0' ORDER BY id ASC;");
 				while(results.next()) mailboxes.putIfAbsent(results.getInt("id"), results.getString("sent_date"));
 				statement.closeOnCompletion();
 			} catch (final SQLException | NullPointerException e) {
@@ -471,7 +477,7 @@ public final class DatabaseModule {
 			final HashMap<Integer, String> mailboxes = new HashMap<>();
 			try {
 				final Statement statement = LTItemMail.getInstance().connection.createStatement();
-				final ResultSet results = statement.executeQuery("SELECT id,sent_date FROM mailbox WHERE uuid_to = '" + owner.toString() + "' AND deleted = '1';");
+				final ResultSet results = statement.executeQuery("SELECT id,sent_date FROM mailbox WHERE uuid_to = '" + owner.toString() + "' AND deleted = '1' ORDER BY id ASC;");
 				while(results.next()) mailboxes.putIfAbsent(results.getInt("id"), results.getString("sent_date"));
 				statement.closeOnCompletion();
 			} catch (final SQLException | NullPointerException e) {
@@ -510,7 +516,7 @@ public final class DatabaseModule {
 		public static final boolean isMailboxBlock(final Location block) {
 			try {
 				final Statement statement = LTItemMail.getInstance().connection.createStatement();
-				final ResultSet results = statement.executeQuery("SELECT * FROM mailbox_block WHERE mailbox_x = '" + block.getBlockX() + "' AND mailbox_y = '" + block.getBlockY() + "' AND mailbox_z = '" + block.getBlockZ() + "';");
+				final ResultSet results = statement.executeQuery("SELECT * FROM mailbox_block WHERE mailbox_world = '" + block.getWorld().getName() + "' AND mailbox_x = '" + block.getBlockX() + "' AND mailbox_y = '" + block.getBlockY() + "' AND mailbox_z = '" + block.getBlockZ() + "';");
 				statement.closeOnCompletion();
 				return results.next();
 			} catch (final SQLException | NullPointerException e) {
@@ -521,7 +527,7 @@ public final class DatabaseModule {
 		public static final boolean isMailboxOwner(final UUID owner, final Location block) {
 			try {
 				final Statement statement = LTItemMail.getInstance().connection.createStatement();
-				final ResultSet results = statement.executeQuery("SELECT owner_uuid FROM mailbox_block WHERE mailbox_x = '" + block.getBlockX() + "' AND mailbox_y = '" + block.getBlockY() + "' AND mailbox_z = '" + block.getBlockZ() + "';");
+				final ResultSet results = statement.executeQuery("SELECT owner_uuid FROM mailbox_block WHERE mailbox_world = '" + block.getWorld().getName() + "' AND mailbox_x = '" + block.getBlockX() + "' AND mailbox_y = '" + block.getBlockY() + "' AND mailbox_z = '" + block.getBlockZ() + "';");
 				statement.closeOnCompletion();
 				if(results.next()) if(UUID.fromString(results.getString("owner_uuid")).equals(owner)) return true;
 			} catch (final SQLException | NullPointerException e) {
@@ -532,7 +538,7 @@ public final class DatabaseModule {
 		public static final UUID getMailboxOwner(final Location block) {
 			try {
 				final Statement statement = LTItemMail.getInstance().connection.createStatement();
-				final ResultSet results = statement.executeQuery("SELECT owner_uuid FROM mailbox_block WHERE mailbox_x = '" + block.getBlockX() + "' AND mailbox_y = '" + block.getBlockY() + "' AND mailbox_z = '" + block.getBlockZ() + "';");
+				final ResultSet results = statement.executeQuery("SELECT owner_uuid FROM mailbox_block WHERE mailbox_world = '" + block.getWorld().getName() + "' AND mailbox_x = '" + block.getBlockX() + "' AND mailbox_y = '" + block.getBlockY() + "' AND mailbox_z = '" + block.getBlockZ() + "';");
 				statement.closeOnCompletion();
 				if(results.next()) return UUID.fromString(results.getString("owner_uuid"));
 			} catch (final SQLException | NullPointerException e) {
@@ -540,13 +546,26 @@ public final class DatabaseModule {
 			}
 			return null;
 		}
+		public static final List<MailboxBlock> getMailboxBlocks(){
+			final List<MailboxBlock> blocks = new ArrayList<>();
+			try {
+				final Statement statement = LTItemMail.getInstance().connection.createStatement();
+				final ResultSet results = statement.executeQuery("SELECT * FROM mailbox_block ORDER BY id ASC;");
+				statement.closeOnCompletion();
+				while(results.next()) blocks.add(new MailboxBlock(results.getInt("id"), UUID.fromString(results.getString("owner_uuid")), results.getString("mailbox_world"), results.getInt("mailbox_x"), results.getInt("mailbox_y"), results.getInt("mailbox_z")));
+			} catch (final SQLException | NullPointerException e) {
+				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
+			}
+			return blocks;
+		}
 		public static final boolean placeMailbox(final UUID owner, Location block) {
 			try {
-				final PreparedStatement statement = LTItemMail.getInstance().connection.prepareStatement("INSERT INTO mailbox_block(owner_uuid, mailbox_x, mailbox_y, mailbox_z) VALUES(?, ?, ?, ?);");
+				final PreparedStatement statement = LTItemMail.getInstance().connection.prepareStatement("INSERT INTO mailbox_block(owner_uuid, mailbox_world, mailbox_x, mailbox_y, mailbox_z) VALUES(?, ?, ?, ?, ?);");
 				statement.setString(1, owner.toString());
-				statement.setInt(2, block.getBlockX());
-				statement.setInt(3, block.getBlockY());
-				statement.setInt(4, block.getBlockZ());
+				statement.setString(2, block.getWorld().getName());
+				statement.setInt(3, block.getBlockX());
+				statement.setInt(4, block.getBlockY());
+				statement.setInt(5, block.getBlockZ());
 				statement.executeUpdate();
 				statement.closeOnCompletion();
 				return true;
@@ -558,7 +577,7 @@ public final class DatabaseModule {
 		public static final boolean breakMailbox(final Location block) {
 			try {
 				final Statement statement = LTItemMail.getInstance().connection.createStatement();
-				statement.executeUpdate("DELETE FROM mailbox_block WHERE mailbox_x = '" + block.getBlockX() + "' AND mailbox_y = '" + block.getBlockY() + "' AND mailbox_z = '" + block.getBlockZ() + "';");
+				statement.executeUpdate("DELETE FROM mailbox_block WHERE mailbox_world = '" + block.getWorld().getName() + "' AND mailbox_x = '" + block.getBlockX() + "' AND mailbox_y = '" + block.getBlockY() + "' AND mailbox_z = '" + block.getBlockZ() + "';");
 				statement.closeOnCompletion();
 				return true;
 			} catch (final SQLException | NullPointerException e) {

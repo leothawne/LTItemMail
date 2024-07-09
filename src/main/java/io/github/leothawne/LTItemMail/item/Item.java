@@ -21,7 +21,7 @@ public interface Item {
 	public ItemStack getItem(String data);
 	public Recipe getRecipe();
 	public enum Type {
-		MAILBOX_BLOCK
+		MAILBOX_ITEM
 	}
 	public enum Data {
 		MAILBOX_LIMITER(999999001),
