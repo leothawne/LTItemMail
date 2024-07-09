@@ -1,6 +1,8 @@
 package io.github.leothawne.LTItemMail;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -10,6 +12,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 
+import io.github.leothawne.LTItemMail.block.Block;
+import io.github.leothawne.LTItemMail.block.MailboxBlock;
 import io.github.leothawne.LTItemMail.module.ConfigurationModule;
 import io.github.leothawne.LTItemMail.module.ConsoleModule;
 import io.github.leothawne.LTItemMail.module.DatabaseModule;
@@ -84,5 +88,10 @@ public final class LTItemMailAPI {
 			return "success";
 		}
 		return LanguageModule.Type.PLAYER_NEVERPLAYEDERROR.toString();
+	}
+	public static final List<Block> getBlockList(){
+		final List<Block> blockList = new ArrayList<>();
+		for(final MailboxBlock mailboxBlock : DatabaseModule.Block.getMailboxBlocks()) blockList.add(mailboxBlock);
+		return blockList;
 	}
 }
