@@ -36,6 +36,7 @@ public final class LanguageModule {
 			try {
 				language.load(languageFile);
 				ConsoleModule.info((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml loaded.");
+				if(((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE)).equalsIgnoreCase("portuguese")) ConsoleModule.br();
 				try {
 					final VersionType type = DataModule.VersionType.valueOf(((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE)).toUpperCase() + "_YML");
 					final int languageVersion = Integer.parseInt(DataModule.getVersion(type));
@@ -320,6 +321,26 @@ public final class LanguageModule {
 				result = "You broke the mailbox of";
 				path = "block.adminbroke";
 				break;
+			case BLOCK_NAME:
+				result = "Mailbox";
+				path = "block.name";
+				break;
+			case BLOCK_OWNER:
+				result = "Owner:";
+				path = "block.owner";
+				break;
+			case BLOCK_LIST:
+				result = "Mailboxes you placed:";
+				path = "block.list.placed";
+				break;
+			case BLOCK_LIST_WORLD:
+				result = "World";
+				path = "block.list.world";
+				break;
+			case BLOCK_ADMIN_LIST:
+				result = "Mailboxes of";
+				path = "block.adminlist.placed";
+				break;
 			case TRANSACTION_NOTINSTALLED:
 				result = "Vault is not installed!";
 				path = "transaction.notinstalled";
@@ -335,6 +356,18 @@ public final class LanguageModule {
 			case COMMAND_PLAYER_COSTS:
 				result = "Shows mail price.";
 				path = "command.player.costs";
+				break;
+			case COMMAND_PLAYER_BLOCKS:
+				result = "Shows your placed mailboxes list.";
+				path = "command.player.blocks";
+				break;
+			case COMMAND_ADMIN_BLOCKS:
+				result = "Shows the list of placed mailboxes of a player.";
+				path = "command.admin.blocks";
+				break;
+			case COMMAND_PLAYER_COLOR:
+				result = "Changes the color of the mailbox block in your main hand.";
+				path = "command.player.color";
 				break;
 		}
 		if(path != null) if(LTItemMail.getInstance().getLanguage().isSet(path)) {
@@ -370,6 +403,8 @@ public final class LanguageModule {
 		COMMAND_PLAYER_INFO_BANNED_REASON,
 		COMMAND_PLAYER_INFO_SENT,
 		COMMAND_PLAYER_INFO_RECEIVED,
+		COMMAND_PLAYER_BLOCKS,
+		COMMAND_PLAYER_COLOR,
 		COMMAND_ADMIN_ITEMMAILADMIN,
 		COMMAND_ADMIN_UPDATE,
 		COMMAND_ADMIN_LIST,
@@ -383,6 +418,7 @@ public final class LanguageModule {
 		COMMAND_ADMIN_BANLIST_MAIN,
 		COMMAND_ADMIN_BANLIST_LIST,
 		COMMAND_ADMIN_BANLIST_EMPTY,
+		COMMAND_ADMIN_BLOCKS,
 		PLAYER_PERMISSIONERROR,
 		PLAYER_INVENTORYFULL,
 		PLAYER_MISSINGERROR,
@@ -420,6 +456,11 @@ public final class LanguageModule {
 		BLOCK_OWNERERROR,
 		BLOCK_BELOWERROR,
 		BLOCK_ADMINBROKE,
+		BLOCK_NAME,
+		BLOCK_OWNER,
+		BLOCK_LIST,
+		BLOCK_LIST_WORLD,
+		BLOCK_ADMIN_LIST,
 		TRANSACTION_NOTINSTALLED,
 		TRANSACTION_COSTS,
 		COMMAND_ADMIN_RELOAD,
