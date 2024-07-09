@@ -23,6 +23,7 @@ Update notes:
 - Enhanced Mailbox Log Worker. Log files inside LTItemMail/logs folder will be handled optimally;
 - Mailbox Log Worker now detects money transactions and log them too (mail prices);
 - Now you can place mailbox blocks above walls and fences.
+- Forgot where you placed your mailboxes? Get the locations with "/itemmail blocks". For admins: "/itemmailadmin blocks <player>".
 
 Notas de atualização:
 - Minecraft 1.13 não é mais suportado (incompatível);
