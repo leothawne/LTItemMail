@@ -4,9 +4,7 @@ import java.sql.Connection;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import io.github.leothawne.LTItemMail.command.ItemMailAdminCommand;
 import io.github.leothawne.LTItemMail.command.ItemMailCommand;
@@ -23,16 +21,14 @@ import io.github.leothawne.LTItemMail.module.ConsoleModule;
 import io.github.leothawne.LTItemMail.module.DatabaseModule;
 import io.github.leothawne.LTItemMail.module.IntegrationModule;
 import io.github.leothawne.LTItemMail.module.LanguageModule;
-import io.github.leothawne.LTItemMail.module.RecipeModule;
+import io.github.leothawne.LTItemMail.task.MailboxBlockTask;
 import io.github.leothawne.LTItemMail.task.MailboxTask;
+import io.github.leothawne.LTItemMail.task.RecipeTask;
 import io.github.leothawne.LTItemMail.task.VersionControlTask;
 import io.github.leothawne.LTItemMail.util.BStats;
 
 public final class LTItemMail extends JavaPlugin {
 	private static LTItemMail instance;
-	private final void registerEvents(final Listener...listeners) {
-		for(final Listener listener : listeners) Bukkit.getServer().getPluginManager().registerEvents(listener, this);
-	}
 	private FileConfiguration configuration;
 	private FileConfiguration language;
 	public Connection connection = null;
@@ -51,36 +47,37 @@ public final class LTItemMail extends JavaPlugin {
 			connection = DatabaseModule.connect();
 			DatabaseModule.checkForUpdates();
 			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.DATABASE_CONVERT)) DatabaseModule.convert();
-			RecipeModule.schedule();
-			MailboxTask.run();
 			IntegrationModule.getInstance().load();
-			registerEvents(new MailboxListener(),
-					new PlayerListener(),
-					new MailboxBlockListener());
+			new PlayerListener();
+			new MailboxListener();
+			new MailboxBlockListener();
 			getCommand("itemmail").setExecutor(new ItemMailCommand());
 			getCommand("itemmail").setTabCompleter(new ItemMailCommandTabCompleter());
 			getCommand("itemmailadmin").setExecutor(new ItemMailAdminCommand());
 			getCommand("itemmailadmin").setTabCompleter(new ItemMailAdminCommandTabCompleter());
 			getCommand("mailitem").setExecutor(new MailItemCommand());
 			getCommand("mailitem").setTabCompleter(new MailItemCommandTabCompleter());
+			Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new RecipeTask(), 1, 20 * 30);
+			Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new MailboxTask(), 1, 1);
+			Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new MailboxBlockTask(), 1, 20);
 			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_UPDATE_CHECK)) {
 				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ltitemmail:itemmailadmin update");
-				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_UPDATE_PERIODIC_NOTIFICATION)) new BukkitRunnable() {
+				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_UPDATE_PERIODIC_NOTIFICATION)) Bukkit.getScheduler().runTaskTimer(this, new Runnable() {
 					@Override
 					public final void run() {
 						Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ltitemmail:itemmailadmin update");
 					}
-				}.runTaskTimer(this, 20 * 60 * 60 * 3, 20 * 60 * 60 * 3);
+				}, 20 * 60 * 60 * 3, 20 * 60 * 60 * 3);
 			}
 			VersionControlTask.run();
 		} else {
-			new BukkitRunnable() {
+			Bukkit.getScheduler().runTaskTimer(this, new Runnable() {
 				@Override
 				public final void run() {
 					ConsoleModule.severe("Plugin disabled in config.yml.");
 					Bukkit.getPluginManager().disablePlugin(instance);
 				}
-			}.runTaskTimerAsynchronously(this, 0, 0);
+			}, 1, 1);
 		}
 	}
 	@Override
@@ -91,9 +88,6 @@ public final class LTItemMail extends JavaPlugin {
 		getServer().getMessenger().unregisterOutgoingPluginChannel(this, "BungeeCord");
 		getServer().getMessenger().unregisterIncomingPluginChannel(this, "BungeeCord");
 	}
-	public static final LTItemMail getInstance() {
-		return instance;
-	}
 	public final FileConfiguration getConfiguration() {
 		return configuration;
 	}
@@ -103,6 +97,7 @@ public final class LTItemMail extends JavaPlugin {
 	public final void reload() {
 		loadConfig();
 		loadLang();
+		IntegrationModule.reload().load();
 	}
 	private final void loadConfig() {
 		ConfigurationModule.check();
@@ -113,5 +108,8 @@ public final class LTItemMail extends JavaPlugin {
 		LanguageModule.check();
 		language = LanguageModule.load();
 		LanguageModule.addMissing();
+	}
+	public static final LTItemMail getInstance() {
+		return instance;
 	}
 }
