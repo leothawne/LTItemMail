@@ -1,4 +1,4 @@
-package io.github.leothawne.LTItemMail;
+package io.github.leothawne.LTItemMail.entity;
 
 import java.util.LinkedList;
 import java.util.UUID;

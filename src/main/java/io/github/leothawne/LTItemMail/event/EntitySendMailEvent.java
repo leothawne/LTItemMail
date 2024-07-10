@@ -8,7 +8,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 
-import io.github.leothawne.LTItemMail.LTPlayer;
+import io.github.leothawne.LTItemMail.entity.LTPlayer;
 /**
  * 
  * This event is called when a mailbox is sent.

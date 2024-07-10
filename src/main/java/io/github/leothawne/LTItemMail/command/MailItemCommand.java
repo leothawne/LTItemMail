@@ -5,7 +5,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import io.github.leothawne.LTItemMail.LTPlayer;
+import io.github.leothawne.LTItemMail.entity.LTPlayer;
 import io.github.leothawne.LTItemMail.inventory.MailboxInventory;
 import io.github.leothawne.LTItemMail.module.ConfigurationModule;
 import io.github.leothawne.LTItemMail.module.DatabaseModule;

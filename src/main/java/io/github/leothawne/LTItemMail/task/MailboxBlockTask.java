@@ -1,7 +1,7 @@
 package io.github.leothawne.LTItemMail.task;
 
-import io.github.leothawne.LTItemMail.LTPlayer;
 import io.github.leothawne.LTItemMail.block.MailboxBlock;
+import io.github.leothawne.LTItemMail.entity.LTPlayer;
 import io.github.leothawne.LTItemMail.module.DatabaseModule;
 import io.github.leothawne.LTItemMail.module.IntegrationModule;
 import io.github.leothawne.LTItemMail.module.api.LTBlueMap;

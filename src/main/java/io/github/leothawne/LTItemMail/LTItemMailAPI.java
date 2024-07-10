@@ -14,6 +14,7 @@ import com.google.common.io.ByteStreams;
 
 import io.github.leothawne.LTItemMail.block.Block;
 import io.github.leothawne.LTItemMail.block.MailboxBlock;
+import io.github.leothawne.LTItemMail.entity.LTPlayer;
 import io.github.leothawne.LTItemMail.module.ConfigurationModule;
 import io.github.leothawne.LTItemMail.module.ConsoleModule;
 import io.github.leothawne.LTItemMail.module.DatabaseModule;

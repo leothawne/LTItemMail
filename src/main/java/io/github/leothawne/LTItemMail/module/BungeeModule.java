@@ -15,7 +15,7 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
-import io.github.leothawne.LTItemMail.LTPlayer;
+import io.github.leothawne.LTItemMail.entity.LTPlayer;
 import io.github.leothawne.LTItemMail.module.MailboxModule.Action;
 import io.github.leothawne.LTItemMail.util.Toasts;
 import net.md_5.bungee.api.ChatColor;

@@ -22,7 +22,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
-import io.github.leothawne.LTItemMail.LTPlayer;
+import io.github.leothawne.LTItemMail.entity.LTPlayer;
 import io.github.leothawne.LTItemMail.event.EntitySendMailEvent;
 import io.github.leothawne.LTItemMail.inventory.MailboxInventory;
 import io.github.leothawne.LTItemMail.item.MailboxItem;

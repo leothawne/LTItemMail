@@ -3,7 +3,7 @@ package io.github.leothawne.LTItemMail.module.api;
 import org.bukkit.OfflinePlayer;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
-import io.github.leothawne.LTItemMail.LTPlayer;
+import io.github.leothawne.LTItemMail.entity.LTPlayer;
 import io.github.leothawne.LTItemMail.module.LanguageModule;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 

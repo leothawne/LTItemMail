@@ -17,8 +17,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
-import io.github.leothawne.LTItemMail.LTPlayer;
 import io.github.leothawne.LTItemMail.block.MailboxBlock;
+import io.github.leothawne.LTItemMail.entity.LTPlayer;
 import io.github.leothawne.LTItemMail.inventory.MailboxInventory;
 import io.github.leothawne.LTItemMail.module.ConfigurationModule;
 import io.github.leothawne.LTItemMail.module.ConsoleModule;
