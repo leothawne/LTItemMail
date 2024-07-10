@@ -55,7 +55,7 @@ command:
         open: 'Abre um corrêio.'
         delete: 'Deleta um corrêio.'
         mailitem: 'Inicia um novo corrêio pra colocar itens dentro e enviar para outro jogador.'
-        costs: 'Mostra preço de envio.'
+        costs: 'Mostra o preço de envio.'
         info:
             info: 'Mostra informações relevantes sobre o jogador.'
             registry: 'Data de registro:'
