@@ -27,7 +27,7 @@
 		</plugins>
 		<resources>
 		    <resource>
-		        <targetPath>${basedir}</targetPath>
+		        <targetPath>${basedir}/target/classes</targetPath>
 		        <directory>${basedir}/src/main/resources</directory>
 		        <filtering>true</filtering>
 		        <excludes>
@@ -38,7 +38,7 @@
 				</excludes>
 		    </resource>
 		    <resource>
-		        <targetPath>${basedir}</targetPath>
+		        <targetPath>${basedir}/target/classes</targetPath>
 		        <directory>${basedir}/src/main/resources</directory>
 		        <filtering>false</filtering>
 		        <includes>
@@ -112,7 +112,7 @@
     	<dependency>
 	    	<groupId>com.github.GriefPrevention</groupId>
 	    	<artifactId>GriefPrevention</artifactId>
-	    	<version>16.18.4</version>
+	    	<version>16.18.3</version>
             <scope>provided</scope>
 		</dependency>
 	    <dependency>
