@@ -2,10 +2,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.leothawne</groupId>
 	<artifactId>LTItemMail</artifactId>
-	<version>1.0.0-BETA-${v}</version>
+	<version>1.0.0</version>
 	<name>LTItemMail</name>
 	<description>Have you ever imagined mailing items to your friends in Minecraft?</description>
 	<build>
+		<finalName>${project.name}-${project.version}-${v}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -24,6 +25,31 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
+            <plugin>
+			    <groupId>org.apache.maven.plugins</groupId>
+			    <artifactId>maven-assembly-plugin</artifactId>
+			    <executions>
+			        <execution>
+			            <phase>package</phase>
+			            <goals>
+			                <goal>single</goal>
+			            </goals>
+			            <configuration>
+			                <archive>
+			                <manifest>
+			                    <mainClass>
+			                        com.baeldung.executable.ExecutableMavenJar
+			                    </mainClass>
+			                </manifest>
+			                </archive>
+			                <descriptorRefs>
+			                    <descriptorRef>jar-with-dependencies</descriptorRef>
+			                </descriptorRefs>
+			                <appendAssemblyId>false</appendAssemblyId>
+			            </configuration>
+			        </execution>
+			    </executions>
+			</plugin>
 		</plugins>
 		<resources>
 		    <resource>
@@ -59,7 +85,7 @@
     	</repository>
 		<repository>
 		    <id>JitPack</id>
-		    <url>https://jitpack.io</url>
+		    <url>https://jitpack.io/</url>
 		</repository>
 	    <repository>
 	        <id>FabioZumbi12</id>
@@ -79,7 +105,7 @@
     	</repository>
     	<repository>
         	<id>bluecolored</id>
-        	<url>https://repo.bluecolored.de/releases</url>
+        	<url>https://repo.bluecolored.de/releases/</url>
     	</repository>
     	<repository>
 			<id>codemc-repo</id>
