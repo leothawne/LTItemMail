@@ -24,7 +24,7 @@ public final class VersionControlTask {
 		task = Bukkit.getScheduler().runTaskTimer(LTItemMail.getInstance(), new Runnable() {
 			@Override
 			public final void run() {
-				if(FetchUtil.URL.Cache.download(DataModule.getPluginPath(LTItemMail.getInstance().getDescription().getVersion()), "cfg-" + LTItemMail.getInstance().getDescription().getVersion())) {
+				if(FetchUtil.URL.Cache.download(DataModule.getPluginPath(LTItemMail.getInstance().getDescription().getVersion()), "cfg-" + LTItemMail.getInstance().getDescription().getVersion(), true)) {
 					try {
 						final YamlConfiguration info = new YamlConfiguration();
 						info.load(FetchUtil.URL.Cache.get("cfg-" + LTItemMail.getInstance().getDescription().getVersion()));
