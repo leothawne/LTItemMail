@@ -2,15 +2,11 @@ package io.github.leothawne.LTItemMail.util;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URLConnection;
-import java.nio.channels.Channels;
-import java.nio.channels.FileChannel;
-import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -24,7 +20,11 @@ import org.json.simple.parser.ParseException;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
 import io.github.leothawne.LTItemMail.module.ConfigurationModule;
+import io.github.leothawne.LTItemMail.module.ConsoleModule;
 import io.github.leothawne.LTItemMail.module.DatabaseModule;
+import me.marnic.jdl.CombinedSpeedProgressDownloadHandler;
+import me.marnic.jdl.Downloader;
+import me.marnic.jdl.SizeUtil;
 
 public final class FetchUtil {
 	private FetchUtil() {}
@@ -57,7 +57,7 @@ public final class FetchUtil {
 			return null;
 		}
 		public static final class Cache {
-			public static final boolean download(final String url, final String name) {
+			/*public static final boolean download(final String url, final String name) {
 				try {
 					Files.createDirectories(Paths.get(LTItemMail.getInstance().getDataFolder() + File.separator + "cache"));
 					final ReadableByteChannel byteChannel = Channels.newChannel(connect(url).getInputStream());
@@ -67,6 +67,40 @@ public final class FetchUtil {
 					fileChannel.close();
 					output.close();
 					byteChannel.close();
+					return true;
+				} catch (final IOException e) {
+					if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
+				}
+				return false;
+			}*/
+			public static final boolean download(final String url, final String name, final Boolean silent) {
+				try {
+					Files.createDirectories(Paths.get(LTItemMail.getInstance().getDataFolder() + File.separator + "cache"));
+					final Downloader artifact = new Downloader(false);
+					artifact.setDownloadHandler(new CombinedSpeedProgressDownloadHandler(artifact) {
+						@Override
+						public final void onDownloadStart() {
+							super.onDownloadStart();
+							if(!silent) ConsoleModule.info("Resource download started! [" + name + "]");
+						}
+						@Override
+						public final void onDownloadSpeedProgress(final int downloadedSize, final int maxSize, final int downloadPercent, final int bytesPerSec) {
+							if(!silent) ConsoleModule.info("Downloading resource [" + name + "]: " + downloadedSize + "/" + maxSize + " MB (" + downloadPercent + "%, " + SizeUtil.toMBFB(bytesPerSec) + " MB/s)");
+						}
+						@Override
+						public final void onDownloadFinish() {
+							super.onDownloadFinish();
+							if(!silent) ConsoleModule.info("Resource download completed! [" + name + "]");
+						}
+						@Override
+						public final void onDownloadError() {
+							super.onDownloadError();
+							if(!silent) {
+								ConsoleModule.warning("Resource download failed! [" + name + "]");
+							} else ConsoleModule.debug("Resource download failed! [" + name + "]");
+						}
+					});
+					artifact.downloadFileToLocation(url, new File(LTItemMail.getInstance().getDataFolder() + File.separator + "cache" + File.separator + name + ".tmp").getAbsolutePath());
 					return true;
 				} catch (final IOException e) {
 					if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
