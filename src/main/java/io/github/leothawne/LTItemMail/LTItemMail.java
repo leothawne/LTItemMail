@@ -21,6 +21,7 @@ import io.github.leothawne.LTItemMail.module.ConsoleModule;
 import io.github.leothawne.LTItemMail.module.DatabaseModule;
 import io.github.leothawne.LTItemMail.module.IntegrationModule;
 import io.github.leothawne.LTItemMail.module.LanguageModule;
+import io.github.leothawne.LTItemMail.module.ResourcePackModule;
 import io.github.leothawne.LTItemMail.task.MailboxBlockTask;
 import io.github.leothawne.LTItemMail.task.MailboxTask;
 import io.github.leothawne.LTItemMail.task.RecipeTask;
@@ -70,6 +71,7 @@ public final class LTItemMail extends JavaPlugin {
 				}, 20 * 60 * 60 * 3, 20 * 60 * 60 * 3);
 			}
 			VersionControlTask.run();
+			ResourcePackModule.begin();
 		} else {
 			Bukkit.getScheduler().runTaskTimer(this, new Runnable() {
 				@Override
