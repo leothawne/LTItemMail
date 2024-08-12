@@ -23,7 +23,7 @@ public final class DataModule {
 	private static final String JAVA = "1.8";
 	private static final String UPDATE = "https://leothawne.github.io/LTItemMail/api/latest.html";
 	private static final String PLUGIN = "https://leothawne.github.io/LTItemMail/api/$version/plugin.yml";
-	private static final String RESOURCE = "https://github.com/leothawne/LTItemMail-ResourcePack/releases/latest/download/LTItemMail-ResourcePack.zip";
+	private static final String RESOURCE = "https://jenkins.gmj.net.br/job/LTItemMail-ResourcePack/lastSuccessfulBuild/artifact/LTItemMail-ResourcePack.zip";
 	public static final String getProjectPage(final ProjectType type) {
 		final String[] pageString = PROJECT_PAGES.split(",");
 		final HashMap<ProjectType, String> pageMap = new HashMap<>();
