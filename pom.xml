@@ -6,12 +6,6 @@
 	<packaging>pom</packaging>
 	<name>LTItemMail</name>
 	<description>Have you ever imagined mailing items to your friends in Minecraft?</description>
-	<distributionManagement>
-        <repository>
-            <id>gmj-repository</id>
-            <url>https://maven.gmj.net.br/snapshots</url>
-        </repository>
-    </distributionManagement>
 	<build>
 		<finalName>${project.name}-${project.version}-${v}</finalName>
 		<plugins>
