@@ -21,7 +21,7 @@ public final class DataModule {
 	private static final String DATE = "21/03/2024 19:08 (BRT)";
 	private static final String API = "1.14-R0.1-SNAPSHOT";
 	private static final String JAVA = "1.8";
-	private static final String UPDATE = "https://leothawne.github.io/LTItemMail/api/latest.html";
+	private static final String UPDATE = "https://jenkins.gmj.net.br/job/LTItemMail/ws/target/latest.log";
 	private static final String PLUGIN = "https://leothawne.github.io/LTItemMail/api/$version/plugin.yml";
 	private static final String RESOURCE = "https://jenkins.gmj.net.br/job/LTItemMail-ResourcePack/lastSuccessfulBuild/artifact/LTItemMail-ResourcePack.zip";
 	public static final String getProjectPage(final ProjectType type) {

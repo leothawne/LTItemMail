@@ -1,7 +1,7 @@
 package io.github.leothawne.LTItemMail.command;
 
+import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -57,14 +57,15 @@ public final class ItemMailAdminCommand implements CommandExecutor {
 					Bukkit.getScheduler().runTask(LTItemMail.getInstance(), new Runnable() {
 						@Override
 						public final void run() {
-							final String[] local = LTItemMail.getInstance().getDescription().getVersion().split("\\.");
-							final List<Integer> lStorage = Arrays.asList(Integer.parseInt(local[0]), Integer.parseInt(local[1]), Integer.parseInt(local[2]));
-							final String[] server = FetchUtil.URL.get(DataModule.getUpdatePath()).split("-");
-							final String[] split = server[0].split("\\.");
-							final List<Integer> rStorage = Arrays.asList(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]));
-							if((rStorage.get(0) > lStorage.get(0)) || (rStorage.get(0) == lStorage.get(0) && rStorage.get(1) > lStorage.get(1)) || (rStorage.get(0) == lStorage.get(0) && rStorage.get(1) == lStorage.get(1) && rStorage.get(2) > lStorage.get(2))) {
-								sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + "A newer version is available: " + ChatColor.GREEN + server[0] + ChatColor.YELLOW + " (released on " + ChatColor.GREEN + server[1] + ChatColor.YELLOW + ").");
-							} else sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + "The plugin is up to date!");
+							try {
+								final Integer remoteBuild = Integer.parseInt(FetchUtil.URL.get(DataModule.getUpdatePath()));
+								if(remoteBuild > Integer.parseInt(new File(LTItemMail.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getName().split("\\-")[2].replace(".jar", "").replace("#", ""))) {
+									sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + "New update available: https://jenkins.gmj.net.br/job/LTItemMail/" + remoteBuild + "/");
+								} else sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + "There is no new updates!");
+							} catch(final ArrayIndexOutOfBoundsException | NumberFormatException e) {
+								sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + "Could not check for new updates. Did you rename the jar file?");
+								if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
+							}
 						}
 					});
 				} else sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.PLAYER_SYNTAXERROR));
