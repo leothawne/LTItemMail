@@ -1,4 +1,4 @@
-# LT Item Mail
+# LT Item Mail [![Build Status](https://jenkins.gmj.net.br/job/LTItemMail/badge/icon)](https://jenkins.gmj.net.br/job/LTItemMail/)
 ### Have you ever imagined mailing items to your friends in Minecraft?
 ### Dev builds: [CLICK HERE](https://jenkins.gmj.net.br/job/LTItemMail/)
 ###
