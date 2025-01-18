@@ -19,7 +19,7 @@ import io.github.leothawne.LTItemMail.module.BungeeModule;
 import io.github.leothawne.LTItemMail.module.ConfigurationModule;
 import io.github.leothawne.LTItemMail.module.ConsoleModule;
 import io.github.leothawne.LTItemMail.module.DatabaseModule;
-import io.github.leothawne.LTItemMail.module.IntegrationModule;
+import io.github.leothawne.LTItemMail.module.ExtensionModule;
 import io.github.leothawne.LTItemMail.module.LanguageModule;
 import io.github.leothawne.LTItemMail.module.ResourcePackModule;
 import io.github.leothawne.LTItemMail.task.MailboxBlockTask;
@@ -48,7 +48,7 @@ public final class LTItemMail extends JavaPlugin {
 			connection = DatabaseModule.connect();
 			DatabaseModule.checkForUpdates();
 			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.DATABASE_CONVERT)) DatabaseModule.convert();
-			IntegrationModule.getInstance().load();
+			ExtensionModule.getInstance().load();
 			new PlayerListener();
 			new MailboxListener();
 			new MailboxBlockListener();
@@ -58,12 +58,12 @@ public final class LTItemMail extends JavaPlugin {
 			getCommand("itemmailadmin").setTabCompleter(new ItemMailAdminCommandTabCompleter());
 			getCommand("mailitem").setExecutor(new MailItemCommand());
 			getCommand("mailitem").setTabCompleter(new MailItemCommandTabCompleter());
-			Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new RecipeTask(), 1, 20 * 30);
-			Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new MailboxTask(), 1, 1);
-			Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new MailboxBlockTask(), 1, 20);
+			Bukkit.getScheduler().runTaskTimer(this, new RecipeTask(), 1, 20 * 60);
+			Bukkit.getScheduler().runTaskTimer(this, new MailboxTask(), 1, 1);
+			Bukkit.getScheduler().runTaskTimer(this, new MailboxBlockTask(), 1, 20);
 			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_UPDATE_CHECK)) {
 				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ltitemmail:itemmailadmin update");
-				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_UPDATE_PERIODIC_NOTIFICATION)) Bukkit.getScheduler().runTaskTimer(this, new Runnable() {
+				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_UPDATE_PERIODIC_NOTIFICATION)) Bukkit.getScheduler().runTaskTimerAsynchronously(this, new Runnable() {
 					@Override
 					public final void run() {
 						Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ltitemmail:itemmailadmin update");
@@ -85,7 +85,7 @@ public final class LTItemMail extends JavaPlugin {
 	@Override
 	public final void onDisable() {
 		Bukkit.getScheduler().cancelTasks(this);
-		IntegrationModule.getInstance().unload();
+		ExtensionModule.getInstance().unload();
 		DatabaseModule.disconnect();
 		getServer().getMessenger().unregisterOutgoingPluginChannel(this, "BungeeCord");
 		getServer().getMessenger().unregisterIncomingPluginChannel(this, "BungeeCord");
@@ -99,7 +99,7 @@ public final class LTItemMail extends JavaPlugin {
 	public final void reload() {
 		loadConfig();
 		loadLang();
-		IntegrationModule.reload().load();
+		ExtensionModule.reload().load();
 	}
 	private final void loadConfig() {
 		ConfigurationModule.check();
