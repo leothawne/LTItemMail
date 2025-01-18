@@ -29,15 +29,12 @@ import io.github.leothawne.LTItemMail.item.MailboxItem;
 import io.github.leothawne.LTItemMail.module.ConfigurationModule;
 import io.github.leothawne.LTItemMail.module.ConsoleModule;
 import io.github.leothawne.LTItemMail.module.DatabaseModule;
-import io.github.leothawne.LTItemMail.module.IntegrationModule;
+import io.github.leothawne.LTItemMail.module.EconomyModule;
 import io.github.leothawne.LTItemMail.module.LanguageModule;
 import io.github.leothawne.LTItemMail.module.MailboxModule;
 import io.github.leothawne.LTItemMail.module.PermissionModule;
-import io.github.leothawne.LTItemMail.module.api.IVault;
 import io.github.leothawne.LTItemMail.util.BukkitUtil;
 import net.md_5.bungee.api.ChatColor;
-import net.milkbowl.vault.economy.Economy;
-import net.milkbowl.vault.economy.EconomyResponse;
 
 public final class MailboxListener implements Listener {
 	public MailboxListener() {
@@ -73,12 +70,10 @@ public final class MailboxListener implements Listener {
 				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_TYPE_COST)) {
 					newcost = (Double) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_COST) * count;
 				} else newcost = (Double) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_COST);
-				Economy economy = null;
-				if(IntegrationModule.getInstance().isRegistered(IntegrationModule.Function.VAULT_ECONOMY)) economy = ((IVault.Economy) IntegrationModule.getInstance().get(IntegrationModule.Function.VAULT_ECONOMY)).getAPI();
+				final EconomyModule economy = EconomyModule.getInstance();
 				if(economy != null) {
 					if(economy.has(sender, newcost)) {
-						final EconomyResponse er = economy.withdrawPlayer(sender, newcost);
-						if(er.transactionSuccess()) {
+						if(economy.withdraw(player, newcost)) {
 							MailboxModule.log(sender.getUniqueId(), null, MailboxModule.Action.PAID, null, newcost, null, null);
 							final EntitySendMailEvent sendEvent = new EntitySendMailEvent(sender, receiver, items, true, newcost);
 							Bukkit.getPluginManager().callEvent(sendEvent);
@@ -87,7 +82,7 @@ public final class MailboxListener implements Listener {
 								sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + "" + mailboxPaid[0] + "" + ChatColor.GREEN + newcost + "" + ChatColor.YELLOW + "" + mailboxPaid[1]);
 								MailboxModule.send(sender, receiver, items, label);
 							} else {
-								economy.depositPlayer(sender, newcost);
+								economy.deposit(sender, newcost);
 								MailboxModule.log(sender.getUniqueId(), null, MailboxModule.Action.REFUNDED, null, newcost, null, null);
 								sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + "" + LanguageModule.get(LanguageModule.Type.MAILBOX_BLOCKED));
 								MailboxModule.log(sender.getUniqueId(), null, MailboxModule.Action.CANCELED, null, null, null, null);
@@ -185,7 +180,7 @@ public final class MailboxListener implements Listener {
 				final ItemStack emerald = event.getCurrentItem();
 				final ItemMeta emeraldMeta = emerald.getItemMeta();
 				final List<String> emeraldLore = emeraldMeta.getLore();
-				if(IntegrationModule.getInstance().isRegistered(IntegrationModule.Function.VAULT_ECONOMY)) {
+				if(EconomyModule.getInstance() != null) {
 					emeraldLore.set(0, ChatColor.RESET + "" + ChatColor.GREEN + "$ " + newcost);
 				} else emeraldLore.set(0, ChatColor.RESET + "" + ChatColor.DARK_RED + LanguageModule.get(LanguageModule.Type.MAILBOX_COSTERROR));
 				emeraldMeta.setLore(emeraldLore);
