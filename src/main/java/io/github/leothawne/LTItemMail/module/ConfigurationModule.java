@@ -190,6 +190,7 @@ public final class ConfigurationModule {
 			case BUILD_NUMBER:
 				result = Integer.parseInt(new File(LTItemMail.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getName().split("\\-")[2].replace(".jar", "").replace("\\#", "").replace("%23", ""));
 				path = "build-number";
+				break;
 		}
 		if(path != null) if(LTItemMail.getInstance().getConfiguration().isSet(path)) {
 			result = LTItemMail.getInstance().getConfiguration().get(path);
