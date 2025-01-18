@@ -34,17 +34,17 @@ import io.github.leothawne.LTItemMail.item.Item;
 import io.github.leothawne.LTItemMail.item.MailboxItem;
 import io.github.leothawne.LTItemMail.module.ConfigurationModule;
 import io.github.leothawne.LTItemMail.module.DatabaseModule;
-import io.github.leothawne.LTItemMail.module.IntegrationModule;
+import io.github.leothawne.LTItemMail.module.ExtensionModule;
 import io.github.leothawne.LTItemMail.module.LanguageModule;
 import io.github.leothawne.LTItemMail.module.MailboxModule;
 import io.github.leothawne.LTItemMail.module.PermissionModule;
-import io.github.leothawne.LTItemMail.module.api.LTBlueMap;
-import io.github.leothawne.LTItemMail.module.api.LTDecentHolograms;
-import io.github.leothawne.LTItemMail.module.api.LTDynmap;
-import io.github.leothawne.LTItemMail.module.api.LTGriefPrevention;
-import io.github.leothawne.LTItemMail.module.api.LTRedProtect;
-import io.github.leothawne.LTItemMail.module.api.LTTownyAdvanced;
-import io.github.leothawne.LTItemMail.module.api.LTWorldGuard;
+import io.github.leothawne.LTItemMail.module.ext.LTBlueMap;
+import io.github.leothawne.LTItemMail.module.ext.LTDecentHolograms;
+import io.github.leothawne.LTItemMail.module.ext.LTDynmap;
+import io.github.leothawne.LTItemMail.module.ext.LTGriefPrevention;
+import io.github.leothawne.LTItemMail.module.ext.LTRedProtect;
+import io.github.leothawne.LTItemMail.module.ext.LTTownyAdvanced;
+import io.github.leothawne.LTItemMail.module.ext.LTWorldGuard;
 import net.md_5.bungee.api.ChatColor;
 
 public final class MailboxBlockListener implements Listener {
@@ -52,9 +52,9 @@ public final class MailboxBlockListener implements Listener {
 		Bukkit.getServer().getPluginManager().registerEvents(this, LTItemMail.getInstance());
 	}
 	private final Item mailbox = new MailboxItem();
-	private final LTDynmap dynmap = (LTDynmap) IntegrationModule.getInstance().get(IntegrationModule.Function.DYNMAP);
-	private final LTBlueMap blueMap = (LTBlueMap) IntegrationModule.getInstance().get(IntegrationModule.Function.BLUEMAP);
-	private final LTDecentHolograms decentHolograms = (LTDecentHolograms) IntegrationModule.getInstance().get(IntegrationModule.Function.DECENTHOLOGRAMS);
+	private final LTDynmap dynmap = (LTDynmap) ExtensionModule.getInstance().get(ExtensionModule.Function.DYNMAP);
+	private final LTBlueMap blueMap = (LTBlueMap) ExtensionModule.getInstance().get(ExtensionModule.Function.BLUEMAP);
+	private final LTDecentHolograms decentHolograms = (LTDecentHolograms) ExtensionModule.getInstance().get(ExtensionModule.Function.DECENTHOLOGRAMS);
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
 	public final void onClick(final PlayerInteractEvent event) {
 		final Player player = event.getPlayer();
@@ -249,10 +249,10 @@ public final class MailboxBlockListener implements Listener {
 		}
 		event.setCancelled(cancel);
 	}
-	private final LTGriefPrevention griefPrevention = (LTGriefPrevention) IntegrationModule.getInstance().get(IntegrationModule.Function.GRIEFPREVENTION);
-	private final LTRedProtect redProtect = (LTRedProtect) IntegrationModule.getInstance().get(IntegrationModule.Function.REDPROTECT);
-	private final LTTownyAdvanced townyAdvanced = (LTTownyAdvanced) IntegrationModule.getInstance().get(IntegrationModule.Function.TOWNYADVANCED);
-	private final LTWorldGuard worldGuard = (LTWorldGuard) IntegrationModule.getInstance().get(IntegrationModule.Function.WORLDGUARD);
+	private final LTGriefPrevention griefPrevention = (LTGriefPrevention) ExtensionModule.getInstance().get(ExtensionModule.Function.GRIEFPREVENTION);
+	private final LTRedProtect redProtect = (LTRedProtect) ExtensionModule.getInstance().get(ExtensionModule.Function.REDPROTECT);
+	private final LTTownyAdvanced townyAdvanced = (LTTownyAdvanced) ExtensionModule.getInstance().get(ExtensionModule.Function.TOWNYADVANCED);
+	private final LTWorldGuard worldGuard = (LTWorldGuard) ExtensionModule.getInstance().get(ExtensionModule.Function.WORLDGUARD);
 	private final boolean canBuildBreak(final Player player, final Location location) {
 		Boolean canBuildBreak = true;
 		if(canBuildBreak && griefPrevention != null) canBuildBreak = griefPrevention.canBuildBreak(player, location);

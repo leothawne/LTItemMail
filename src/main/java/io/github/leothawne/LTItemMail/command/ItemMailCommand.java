@@ -25,7 +25,7 @@ import io.github.leothawne.LTItemMail.item.MailboxItem;
 import io.github.leothawne.LTItemMail.module.ConfigurationModule;
 import io.github.leothawne.LTItemMail.module.DataModule;
 import io.github.leothawne.LTItemMail.module.DatabaseModule;
-import io.github.leothawne.LTItemMail.module.IntegrationModule;
+import io.github.leothawne.LTItemMail.module.ExtensionModule;
 import io.github.leothawne.LTItemMail.module.LanguageModule;
 import io.github.leothawne.LTItemMail.module.MailboxModule;
 import io.github.leothawne.LTItemMail.module.PermissionModule;
@@ -137,7 +137,7 @@ public final class ItemMailCommand implements CommandExecutor {
 		} else if(args[0].equalsIgnoreCase("price")) {
 			if(hasPermission = PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_PLAYER_PRICE)) {
 				if(args.length == 1) {
-					if(IntegrationModule.getInstance().isInstalled(IntegrationModule.Name.VAULT)) {
+					if(ExtensionModule.getInstance().isInstalled(ExtensionModule.Name.VAULT)) {
 						String costs = null;
 						if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_TYPE_COST)) {
 							costs = (Double) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_COST) + " x Item";

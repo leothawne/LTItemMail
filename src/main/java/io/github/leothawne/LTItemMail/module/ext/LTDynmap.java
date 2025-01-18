@@ -1,4 +1,4 @@
-package io.github.leothawne.LTItemMail.module.api;
+package io.github.leothawne.LTItemMail.module.ext;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

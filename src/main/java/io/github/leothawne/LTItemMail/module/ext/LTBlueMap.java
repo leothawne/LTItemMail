@@ -1,4 +1,4 @@
-package io.github.leothawne.LTItemMail.module.api;
+package io.github.leothawne.LTItemMail.module.ext;
 
 import java.io.File;
 import java.io.FileReader;

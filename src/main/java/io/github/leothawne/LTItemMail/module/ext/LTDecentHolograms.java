@@ -1,4 +1,4 @@
-package io.github.leothawne.LTItemMail.module.api;
+package io.github.leothawne.LTItemMail.module.ext;
 
 import java.util.ArrayList;
 import java.util.Collections;
