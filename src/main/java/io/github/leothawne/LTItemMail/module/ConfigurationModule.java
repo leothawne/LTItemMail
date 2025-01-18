@@ -188,7 +188,7 @@ public final class ConfigurationModule {
 				path = "plugin.bungee-mode";
 				break;
 			case BUILD_NUMBER:
-				result = Integer.parseInt(new File(LTItemMail.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getName().split("\\-")[2].replace(".jar", "").replace("#", ""));
+				result = Integer.parseInt(new File(LTItemMail.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getName().split("\\-")[2].replace(".jar", "").replace("\\#", ""));
 				path = "build-number";
 		}
 		if(path != null) if(LTItemMail.getInstance().getConfiguration().isSet(path)) {
