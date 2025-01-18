@@ -23,7 +23,7 @@ public final class EconomyModule {
 		if(config.length > 1) {
 			type = ExtensionModule.Name.valueOf(config[0]);
 			coin = config[1];
-		} else type = ExtensionModule.Name.valueOf((String) ConfigurationModule.get(Type.PLUGIN_HOOK_ECONOMY_TYPE));
+		} else type = ExtensionModule.Name.valueOf(((String) ConfigurationModule.get(Type.PLUGIN_HOOK_ECONOMY_TYPE)).toUpperCase());
 		if(type == null) {
 			instance = null;
 			return;
