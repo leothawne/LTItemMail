@@ -466,4 +466,45 @@ public final class LanguageModule {
 		COMMAND_ADMIN_RELOAD,
 		COMMAND_PLAYER_COSTS
 	}
+	public static final class I {
+		public static final String g(final i i) {
+			if(((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE)).equals("portuguese")) switch(i) {
+				case R_S:
+					return "Download de recurso iniciado";
+				case R_D:
+					return "Baixando recurso";
+				case R_C:
+					return "Download de recurso finalizado";
+				case R_F:
+					return "Download de recurso falhou";
+				case RP_I:
+					return "O pacote de recursos deve estar localizado dentro da pasta do plugin";
+				case RP_F:
+					return "Não foi possível mover o arquivo do pacote de recursos da pasta cache";
+			}
+			switch(i) {
+				case R_S:
+					return "Resource download started";
+				case R_D:
+					return "Downloading resource";
+				case R_C:
+					return "Resource download completed";
+				case R_F:
+					return "Resource download failed";
+				case RP_I:
+					return "The resource pack should be available inside the plugin folder";
+				case RP_F:
+					return "Could not move the resource pack file from the cache folder";
+			}
+			return null;
+		}
+		public enum i {
+			R_S,
+			R_D,
+			R_C,
+			R_F,
+			RP_I,
+			RP_F
+		}
+	}
 }

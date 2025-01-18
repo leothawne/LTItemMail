@@ -22,6 +22,7 @@ import io.github.leothawne.LTItemMail.LTItemMail;
 import io.github.leothawne.LTItemMail.module.ConfigurationModule;
 import io.github.leothawne.LTItemMail.module.ConsoleModule;
 import io.github.leothawne.LTItemMail.module.DatabaseModule;
+import io.github.leothawne.LTItemMail.module.LanguageModule;
 import me.marnic.jdl.CombinedSpeedProgressDownloadHandler;
 import me.marnic.jdl.Downloader;
 import me.marnic.jdl.SizeUtil;
@@ -57,22 +58,6 @@ public final class FetchUtil {
 			return null;
 		}
 		public static final class Cache {
-			/*public static final boolean download(final String url, final String name) {
-				try {
-					Files.createDirectories(Paths.get(LTItemMail.getInstance().getDataFolder() + File.separator + "cache"));
-					final ReadableByteChannel byteChannel = Channels.newChannel(connect(url).getInputStream());
-					final FileOutputStream output = new FileOutputStream(new File(LTItemMail.getInstance().getDataFolder() + File.separator + "cache", name + ".tmp"));
-					final FileChannel fileChannel = output.getChannel();
-					fileChannel.transferFrom(byteChannel, 0, Long.MAX_VALUE);
-					fileChannel.close();
-					output.close();
-					byteChannel.close();
-					return true;
-				} catch (final IOException e) {
-					if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
-				}
-				return false;
-			}*/
 			public static final boolean download(final String url, final String name, final Boolean silent) {
 				try {
 					Files.createDirectories(Paths.get(LTItemMail.getInstance().getDataFolder() + File.separator + "cache"));
@@ -81,23 +66,23 @@ public final class FetchUtil {
 						@Override
 						public final void onDownloadStart() {
 							super.onDownloadStart();
-							if(!silent) ConsoleModule.info("Resource download started! [" + name + "]");
+							if(!silent) ConsoleModule.info(LanguageModule.I.g(LanguageModule.I.i.R_S) + " [" + name + "]!");
 						}
 						@Override
 						public final void onDownloadSpeedProgress(final int downloadedSize, final int maxSize, final int downloadPercent, final int bytesPerSec) {
-							if(!silent) ConsoleModule.info("Downloading resource [" + name + "]: " + downloadedSize + "/" + maxSize + " MB (" + downloadPercent + "%, " + SizeUtil.toMBFB(bytesPerSec) + " MB/s)");
+							if(!silent) ConsoleModule.info(LanguageModule.I.g(LanguageModule.I.i.R_D) + " [" + name + "]: " + downloadedSize + "/" + maxSize + " MB (" + downloadPercent + "%, " + SizeUtil.toMBFB(bytesPerSec) + " MB/s)");
 						}
 						@Override
 						public final void onDownloadFinish() {
 							super.onDownloadFinish();
-							if(!silent) ConsoleModule.info("Resource download completed! [" + name + "]");
+							if(!silent) ConsoleModule.info(LanguageModule.I.g(LanguageModule.I.i.R_C) + " [" + name + "]!");
 						}
 						@Override
 						public final void onDownloadError() {
 							super.onDownloadError();
 							if(!silent) {
-								ConsoleModule.warning("Resource download failed! [" + name + "]");
-							} else ConsoleModule.debug("Resource download failed! [" + name + "]");
+								ConsoleModule.warning(LanguageModule.I.g(LanguageModule.I.i.R_F) + " [" + name + "]!");
+							} else ConsoleModule.debug(LanguageModule.I.g(LanguageModule.I.i.R_F) + " [" + name + "]!");
 						}
 					});
 					artifact.downloadFileToLocation(url, new File(LTItemMail.getInstance().getDataFolder() + File.separator + "cache" + File.separator + name + ".tmp").getAbsolutePath());
@@ -108,7 +93,7 @@ public final class FetchUtil {
 				return false;
 			}
 			public static final File get(final String name) {
-				final File file = new File(LTItemMail.getInstance().getDataFolder() + File.separator + "cache", name + ".tmp");
+				final File file = new File(LTItemMail.getInstance().getDataFolder() + File.separator + "cache", name);
 				if(file.exists() && file.isFile()) return file;
 				return null;
 			}
