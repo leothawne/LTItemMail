@@ -100,9 +100,12 @@ public final class ConfigurationModule {
 				result = true;
 				path = "plugin.enable";
 				break;
-			case PLUGIN_HOOK_VAULT:
+			case PLUGIN_HOOK_ECONOMY_ENABLE:
 				result = false;
-				path = "hook.vault";
+				path = "hook.economy.enable";
+			case PLUGIN_HOOK_ECONOMY_TYPE:
+				result = "Vault";
+				path = "hook.economy.type";
 				break;
 			case PLUGIN_TAG:
 				result = "&6[LTIM]";
@@ -206,7 +209,8 @@ public final class ConfigurationModule {
 		PLUGIN_ENABLE,
 		PLUGIN_TYPE_LANGUAGE,
 		PLUGIN_TAG,
-		PLUGIN_HOOK_VAULT,
+		PLUGIN_HOOK_ECONOMY_ENABLE,
+		PLUGIN_HOOK_ECONOMY_TYPE,
 		PLUGIN_HOOK_GRIEFPREVENTION,
 		PLUGIN_HOOK_REDPROTECT,
 		PLUGIN_HOOK_TOWNYADVANCED,

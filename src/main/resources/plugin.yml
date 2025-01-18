@@ -5,10 +5,9 @@ api-version: "1.14"
 load: POSTWORLD
 author: leothawne
 website: https://leothawne.github.io/LTItemMail/
-url: https://leothawne.github.io/LTItemMail/
 main: ${project.groupId}.${project.artifactId}.${project.name}
 database: true
-softdepend: [Vault, WorldGuard, GriefPrevention, RedProtect, Towny, dynmap, BlueMap, DecentHolograms, PlaceholderAPI]
+softdepend: [Vault, WorldGuard, GriefPrevention, RedProtect, Towny, dynmap, BlueMap, DecentHolograms, PlaceholderAPI, CoinsEngine]
 commands:
     itemmail:
         description: Used to send items and to check your mailbox.
