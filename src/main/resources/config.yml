@@ -101,4 +101,5 @@ update:
     check: true
     periodic-notification: true
 #Do not touch it!
+build-number: ${v}
 config-version: 11

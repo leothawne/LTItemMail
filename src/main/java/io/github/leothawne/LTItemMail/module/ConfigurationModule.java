@@ -187,6 +187,9 @@ public final class ConfigurationModule {
 				result = false;
 				path = "plugin.bungee-mode";
 				break;
+			case BUILD_NUMBER:
+				result = Integer.parseInt(new File(LTItemMail.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getName().split("\\-")[2].replace(".jar", "").replace("#", ""));
+				path = "build-number";
 		}
 		if(path != null) if(LTItemMail.getInstance().getConfiguration().isSet(path)) {
 			result = LTItemMail.getInstance().getConfiguration().get(path);
@@ -234,6 +237,7 @@ public final class ConfigurationModule {
 		DATABASE_MYSQL_USER,
 		DATABASE_MYSQL_PASSWORD,
 		DATABASE_MYSQL_NAME,
-		BUNGEE_MODE
+		BUNGEE_MODE,
+		BUILD_NUMBER
 	}
 }

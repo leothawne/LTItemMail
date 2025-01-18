@@ -1,6 +1,5 @@
 package io.github.leothawne.LTItemMail.command;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -21,6 +20,7 @@ import io.github.leothawne.LTItemMail.block.MailboxBlock;
 import io.github.leothawne.LTItemMail.entity.LTPlayer;
 import io.github.leothawne.LTItemMail.inventory.MailboxInventory;
 import io.github.leothawne.LTItemMail.module.ConfigurationModule;
+import io.github.leothawne.LTItemMail.module.ConfigurationModule.Type;
 import io.github.leothawne.LTItemMail.module.ConsoleModule;
 import io.github.leothawne.LTItemMail.module.DataModule;
 import io.github.leothawne.LTItemMail.module.DatabaseModule;
@@ -59,7 +59,7 @@ public final class ItemMailAdminCommand implements CommandExecutor {
 						public final void run() {
 							try {
 								final Integer remoteBuild = Integer.parseInt(FetchUtil.URL.get(DataModule.getUpdatePath()));
-								if(remoteBuild > Integer.parseInt(new File(LTItemMail.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getName().split("\\-")[2].replace(".jar", "").replace("#", ""))) {
+								if(remoteBuild > (Integer) ConfigurationModule.get(Type.BUILD_NUMBER)) {
 									sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + "New update available: https://jenkins.gmj.net.br/job/LTItemMail/" + remoteBuild + "/");
 								} else sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + "There is no new updates!");
 							} catch(final ArrayIndexOutOfBoundsException | NumberFormatException e) {

@@ -76,21 +76,19 @@
 		        <targetPath>${basedir}/target/classes</targetPath>
 		        <directory>${basedir}/src/main/resources</directory>
 		        <filtering>true</filtering>
-		        <excludes>
-					<exclude>mailboxes.db</exclude>
-					<exclude>ideias.txt</exclude>
-					<exclude>mailbox_icon.png</exclude>
-					<exclude>atualizar-paginas.txt</exclude>
-				</excludes>
+		        <includes>
+					<include>plugin.yml</include>
+					<include>config.yml</include>
+				</includes>
 		    </resource>
 		    <resource>
 		        <targetPath>${basedir}/target/classes</targetPath>
 		        <directory>${basedir}/src/main/resources</directory>
 		        <filtering>false</filtering>
-		        <includes>
-					<include>mailboxes.db</include>
-					<include>mailbox_icon.png</include>
-				</includes>
+		        <excludes>
+					<exclude>plugin.yml</exclude>
+					<exclude>config.yml</exclude>
+				</excludes>
 		    </resource>
 		</resources>
 	</build>
