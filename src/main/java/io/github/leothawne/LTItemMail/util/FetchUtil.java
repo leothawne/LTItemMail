@@ -85,7 +85,7 @@ public final class FetchUtil {
 							} else ConsoleModule.debug(LanguageModule.I.g(LanguageModule.I.i.R_F) + " [" + name + "]!");
 						}
 					});
-					artifact.downloadFileToLocation(url, new File(LTItemMail.getInstance().getDataFolder() + File.separator + "cache" + File.separator + name + ".tmp").getAbsolutePath());
+					artifact.downloadFileToLocation(url, new File(LTItemMail.getInstance().getDataFolder() + File.separator + "cache" + File.separator + name).getAbsolutePath());
 					return true;
 				} catch (final IOException e) {
 					if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
