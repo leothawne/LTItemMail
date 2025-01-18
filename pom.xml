@@ -12,7 +12,7 @@
         </repository>
     </distributionManagement>
 	<build>
-		<finalName>${project.name}-${project.version}-${v}</finalName>
+		<finalName>${project.name}-${project.version}-#${v}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
