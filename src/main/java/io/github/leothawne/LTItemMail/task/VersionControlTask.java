@@ -21,13 +21,13 @@ public final class VersionControlTask {
 	private VersionControlTask() {}
 	private static BukkitTask task = null;
 	public static final void run() {
-		task = Bukkit.getScheduler().runTaskTimer(LTItemMail.getInstance(), new Runnable() {
+		task = Bukkit.getScheduler().runTaskTimerAsynchronously(LTItemMail.getInstance(), new Runnable() {
 			@Override
 			public final void run() {
-				if(FetchUtil.URL.Cache.download(DataModule.getPluginPath(LTItemMail.getInstance().getDescription().getVersion()), "cfg-" + LTItemMail.getInstance().getDescription().getVersion(), true)) {
+				if(FetchUtil.URL.Cache.download(DataModule.getPluginPath(LTItemMail.getInstance().getDescription().getVersion()), LTItemMail.getInstance().getDescription().getVersion() + ".yml", true)) {
 					try {
 						final YamlConfiguration info = new YamlConfiguration();
-						info.load(FetchUtil.URL.Cache.get("cfg-" + LTItemMail.getInstance().getDescription().getVersion()));
+						info.load(FetchUtil.URL.Cache.get(LTItemMail.getInstance().getDescription().getVersion() + ".yml"));
 						if(!info.getBoolean("main.enabled")) {
 							final List<String> warnings = info.getStringList("main.warnings");
 							if(warnings.size() > 0) ConsoleModule.server(warnings);
