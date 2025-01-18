@@ -103,6 +103,7 @@ public final class ConfigurationModule {
 			case PLUGIN_HOOK_ECONOMY_ENABLE:
 				result = false;
 				path = "hook.economy.enable";
+				break;
 			case PLUGIN_HOOK_ECONOMY_TYPE:
 				result = "Vault";
 				path = "hook.economy.type";
