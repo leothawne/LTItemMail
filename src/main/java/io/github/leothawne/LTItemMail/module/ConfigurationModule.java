@@ -11,6 +11,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
 import io.github.leothawne.LTItemMail.util.BukkitUtil;
+import io.github.leothawne.LTItemMail.util.FetchUtil;
 
 public final class ConfigurationModule {
 	private ConfigurationModule() {}
@@ -28,10 +29,14 @@ public final class ConfigurationModule {
 			try {
 				configuration.load(configFile);
 				ConsoleModule.info("Configuration loaded.");
-				if(configuration.getInt("config-version") != Integer.valueOf(DataModule.getVersion(DataModule.VersionType.CONFIG_YML))) {
+				if(configuration.getInt("config-version") < Integer.valueOf(DataModule.getVersion(DataModule.VersionType.CONFIG_YML))) {
 					ConsoleModule.warning("Configuration outdated!");
 					ConsoleModule.warning("New settings will be added.");
 					configuration.set("config-version", Integer.valueOf(DataModule.getVersion(DataModule.VersionType.CONFIG_YML)));
+					configuration.save(configFile);
+				}
+				if(configuration.isSet("build-number")) if(configuration.getInt("build-number") < FetchUtil.Build.get()) {
+					configuration.set("build-number", FetchUtil.Build.get());
 					configuration.save(configFile);
 				}
 				return configuration;
@@ -189,7 +194,7 @@ public final class ConfigurationModule {
 				path = "plugin.bungee-mode";
 				break;
 			case BUILD_NUMBER:
-				result = Integer.parseInt(new File(LTItemMail.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getName().split("\\-")[2].replace(".jar", "").replace("\\#", "").replace("%23", ""));
+				result = FetchUtil.Build.get();
 				path = "build-number";
 				break;
 		}

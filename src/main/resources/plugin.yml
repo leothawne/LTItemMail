@@ -1,6 +1,7 @@
 name: ${project.name}
 description: ${project.description}
 version: ${project.version}
+build: ${v}
 api-version: "1.14"
 load: POSTWORLD
 author: leothawne
