@@ -9,6 +9,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
 import io.github.leothawne.LTItemMail.module.ConfigurationModule;
+import io.github.leothawne.LTItemMail.module.DatabaseModule;
 import io.github.leothawne.LTItemMail.module.PermissionModule;
 
 public final class PlayerListener implements Listener {
@@ -18,6 +19,7 @@ public final class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
 	public final void onPlayerJoin(final PlayerJoinEvent event) {
 		final Player player = (Player) event.getPlayer();
+		DatabaseModule.User.updateUUID(player);
 		Bukkit.getScheduler().runTaskLater(LTItemMail.getInstance(), new Runnable() {
 			@Override
 			public final void run() {

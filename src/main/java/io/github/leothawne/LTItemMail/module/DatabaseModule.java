@@ -19,6 +19,7 @@ import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -729,6 +730,15 @@ public final class DatabaseModule {
 				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 			}
 			return null;
+		}
+		public static final void updateUUID(final Player player) {
+			try {
+				final Statement statement = LTItemMail.getInstance().connection.createStatement();
+				statement.executeUpdate("UPDATE users SET uuid = '" + player.getUniqueId().toString() + "' WHERE name = '" + player.getName() + "';");
+				statement.closeOnCompletion();
+			} catch (final SQLException | NullPointerException e) {
+				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
+			}
 		}
 		public static final class Cache {
 			public static final String getName(final UUID uuid) {
