@@ -12,6 +12,8 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import io.github.leothawne.LTItemMail.LTItemMail;
+import io.github.leothawne.LTItemMail.module.ConfigurationModule.Type;
+import io.github.leothawne.LTItemMail.util.FetchUtil;
 
 public final class ConsoleModule {
 	private ConsoleModule() {}
@@ -21,9 +23,8 @@ public final class ConsoleModule {
 	public static final void hello() {
 		sender().sendMessage(ChatColor.DARK_AQUA + " _   _______ _____ __  __ ");
 		sender().sendMessage(ChatColor.DARK_AQUA + "| | |__   __|_   _|  \\/  |");
-		sender().sendMessage(ChatColor.DARK_AQUA + "| |    | |    | | | \\  / |" + ChatColor.WHITE + "  Build number: " + LTItemMail.getInstance().getDescription().getVersion());
-		sender().sendMessage(ChatColor.DARK_AQUA + "| |    | |    | | | |\\/| |" + ChatColor.WHITE + "  Build date/time: " + DataModule.getDate());
-		sender().sendMessage(ChatColor.DARK_AQUA + "| |____| |   _| |_| |  | |" + ChatColor.WHITE + "  Requires: Java " + DataModule.getJava() + " (or higher)");
+		sender().sendMessage(ChatColor.DARK_AQUA + "| |    | |    | | | \\  / |" + ChatColor.WHITE + "  Build number: #" + ConfigurationModule.get(Type.BUILD_NUMBER));
+		sender().sendMessage(ChatColor.DARK_AQUA + "| |    | |    | | | |\\/| |" + ChatColor.WHITE + "  Build date: " + FetchUtil.URL.get(DataModule.getDateURL((Integer) ConfigurationModule.get(Type.BUILD_NUMBER))));
 		sender().sendMessage(ChatColor.DARK_AQUA + "|______|_|  |_____|_|  |_|" + ChatColor.WHITE + "  Need support or have questions? https://discord.gg/Nvnrv3P");
 	}
 	public static final void info(final String message) {
@@ -68,7 +69,7 @@ public final class ConsoleModule {
 		}
 	}
 	public static final void br() {
-		sender().sendMessage("⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣴⣾⣷⣦⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀");
+		/*sender().sendMessage("⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣴⣾⣷⣦⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀");
 		sender().sendMessage("⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⣾⡿⠿⠟⠻⠿⢿⣷⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀");
 		sender().sendMessage("⠀⠀⠀⠀⠀⠀⣀⣤⣾⣿⠟⠁⠀⠀⠀⠀⠀⠀⠈⠻⣿⣷⣤⣀⠀⠀⠀⠀⠀⠀");
 		sender().sendMessage("⠀⠀⠀⣀⣴⣾⣿⣿⣿⡿⠿⠿⠿⠶⢶⣦⣤⣀⠀⠀⢹⣿⣿⣿⣷⣦⣀⠀⠀⠀");
@@ -77,7 +78,7 @@ public final class ConsoleModule {
 		sender().sendMessage("⠀⠀⠀⠀⠀⠀⠉⠛⢿⣿⣦⡀⠀⠀⠀⠀⠀⠀⢀⣴⣿⡿⠛⠉⠀⠀⠀⠀⠀⠀");
 		sender().sendMessage("⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⢿⣷⣶⣦⣴⣶⣾⡿⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀");
 		sender().sendMessage("⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠻⢿⡿⠟⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀");
-		sender().sendMessage("");
+		sender().sendMessage("");*/
 		final List<ChatColor> cores = Arrays.asList(ChatColor.GREEN,
 				ChatColor.YELLOW);
 		int n = 0;
