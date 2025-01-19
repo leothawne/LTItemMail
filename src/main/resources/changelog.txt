@@ -1,3 +1,6 @@
+First of all, I apologize for the delay in updates. I've been very busy with my personal life and I hope that the faithful servers continue to use my plugin.
+Primeiramente, peço desculpas pela demora nas atualizações. Andei muito ocupado com minha vida pessoal e espero que os fiéis servidores continuem utilizando meu plugin.
+
 Update notes:
 - Minecraft 1.13 no longer supported (incompatible);
 - Added Bungee support (see in config.yml);
@@ -22,8 +25,10 @@ Update notes:
 - Fixed a potentially prevention of mailbox functionality by other plugins;
 - Enhanced Mailbox Log Worker. Log files inside LTItemMail/logs folder will be handled optimally;
 - Mailbox Log Worker now detects money transactions and log them too (mail prices);
-- Now you can place mailbox blocks above walls and fences.
-- Forgot where you placed your mailboxes? Get the locations with "/itemmail blocks". For admins: "/itemmailadmin blocks <player>".
+- Now you can place mailbox blocks above walls and fences;
+- Forgot where you placed your mailboxes? Get the coords with "/itemmail blocks". For admins: "/itemmailadmin blocks <player>";
+- Added compatibility with CoinsEngine (multi currency, beta feature);
+- Fixed compatibility with changes on player's unique ids in case of online-mode switching.
 
 Notas de atualização:
 - Minecraft 1.13 não é mais suportado (incompatível);
@@ -49,6 +54,9 @@ Notas de atualização:
 - Corrigido uma possível prevenção da funcionalidade do corrêio por outros plugins;
 - Aprimorado o módulo de logs dos corrêios (Mailbox Log Worker). Arquivos de log dentro da pasta LTItemMail/logs serão tratados de forma otimizada;
 - O módulo de logs agora detecta transações monetárias e também as grava no log (preços de corrêio);
-- Agora você pode colocar blocos caixa de corrêio em cima de muros e cercas.
+- Agora você pode colocar blocos caixa de corrêio em cima de muros e cercas;
+- Esqueceu onde colocou suas caixas de corrêio? Obtenha as coordenadas com "/itemmail blocks". Para admins: "/itemmailadmin blocks <player>";
+- Adicionado compatibilidade com CoinsEngine (multi moeda, recurso beta);
+- Corrigida a compatibilidade com alterações nos IDs únicos dos jogadores em caso de alteração do online-mode.
 
-Espero que meu plugin chegue a mais servidores brasileiros, meu objetivo nunca foi focar apenas em jogadores estrangeiros. Em caso de dúvidas ou suporte, meu Discord está sempre disponível: 
+Espero que meu plugin chegue a mais servidores brasileiros, meu objetivo nunca foi focar apenas em servidores estrangeiros. Em caso de dúvidas ou suporte, meu Discord está sempre disponível: https://discord.gg/Nvnrv3P
