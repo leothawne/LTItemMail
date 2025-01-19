@@ -69,3 +69,5 @@ portuguese.yml
 vietnamese.yml
 .settings/org.eclipse.core.resources.prefs
 src/main/nms/remapped_server_1.20.4.jar
+src/main/resources/atualizar-paginas.txt
+src/main/resources/ideias.txt
