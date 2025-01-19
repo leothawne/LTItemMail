@@ -110,7 +110,7 @@ public final class ExtensionModule {
 			detected = true;
 			break;
 		}
-		if(detected) ConsoleModule.info("Loading integrations...");
+		if(detected) ConsoleModule.info("Extensions integrations...");
 		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_ECONOMY_ENABLE)) EconomyModule.getInstance();
 		if(isInstalled(Name.VAULT)) if(!isRegistered(Function.VAULT_PERMISSION)) if(register(Function.VAULT_PERMISSION)) warn(Name.VAULT, ((LTVault.Permission) get(Function.VAULT_PERMISSION)).getPlugin());
 		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_GRIEFPREVENTION)) if(isInstalled(Name.GRIEFPREVENTION)) if(!isRegistered(Function.GRIEFPREVENTION)) {
@@ -146,7 +146,7 @@ public final class ExtensionModule {
 			warn(null, Name.PLACEHOLDERAPI);
 			register(Function.PLACEHOLDERAPI);
 		}
-		if(detected) ConsoleModule.info("Integrations loaded.");
+		if(detected) ConsoleModule.info("Extensions loaded (if there is any).");
 	}
 	public static final ExtensionModule reload() {
 		if(instance != null) {
