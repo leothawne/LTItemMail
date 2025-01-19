@@ -23,7 +23,7 @@ public final class ResourcePackModule {
 		});
 	}
 	private static final boolean requestDownload() {
-		return FetchUtil.URL.Cache.download(DataModule.getResourcePack(), "LTItemMail-ResourcePack.zip", false);
+		return FetchUtil.URL.Cache.download(DataModule.getResourcePackURL(), "LTItemMail-ResourcePack.zip", false);
 	}
 	private static final boolean moveFile() {
 		try {
