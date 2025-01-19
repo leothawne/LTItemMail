@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URLConnection;
@@ -13,6 +14,8 @@ import java.nio.file.Paths;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -128,6 +131,20 @@ public final class FetchUtil {
 				if(uuid.equals(UUID.fromString((String) user.get("uuid")))) return (String) user.get("name");
 			}
 			return null;
+		}
+	}
+	public static final class Build {
+		public static final Integer get() {
+			final InputStream internalPluginYaml = LTItemMail.getInstance().getResource("plugin.yml");
+			final YamlConfiguration pluginYaml = new YamlConfiguration();
+			try {
+				pluginYaml.load(new InputStreamReader(internalPluginYaml));
+				return pluginYaml.getInt("build");
+			} catch (IOException | InvalidConfigurationException e) {
+				ConsoleModule.debug("There was an error trying to retrieve build number from plugin.yml");
+				e.printStackTrace();
+			}
+			return 0;
 		}
 	}
 }
