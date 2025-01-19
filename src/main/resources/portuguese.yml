@@ -26,6 +26,8 @@ mailbox:
     costerror: 'Plugin de economia não encontrado.'
     costupdate: 'Clique para atualizar o preço atual do corrêio.'
     returned: 'enviou de volta pra você.'
+    accept: 'Aceitar'
+    deny: 'Recusar'
 transaction:
     error: 'Transação mal sucedida!'
     nomoney: 'Você não tem $% para pagar ao corrêio.'
@@ -70,7 +72,10 @@ command:
         color: 'Altera a cor do bloco caixa de corrêio na sua mão principal.'
     admin:
         itemmailadmin: 'Lista de comandos para admins.'
-        update: 'Verifica se há novas atualizações.'
+        update:
+            update: 'Verifica se há novas atualizações.'
+            found: 'Nova atualização encontrada. Você está % build(s) desatualizado. Baixe agora:'
+            nonew: 'There is no new updates!'
         list: 'Lista de todos os corrêios deletados de um jogador.'
         recover: 'Recupera items perdidos de corrêios deletados (se houver algum).'
         reload: 'Recarrega as configurações do plugin e idioma/tradução.'

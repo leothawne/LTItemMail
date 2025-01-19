@@ -26,6 +26,8 @@ mailbox:
     costerror: 'Economy plugin not found.'
     costupdate: 'Click to update the current mail price.'
     returned: 'sent it back to you.'
+    accept: 'Accept'
+    deny: 'Deny'
 transaction:
     error: 'Transaction not succeeded!'
     nomoney: 'You do not have $% to pay to the post office.'
@@ -70,7 +72,10 @@ command:
         color: 'Changes the color of the mailbox block in your main hand.'
     admin:
         itemmailadmin: 'Lists admin commands.'
-        update: 'Checks for new updates.'
+        update:
+            update: 'Checks for new updates.'
+            found: 'New update available. You are % build(s) out of date. Download it now:'
+            nonew: 'There is no new updates!'
         list: 'Lists deleted mails of a player.'
         recover: 'Recovers lost items from a deleted mail (if there is any).'
         reload: 'Reloads plugin config and language settings.'

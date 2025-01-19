@@ -40,7 +40,7 @@ public final class LanguageModule {
 				try {
 					final VersionType type = DataModule.VersionType.valueOf(((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE)).toUpperCase() + "_YML");
 					final int languageVersion = Integer.parseInt(DataModule.getVersion(type));
-					if(language.getInt("language-version") != languageVersion) {
+					if(language.getInt("language-version") < languageVersion) {
 						ConsoleModule.warning("Language " + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml outdated!");
 						ConsoleModule.warning("Missing translations will be added with default value.");
 						language.set("language-version", languageVersion);
@@ -245,9 +245,17 @@ public final class LanguageModule {
 				result = "Lists admin commands.";
 				path = "command.admin.itemmailadmin";
 				break;
-			case COMMAND_ADMIN_UPDATE:
+			case COMMAND_ADMIN_UPDATE_MAIN:
 				result = "Checks for new updates.";
-				path = "command.admin.update";
+				path = "command.admin.update.update";
+				break;
+			case COMMAND_ADMIN_UPDATE_FOUND:
+				result = "New update available. You are % build(s) out of date. Download it now:";
+				path = "command.admin.update.found";
+				break;
+			case COMMAND_ADMIN_UPDATE_NONEW:
+				result = "There is no new updates!";
+				path = "command.admin.update.nonew";
 				break;
 			case COMMAND_ADMIN_LIST:
 				result = "Lists deleted mails of a player.";
@@ -406,7 +414,9 @@ public final class LanguageModule {
 		COMMAND_PLAYER_BLOCKS,
 		COMMAND_PLAYER_COLOR,
 		COMMAND_ADMIN_ITEMMAILADMIN,
-		COMMAND_ADMIN_UPDATE,
+		COMMAND_ADMIN_UPDATE_MAIN,
+		COMMAND_ADMIN_UPDATE_FOUND,
+		COMMAND_ADMIN_UPDATE_NONEW,
 		COMMAND_ADMIN_LIST,
 		COMMAND_ADMIN_RECOVER,
 		COMMAND_ADMIN_BAN_MAIN,

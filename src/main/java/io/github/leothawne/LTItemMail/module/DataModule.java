@@ -18,11 +18,9 @@ public final class DataModule {
 			+ "ENGLISH_YML:9,"
 			+ "PORTUGUESE_YML:9,"
 			+ "VIETNAMESE_YML:3";
-	private static final String DATE = "21/03/2024 19:08 (BRT)";
-	private static final String API = "1.14-R0.1-SNAPSHOT";
-	private static final String JAVA = "1.8";
+	private static final String DATE = "https://jenkins.gmj.net.br/job/LTItemMail/$build/buildTimestamp?format=dd/MM/yyyy%20HH:mm:ss%20z";
 	private static final String UPDATE = "https://jenkins.gmj.net.br/job/LTItemMail/lastSuccessfulBuild/buildNumber";
-	private static final String PLUGIN = "https://leothawne.github.io/LTItemMail/api/$version/plugin.yml";
+	private static final String PLUGIN = "https://request.gmj.net.br/LTItemMail/$version/manifest.yml";
 	private static final String RESOURCE = "https://jenkins.gmj.net.br/job/LTItemMail-ResourcePack/lastSuccessfulBuild/artifact/LTItemMail-ResourcePack.zip";
 	public static final String getProjectPage(final ProjectType type) {
 		final String[] pageString = PROJECT_PAGES.split(",");
@@ -42,23 +40,20 @@ public final class DataModule {
 		}
 		return versionMap.get(type);
 	}
-	public static final String getDate() {
-		return DATE;
+	public static final String getDateURL(final Integer build) {
+		return DATE.replace("$build", String.valueOf(build));
 	}
-	public static final String getJava() {
-		return JAVA;
-	}
-	public static final String getUpdatePath() {
+	public static final String getUpdateURL() {
 		return UPDATE;
 	}
 	public static final String getPluginPath(final String version) {
 		return PLUGIN.replace("$version", version);
 	}
-	public static final String getResourcePack() {
+	public static final String getResourcePackURL() {
 		return RESOURCE;
 	}
 	public static final void showVersion(final String version, final CommandSender sender) {
-		sender.sendMessage(ChatColor.YELLOW + LTItemMail.getInstance().getDescription().getName() + ": " + ChatColor.GREEN + version + ChatColor.YELLOW + ", Spigot API: " + ChatColor.GREEN + API + ChatColor.YELLOW + ", Java: " + ChatColor.GREEN + JAVA);
+		sender.sendMessage(ChatColor.YELLOW + LTItemMail.getInstance().getDescription().getName() + ": " + ChatColor.GREEN + version);
 	}
 	public enum VersionType {
 		CONFIG_YML,
