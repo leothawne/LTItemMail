@@ -36,10 +36,13 @@ public final class LTItemMail extends JavaPlugin {
 	@Override
 	public final void onEnable() {
 		instance = this;
-		new BStats(this, 3647);
+		final BStats metrics = new BStats(this, 3647);
 		loadConfig();
 		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_ENABLE)) {
 			ConsoleModule.hello();
+			metrics.addCustomChart(new BStats.SimplePie("builds", () -> {
+		        return String.valueOf((Integer) ConfigurationModule.get(ConfigurationModule.Type.BUILD_NUMBER));
+		    }));
 			loadLang();
 			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.BUNGEE_MODE)) {
 				getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
