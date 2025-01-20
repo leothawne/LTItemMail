@@ -18,9 +18,10 @@ import br.net.gmj.nobookie.LTItemMail.entity.LTPlayer;
 import br.net.gmj.nobookie.LTItemMail.module.ConfigurationModule;
 import br.net.gmj.nobookie.LTItemMail.module.ConsoleModule;
 import br.net.gmj.nobookie.LTItemMail.module.DatabaseModule;
+import br.net.gmj.nobookie.LTItemMail.module.ExtensionModule;
 import br.net.gmj.nobookie.LTItemMail.module.LanguageModule;
 import br.net.gmj.nobookie.LTItemMail.module.MailboxModule;
-import br.net.gmj.nobookie.LTItemMail.util.Toasts;
+import br.net.gmj.nobookie.LTItemMail.module.ext.LTUltimateAdvancementAPI;
 import net.md_5.bungee.api.ChatColor;
 
 /**
@@ -30,6 +31,7 @@ import net.md_5.bungee.api.ChatColor;
  */
 public final class LTItemMailAPI {
 	private LTItemMailAPI() {}
+	private static final LTUltimateAdvancementAPI ultimateAdvancementAPI = (LTUltimateAdvancementAPI) ExtensionModule.getInstance().get(ExtensionModule.Function.ULTIMATEADVANCEMENTAPI);
 	/**
 	 * 
 	 * Method used to send items anonymously
@@ -67,15 +69,17 @@ public final class LTItemMailAPI {
 						bukkitPlayer.sendTitle(ChatColor.AQUA + "" + LanguageModule.get(LanguageModule.Type.MAILBOX_SPECIAL), "", 20 * 1, 20 * 5, 20 * 1);
 						break;
 					case TOAST:
-						Toasts.display(player, LanguageModule.get(LanguageModule.Type.MAILBOX_SPECIAL), Toasts.Type.MAILBOX);
-						if(!label.isEmpty()) {
-							final String l = label;
-							new BukkitRunnable() {
-								@Override
-								public final void run() {
-									Toasts.display(player, l, Toasts.Type.MAILBOX);
-								}
-							}.runTaskLater(LTItemMail.getInstance(), 20 * 3);
+						if(ultimateAdvancementAPI != null) {
+							ultimateAdvancementAPI.show(player, LanguageModule.get(LanguageModule.Type.MAILBOX_SPECIAL));
+							if(!label.isEmpty()) {
+								final String l = label;
+								new BukkitRunnable() {
+									@Override
+									public final void run() {
+										ultimateAdvancementAPI.show(player, l);
+									}
+								}.runTaskLater(LTItemMail.getInstance(), 20 * 3);
+							}
 						}
 						break;
 				}

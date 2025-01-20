@@ -60,8 +60,9 @@
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>3.11.2</version>
 				<configuration>
+					<source>8</source>
 					<sourcepath>${project.basedir}/src/main/java</sourcepath>
-					<excludePackageNames>br.net.gmj.nobookie.LTItemMail.command:br.net.gmj.nobookie.LTItemMail.command.*:br.net.gmj.nobookie.LTItemMail.inventory:br.net.gmj.nobookie.LTItemMail.inventory.*:br.net.gmj.nobookie.LTItemMail.item:br.net.gmj.nobookie.LTItemMail.item.*:br.net.gmj.nobookie.LTItemMail.listener:br.net.gmj.nobookie.LTItemMail.listener.*:br.net.gmj.nobookie.LTItemMail.module:br.net.gmj.nobookie.LTItemMail.module.*:br.net.gmj.nobookie.LTItemMail.task:br.net.gmj.nobookie.LTItemMail.task.*:me.marnic.jdl:me.marnic.jdl.*</excludePackageNames>
+					<excludePackageNames>br.net.gmj.nobookie.LTItemMail.command:br.net.gmj.nobookie.LTItemMail.command.*:br.net.gmj.nobookie.LTItemMail.inventory:br.net.gmj.nobookie.LTItemMail.inventory.*:br.net.gmj.nobookie.LTItemMail.item:br.net.gmj.nobookie.LTItemMail.item.*:br.net.gmj.nobookie.LTItemMail.listener:br.net.gmj.nobookie.LTItemMail.listener.*:br.net.gmj.nobookie.LTItemMail.module:br.net.gmj.nobookie.LTItemMail.module.*:br.net.gmj.nobookie.LTItemMail.task:br.net.gmj.nobookie.LTItemMail.task.*:br.net.gmj.nobookie.LTItemMail.util:br.net.gmj.nobookie.LTItemMail.util.*:me.marnic.jdl:me.marnic.jdl.*</excludePackageNames>
 				</configuration>
 				<executions>
 					<execution>
@@ -139,6 +140,10 @@
 		  	<id>nightexpress-releases</id>
 		  	<url>https://repo.nightexpressdev.com/releases</url>
 		</repository>
+			<repository>
+	        <id>fren_gor</id>
+	        <url>https://nexus.frengor.com/repository/public/</url>
+	    </repository>
 	</repositories>
 	<dependencies>
 		<dependency>
@@ -230,6 +235,12 @@
 		  	<artifactId>CoinsEngine</artifactId>
 		  	<version>2.4.1</version>
 		  	<scope>provided</scope>
+		</dependency>
+		<dependency>
+		    <groupId>com.frengor</groupId>
+		    <artifactId>ultimateadvancementapi</artifactId>
+		    <version>2.4.3</version>
+		    <scope>provided</scope>
 		</dependency>
 	</dependencies>
 </project>

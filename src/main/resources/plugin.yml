@@ -8,7 +8,7 @@ authors: [Nobookie, leothawne]
 website: https://www.spigotmc.org/resources/62294/
 main: ${project.groupId}.${project.artifactId}.${project.name}
 database: true
-softdepend: [Vault, WorldGuard, GriefPrevention, RedProtect, Towny, dynmap, BlueMap, DecentHolograms, PlaceholderAPI, CoinsEngine]
+softdepend: [Vault, WorldGuard, GriefPrevention, RedProtect, Towny, dynmap, BlueMap, DecentHolograms, PlaceholderAPI, CoinsEngine, UltimateAdvancementAPI]
 commands:
     itemmail:
         description: Used to send items and to check your mailbox.

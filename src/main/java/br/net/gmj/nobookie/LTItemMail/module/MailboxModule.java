@@ -23,10 +23,12 @@ import com.google.common.io.ByteStreams;
 
 import br.net.gmj.nobookie.LTItemMail.LTItemMail;
 import br.net.gmj.nobookie.LTItemMail.entity.LTPlayer;
-import br.net.gmj.nobookie.LTItemMail.util.Toasts;
+import br.net.gmj.nobookie.LTItemMail.module.ext.LTUltimateAdvancementAPI;
 import net.md_5.bungee.api.ChatColor;
 
 public final class MailboxModule {
+	private MailboxModule() {}
+	private static final LTUltimateAdvancementAPI ultimateAdvancementAPI = (LTUltimateAdvancementAPI) ExtensionModule.getInstance().get(ExtensionModule.Function.ULTIMATEADVANCEMENTAPI);
 	private static final void write(final String content) {
 		try {
 			Files.createDirectories(Paths.get(LTItemMail.getInstance().getDataFolder() + File.separator + "logs"));
@@ -136,13 +138,15 @@ public final class MailboxModule {
 					bukkitReceiver.sendTitle(ChatColor.AQUA + "" + LanguageModule.get(LanguageModule.Type.MAILBOX_FROM) +  " " + ChatColor.GREEN, sender.getName(), 20 * 1, 20 * 5, 20 * 1);
 					break;
 				case TOAST:
-					Toasts.display(receiver, LanguageModule.get(LanguageModule.Type.MAILBOX_FROM) + " " + sender.getName(), Toasts.Type.MAILBOX);
-					if(!label.isEmpty()) Bukkit.getScheduler().runTaskLater(LTItemMail.getInstance(), new Runnable() {
-						@Override
-						public final void run() {
-							Toasts.display(receiver, label, Toasts.Type.MAILBOX);
-						}
-					}, 20 * 3);
+					if(ultimateAdvancementAPI != null) {
+						ultimateAdvancementAPI.show(receiver, LanguageModule.get(LanguageModule.Type.MAILBOX_FROM) + " " + sender.getName());
+						if(!label.isEmpty()) Bukkit.getScheduler().runTaskLater(LTItemMail.getInstance(), new Runnable() {
+							@Override
+							public final void run() {
+								ultimateAdvancementAPI.show(receiver, label);
+							}
+						}, 20 * 3);
+					}
 					break;
 			}
 		} else if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.BUNGEE_MODE)) {

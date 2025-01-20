@@ -12,10 +12,11 @@ import org.bukkit.inventory.ItemStack;
 
 import br.net.gmj.nobookie.LTItemMail.item.MailboxItem;
 import br.net.gmj.nobookie.LTItemMail.module.DatabaseModule;
+import br.net.gmj.nobookie.LTItemMail.module.ExtensionModule;
 import br.net.gmj.nobookie.LTItemMail.module.LanguageModule;
 import br.net.gmj.nobookie.LTItemMail.module.MailboxModule;
+import br.net.gmj.nobookie.LTItemMail.module.ext.LTUltimateAdvancementAPI;
 import br.net.gmj.nobookie.LTItemMail.util.FetchUtil;
-import br.net.gmj.nobookie.LTItemMail.util.Toasts;
 
 /**
  * 
@@ -33,6 +34,7 @@ public final class LTPlayer {
 		this.name = name;
 		this.uuid = uuid;
 	}
+	private final LTUltimateAdvancementAPI ultimateAdvancementAPI = (LTUltimateAdvancementAPI) ExtensionModule.getInstance().get(ExtensionModule.Function.ULTIMATEADVANCEMENTAPI);
 	/**
 	 * 
 	 * Gets a LTPlayer with the player name (case NOT sensitive).
@@ -188,10 +190,9 @@ public final class LTPlayer {
 	 * Sends a toast message to the LTPlayer.
 	 * 
 	 * @param message The message that will be shown.
-	 * @param type The toast type.
 	 * 
 	 */
-	public final void sendToastMessage(final String message, final Toasts.Type type) {
-		Toasts.display(this, message, type);
+	public final void sendToastMessage(final String message) {
+		if(ultimateAdvancementAPI != null) ultimateAdvancementAPI.show(this, message);
 	}
 }

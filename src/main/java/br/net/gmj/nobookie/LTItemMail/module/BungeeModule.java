@@ -17,7 +17,7 @@ import com.google.common.io.ByteStreams;
 import br.net.gmj.nobookie.LTItemMail.LTItemMail;
 import br.net.gmj.nobookie.LTItemMail.entity.LTPlayer;
 import br.net.gmj.nobookie.LTItemMail.module.MailboxModule.Action;
-import br.net.gmj.nobookie.LTItemMail.util.Toasts;
+import br.net.gmj.nobookie.LTItemMail.module.ext.LTUltimateAdvancementAPI;
 import net.md_5.bungee.api.ChatColor;
 
 public final class BungeeModule implements PluginMessageListener {
@@ -33,6 +33,7 @@ public final class BungeeModule implements PluginMessageListener {
 			}
 		}, 1, 5);
 	}
+	private final LTUltimateAdvancementAPI ultimateAdvancementAPI = (LTUltimateAdvancementAPI) ExtensionModule.getInstance().get(ExtensionModule.Function.ULTIMATEADVANCEMENTAPI);
 	@Override
 	public final void onPluginMessageReceived(final String channel, final Player player, final byte[] message) {
 		if(!channel.equals("BungeeCord")) return;
@@ -69,7 +70,7 @@ public final class BungeeModule implements PluginMessageListener {
 								bukkitReceiver.sendTitle(ChatColor.AQUA + "" + LanguageModule.get(LanguageModule.Type.MAILBOX_FROM) +  " " + ChatColor.GREEN, sender.getName(), 20 * 1, 20 * 5, 20 * 1);
 								break;
 							case TOAST:
-								Toasts.display(receiver, LanguageModule.get(LanguageModule.Type.MAILBOX_FROM) + " " + sender.getName(), Toasts.Type.MAILBOX);
+								if(ultimateAdvancementAPI != null) ultimateAdvancementAPI.show(receiver, LanguageModule.get(LanguageModule.Type.MAILBOX_FROM) + " " + sender.getName());
 								break;
 						}
 					}

@@ -16,6 +16,7 @@ import br.net.gmj.nobookie.LTItemMail.module.ext.LTGriefPrevention;
 import br.net.gmj.nobookie.LTItemMail.module.ext.LTPlaceholderAPI;
 import br.net.gmj.nobookie.LTItemMail.module.ext.LTRedProtect;
 import br.net.gmj.nobookie.LTItemMail.module.ext.LTTownyAdvanced;
+import br.net.gmj.nobookie.LTItemMail.module.ext.LTUltimateAdvancementAPI;
 import br.net.gmj.nobookie.LTItemMail.module.ext.LTVault;
 import br.net.gmj.nobookie.LTItemMail.module.ext.LTWorldGuard;
 import br.net.gmj.nobookie.LTItemMail.module.ext.listener.LTGriefPreventionListener;
@@ -39,6 +40,7 @@ public final class ExtensionModule {
 		plugins.putIfAbsent(Name.BLUEMAP, manager.getPlugin("BlueMap"));
 		plugins.putIfAbsent(Name.DECENTHOLOGRAMS, manager.getPlugin("DecentHolograms"));
 		plugins.putIfAbsent(Name.PLACEHOLDERAPI, manager.getPlugin("PlaceholderAPI"));
+		plugins.putIfAbsent(Name.ULTIMATEADVANCEMENTAPI, manager.getPlugin("UltimateAdvancementAPI"));
 	}
 	public final void warn(final Name sourceName, final Name pluginName) {
 		Plugin source = null;
@@ -86,6 +88,9 @@ public final class ExtensionModule {
 				break;
 			case PLACEHOLDERAPI:
 				register.putIfAbsent(function, new LTPlaceholderAPI());
+				break;
+			case ULTIMATEADVANCEMENTAPI:
+				register.putIfAbsent(function, new LTUltimateAdvancementAPI());
 				break;
 		}
 		return isRegistered(function);
@@ -152,7 +157,13 @@ public final class ExtensionModule {
 			warn(null, Name.PLACEHOLDERAPI);
 			register(Function.PLACEHOLDERAPI);
 		}
-		if(detected) ConsoleModule.info("Extensions loaded (if there is any).");
+		if(isInstalled(Name.ULTIMATEADVANCEMENTAPI)) if(!isRegistered(Function.ULTIMATEADVANCEMENTAPI)) {
+			warn(null, Name.ULTIMATEADVANCEMENTAPI);
+			register(Function.ULTIMATEADVANCEMENTAPI);
+		}
+		if(detected) {
+			ConsoleModule.info("Extensions loaded.");
+		} else ConsoleModule.info("No extensions detected.");
 	}
 	public static final ExtensionModule reload() {
 		if(instance != null) {
@@ -177,7 +188,8 @@ public final class ExtensionModule {
 		DYNMAP,
 		BLUEMAP,
 		DECENTHOLOGRAMS,
-		PLACEHOLDERAPI
+		PLACEHOLDERAPI,
+		ULTIMATEADVANCEMENTAPI
 	}
 	public enum Function {
 		VAULT_PERMISSION,
@@ -188,6 +200,7 @@ public final class ExtensionModule {
 		DYNMAP,
 		BLUEMAP,
 		DECENTHOLOGRAMS,
-		PLACEHOLDERAPI
+		PLACEHOLDERAPI,
+		ULTIMATEADVANCEMENTAPI
 	}
 }
