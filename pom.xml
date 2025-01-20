@@ -58,7 +58,11 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.8.0</version>
+				<version>3.11.2</version>
+				<configuration>
+					<sourcepath>${project.basedir}/src/main/java</sourcepath>
+					<excludePackageNames>br.net.gmj.nobookie.LTItemMail.command:br.net.gmj.nobookie.LTItemMail.command.*:br.net.gmj.nobookie.LTItemMail.inventory:br.net.gmj.nobookie.LTItemMail.inventory.*:br.net.gmj.nobookie.LTItemMail.item:br.net.gmj.nobookie.LTItemMail.item.*:br.net.gmj.nobookie.LTItemMail.listener:br.net.gmj.nobookie.LTItemMail.listener.*:br.net.gmj.nobookie.LTItemMail.module:br.net.gmj.nobookie.LTItemMail.module.*:br.net.gmj.nobookie.LTItemMail.task:br.net.gmj.nobookie.LTItemMail.task.*:me.marnic.jdl:me.marnic.jdl.*</excludePackageNames>
+				</configuration>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
