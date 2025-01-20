@@ -21,14 +21,14 @@ import eu.decentsoftware.holograms.api.holograms.Hologram;
 import net.md_5.bungee.api.ChatColor;
 
 public final class LTDecentHolograms {
-	private final List<Material> randomItems;
+	private final List<Material> items;
 	public LTDecentHolograms() {
-		randomItems = new ArrayList<>();
+		items = new ArrayList<>();
 		for(final Material material : Material.values()) {
 			final String name = material.toString();
-			if(name.endsWith("_AXE") || name.endsWith("_PICKAXE") || name.endsWith("_SHOVEL") || name.endsWith("_HOE")) randomItems.add(material);
+			if(!name.startsWith("LEGACY_") && (name.endsWith("_AXE") || name.endsWith("_PICKAXE") || name.endsWith("_SHOVEL") || name.endsWith("_HOE"))) items.add(material);
 		}
-		Collections.shuffle(randomItems);
+		Collections.shuffle(items);
 	}
 	public final void cleanup() {
 		Bukkit.getScheduler().runTaskLater(LTItemMail.getInstance(), new Runnable() {
@@ -50,7 +50,7 @@ public final class LTDecentHolograms {
 		final Location holoLocation = new Location(world, x + 0.5, y + 0.5, z + 0.5);
 		if(DHAPI.getHologram(id) != null) deleteHolo(player, location);
 		final Hologram holo = DHAPI.createHologram(id, holoLocation, true);
-		DHAPI.addHologramLine(holo, randomItems.get(new Random().nextInt(randomItems.size() - 1)));
+		DHAPI.addHologramLine(holo, items.get(new Random().nextInt(items.size() - 1)));
 		DHAPI.addHologramLine(holo, "<#ANIM:wave:" + ChatColor.GREEN + "" + ChatColor.BOLD + "," + ChatColor.GOLD + "" + ChatColor.BOLD + ">" + LanguageModule.get(LanguageModule.Type.BLOCK_NAME) + "</#ANIM>");
 		DHAPI.addHologramLine(holo, ChatColor.GOLD + LanguageModule.get(LanguageModule.Type.BLOCK_OWNER) + " " + ChatColor.AQUA + player.getName());
 		ConsoleModule.debug(getClass().getName() + "#createHolo: " + id);
