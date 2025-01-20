@@ -56,7 +56,7 @@ public final class MailboxBlockListener implements Listener {
 	private final LTDynmap dynmap = (LTDynmap) ExtensionModule.getInstance().get(ExtensionModule.Function.DYNMAP);
 	private final LTBlueMap blueMap = (LTBlueMap) ExtensionModule.getInstance().get(ExtensionModule.Function.BLUEMAP);
 	private final LTDecentHolograms decentHolograms = (LTDecentHolograms) ExtensionModule.getInstance().get(ExtensionModule.Function.DECENTHOLOGRAMS);
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public final void onClick(final PlayerInteractEvent event) {
 		final Player player = event.getPlayer();
 		if(event.hasBlock() && event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && event.getHand().equals(EquipmentSlot.HAND)) {
@@ -87,7 +87,7 @@ public final class MailboxBlockListener implements Listener {
 			}
 		}
 	}
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public final void onPlace(final BlockPlaceEvent event) {
 		final ItemStack item = event.getItemInHand();
 		if(item != null && item.getItemMeta() != null && item.getType().toString().endsWith("_SHULKER_BOX") && BukkitUtil.DataContainer.isMailbox(item)) {
@@ -114,7 +114,7 @@ public final class MailboxBlockListener implements Listener {
 			} else event.setCancelled(true);
 		}
 	}
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public final void onBreak(final BlockBreakEvent event) {
 		final Block block = event.getBlock();
 		if(block != null && block.getType().toString().endsWith("_SHULKER_BOX") && DatabaseModule.Block.isMailboxBlock(block.getLocation())) {
@@ -162,7 +162,7 @@ public final class MailboxBlockListener implements Listener {
 		final Location block = event.getDestination().getLocation();
 		if(block != null && block.getBlock().getType().toString().endsWith("_SHULKER_BOX") && DatabaseModule.Block.isMailboxBlock(block)) if(event.getSource().getType().equals(InventoryType.HOPPER)) event.setCancelled(true);
 	}
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public final void onPistonExtend(final BlockPistonExtendEvent event) {
 		Boolean cancel = false;
 		final List<Block> blocks = event.getBlocks();
@@ -177,7 +177,7 @@ public final class MailboxBlockListener implements Listener {
 		}
 		event.setCancelled(cancel);
 	}
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public final void onPistonRetract(final BlockPistonRetractEvent event) {
 		Boolean cancel = false;
 		final List<Block> blocks = event.getBlocks();
@@ -192,7 +192,7 @@ public final class MailboxBlockListener implements Listener {
 		}
 		event.setCancelled(cancel);
 	}
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public final void onBlockExplode(final BlockExplodeEvent event) {
 		Boolean cancel = false;
 		final List<Block> blocks = event.blockList();
@@ -221,7 +221,7 @@ public final class MailboxBlockListener implements Listener {
 		}
 		event.setCancelled(cancel);
 	}
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public final void onEntityExplode(final EntityExplodeEvent event) {
 		Boolean cancel = false;
 		final List<Block> blocks = event.blockList();
