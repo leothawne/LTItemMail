@@ -60,7 +60,9 @@
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>3.8.0</version>
 				<configuration>
-					<source>8</source>
+					<links>
+						<link>https://hub.spigotmc.org/javadocs/spigot/</link>
+					</links>
 					<sourcepath>${project.basedir}/src/main/java</sourcepath>
 					<excludePackageNames>br.net.gmj.nobookie.LTItemMail.command:br.net.gmj.nobookie.LTItemMail.command.*:br.net.gmj.nobookie.LTItemMail.inventory:br.net.gmj.nobookie.LTItemMail.inventory.*:br.net.gmj.nobookie.LTItemMail.item:br.net.gmj.nobookie.LTItemMail.item.*:br.net.gmj.nobookie.LTItemMail.listener:br.net.gmj.nobookie.LTItemMail.listener.*:br.net.gmj.nobookie.LTItemMail.module:br.net.gmj.nobookie.LTItemMail.module.*:br.net.gmj.nobookie.LTItemMail.task:br.net.gmj.nobookie.LTItemMail.task.*:br.net.gmj.nobookie.LTItemMail.util:br.net.gmj.nobookie.LTItemMail.util.*:me.marnic.jdl:me.marnic.jdl.*</excludePackageNames>
 				</configuration>
