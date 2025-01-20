@@ -15,14 +15,14 @@ if you would like to use LT Item Mail as a dependency of your plugin:
 <repository>
   <id>gmj-repository</id>
   <name>Maven G.M.J</name>
-  <url>https://maven.gmj.net.br/<repository></url>
+  <url>https://maven.gmj.net.br/snapshots</url>
 </repository>
 ```
 
 ### Add the dependency to your pom.xml
 ```
 <dependency>
-  <groupId>io.github.leothawne</groupId>
+  <groupId>br.net.gmj.nobookie</groupId>
   <artifactId>LTItemMail</artifactId>
   <version>1.0.0</version>
 </dependency>
