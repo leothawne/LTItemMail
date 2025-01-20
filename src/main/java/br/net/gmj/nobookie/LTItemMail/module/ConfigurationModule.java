@@ -1,4 +1,4 @@
-package io.github.leothawne.LTItemMail.module;
+package br.net.gmj.nobookie.LTItemMail.module;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,9 +9,9 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import io.github.leothawne.LTItemMail.LTItemMail;
-import io.github.leothawne.LTItemMail.util.BukkitUtil;
-import io.github.leothawne.LTItemMail.util.FetchUtil;
+import br.net.gmj.nobookie.LTItemMail.LTItemMail;
+import br.net.gmj.nobookie.LTItemMail.util.BukkitUtil;
+import br.net.gmj.nobookie.LTItemMail.util.FetchUtil;
 
 public final class ConfigurationModule {
 	private ConfigurationModule() {}
@@ -50,26 +50,26 @@ public final class ConfigurationModule {
 		final List<Integer> boards = getBoardsRead();
 		if(!boards.contains(id)) {
 			boards.add(id);
-			LTItemMail.getInstance().getConfiguration().set("boards-read", boards);
+			LTItemMail.getInstance().configuration.set("boards-read", boards);
 			try {
-				LTItemMail.getInstance().getConfiguration().save(configFile);
+				LTItemMail.getInstance().configuration.save(configFile);
 			} catch (final IOException e) {
 				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 			}
 		}
 	}
 	public static final void disableDatabaseConversion() {
-		LTItemMail.getInstance().getConfiguration().set("database.convert", false);
+		LTItemMail.getInstance().configuration.set("database.convert", false);
 		try {
-			LTItemMail.getInstance().getConfiguration().save(configFile);
+			LTItemMail.getInstance().configuration.save(configFile);
 		} catch (final IOException e) {
 			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 		}
 	}
 	public static final List<Integer> getBoardsRead(){
 		List<Integer> boards;
-		if(LTItemMail.getInstance().getConfiguration().isSet("boards-read")) {
-			boards = LTItemMail.getInstance().getConfiguration().getIntegerList("boards-read");
+		if(LTItemMail.getInstance().configuration.isSet("boards-read")) {
+			boards = LTItemMail.getInstance().configuration.getIntegerList("boards-read");
 		} else boards = new ArrayList<>();
 		return boards;
 	}
@@ -197,15 +197,19 @@ public final class ConfigurationModule {
 				result = FetchUtil.Build.get();
 				path = "build-number";
 				break;
+			case BOARDS_CONSOLE_ONLY:
+				result = false;
+				path = "boards.console-only";
+				break;
 		}
-		if(path != null) if(LTItemMail.getInstance().getConfiguration().isSet(path)) {
-			result = LTItemMail.getInstance().getConfiguration().get(path);
+		if(path != null) if(LTItemMail.getInstance().configuration.isSet(path)) {
+			result = LTItemMail.getInstance().configuration.get(path);
 			if(type.equals(Type.PLUGIN_TAG) || type.equals(Type.MAILBOX_NAME) || type.equals(Type.MAILBOX_NAME)) result = BukkitUtil.format((String) result);
 		} else if(result != null) {
 			ConsoleModule.info("Configuration fallback: [" + path + ":" + result + "]");
-			LTItemMail.getInstance().getConfiguration().set(path, result);
+			LTItemMail.getInstance().configuration.set(path, result);
 			try {
-				LTItemMail.getInstance().getConfiguration().save(configFile);
+				LTItemMail.getInstance().configuration.save(configFile);
 			} catch (final IOException e) {
 				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 			}
@@ -245,6 +249,7 @@ public final class ConfigurationModule {
 		DATABASE_MYSQL_PASSWORD,
 		DATABASE_MYSQL_NAME,
 		BUNGEE_MODE,
-		BUILD_NUMBER
+		BUILD_NUMBER,
+		BOARDS_CONSOLE_ONLY
 	}
 }

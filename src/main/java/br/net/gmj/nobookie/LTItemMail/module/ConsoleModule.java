@@ -1,6 +1,5 @@
-package io.github.leothawne.LTItemMail.module;
+package br.net.gmj.nobookie.LTItemMail.module;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -9,11 +8,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.entity.Player;
 
-import io.github.leothawne.LTItemMail.LTItemMail;
-import io.github.leothawne.LTItemMail.module.ConfigurationModule.Type;
-import io.github.leothawne.LTItemMail.util.FetchUtil;
+import br.net.gmj.nobookie.LTItemMail.LTItemMail;
+import br.net.gmj.nobookie.LTItemMail.module.ConfigurationModule.Type;
+import br.net.gmj.nobookie.LTItemMail.util.FetchUtil;
 
 public final class ConsoleModule {
 	private ConsoleModule() {}
@@ -47,26 +45,21 @@ public final class ConsoleModule {
 		for(final String warning: warnings) sender().sendMessage(ChatColor.WHITE + warning);
 		sender().sendMessage(ChatColor.WHITE + "==================================================");
 	}
-	public static final void server(final Map<Integer, Map<String, Map<String, List<String>>>> messages) {
-		final List<CommandSender> receivers = new ArrayList<>();
-		receivers.add(sender());
-		for(final Player player : Bukkit.getOnlinePlayers()) if(PermissionModule.hasPermission(player, PermissionModule.Type.CMD_ADMIN_NOTIFY)) receivers.add(player);
-		for(final CommandSender receiver : receivers) {
-			receiver.sendMessage(ChatColor.WHITE + "========== " + ChatColor.DARK_AQUA + "LT Item Mail " + ChatColor.LIGHT_PURPLE + "Messages Board" + ChatColor.WHITE + " ==========");
-			receiver.sendMessage("");
-			for(final Integer id : messages.keySet()) {
-				final Map<String, Map<String, List<String>>> contents1 = messages.get(id);
-				for(final String title : contents1.keySet()) {
-					final Map<String, List<String>> contents2 = contents1.get(title);
-					for(final String datetime : contents2.keySet()) {
-						receiver.sendMessage(ChatColor.WHITE + "[" + datetime + " | " + title + "]");
-						for(final String message : contents2.get(datetime)) receiver.sendMessage(ChatColor.WHITE + "  " + message);
-					}
-					receiver.sendMessage("");
+	public static final void board(final Map<Integer, Map<String, Map<String, List<String>>>> messages, final CommandSender receiver) {
+		receiver.sendMessage(ChatColor.WHITE + "========== " + ChatColor.DARK_AQUA + "LT Item Mail " + ChatColor.LIGHT_PURPLE + "Messages Board" + ChatColor.WHITE + " ==========");
+		receiver.sendMessage("");
+		for(final Integer id : messages.keySet()) {
+			final Map<String, Map<String, List<String>>> contents1 = messages.get(id);
+			for(final String title : contents1.keySet()) {
+				final Map<String, List<String>> contents2 = contents1.get(title);
+				for(final String datetime : contents2.keySet()) {
+					receiver.sendMessage(ChatColor.WHITE + "[" + datetime + " | " + title + "]");
+					for(final String message : contents2.get(datetime)) receiver.sendMessage(ChatColor.WHITE + "  " + message);
 				}
+				receiver.sendMessage("");
 			}
-			receiver.sendMessage(ChatColor.WHITE + "=================================================");
 		}
+		receiver.sendMessage(ChatColor.WHITE + "=================================================");
 	}
 	public static final void br() {
 		/*sender().sendMessage("⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣴⣾⣷⣦⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀");
