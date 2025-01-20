@@ -2,10 +2,10 @@ name: ${project.name}
 description: ${project.description}
 version: ${project.version}
 build: ${v}
-api-version: "1.14"
+api-version: 1.14
 load: POSTWORLD
-author: leothawne
-website: https://leothawne.github.io/LTItemMail/
+authors: [Nobookie, leothawne]
+website: https://www.spigotmc.org/resources/62294/
 main: ${project.groupId}.${project.artifactId}.${project.name}
 database: true
 softdepend: [Vault, WorldGuard, GriefPrevention, RedProtect, Towny, dynmap, BlueMap, DecentHolograms, PlaceholderAPI, CoinsEngine]
