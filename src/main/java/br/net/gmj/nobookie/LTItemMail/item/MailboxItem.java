@@ -15,6 +15,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import br.net.gmj.nobookie.LTItemMail.LTItemMail;
 import br.net.gmj.nobookie.LTItemMail.module.ConfigurationModule;
+import br.net.gmj.nobookie.LTItemMail.util.BukkitUtil;
 
 public final class MailboxItem implements Item {
 	@Override
@@ -22,8 +23,8 @@ public final class MailboxItem implements Item {
 		return (String) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_NAME);
 	}
 	@Override
-	public final List<String> getDescription(String data) {
-		return Arrays.asList("Mailbox@");
+	public final List<String> getDescription(final String data) {
+		return Arrays.asList("");
 	}
 	@Override
 	public final Item.Type getType() {
@@ -50,9 +51,10 @@ public final class MailboxItem implements Item {
 	@Override
 	public final ItemStack getItem(final String data) {
 		final ItemStack item = new ItemStack(getMaterial(), 1);
-		final ItemMeta meta = item.getItemMeta();
+		ItemMeta meta = item.getItemMeta();
 		meta.setDisplayName(getName());
 		meta.setLore(getDescription(data));
+		meta = BukkitUtil.DataContainer.setMailbox(meta);
 		item.setItemMeta(meta);
 		return item;
 	}

@@ -30,7 +30,6 @@ import br.net.gmj.nobookie.LTItemMail.module.ExtensionModule;
 import br.net.gmj.nobookie.LTItemMail.module.LanguageModule;
 import br.net.gmj.nobookie.LTItemMail.module.ResourcePackModule;
 import br.net.gmj.nobookie.LTItemMail.task.MailboxBlockTask;
-import br.net.gmj.nobookie.LTItemMail.task.MailboxTask;
 import br.net.gmj.nobookie.LTItemMail.task.RecipeTask;
 import br.net.gmj.nobookie.LTItemMail.task.VersionControlTask;
 import br.net.gmj.nobookie.LTItemMail.util.BStats;
@@ -71,7 +70,6 @@ public final class LTItemMail extends JavaPlugin {
 			getCommand("mailitem").setExecutor(new MailItemCommand());
 			getCommand("mailitem").setTabCompleter(new MailItemCommandTabCompleter());
 			Bukkit.getScheduler().runTaskTimer(this, new RecipeTask(), 1, 20 * 60);
-			Bukkit.getScheduler().runTaskTimer(this, new MailboxTask(), 1, 1);
 			Bukkit.getScheduler().runTaskTimer(this, new MailboxBlockTask(), 1, 20);
 			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_UPDATE_CHECK)) {
 				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ltitemmail:itemmailadmin update");

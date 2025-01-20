@@ -20,8 +20,6 @@ import br.net.gmj.nobookie.LTItemMail.LTItemMail;
 import br.net.gmj.nobookie.LTItemMail.block.MailboxBlock;
 import br.net.gmj.nobookie.LTItemMail.entity.LTPlayer;
 import br.net.gmj.nobookie.LTItemMail.inventory.MailboxInventory;
-import br.net.gmj.nobookie.LTItemMail.item.Item;
-import br.net.gmj.nobookie.LTItemMail.item.MailboxItem;
 import br.net.gmj.nobookie.LTItemMail.module.ConfigurationModule;
 import br.net.gmj.nobookie.LTItemMail.module.DataModule;
 import br.net.gmj.nobookie.LTItemMail.module.DatabaseModule;
@@ -29,6 +27,7 @@ import br.net.gmj.nobookie.LTItemMail.module.ExtensionModule;
 import br.net.gmj.nobookie.LTItemMail.module.LanguageModule;
 import br.net.gmj.nobookie.LTItemMail.module.MailboxModule;
 import br.net.gmj.nobookie.LTItemMail.module.PermissionModule;
+import br.net.gmj.nobookie.LTItemMail.util.BukkitUtil;
 import net.md_5.bungee.api.ChatColor;
 
 public final class ItemMailCommand implements CommandExecutor {
@@ -179,8 +178,7 @@ public final class ItemMailCommand implements CommandExecutor {
 					if(args.length == 2) {
 						final String color = args[1].toLowerCase();
 						final ItemStack current = player.getInventory().getItemInMainHand();
-						final Item mailbox = new MailboxItem();
-						if(colors.contains(color) && current != null && current.getItemMeta() != null && current.getType().toString().endsWith("_SHULKER_BOX") && current.getItemMeta().getLore() != null && current.getItemMeta().getLore().size() == 1 && current.getItemMeta().getLore().get(0).contains(mailbox.getDescription(null).get(0)) && current.getItemMeta().getLore().get(0).split("@").length == 2) {
+						if(colors.contains(color) && current != null && current.getItemMeta() != null && current.getType().toString().endsWith("_SHULKER_BOX") && BukkitUtil.DataContainer.isMailbox(current)) {
 							final ItemStack newMailbox = new ItemStack(Material.getMaterial(color.toUpperCase() + "_SHULKER_BOX"));
 							newMailbox.setAmount(current.getAmount());
 							newMailbox.setItemMeta(current.getItemMeta());

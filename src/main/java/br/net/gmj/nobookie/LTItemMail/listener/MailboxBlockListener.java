@@ -45,6 +45,7 @@ import br.net.gmj.nobookie.LTItemMail.module.ext.LTGriefPrevention;
 import br.net.gmj.nobookie.LTItemMail.module.ext.LTRedProtect;
 import br.net.gmj.nobookie.LTItemMail.module.ext.LTTownyAdvanced;
 import br.net.gmj.nobookie.LTItemMail.module.ext.LTWorldGuard;
+import br.net.gmj.nobookie.LTItemMail.util.BukkitUtil;
 import net.md_5.bungee.api.ChatColor;
 
 public final class MailboxBlockListener implements Listener {
@@ -89,7 +90,7 @@ public final class MailboxBlockListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
 	public final void onPlace(final BlockPlaceEvent event) {
 		final ItemStack item = event.getItemInHand();
-		if(item != null && item.getItemMeta() != null) if(item.getType().toString().endsWith("_SHULKER_BOX")) if(item.getItemMeta().getLore() != null && item.getItemMeta().getLore().size() == 1) if(item.getItemMeta().getLore().get(0).contains(mailbox.getDescription(null).get(0)) && item.getItemMeta().getLore().get(0).split("@").length == 2) {
+		if(item != null && item.getItemMeta() != null && item.getType().toString().endsWith("_SHULKER_BOX") && BukkitUtil.DataContainer.isMailbox(item)) {
 			final Player player = event.getPlayer();
 			final Block block = event.getBlockPlaced();
 			if(canBuildBreak(player, block.getLocation()) && canBuild(player, block.getLocation())) {
