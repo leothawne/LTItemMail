@@ -70,7 +70,7 @@ public final class LTItemMail extends JavaPlugin {
 			getCommand("mailitem").setExecutor(new MailItemCommand());
 			getCommand("mailitem").setTabCompleter(new MailItemCommandTabCompleter());
 			Bukkit.getScheduler().runTaskTimer(this, new RecipeTask(), 1, 20 * 60);
-			Bukkit.getScheduler().runTaskTimer(this, new MailboxBlockTask(), 1, 20);
+			Bukkit.getScheduler().runTaskTimer(this, new MailboxBlockTask(), 1, 1);
 			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_UPDATE_CHECK)) {
 				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ltitemmail:itemmailadmin update");
 				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_UPDATE_PERIODIC_NOTIFICATION)) Bukkit.getScheduler().runTaskTimerAsynchronously(this, new Runnable() {

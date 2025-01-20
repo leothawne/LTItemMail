@@ -18,6 +18,9 @@ import br.net.gmj.nobookie.LTItemMail.module.ext.LTRedProtect;
 import br.net.gmj.nobookie.LTItemMail.module.ext.LTTownyAdvanced;
 import br.net.gmj.nobookie.LTItemMail.module.ext.LTVault;
 import br.net.gmj.nobookie.LTItemMail.module.ext.LTWorldGuard;
+import br.net.gmj.nobookie.LTItemMail.module.ext.listener.LTGriefPreventionListener;
+import br.net.gmj.nobookie.LTItemMail.module.ext.listener.LTRedProtectListener;
+import br.net.gmj.nobookie.LTItemMail.module.ext.listener.LTTownyListener;
 import net.milkbowl.vault.permission.Permission;
 
 public final class ExtensionModule {
@@ -116,14 +119,17 @@ public final class ExtensionModule {
 		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_GRIEFPREVENTION)) if(isInstalled(Name.GRIEFPREVENTION)) if(!isRegistered(Function.GRIEFPREVENTION)) {
 			warn(null, Name.GRIEFPREVENTION);
 			register(Function.GRIEFPREVENTION);
+			new LTGriefPreventionListener();
 		}
 		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_REDPROTECT)) if(isInstalled(Name.REDPROTECT)) if(!isRegistered(Function.REDPROTECT)) {
 			warn(null, Name.REDPROTECT);
 			register(Function.REDPROTECT);
+			new LTRedProtectListener();
 		}
 		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_TOWNYADVANCED)) if(isInstalled(Name.TOWNYADVANCED)) if(!isRegistered(Function.TOWNYADVANCED)) {
 			warn(null, Name.TOWNYADVANCED);
 			register(Function.TOWNYADVANCED);
+			new LTTownyListener();
 		}
 		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_WORLDGUARD)) if(isInstalled(Name.WORLDGUARD)) if(!isRegistered(Function.WORLDGUARD)) {
 			warn(null, Name.WORLDGUARD);
