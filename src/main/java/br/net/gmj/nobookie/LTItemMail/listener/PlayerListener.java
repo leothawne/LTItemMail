@@ -62,7 +62,7 @@ public final class PlayerListener implements Listener {
 						contents2.put(info.getString("boards." + id + ".datetime"), info.getStringList("boards." + id + ".contents"));
 						contents1.put(info.getString("boards." + id + ".title"), contents2);
 						messages.put(id, contents1);
-						if(messages.size() > 0) ConsoleModule.board(messages, player);
+						if(messages.size() > 0) ConsoleModule.board(player, messages);
 					} catch (final InvalidConfigurationException | IOException e) {
 						if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 					}

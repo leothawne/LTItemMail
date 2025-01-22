@@ -47,7 +47,7 @@ public final class VersionControlTask {
 								messages.put(id, contents1);
 								ConfigurationModule.setBoardRead(id);
 							}
-							if(messages.size() > 0) ConsoleModule.board(messages, Bukkit.getConsoleSender());
+							if(messages.size() > 0) ConsoleModule.board(Bukkit.getConsoleSender(), messages);
 						}
 					} catch (final InvalidConfigurationException | IOException e) {
 						if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();

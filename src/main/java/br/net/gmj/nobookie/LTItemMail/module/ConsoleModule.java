@@ -11,6 +11,7 @@ import org.bukkit.command.ConsoleCommandSender;
 
 import br.net.gmj.nobookie.LTItemMail.LTItemMail;
 import br.net.gmj.nobookie.LTItemMail.module.ConfigurationModule.Type;
+import br.net.gmj.nobookie.LTItemMail.util.BukkitUtil;
 import br.net.gmj.nobookie.LTItemMail.util.FetchUtil;
 
 public final class ConsoleModule {
@@ -45,21 +46,23 @@ public final class ConsoleModule {
 		for(final String warning: warnings) sender().sendMessage(ChatColor.WHITE + warning);
 		sender().sendMessage(ChatColor.WHITE + "==================================================");
 	}
-	public static final void board(final Map<Integer, Map<String, Map<String, List<String>>>> messages, final CommandSender receiver) {
-		receiver.sendMessage(ChatColor.WHITE + "========== " + ChatColor.DARK_AQUA + "LT Item Mail " + ChatColor.LIGHT_PURPLE + "Messages Board" + ChatColor.WHITE + " ==========");
+	public static final void board(final CommandSender receiver, final Map<Integer, Map<String, Map<String, List<String>>>> messages) {
+		receiver.sendMessage(ChatColor.WHITE + "" + ChatColor.BOLD + "<!-- " + ChatColor.DARK_AQUA + ChatColor.BOLD + "LT Item Mail " + ChatColor.LIGHT_PURPLE + ChatColor.BOLD + "Messages Board");
+		receiver.sendMessage("");
 		receiver.sendMessage("");
 		for(final Integer id : messages.keySet()) {
 			final Map<String, Map<String, List<String>>> contents1 = messages.get(id);
 			for(final String title : contents1.keySet()) {
 				final Map<String, List<String>> contents2 = contents1.get(title);
 				for(final String datetime : contents2.keySet()) {
-					receiver.sendMessage(ChatColor.WHITE + "[" + datetime + " | " + title + "]");
-					for(final String message : contents2.get(datetime)) receiver.sendMessage(ChatColor.WHITE + "  " + message);
+					receiver.sendMessage(ChatColor.WHITE + "" + ChatColor.BOLD + title + " (" + datetime + ")");
+					for(final String message : contents2.get(datetime)) receiver.sendMessage(ChatColor.WHITE + "#   " + BukkitUtil.Text.Color.format(message));
 				}
+				receiver.sendMessage("");
 				receiver.sendMessage("");
 			}
 		}
-		receiver.sendMessage(ChatColor.WHITE + "=================================================");
+		receiver.sendMessage(ChatColor.WHITE + "" + ChatColor.BOLD + "-->");
 	}
 	public static final void br() {
 		/*sender().sendMessage("⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣴⣾⣷⣦⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀");
