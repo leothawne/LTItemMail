@@ -48,9 +48,9 @@ public final class MailboxListener implements Listener {
 		if(inventoryView.getTitle().contains(MailboxInventory.getName(MailboxInventory.Type.IN, null, null)) && inventoryView.getTitle().split("#").length == 2) {
 			final Integer mailboxID = Integer.valueOf(inventoryView.getTitle().split("#")[1]);
 			final ItemStack[] contents = inventory.getContents();
-			final Boolean isEmpty = BukkitUtil.Inventory.isMailboxEmpty(contents);
+			final Boolean isEmpty = BukkitUtil.Inventory.isEmpty(contents);
 			if(!isEmpty) {
-				final LinkedList<ItemStack> items = BukkitUtil.Inventory.getMailboxContents(contents);
+				final LinkedList<ItemStack> items = BukkitUtil.Inventory.getContents(contents);
 				DatabaseModule.Virtual.updateMailbox(mailboxID, items);
 			} else DatabaseModule.Virtual.updateMailbox(mailboxID, new LinkedList<ItemStack>());
 			player.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + "" + LanguageModule.get(LanguageModule.Type.MAILBOX_CLOSED));
@@ -60,10 +60,10 @@ public final class MailboxListener implements Listener {
 			final Player sender = (Player) event.getPlayer();
 			final LTPlayer receiver = LTPlayer.fromName(inventoryView.getTitle().split("@")[1]);
 			final ItemStack[] contents = inventory.getContents();
-			final boolean isEmpty = BukkitUtil.Inventory.isMailboxEmpty(contents);
+			final boolean isEmpty = BukkitUtil.Inventory.isEmpty(contents);
 			if(!isEmpty) {
-				final LinkedList<ItemStack> items = BukkitUtil.Inventory.getMailboxContents(contents);
-				final int count = BukkitUtil.Inventory.getItemsCount(items);
+				final LinkedList<ItemStack> items = BukkitUtil.Inventory.getContents(contents);
+				final int count = BukkitUtil.Inventory.getCount(items);
 				inventory.clear();
 				final String label = contents[30].getItemMeta().getLore().get(1).replace(ChatColor.COLOR_CHAR + "e", "");
 				double newcost = 0.0;
@@ -169,10 +169,10 @@ public final class MailboxListener implements Listener {
 			final Inventory inventory = event.getClickedInventory();
 			final ItemStack[] contents = inventory.getContents();
 			if(selected.getType().equals(Material.EMERALD)) {
-				final boolean isEmpty = BukkitUtil.Inventory.isMailboxEmpty(contents);
+				final boolean isEmpty = BukkitUtil.Inventory.isEmpty(contents);
 				double newcost = 0.0;
 				if(!isEmpty) {
-					final int count = BukkitUtil.Inventory.getItemsCount(BukkitUtil.Inventory.getMailboxContents(contents));
+					final int count = BukkitUtil.Inventory.getCount(BukkitUtil.Inventory.getContents(contents));
 					if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_TYPE_COST)) {
 						newcost = (Double) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_COST) * count;
 					} else newcost = (Double) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_COST);
@@ -195,7 +195,7 @@ public final class MailboxListener implements Listener {
 					final UUID from = DatabaseModule.Virtual.getMailboxFrom(mailboxID);
 					if(from != null) {
 						MailboxModule.log(player.getUniqueId(), from, MailboxModule.Action.GAVE_BACK, mailboxID, null, null, null);
-						final Integer backMailboxID = MailboxModule.send(Bukkit.getConsoleSender(), LTPlayer.fromUUID(from), BukkitUtil.Inventory.getMailboxContents(contents), player.getName() + " " + LanguageModule.get(LanguageModule.Type.MAILBOX_RETURNED));
+						final Integer backMailboxID = MailboxModule.send(Bukkit.getConsoleSender(), LTPlayer.fromUUID(from), BukkitUtil.Inventory.getContents(contents), player.getName() + " " + LanguageModule.get(LanguageModule.Type.MAILBOX_RETURNED));
 						DatabaseModule.Virtual.setStatus(backMailboxID, DatabaseModule.Virtual.Status.ACCEPTED);
 					}
 					DatabaseModule.Virtual.setMailboxDeleted(mailboxID);
