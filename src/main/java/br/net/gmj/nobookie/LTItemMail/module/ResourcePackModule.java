@@ -3,7 +3,7 @@ package br.net.gmj.nobookie.LTItemMail.module;
 import java.io.File;
 import java.io.IOException;
 
-import org.bukkit.Bukkit;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.google.common.io.Files;
 
@@ -13,14 +13,14 @@ import br.net.gmj.nobookie.LTItemMail.util.FetchUtil;
 public final class ResourcePackModule {
 	private ResourcePackModule() {}
 	public static final void begin() {
-		Bukkit.getScheduler().runTaskAsynchronously(LTItemMail.getInstance(), new Runnable() {
+		new BukkitRunnable() {
 			@Override
 			public final void run() {
 				if(requestDownload()) if(moveFile()) {
 					ConsoleModule.info(LanguageModule.I.g(LanguageModule.I.i.RP_I) + ".");
 				} else ConsoleModule.warning(LanguageModule.I.g(LanguageModule.I.i.RP_F) + ".");
 			}
-		});
+		}.runTask(LTItemMail.getInstance());
 	}
 	private static final boolean requestDownload() {
 		return FetchUtil.URL.Cache.download(DataModule.getResourcePackURL(), "LTItemMail-ResourcePack.zip", false);
