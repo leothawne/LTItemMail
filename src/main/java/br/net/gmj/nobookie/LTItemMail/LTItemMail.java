@@ -35,6 +35,13 @@ import br.net.gmj.nobookie.LTItemMail.task.RecipeTask;
 import br.net.gmj.nobookie.LTItemMail.task.VersionControlTask;
 import br.net.gmj.nobookie.LTItemMail.util.BStats;
 
+/**
+ * 
+ * Main class of the plugin.
+ * 
+ * @author Nobookie
+ * 
+ */
 public final class LTItemMail extends JavaPlugin {
 	private static LTItemMail instance;
 	public FileConfiguration configuration;
@@ -43,6 +50,11 @@ public final class LTItemMail extends JavaPlugin {
 	public Connection connection = null;
 	public List<Integer> boardsForPlayers = new ArrayList<>();
 	public Map<String, List<Integer>> boardsPlayers = new HashMap<>();
+	/**
+	 * 
+	 * Used internally by Bukkit.
+	 * 
+	 */
 	@Override
 	public final void onEnable() {
 		instance = this;
@@ -95,6 +107,11 @@ public final class LTItemMail extends JavaPlugin {
 			}, 1, 1);
 		}
 	}
+	/**
+	 * 
+	 * Used internally by Bukkit.
+	 * 
+	 */
 	@Override
 	public final void onDisable() {
 		Bukkit.getScheduler().cancelTasks(this);
@@ -103,6 +120,11 @@ public final class LTItemMail extends JavaPlugin {
 		getServer().getMessenger().unregisterOutgoingPluginChannel(this, "BungeeCord");
 		getServer().getMessenger().unregisterIncomingPluginChannel(this, "BungeeCord");
 	}
+	/**
+	 * 
+	 * Reloads the plugin (configuration, language and item models).
+	 * 
+	 */
 	public final void reload() {
 		loadConfig();
 		loadLang();
@@ -124,6 +146,11 @@ public final class LTItemMail extends JavaPlugin {
 		models = ModelsModule.load();
 		ModelsModule.addMissing();
 	}
+	/**
+	 * 
+	 * Gets the {@link LTItemMail} instance.
+	 * 
+	 */
 	public static final LTItemMail getInstance() {
 		return instance;
 	}

@@ -1,6 +1,7 @@
 package br.net.gmj.nobookie.LTItemMail;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -26,7 +27,7 @@ import net.md_5.bungee.api.ChatColor;
 
 /**
  * 
- * @author leothawne
+ * @author Nobookie
  * 
  */
 public final class LTItemMailAPI {
@@ -94,9 +95,39 @@ public final class LTItemMailAPI {
 		}
 		return LanguageModule.Type.PLAYER_NEVERPLAYEDERROR.toString();
 	}
+	/**
+	 * 
+	 * Gets all existing LT Item Mail
+	 * blocks standing in one or
+	 * more worlds of the specified
+	 * block type.
+	 * 
+	 * @return A list of LT Item Mail blocks.
+	 * 
+	 */
 	public static final List<Block> getBlockList(){
 		final List<Block> blockList = new ArrayList<>();
 		for(final MailboxBlock mailboxBlock : DatabaseModule.Block.getMailboxBlocks()) blockList.add(mailboxBlock);
 		return blockList;
+	}
+	/**
+	 * 
+	 * Gets all existing types of
+	 * LT Item Mail blocks standing
+	 * in one or more worlds.
+	 * 
+	 * @param blockType The type of block to be retrieved (See {@link Block.Type}).
+	 * 
+	 * @return A list of LT Item Mail blocks.
+	 * 
+	 */
+	public static final List<Block> getBlockList(final Block.Type blockType){
+		final List<Block> blockList = new ArrayList<>();
+		switch(blockType) {
+			case MAILBOX_BLOCK:
+				for(final MailboxBlock mailboxBlock : DatabaseModule.Block.getMailboxBlocks()) blockList.add(mailboxBlock);
+				return blockList;
+		}
+		return Collections.emptyList();
 	}
 }

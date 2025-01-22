@@ -13,7 +13,7 @@ import br.net.gmj.nobookie.LTItemMail.entity.LTPlayer;
  * 
  * This event is called when a mailbox is sent.
  * 
- * @author leothawne
+ * @author Nobookie
  * 
  */
 public final class EntitySendMailEvent extends Event implements Cancellable {

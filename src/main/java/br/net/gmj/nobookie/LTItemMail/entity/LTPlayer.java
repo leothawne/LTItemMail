@@ -22,7 +22,7 @@ import br.net.gmj.nobookie.LTItemMail.util.FetchUtil;
  * 
  * {@link Bukkit#getOfflinePlayer(String)} requires a case sensitive name. This class avoids that method using the LT Item Mail database first or the username cache of the server.
  * 
- * @author leothawne
+ * @author Nobookie
  * 
  */
 public final class LTPlayer {
