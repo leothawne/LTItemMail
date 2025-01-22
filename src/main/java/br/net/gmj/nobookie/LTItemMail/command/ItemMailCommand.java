@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -28,7 +29,6 @@ import br.net.gmj.nobookie.LTItemMail.module.LanguageModule;
 import br.net.gmj.nobookie.LTItemMail.module.MailboxModule;
 import br.net.gmj.nobookie.LTItemMail.module.PermissionModule;
 import br.net.gmj.nobookie.LTItemMail.util.BukkitUtil;
-import net.md_5.bungee.api.ChatColor;
 
 public final class ItemMailCommand implements CommandExecutor {
 	@SuppressWarnings("incomplete-switch")

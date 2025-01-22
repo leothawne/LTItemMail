@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
@@ -18,7 +19,6 @@ import br.net.gmj.nobookie.LTItemMail.LTItemMail;
 import br.net.gmj.nobookie.LTItemMail.entity.LTPlayer;
 import br.net.gmj.nobookie.LTItemMail.module.MailboxModule.Action;
 import br.net.gmj.nobookie.LTItemMail.module.ext.LTUltimateAdvancementAPI;
-import net.md_5.bungee.api.ChatColor;
 
 public final class BungeeModule implements PluginMessageListener {
 	private static final List<String> players = new ArrayList<>();

@@ -12,6 +12,7 @@ import java.util.LinkedList;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -24,7 +25,6 @@ import com.google.common.io.ByteStreams;
 import br.net.gmj.nobookie.LTItemMail.LTItemMail;
 import br.net.gmj.nobookie.LTItemMail.entity.LTPlayer;
 import br.net.gmj.nobookie.LTItemMail.module.ext.LTUltimateAdvancementAPI;
-import net.md_5.bungee.api.ChatColor;
 
 public final class MailboxModule {
 	private MailboxModule() {}

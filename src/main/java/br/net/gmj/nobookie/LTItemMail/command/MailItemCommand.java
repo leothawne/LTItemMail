@@ -1,5 +1,6 @@
 package br.net.gmj.nobookie.LTItemMail.command;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -11,7 +12,6 @@ import br.net.gmj.nobookie.LTItemMail.module.ConfigurationModule;
 import br.net.gmj.nobookie.LTItemMail.module.DatabaseModule;
 import br.net.gmj.nobookie.LTItemMail.module.LanguageModule;
 import br.net.gmj.nobookie.LTItemMail.module.PermissionModule;
-import net.md_5.bungee.api.ChatColor;
 
 public final class MailItemCommand implements CommandExecutor {
 	@Override

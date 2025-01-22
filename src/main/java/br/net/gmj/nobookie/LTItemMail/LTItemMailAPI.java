@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -23,7 +24,6 @@ import br.net.gmj.nobookie.LTItemMail.module.ExtensionModule;
 import br.net.gmj.nobookie.LTItemMail.module.LanguageModule;
 import br.net.gmj.nobookie.LTItemMail.module.MailboxModule;
 import br.net.gmj.nobookie.LTItemMail.module.ext.LTUltimateAdvancementAPI;
-import net.md_5.bungee.api.ChatColor;
 
 /**
  * 

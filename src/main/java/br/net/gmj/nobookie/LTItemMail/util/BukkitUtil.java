@@ -2,6 +2,7 @@ package br.net.gmj.nobookie.LTItemMail.util;
 
 import java.util.LinkedList;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -10,7 +11,6 @@ import org.bukkit.persistence.PersistentDataType;
 
 import br.net.gmj.nobookie.LTItemMail.LTItemMail;
 import br.net.gmj.nobookie.LTItemMail.item.Item;
-import net.md_5.bungee.api.ChatColor;
 
 public final class BukkitUtil {
 	private BukkitUtil() {}

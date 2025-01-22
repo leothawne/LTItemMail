@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>br.net.gmj.nobookie</groupId>
 	<artifactId>LTItemMail</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<name>LTItemMail</name>
 	<description>Have you ever imagined mailing items to your friends in Minecraft?</description>
 	<distributionManagement>
@@ -155,24 +155,48 @@
 			<artifactId>spigot-api</artifactId>
 			<version>1.14-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
+			<exclusions>
+	            <exclusion>
+	                <groupId>*</groupId>
+	                <artifactId>*</artifactId>
+	            </exclusion>
+	        </exclusions>
 		</dependency>
 		<dependency>
     		<groupId>com.googlecode.json-simple</groupId>
     		<artifactId>json-simple</artifactId>
     		<version>1.1.1</version>
     		<scope>provided</scope>
+    		<exclusions>
+	            <exclusion>
+	                <groupId>*</groupId>
+	                <artifactId>*</artifactId>
+	            </exclusion>
+	        </exclusions>
 		</dependency>
 		<dependency>
 	        <groupId>net.milkbowl.vault</groupId>
 	        <artifactId>VaultAPI</artifactId>
 	        <version>1.7</version>
 	        <scope>provided</scope>
+	        <exclusions>
+	            <exclusion>
+	                <groupId>*</groupId>
+	                <artifactId>*</artifactId>
+	            </exclusion>
+	        </exclusions>
     	</dependency>
     	<dependency>
 	    	<groupId>com.github.GriefPrevention</groupId>
 	    	<artifactId>GriefPrevention</artifactId>
 	    	<version>16.18.2</version>
             <scope>provided</scope>
+            <exclusions>
+	            <exclusion>
+	                <groupId>*</groupId>
+	                <artifactId>*</artifactId>
+	            </exclusion>
+	        </exclusions>
 		</dependency>
 	    <dependency>
 	        <groupId>io.github.fabiozumbi12.RedProtect</groupId>
@@ -203,6 +227,12 @@
 	    	<artifactId>towny</artifactId>
 	    	<version>0.101.1.0</version>
 	    	<scope>provided</scope>
+	    	<exclusions>
+	            <exclusion>
+	                <groupId>*</groupId>
+	                <artifactId>*</artifactId>
+	            </exclusion>
+	        </exclusions>
 	    </dependency>
 	    <dependency>
 	        <groupId>com.sk89q.worldguard</groupId>
@@ -215,6 +245,12 @@
 	        <artifactId>DynmapCoreAPI</artifactId>
 	        <version>3.7-beta-6</version>
 	        <scope>provided</scope>
+	        <exclusions>
+	            <exclusion>
+	                <groupId>*</groupId>
+	                <artifactId>*</artifactId>
+	            </exclusion>
+	        </exclusions>
     	</dependency>
     	<dependency>
 		    <groupId>de.bluecolored</groupId>
@@ -227,24 +263,60 @@
 		    <artifactId>decentholograms</artifactId>
 		    <version>2.8.12</version>
 		    <scope>provided</scope>
+		    <exclusions>
+	            <exclusion>
+	                <groupId>*</groupId>
+	                <artifactId>*</artifactId>
+	            </exclusion>
+	        </exclusions>
 	  	</dependency>
 		<dependency>
 			<groupId>me.clip</groupId>
 			<artifactId>placeholderapi</artifactId>
 			<version>2.11.6</version>
 			<scope>provided</scope>
+			<exclusions>
+	            <exclusion>
+	                <groupId>*</groupId>
+	                <artifactId>*</artifactId>
+	            </exclusion>
+	        </exclusions>
         </dependency>
         <dependency>
 		  	<groupId>su.nightexpress.coinsengine</groupId>
 		  	<artifactId>CoinsEngine</artifactId>
 		  	<version>2.4.1</version>
 		  	<scope>provided</scope>
+		  	<exclusions>
+	            <exclusion>
+	                <groupId>*</groupId>
+	                <artifactId>*</artifactId>
+	            </exclusion>
+	        </exclusions>
 		</dependency>
 		<dependency>
 		    <groupId>com.frengor</groupId>
 		    <artifactId>ultimateadvancementapi</artifactId>
 		    <version>2.4.3</version>
 		    <scope>provided</scope>
+		    <exclusions>
+	            <exclusion>
+	                <groupId>*</groupId>
+	                <artifactId>*</artifactId>
+	            </exclusion>
+	        </exclusions>
+		</dependency>
+		<dependency>
+		    <groupId>com.github.SrBalbucio</groupId>
+		    <artifactId>JavaDownloadLibrary</artifactId>
+		    <version>1.0</version>
+		    <scope>compile</scope>
+		    <exclusions>
+	            <exclusion>
+	                <groupId>*</groupId>
+	                <artifactId>*</artifactId>
+	            </exclusion>
+	        </exclusions>
 		</dependency>
 	</dependencies>
 </project>

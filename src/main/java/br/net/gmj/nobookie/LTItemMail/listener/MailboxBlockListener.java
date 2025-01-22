@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -46,7 +47,6 @@ import br.net.gmj.nobookie.LTItemMail.module.ext.LTRedProtect;
 import br.net.gmj.nobookie.LTItemMail.module.ext.LTTownyAdvanced;
 import br.net.gmj.nobookie.LTItemMail.module.ext.LTWorldGuard;
 import br.net.gmj.nobookie.LTItemMail.util.BukkitUtil;
-import net.md_5.bungee.api.ChatColor;
 
 public final class MailboxBlockListener implements Listener {
 	public MailboxBlockListener() {
