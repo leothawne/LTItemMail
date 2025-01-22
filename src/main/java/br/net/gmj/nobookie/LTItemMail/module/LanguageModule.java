@@ -13,16 +13,16 @@ import br.net.gmj.nobookie.LTItemMail.util.BukkitUtil;
 
 public final class LanguageModule {
 	private LanguageModule() {}
-	private static File languageFile;
+	private static File file;
 	public static final void check() {
-		languageFile = new File(LTItemMail.getInstance().getDataFolder(), (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml");
-		if(!languageFile.exists()) {
+		file = new File(LTItemMail.getInstance().getDataFolder(), (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml");
+		if(!file.exists()) {
 			ConsoleModule.info("Extracting " + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml...");
 			if(LTItemMail.getInstance().getResource((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml") != null) {
 				LTItemMail.getInstance().saveResource((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml", false);
 				ConsoleModule.info("Done.");
 			} else try {
-				languageFile.createNewFile();
+				file.createNewFile();
 				ConsoleModule.warning("Language " + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + " not found!");
 				ConsoleModule.warning("A new yml file was created and all translations will be added with default value for you to modify/translate.");
 			} catch (final IOException e) {
@@ -30,27 +30,29 @@ public final class LanguageModule {
 			}
 		}
 	}
+	private static boolean update = false;
 	public static final FileConfiguration load() {
-		if(languageFile.exists()) {
-			final FileConfiguration language = new YamlConfiguration();
+		if(file.exists()) {
+			final FileConfiguration configuration = new YamlConfiguration();
 			try {
-				language.load(languageFile);
+				configuration.load(file);
 				ConsoleModule.info((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml loaded.");
 				if(((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE)).equalsIgnoreCase("portuguese")) ConsoleModule.br();
 				try {
 					final VersionType type = DataModule.VersionType.valueOf(((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE)).toUpperCase() + "_YML");
 					final int languageVersion = Integer.parseInt(DataModule.getVersion(type));
-					if(language.getInt("language-version") < languageVersion) {
+					if(configuration.getInt("language-version") < languageVersion) {
+						update = true;
 						ConsoleModule.warning("Language " + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml outdated!");
 						ConsoleModule.warning("Missing translations will be added with default value.");
-						language.set("language-version", languageVersion);
-						language.save(languageFile);
+						configuration.set("language-version", languageVersion);
+						configuration.save(file);
 					}
 				} catch(final IllegalArgumentException e) {
-					language.set("language-version", 0);
-					language.save(languageFile);
+					configuration.set("language-version", 0);
+					configuration.save(file);
 				}
-				return language;
+				return configuration;
 			} catch(final IOException | InvalidConfigurationException e) {
 				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 			}
@@ -380,12 +382,12 @@ public final class LanguageModule {
 		}
 		if(path != null) if(LTItemMail.getInstance().language.isSet(path)) {
 			result = LTItemMail.getInstance().language.getString(path);
-			if(type.equals(Type.MAILBOX_COST) || type.equals(Type.MAILBOX_LABEL)) result = BukkitUtil.format((String) result);
+			if(type.equals(Type.MAILBOX_COST) || type.equals(Type.MAILBOX_LABEL)) result = BukkitUtil.Text.Color.format((String) result);
 		} else if(result != null) {
 			ConsoleModule.info("Language fallback: [" + path + ":" + result + "]");
 			LTItemMail.getInstance().language.set(path, result);
 			try {
-				LTItemMail.getInstance().language.save(languageFile);
+				LTItemMail.getInstance().language.save(file);
 			} catch (final IOException e) {
 				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 			}
@@ -393,7 +395,10 @@ public final class LanguageModule {
 		return result;
 	}
 	public static final void addMissing() {
-		for(final Type type : Type.values()) get(type);
+		if(update) {
+			for(final Type type : Type.values()) get(type);
+			update = false;
+		}
 	}
 	public enum Type {
 		COMMAND_INVALID,

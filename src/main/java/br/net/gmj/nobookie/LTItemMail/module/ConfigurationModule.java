@@ -15,33 +15,35 @@ import br.net.gmj.nobookie.LTItemMail.util.FetchUtil;
 
 public final class ConfigurationModule {
 	private ConfigurationModule() {}
-	private static final File configFile = new File(LTItemMail.getInstance().getDataFolder(), "config.yml");
+	private static final File file = new File(LTItemMail.getInstance().getDataFolder(), "config.yml");
 	public static final void check() {
-		if(!configFile.exists()) {
+		if(!file.exists()) {
 			ConsoleModule.info("Extracting config.yml...");
 			LTItemMail.getInstance().saveDefaultConfig();
 			ConsoleModule.info("Done.");
 		}
 	}
+	private static boolean update = false;
 	public static final FileConfiguration load() {
-		if(configFile.exists()) {
+		if(file.exists()) {
 			final FileConfiguration configuration = new YamlConfiguration();
 			try {
-				configuration.load(configFile);
+				configuration.load(file);
 				ConsoleModule.info("Configuration loaded.");
 				if(configuration.getInt("config-version") < Integer.valueOf(DataModule.getVersion(DataModule.VersionType.CONFIG_YML))) {
+					update = true;
 					ConsoleModule.warning("Configuration outdated!");
 					ConsoleModule.warning("New settings will be added.");
 					configuration.set("config-version", Integer.valueOf(DataModule.getVersion(DataModule.VersionType.CONFIG_YML)));
-					configuration.save(configFile);
+					configuration.save(file);
 				}
 				if(configuration.isSet("build-number")) if(configuration.getInt("build-number") < FetchUtil.Build.get()) {
 					configuration.set("build-number", FetchUtil.Build.get());
-					configuration.save(configFile);
+					configuration.save(file);
 				}
 				return configuration;
 			} catch (final IOException | InvalidConfigurationException e) {
-				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
+				if((Boolean) get(Type.PLUGIN_DEBUG)) e.printStackTrace();
 			}
 		}
 		return null;
@@ -52,18 +54,18 @@ public final class ConfigurationModule {
 			boards.add(id);
 			LTItemMail.getInstance().configuration.set("boards-read", boards);
 			try {
-				LTItemMail.getInstance().configuration.save(configFile);
+				LTItemMail.getInstance().configuration.save(file);
 			} catch (final IOException e) {
-				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
+				if((Boolean) get(Type.PLUGIN_DEBUG)) e.printStackTrace();
 			}
 		}
 	}
 	public static final void disableDatabaseConversion() {
 		LTItemMail.getInstance().configuration.set("database.convert", false);
 		try {
-			LTItemMail.getInstance().configuration.save(configFile);
+			LTItemMail.getInstance().configuration.save(file);
 		} catch (final IOException e) {
-			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
+			if((Boolean) get(Type.PLUGIN_DEBUG)) e.printStackTrace();
 		}
 	}
 	public static final List<Integer> getBoardsRead(){
@@ -204,20 +206,23 @@ public final class ConfigurationModule {
 		}
 		if(path != null) if(LTItemMail.getInstance().configuration.isSet(path)) {
 			result = LTItemMail.getInstance().configuration.get(path);
-			if(type.equals(Type.PLUGIN_TAG) || type.equals(Type.MAILBOX_NAME) || type.equals(Type.MAILBOX_NAME)) result = BukkitUtil.format((String) result);
+			if(type.equals(Type.PLUGIN_TAG) || type.equals(Type.MAILBOX_NAME) || type.equals(Type.MAILBOX_NAME)) result = BukkitUtil.Text.Color.format((String) result);
 		} else if(result != null) {
 			ConsoleModule.info("Configuration fallback: [" + path + ":" + result + "]");
 			LTItemMail.getInstance().configuration.set(path, result);
 			try {
-				LTItemMail.getInstance().configuration.save(configFile);
+				LTItemMail.getInstance().configuration.save(file);
 			} catch (final IOException e) {
-				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
+				if((Boolean) get(Type.PLUGIN_DEBUG)) e.printStackTrace();
 			}
 		}
 		return result;
 	}
 	public static final void addMissing() {
-		for(final Type type : Type.values()) get(type);
+		if(update) {
+			for(final Type type : Type.values()) get(type);
+			update = false;
+		}
 	}
 	public enum Type {
 		PLUGIN_ENABLE,
