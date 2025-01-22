@@ -61,7 +61,7 @@ public final class ItemMailAdminCommand implements CommandExecutor {
 							if(remoteBuild > localBuild) {
 								final Integer outOfDate = remoteBuild - localBuild;
 								final String[] found = LanguageModule.get(LanguageModule.Type.COMMAND_ADMIN_UPDATE_FOUND).split("%");
-								sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + found[0] + outOfDate + found[1] + " https://jenkins.gmj.net.br/job/LTItemMail/" + remoteBuild + "/");
+								sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.RED + found[0] + outOfDate + found[1] + ChatColor.GREEN + " https://jenkins.gmj.net.br/job/LTItemMail/" + remoteBuild + "/");
 							} else sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.COMMAND_ADMIN_UPDATE_NONEW));
 						}
 					});
@@ -124,7 +124,7 @@ public final class ItemMailAdminCommand implements CommandExecutor {
 					final Player player = (Player) sender;
 					if(args.length == 2) {
 						try {
-							final Integer mailboxID = Integer.valueOf(args[1]);
+							final Integer mailboxID = Integer.valueOf(args[1].replace("#", ""));
 							final LinkedList<ItemStack> items = DatabaseModule.Virtual.getMailbox(mailboxID);
 							if(DatabaseModule.Virtual.isMailboxDeleted(mailboxID) && !DatabaseModule.Virtual.getStatus(mailboxID).equals(DatabaseModule.Virtual.Status.DENIED) && items.size() > 0) {
 								player.openInventory(MailboxInventory.getInventory(MailboxInventory.Type.IN, mailboxID, null, items, DatabaseModule.Virtual.getMailboxFrom(mailboxID), DatabaseModule.Virtual.getMailboxLabel(mailboxID), true));

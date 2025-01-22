@@ -75,7 +75,7 @@ public final class ItemMailCommand implements CommandExecutor {
 					final Player player = (Player) sender;
 					if(args.length == 2) {
 						try {
-							final Integer mailboxID = Integer.valueOf(args[1]);
+							final Integer mailboxID = Integer.valueOf(args[1].replace("#", ""));
 							if(DatabaseModule.Virtual.isMaiboxOwner(player.getUniqueId(), mailboxID) && !DatabaseModule.Virtual.isMailboxDeleted(mailboxID)) {
 								MailboxModule.log(player.getUniqueId(), null, MailboxModule.Action.OPENED, mailboxID, null, null, null);
 								switch(DatabaseModule.Virtual.getStatus(mailboxID)) {
@@ -121,7 +121,7 @@ public final class ItemMailCommand implements CommandExecutor {
 					final Player player = (Player) sender;
 					if(args.length == 2) {
 						try {
-							final Integer mailboxID = Integer.valueOf(args[1]);
+							final Integer mailboxID = Integer.valueOf(args[1].replace("#", ""));
 							if(DatabaseModule.Virtual.isMaiboxOwner(player.getUniqueId(), mailboxID) && !DatabaseModule.Virtual.isMailboxDeleted(mailboxID)) {
 								DatabaseModule.Virtual.setMailboxDeleted(mailboxID);
 								MailboxModule.log(player.getUniqueId(), null, MailboxModule.Action.DELETED, mailboxID, null, null, null);
