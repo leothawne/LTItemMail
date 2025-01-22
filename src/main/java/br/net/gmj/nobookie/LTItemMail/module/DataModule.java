@@ -9,12 +9,10 @@ import br.net.gmj.nobookie.LTItemMail.LTItemMail;
 
 public final class DataModule {
 	private DataModule() {}
-	private static final String PROJECT_PAGES = ""
-			+ "BUKKIT_DEV:dev.bukkit.org/projects/lt-item-mail,"
-			+ "SPIGOT_MC:www.spigotmc.org/resources/62294";
 	private static final String VERSIONS = ""
 			+ "DATABASE:4,"
 			+ "CONFIG_YML:11,"
+			+ "ITEM_MODELS_YML:1,"
 			+ "ENGLISH_YML:9,"
 			+ "PORTUGUESE_YML:9,"
 			+ "VIETNAMESE_YML:3";
@@ -22,15 +20,6 @@ public final class DataModule {
 	private static final String UPDATE = "https://jenkins.gmj.net.br/job/LTItemMail/lastSuccessfulBuild/buildNumber";
 	private static final String PLUGIN = "https://request.gmj.net.br/LTItemMail/$version/manifest.yml";
 	private static final String RESOURCE = "https://jenkins.gmj.net.br/job/LTItemMail-ResourcePack/lastSuccessfulBuild/artifact/LTItemMail-ResourcePack.zip";
-	public static final String getProjectPage(final ProjectType type) {
-		final String[] pageString = PROJECT_PAGES.split(",");
-		final HashMap<ProjectType, String> pageMap = new HashMap<>();
-		for(final String page : pageString) {
-			final String[] string = page.split(":");
-			pageMap.put(ProjectType.valueOf(string[0]), string[1]);
-		}
-		return pageMap.get(type);
-	}
 	public static final String getVersion(final VersionType type) {
 		final String[] versionString = VERSIONS.split(",");
 		final HashMap<VersionType, String> versionMap = new HashMap<>();
@@ -53,10 +42,11 @@ public final class DataModule {
 		return RESOURCE;
 	}
 	public static final void showVersion(final String version, final CommandSender sender) {
-		sender.sendMessage(ChatColor.YELLOW + LTItemMail.getInstance().getDescription().getName() + ": " + ChatColor.GREEN + version);
+		sender.sendMessage(ChatColor.YELLOW + LTItemMail.getInstance().getDescription().getName() + " " + version);
 	}
 	public enum VersionType {
 		CONFIG_YML,
+		ITEM_MODELS_YML,
 		ENGLISH_YML,
 		PORTUGUESE_YML,
 		VIETNAMESE_YML,
