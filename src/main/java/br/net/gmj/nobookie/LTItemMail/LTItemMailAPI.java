@@ -27,6 +27,8 @@ import net.md_5.bungee.api.ChatColor;
 
 /**
  * 
+ * The API class.
+ * 
  * @author Nobookie
  * 
  */
