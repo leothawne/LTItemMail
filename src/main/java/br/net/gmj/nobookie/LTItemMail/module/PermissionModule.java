@@ -67,7 +67,7 @@ public class PermissionModule {
 				node = "ltitemmail.block.use";
 				break;
 			case BLOCK_ADMIN_BREAK:
-				node = "ltitemmail.block.break-bypass";
+				node = "ltitemmail.block.break.bypass";
 				break;
 			case CMD_ADMIN_RELOAD:
 				node = "ltitemmail.admin.reload";
