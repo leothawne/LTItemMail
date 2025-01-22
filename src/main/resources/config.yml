@@ -1,107 +1,107 @@
 plugin:
-    #Enable or disable LTItemMail. Default: true
-    #
-    #Habilita ou desabilita o LTItemMail. Padrão: true
-    enable: true
-    #Pre-installed languages support: portuguese, english, vietnamese. Default: english
-    #
-    #Suporte de idiomas pré-instalados: portuguese, english, vietnamese. Padrão: english
-    #Para pt-BR, selecione: portuguese
-    language: 'english'
-    #Here you can customize the plugin tag that appears in chat. Default: [LTIM]
-    #
-    #Aqui você pode customizar a tag do plugin que aparece no chat. Padrão: [LTIM]
-    tag: '&6[LTIM]'
-    #Choose if you want to use LTItemMail in your Bungee network.
-    #
-    #Escolha se quer usar o LTItemMail na sua rede Bungee.
-    bungee-mode: false
-    debug: false
+  #Enable or disable LTItemMail. Default: true
+  #
+  #Habilita ou desabilita o LTItemMail. Padrão: true
+  enable: true
+  #Pre-installed languages support: portuguese, english, vietnamese. Default: english
+  #
+  #Suporte de idiomas pré-instalados: portuguese, english, vietnamese. Padrão: english
+  #Para pt-BR, selecione: portuguese
+  language: 'english'
+  #Here you can customize the plugin tag that appears in chat. Default: [LTIM]
+  #
+  #Aqui você pode customizar a tag do plugin que aparece no chat. Padrão: [LTIM]
+  tag: '&6[LTIM]'
+  #Choose if you want to use LTItemMail in your Bungee network.
+  #
+  #Escolha se quer usar o LTItemMail na sua rede Bungee.
+  bungee-mode: false
+  debug: false
 database:
-    #'flatfile' or 'mysql'
+  #'flatfile' or 'mysql'
+  #
+  #'flatfile' ou 'mysql'
+  type: 'flatfile'
+  #Imports data from the old storage type to the new one.
+  #
+  #Importa os dados do tipo de armazenamento anterior para o novo.
+  convert: false
+  flatfile:
+    #Do not change it unless you have manually changed the name of the database file.
     #
-    #'flatfile' ou 'mysql'
-    type: 'flatfile'
-    #Imports data from the old storage type to the new one.
-    #
-    #Importa os dados do tipo de armazenamento anterior para o novo.
-    convert: false
-    flatfile:
-        #Do not change it unless you have manually changed the name of the database file.
-        #
-        #Não mude a menos que tenha mudado manualmente o nome do arquivo banco de dados.
-        file: 'mailboxes.db'
-    #You can use my plugin in bungee mode as long as it is installed on every server you want to use (except proxy).
-    #And you must use the same MySQL database.
-    #Remember to set bungee-mode 'true'.
-    #
-    #Você pode usar meu plugin no modo Bungee desde que ele esteja instalado em todos os servidores que você irá utilizá-lo (exceto na proxy).
-    #E o mesmo banco de dados MySQL deve estar sendo usado.
-    #Lembre-se de definir bungee-mode 'true'.
-    mysql:
-        host: '127.0.0.1:3306'
-        user: 'root'
-        password: ''
-        database: 'ltitemmail'
+    #Não mude a menos que tenha mudado manualmente o nome do arquivo banco de dados.
+    file: 'mailboxes.db'
+  #You can use my plugin in bungee mode as long as it is installed on every server you want to use (except proxy).
+  #And you must use the same MySQL database.
+  #Remember to set bungee-mode 'true'.
+  #
+  #Você pode usar meu plugin no modo Bungee desde que ele esteja instalado em todos os servidores que você irá utilizá-lo (exceto na proxy).
+  #E o mesmo banco de dados MySQL deve estar sendo usado.
+  #Lembre-se de definir bungee-mode 'true'.
+  mysql:
+    host: '127.0.0.1:3306'
+    user: 'root'
+    password: ''
+    database: 'ltitemmail'
 hook:
-    #Set 'true' if you wish to use economy plugins (set the mail price).
+  #Set 'true' if you wish to use economy plugins (set the mail price).
+  #
+  #Defina 'true' se desejar usar um plugin de economia (defina o preço do corrêio).
+  economy:
+    enable: false
+    #Useful for multicurrencies plugins (like CoinsEngine. Ex: CoinsEngine:Crowns). Default: Vault
     #
-    #Defina 'true' se desejar usar um plugin de economia (defina o preço do corrêio).
-    economy:
-        enable: false
-        #Useful for multicurrencies plugins (like CoinsEngine. Ex: CoinsEngine:Crowns). Default: Vault
-        #
-        #Útil para plugins de multiplas moedas (como o CoinsEngine. Ex: CoinsEngine:Coroas). Padrão: Vault
-        type: 'Vault'
-    #Set 'true' if you wish to show mailbox blocks on the map.
-    #
-    #Defina 'true' se desejar mostrar blocos de caixa de corrêio no mapa.
-    dynmap: false
-    #Set 'true' if you wish to show mailbox blocks on the map.
-    #
-    #Defina 'true' se desejar mostrar blocos de caixa de corrêio no mapa.
-    bluemap: false
-    #Set 'true' if you wish to show holograms above mailbox blocks.
-    #
-    #Defina 'true' se desejar mostrar hologramas acima do blocos de caixa de corrêio.
-    decentholograms: false
-    #My plugin has an in-built protection for mailbox blocks, but you can use some extra protection with the plugins listed below:
-    #
-    #Meu plugin tem uma proteção imbutida para blocos de caixa de corrêio, mas você pode usar uma proteção extra com os plugins abaixo:
-    griefprevention: false
-    redprotect: false
-    towny: false
-    worldguard: false
+    #Útil para plugins de multiplas moedas (como o CoinsEngine. Ex: CoinsEngine:Coroas). Padrão: Vault
+    type: 'Vault'
+  #Set 'true' if you wish to show mailbox blocks on the map.
+  #
+  #Defina 'true' se desejar mostrar blocos de caixa de corrêio no mapa.
+  dynmap: false
+  #Set 'true' if you wish to show mailbox blocks on the map.
+  #
+  #Defina 'true' se desejar mostrar blocos de caixa de corrêio no mapa.
+  bluemap: false
+  #Set 'true' if you wish to show holograms above mailbox blocks.
+  #
+  #Defina 'true' se desejar mostrar hologramas acima do blocos de caixa de corrêio.
+  decentholograms: false
+  #My plugin has an in-built protection for mailbox blocks, but you can use some extra protection with the plugins listed below:
+  #
+  #Meu plugin tem uma proteção imbutida para blocos de caixa de corrêio, mas você pode usar uma proteção extra com os plugins abaixo:
+  griefprevention: false
+  redprotect: false
+  towny: false
+  worldguard: false
 mail:
-    #When a new mail arrives, how do you want the message to appear? Valid: CHAT, TITLE, TOAST. Default: CHAT
+  #When a new mail arrives, how do you want the message to appear? Valid: CHAT, TITLE, TOAST. Default: CHAT
+  #
+  #Quando chegar um novo corrêio, como deseja mostrar a mensagem? Válido: CHAT, TITLE, TOAST. Padrão: CHAT
+  display: 'CHAT'
+  #If you are using the LT Item Mail Resource Pack, set this to 'true'. Default: false
+  #
+  #Se você estiver usando o LT Item Mail Resource Pack, mude isso para 'true'. Padrão: false
+  textures: false
+  cost:
+    #Set 'true' to multiply the price by the number of items. Default: false
     #
-    #Quando chegar um novo corrêio, como deseja mostrar a mensagem? Válido: CHAT, TITLE, TOAST. Padrão: CHAT
-    display: 'CHAT'
-    #If you are using the LT Item Mail Resource Pack, set this to 'true'. Default: false
+    #Defina 'true' para multiplicar o preço pelo número de itens. Padrão: false
+    per-item: false
+    #Price to send items. Default: 1.5 (per item) and 30.0 (per mail)
     #
-    #Se você estiver usando o LT Item Mail Resource Pack, mude isso para 'true'. Padrão: false
-    textures: false
-    cost:
-        #Set 'true' to multiply the price by the number of items. Default: false
-        #
-        #Defina 'true' para multiplicar o preço pelo número de itens. Padrão: false
-        per-item: false
-        #Price to send items. Default: 1.5 (per item) and 30.0 (per mail)
-        #
-        #Preço para enviar itens. Padrão: 1.5 (por item) e 30.0 (por corrêio)
-        value: 30.0
-    #Name of the mail inventory. Default: Mail
-    #
-    #Nome do inventário de corrêio. Padrão: Mail
-    name: '&3&lMailbox&r&4'
+    #Preço para enviar itens. Padrão: 1.5 (por item) e 30.0 (por corrêio)
+    value: 30.0
+  #Name of the mail inventory. Default: Mail
+  #
+  #Nome do inventário de corrêio. Padrão: Mail
+  name: '&3&lMailbox&r&4'
 #Should administrators be warned about new updates? Default: true
 #
 #Os administratores devem ser notificados sobre novas atualizações? Padrão: true
 update:
-    check: true
-    periodic-notification: true
+  check: true
+  periodic-notification: true
 boards:
-    console-only: false
+  console-only: false
 #Do not touch it!
 build-number: ${v}
 config-version: 11
