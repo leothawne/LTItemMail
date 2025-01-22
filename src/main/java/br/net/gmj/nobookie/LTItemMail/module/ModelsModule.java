@@ -16,9 +16,9 @@ public class ModelsModule {
 	public static final void check() {
 		file = FetchUtil.FileManager.get("item-models.yml");
 		if(file == null) {
-			ConsoleModule.info("Extracting item-models.yml...");
-			LTItemMail.getInstance().saveDefaultConfig();
-			ConsoleModule.info("Done.");
+			ConsoleModule.warning("item-models.yml not found!");
+			ConsoleModule.warning("Generating a new one and all default models will be added.");
+			FetchUtil.FileManager.create("item-models.yml");
 		}
 	}
 	private static boolean update = false;
@@ -29,11 +29,16 @@ public class ModelsModule {
 			try {
 				configuration.load(file);
 				ConsoleModule.info("Item models loaded.");
-				if(configuration.getInt("model-version") < Integer.valueOf(DataModule.getVersion(DataModule.VersionType.ITEM_MODELS_YML))) {
-					update = true;
-					ConsoleModule.warning("Item models outdated!");
-					ConsoleModule.warning("New models will be added.");
-					configuration.set("model-version", Integer.valueOf(DataModule.getVersion(DataModule.VersionType.ITEM_MODELS_YML)));
+				try {
+					if(configuration.getInt("model-version") < Integer.valueOf(DataModule.getVersion(DataModule.VersionType.ITEM_MODELS_YML))) {
+						update = true;
+						ConsoleModule.warning("Item models outdated!");
+						ConsoleModule.warning("New models will be added.");
+						configuration.set("model-version", Integer.valueOf(DataModule.getVersion(DataModule.VersionType.ITEM_MODELS_YML)));
+						configuration.save(file);
+					}
+				} catch(final IllegalArgumentException e) {
+					configuration.set("model-version", 0);
 					configuration.save(file);
 				}
 				return configuration;

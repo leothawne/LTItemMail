@@ -1,4 +1,6 @@
 #Translation created by DUYSONGLOI: https://github.com/DUYSONGLOI
+#Đừng thay đổi nó trong bất kỳ trường hợp nào!
+language-version: 3
 player:
   permissionerror: 'Bạn không có quyền để làm điều này'
   inventoryfull: '% không có đủ % slots còn trống để gửi.'
@@ -15,5 +17,3 @@ transaction:
   error: 'Giao dịch không thành công!'
   nomoney: 'Bạn không có % để gửi.'
   paid: 'Đã thanh toán % cho ngân hàng!'
-#Đừng thay đổi nó trong bất kỳ trường hợp nào!
-language-version: 3

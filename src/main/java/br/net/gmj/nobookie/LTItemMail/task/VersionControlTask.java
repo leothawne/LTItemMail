@@ -53,7 +53,7 @@ public final class VersionControlTask {
 						if(messages.size() > 0) ConsoleModule.board(Bukkit.getConsoleSender(), messages);
 					}
 					task.cancel();
-				} catch (final InvalidConfigurationException | IOException e) {
+				} catch (final InvalidConfigurationException | IOException | IllegalArgumentException e) {
 					if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 				}
 			}

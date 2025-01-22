@@ -93,6 +93,14 @@ public final class FetchUtil {
 			if(file.exists() && file.isFile()) return file;
 			return null;
 		}
+		public static final void create(final String name) {
+			final File file = new File(LTItemMail.getInstance().getDataFolder(), name);
+			if(!file.exists()) try {
+				file.createNewFile();
+			} catch (final IOException e) {
+				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
+			}
+		}
 	}
 	public static final class Player {
 		private static final JSONArray array() {

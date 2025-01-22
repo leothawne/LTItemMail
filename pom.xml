@@ -95,6 +95,8 @@
 		        <excludes>
 					<exclude>plugin.yml</exclude>
 					<exclude>config.yml</exclude>
+					<exclude>atualizar-paginas.txt</exclude>
+					<exclude>ideias.txt</exclude>
 				</excludes>
 		    </resource>
 		</resources>

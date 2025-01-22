@@ -1,3 +1,5 @@
+#Não toque nisso!
+language-version: 9
 player:
   permissionerror: 'Você não tem permissão para fazer isso.'
   inventoryfull: '% não tem % slot(s) livre(s).'
@@ -92,5 +94,3 @@ command:
       list: 'Jogadores banidos:'
       empty: 'Não há jogadores banidos.'
     blocks: 'Mostra uma lista das caixas de corrêio colocadas por um jogador.'
-#Não toque nisso!
-language-version: 9
