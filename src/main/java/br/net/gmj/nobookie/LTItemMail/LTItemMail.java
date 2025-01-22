@@ -28,8 +28,9 @@ import br.net.gmj.nobookie.LTItemMail.module.ConsoleModule;
 import br.net.gmj.nobookie.LTItemMail.module.DatabaseModule;
 import br.net.gmj.nobookie.LTItemMail.module.ExtensionModule;
 import br.net.gmj.nobookie.LTItemMail.module.LanguageModule;
+import br.net.gmj.nobookie.LTItemMail.module.ModelsModule;
 import br.net.gmj.nobookie.LTItemMail.module.ResourcePackModule;
-import br.net.gmj.nobookie.LTItemMail.task.MailboxBlockTask;
+import br.net.gmj.nobookie.LTItemMail.task.MailboxTask;
 import br.net.gmj.nobookie.LTItemMail.task.RecipeTask;
 import br.net.gmj.nobookie.LTItemMail.task.VersionControlTask;
 import br.net.gmj.nobookie.LTItemMail.util.BStats;
@@ -38,6 +39,7 @@ public final class LTItemMail extends JavaPlugin {
 	private static LTItemMail instance;
 	public FileConfiguration configuration;
 	public FileConfiguration language;
+	public FileConfiguration models;
 	public Connection connection = null;
 	public List<Integer> boardsForPlayers = new ArrayList<>();
 	public Map<String, List<Integer>> boardsPlayers = new HashMap<>();
@@ -52,6 +54,7 @@ public final class LTItemMail extends JavaPlugin {
 		        return String.valueOf((Integer) ConfigurationModule.get(ConfigurationModule.Type.BUILD_NUMBER));
 		    }));
 			loadLang();
+			loadModels();
 			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.BUNGEE_MODE)) {
 				getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 				getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", new BungeeModule());
@@ -70,7 +73,7 @@ public final class LTItemMail extends JavaPlugin {
 			getCommand("mailitem").setExecutor(new MailItemCommand());
 			getCommand("mailitem").setTabCompleter(new MailItemCommandTabCompleter());
 			Bukkit.getScheduler().runTaskTimer(this, new RecipeTask(), 1, 20 * 60);
-			Bukkit.getScheduler().runTaskTimer(this, new MailboxBlockTask(), 1, 1);
+			Bukkit.getScheduler().runTaskTimer(this, new MailboxTask(), 1, 1);
 			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_UPDATE_CHECK)) {
 				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ltitemmail:itemmailadmin update");
 				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_UPDATE_PERIODIC_NOTIFICATION)) Bukkit.getScheduler().runTaskTimerAsynchronously(this, new Runnable() {
@@ -103,6 +106,7 @@ public final class LTItemMail extends JavaPlugin {
 	public final void reload() {
 		loadConfig();
 		loadLang();
+		loadModels();
 		ExtensionModule.reload().load();
 	}
 	private final void loadConfig() {
@@ -114,6 +118,11 @@ public final class LTItemMail extends JavaPlugin {
 		LanguageModule.check();
 		language = LanguageModule.load();
 		LanguageModule.addMissing();
+	}
+	private final void loadModels() {
+		ModelsModule.check();
+		models = ModelsModule.load();
+		ModelsModule.addMissing();
 	}
 	public static final LTItemMail getInstance() {
 		return instance;
