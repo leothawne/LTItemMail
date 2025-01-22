@@ -25,15 +25,16 @@ import br.net.gmj.nobookie.LTItemMail.listener.PlayerListener;
 import br.net.gmj.nobookie.LTItemMail.module.BungeeModule;
 import br.net.gmj.nobookie.LTItemMail.module.ConfigurationModule;
 import br.net.gmj.nobookie.LTItemMail.module.ConsoleModule;
+import br.net.gmj.nobookie.LTItemMail.module.DataModule;
 import br.net.gmj.nobookie.LTItemMail.module.DatabaseModule;
 import br.net.gmj.nobookie.LTItemMail.module.ExtensionModule;
 import br.net.gmj.nobookie.LTItemMail.module.LanguageModule;
 import br.net.gmj.nobookie.LTItemMail.module.ModelsModule;
-import br.net.gmj.nobookie.LTItemMail.module.ResourcePackModule;
 import br.net.gmj.nobookie.LTItemMail.task.MailboxTask;
 import br.net.gmj.nobookie.LTItemMail.task.RecipeTask;
 import br.net.gmj.nobookie.LTItemMail.task.VersionControlTask;
 import br.net.gmj.nobookie.LTItemMail.util.BStats;
+import br.net.gmj.nobookie.LTItemMail.util.FetchUtil;
 
 /**
  * 
@@ -96,7 +97,7 @@ public final class LTItemMail extends JavaPlugin {
 				}, 20 * 60 * 60 * 3, 20 * 60 * 60 * 3);
 			}
 			VersionControlTask.run();
-			ResourcePackModule.begin();
+			FetchUtil.FileManager.download(DataModule.getResourcePackURL(), "LTItemMail-ResourcePack.zip", false);
 		} else {
 			Bukkit.getScheduler().runTaskTimer(this, new Runnable() {
 				@Override

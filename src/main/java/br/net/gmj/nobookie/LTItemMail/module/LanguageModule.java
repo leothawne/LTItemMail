@@ -10,13 +10,14 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import br.net.gmj.nobookie.LTItemMail.LTItemMail;
 import br.net.gmj.nobookie.LTItemMail.module.DataModule.VersionType;
 import br.net.gmj.nobookie.LTItemMail.util.BukkitUtil;
+import br.net.gmj.nobookie.LTItemMail.util.FetchUtil;
 
 public final class LanguageModule {
 	private LanguageModule() {}
 	private static File file;
 	public static final void check() {
-		file = new File(LTItemMail.getInstance().getDataFolder(), (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml");
-		if(!file.exists()) {
+		file = FetchUtil.FileManager.get((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml");
+		if(file == null) {
 			ConsoleModule.info("Extracting " + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml...");
 			if(LTItemMail.getInstance().getResource((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml") != null) {
 				LTItemMail.getInstance().saveResource((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml", false);
@@ -32,7 +33,8 @@ public final class LanguageModule {
 	}
 	private static boolean update = false;
 	public static final FileConfiguration load() {
-		if(file.exists()) {
+		file = FetchUtil.FileManager.get((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml");
+		if(file != null) {
 			final FileConfiguration configuration = new YamlConfiguration();
 			try {
 				configuration.load(file);
@@ -492,10 +494,6 @@ public final class LanguageModule {
 					return "Download de recurso finalizado";
 				case R_F:
 					return "Download de recurso falhou";
-				case RP_I:
-					return "O pacote de recursos deve estar localizado dentro da pasta do plugin";
-				case RP_F:
-					return "Não foi possível mover o arquivo do pacote de recursos da pasta cache";
 			}
 			switch(i) {
 				case R_S:
@@ -506,10 +504,6 @@ public final class LanguageModule {
 					return "Resource download completed";
 				case R_F:
 					return "Resource download failed";
-				case RP_I:
-					return "The resource pack should be available inside the plugin folder";
-				case RP_F:
-					return "Could not move the resource pack file from the cache folder";
 			}
 			return null;
 		}
@@ -517,9 +511,7 @@ public final class LanguageModule {
 			R_S,
 			R_D,
 			R_C,
-			R_F,
-			RP_I,
-			RP_F
+			R_F
 		}
 	}
 }

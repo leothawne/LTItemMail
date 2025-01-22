@@ -9,8 +9,6 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -61,46 +59,39 @@ public final class FetchUtil {
 			}
 			return null;
 		}
-		public static final class Cache {
-			public static final boolean download(final String url, final String name, final Boolean silent) {
-				try {
-					Files.createDirectories(Paths.get(LTItemMail.getInstance().getDataFolder() + File.separator + "cache"));
-					final Downloader downloader = new Downloader();
-					downloader.setDownloadHandler(new CompleteDownloadHandler(downloader) {
-						@Override
-						public final void onDownloadStart(final Download download) {
-							super.onDownloadStart(download);
-							if(!silent) ConsoleModule.info(LanguageModule.I.g(LanguageModule.I.i.R_S) + " [" + name + "]!");
-						}
-						@Override
-						public final void onDownloadSpeedProgress(final Download download, final int downloadedSize, final int maxSize, final int downloadPercent, final int bytesPerSec) {
-							if(!silent) ConsoleModule.info(LanguageModule.I.g(LanguageModule.I.i.R_D) + " [" + name + "]: " + downloadedSize + "/" + maxSize + " MB (" + downloadPercent + "%, " + SizeUtil.toMBFB(bytesPerSec) + " MB/s)");
-						}
-						@Override
-						public final void onDownloadFinish(final Download download) {
-							super.onDownloadFinish(download);
-							if(!silent) ConsoleModule.info(LanguageModule.I.g(LanguageModule.I.i.R_C) + " [" + name + "]!");
-						}
-						@Override
-						public final void onDownloadError(final Download download, final Exception exception) {
-							super.onDownloadError(download, exception);
-							if(!silent) {
-								ConsoleModule.warning(LanguageModule.I.g(LanguageModule.I.i.R_F) + " [" + name + "]!");
-							} else ConsoleModule.debug(LanguageModule.I.g(LanguageModule.I.i.R_F) + " [" + name + "]!");
-						}
-					});
-					downloader.downloadFileToLocation(url, new File(LTItemMail.getInstance().getDataFolder() + File.separator + name).getAbsolutePath());
-					return true;
-				} catch (final IOException e) {
-					if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
+	}
+	public static final class FileManager {
+		public static final void download(final String url, final String name, final Boolean silent) {
+			final Downloader downloader = new Downloader();
+			downloader.setDownloadHandler(new CompleteDownloadHandler(downloader) {
+				@Override
+				public final void onDownloadStart(final Download download) {
+					super.onDownloadStart(download);
+					if(!silent) ConsoleModule.info(LanguageModule.I.g(LanguageModule.I.i.R_S) + " [" + name + "]!");
 				}
-				return false;
-			}
-			public static final File get(final String name) {
-				final File file = new File(LTItemMail.getInstance().getDataFolder(), name);
-				if(file.exists() && file.isFile()) return file;
-				return null;
-			}
+				@Override
+				public final void onDownloadSpeedProgress(final Download download, final int downloadedSize, final int maxSize, final int downloadPercent, final int bytesPerSec) {
+					if(!silent) ConsoleModule.info(LanguageModule.I.g(LanguageModule.I.i.R_D) + " [" + name + "]: " + downloadedSize + "/" + maxSize + " MB (" + downloadPercent + "%, " + SizeUtil.toMBFB(bytesPerSec) + " MB/s)");
+				}
+				@Override
+				public final void onDownloadFinish(final Download download) {
+					super.onDownloadFinish(download);
+					if(!silent) ConsoleModule.info(LanguageModule.I.g(LanguageModule.I.i.R_C) + " [" + name + "]!");
+				}
+				@Override
+				public final void onDownloadError(final Download download, final Exception exception) {
+					super.onDownloadError(download, exception);
+					if(!silent) {
+						ConsoleModule.warning(LanguageModule.I.g(LanguageModule.I.i.R_F) + " [" + name + "]!");
+					} else ConsoleModule.debug(LanguageModule.I.g(LanguageModule.I.i.R_F) + " [" + name + "]!");
+				}
+			});
+			downloader.downloadFileToLocation(url, new File(LTItemMail.getInstance().getDataFolder() + File.separator + name).getAbsolutePath());
+		}
+		public static final File get(final String name) {
+			final File file = new File(LTItemMail.getInstance().getDataFolder(), name);
+			if(file.exists() && file.isFile()) return file;
+			return null;
 		}
 	}
 	public static final class Player {

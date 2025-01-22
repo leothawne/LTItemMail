@@ -15,9 +15,10 @@ import br.net.gmj.nobookie.LTItemMail.util.FetchUtil;
 
 public final class ConfigurationModule {
 	private ConfigurationModule() {}
-	private static final File file = new File(LTItemMail.getInstance().getDataFolder(), "config.yml");
+	private static File file;
 	public static final void check() {
-		if(!file.exists()) {
+		file = FetchUtil.FileManager.get("config.yml");
+		if(file == null) {
 			ConsoleModule.info("Extracting config.yml...");
 			LTItemMail.getInstance().saveDefaultConfig();
 			ConsoleModule.info("Done.");
@@ -25,7 +26,8 @@ public final class ConfigurationModule {
 	}
 	private static boolean update = false;
 	public static final FileConfiguration load() {
-		if(file.exists()) {
+		file = FetchUtil.FileManager.get("config.yml");
+		if(file != null) {
 			final FileConfiguration configuration = new YamlConfiguration();
 			try {
 				configuration.load(file);

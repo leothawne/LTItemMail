@@ -55,7 +55,7 @@ public final class PlayerListener implements Listener {
 					}
 					try {
 						final YamlConfiguration info = new YamlConfiguration();
-						info.load(FetchUtil.URL.Cache.get(LTItemMail.getInstance().getDescription().getVersion() + ".yml"));
+						info.load(FetchUtil.FileManager.get("manifest.yml"));
 						final Map<Integer, Map<String, Map<String, List<String>>>> messages = new HashMap<>();
 						final Map<String, Map<String, List<String>>> contents1 = new HashMap<>();
 						final Map<String, List<String>> contents2 = new HashMap<>();

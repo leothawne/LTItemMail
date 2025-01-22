@@ -8,12 +8,14 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import br.net.gmj.nobookie.LTItemMail.LTItemMail;
+import br.net.gmj.nobookie.LTItemMail.util.FetchUtil;
 
 public class ModelsModule {
 	private ModelsModule() {}
-	private static final File file = new File(LTItemMail.getInstance().getDataFolder(), "item-models.yml");
+	private static File file;
 	public static final void check() {
-		if(!file.exists()) {
+		file = FetchUtil.FileManager.get("item-models.yml");
+		if(file == null) {
 			ConsoleModule.info("Extracting item-models.yml...");
 			LTItemMail.getInstance().saveDefaultConfig();
 			ConsoleModule.info("Done.");
@@ -21,7 +23,8 @@ public class ModelsModule {
 	}
 	private static boolean update = false;
 	public static final FileConfiguration load() {
-		if(file.exists()) {
+		file = FetchUtil.FileManager.get("item-models.yml");
+		if(file != null) {
 			final FileConfiguration configuration = new YamlConfiguration();
 			try {
 				configuration.load(file);
