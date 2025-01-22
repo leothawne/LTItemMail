@@ -12,9 +12,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import br.net.gmj.nobookie.LTItemMail.entity.LTPlayer;
-import br.net.gmj.nobookie.LTItemMail.item.Item;
 import br.net.gmj.nobookie.LTItemMail.module.ConfigurationModule;
 import br.net.gmj.nobookie.LTItemMail.module.LanguageModule;
+import br.net.gmj.nobookie.LTItemMail.module.ModelsModule;
 import net.md_5.bungee.api.ChatColor;
 
 public final class MailboxInventory {
@@ -63,23 +63,23 @@ public final class MailboxInventory {
 		final ItemStack labelButton = new ItemStack(Material.BOOK, 1);
 		final ItemStack denyButton = new ItemStack(Material.BARRIER, 1);
 		final ItemStack acceptButton = new ItemStack(Material.ENDER_EYE, 1);
-		gui.setItemMeta(prepareItem(gui.getItemMeta(), Item.Data.MAILBOX_GUI_NORMAL.value, null, null));
-		limiter.setItemMeta(prepareItem(limiter.getItemMeta(), Item.Data.MAILBOX_LIMITER.value, null, null));
-		costButton.setItemMeta(prepareItem(costButton.getItemMeta(), Item.Data.MAILBOX_BUTTON_COST.value, ChatColor.RESET + LanguageModule.get(LanguageModule.Type.MAILBOX_COST), Arrays.asList(ChatColor.RESET + "" + ChatColor.GREEN + "$ 0.0", ChatColor.RESET + "" + ChatColor.WHITE + LanguageModule.get(LanguageModule.Type.MAILBOX_COSTUPDATE))));
+		gui.setItemMeta(prepareItem(gui.getItemMeta(), ModelsModule.get(ModelsModule.Type.MAILBOX_GUI_NORMAL), null, null));
+		limiter.setItemMeta(prepareItem(limiter.getItemMeta(), ModelsModule.get(ModelsModule.Type.MAILBOX_LIMITER), null, null));
+		costButton.setItemMeta(prepareItem(costButton.getItemMeta(), ModelsModule.get(ModelsModule.Type.MAILBOX_BUTTON_COST), ChatColor.RESET + LanguageModule.get(LanguageModule.Type.MAILBOX_COST), Arrays.asList(ChatColor.RESET + "" + ChatColor.GREEN + "$ 0.0", ChatColor.RESET + "" + ChatColor.WHITE + LanguageModule.get(LanguageModule.Type.MAILBOX_COSTUPDATE))));
 		String bookFrom = "@CONSOLE";
 		if(from != null) bookFrom = "@" + LTPlayer.fromUUID(from).getName();
 		String bookLore = "";
 		if(!message.isEmpty()) bookLore = ChatColor.RESET + "" + ChatColor.YELLOW + message;
-		labelButton.setItemMeta(prepareItem(labelButton.getItemMeta(), Item.Data.MAILBOX_BUTTON_LABEL.value, ChatColor.RESET + LanguageModule.get(LanguageModule.Type.MAILBOX_LABEL), Arrays.asList(bookFrom, bookLore)));
-		denyButton.setItemMeta(prepareItem(denyButton.getItemMeta(), Item.Data.MAILBOX_BUTTON_DENY.value, ChatColor.RESET + "" + ChatColor.DARK_RED + "" + ChatColor.BOLD + LanguageModule.get(LanguageModule.Type.MAILBOX_DENY), null));
-		acceptButton.setItemMeta(prepareItem(acceptButton.getItemMeta(), Item.Data.MAILBOX_BUTTON_ACCEPT.value, ChatColor.RESET + "" + ChatColor.DARK_GREEN + "" + ChatColor.BOLD + LanguageModule.get(LanguageModule.Type.MAILBOX_ACCEPT), null));
+		labelButton.setItemMeta(prepareItem(labelButton.getItemMeta(), ModelsModule.get(ModelsModule.Type.MAILBOX_BUTTON_LABEL), ChatColor.RESET + LanguageModule.get(LanguageModule.Type.MAILBOX_LABEL), Arrays.asList(bookFrom, bookLore)));
+		denyButton.setItemMeta(prepareItem(denyButton.getItemMeta(), ModelsModule.get(ModelsModule.Type.MAILBOX_BUTTON_DENY), ChatColor.RESET + "" + ChatColor.DARK_RED + "" + ChatColor.BOLD + LanguageModule.get(LanguageModule.Type.MAILBOX_DENY), null));
+		acceptButton.setItemMeta(prepareItem(acceptButton.getItemMeta(), ModelsModule.get(ModelsModule.Type.MAILBOX_BUTTON_ACCEPT), ChatColor.RESET + "" + ChatColor.DARK_GREEN + "" + ChatColor.BOLD + LanguageModule.get(LanguageModule.Type.MAILBOX_ACCEPT), null));
 		for(int i = 28; i < 29; i++) inventory.setItem(i, limiter);
 		inventory.setItem(31, limiter);
 		if(!adminRecover) {
 			inventory.setItem(29, costButton);
 			inventory.setItem(30, labelButton);
 			if(acceptAndDeny) {
-				gui.setItemMeta(prepareItem(gui.getItemMeta(), Item.Data.MAILBOX_GUI_PENDING.value, null, null));
+				gui.setItemMeta(prepareItem(gui.getItemMeta(), ModelsModule.get(ModelsModule.Type.MAILBOX_GUI_PENDING), null, null));
 				inventory.setItem(32, acceptButton);
 				inventory.setItem(33, denyButton);
 			} else {
@@ -87,7 +87,7 @@ public final class MailboxInventory {
 				inventory.setItem(33, limiter);
 			}
 		} else {
-			gui.setItemMeta(prepareItem(gui.getItemMeta(), Item.Data.MAILBOX_GUI_ADMIN.value, null, null));
+			gui.setItemMeta(prepareItem(gui.getItemMeta(), ModelsModule.get(ModelsModule.Type.MAILBOX_GUI_ADMIN), null, null));
 			inventory.setItem(29, limiter);
 			inventory.setItem(30, limiter);
 			inventory.setItem(32, limiter);
@@ -97,9 +97,9 @@ public final class MailboxInventory {
 		for(int i = 34; i < 36; i++) inventory.setItem(i, limiter);
 	}
 	private static final ItemMeta prepareItem(final ItemMeta meta, final int model, final String name, final List<String> lore) {
-		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_TEXTURES)) if(model <= 0) {
-			meta.setCustomModelData(null);
-		} else meta.setCustomModelData(model);;
+		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_TEXTURES)) {
+			meta.setCustomModelData(model);
+		} else meta.setCustomModelData(null);
 		if(name != null) {
 			meta.setDisplayName(name);
 		} else meta.setDisplayName(" ");

@@ -1,0 +1,12 @@
+mailbox:
+  limiter: 999999001
+  button:
+    cost: 999999002
+    label: 999999006
+    deny: 999999007
+    accept: 999999008
+  gui:
+    normal: 999999003
+    pending: 999999004
+    admin: 999999005
+model-version: 1

@@ -23,19 +23,4 @@ public interface Item {
 	public enum Type {
 		MAILBOX_ITEM
 	}
-	public enum Data {
-		MAILBOX_LIMITER(999999001),
-		MAILBOX_BUTTON_COST(999999002),
-		MAILBOX_GUI_NORMAL(999999003),
-		MAILBOX_GUI_PENDING(999999004),
-		MAILBOX_GUI_ADMIN(999999005),
-		MAILBOX_BUTTON_LABEL(999999006),
-		MAILBOX_BUTTON_DENY(999999007),
-		MAILBOX_BUTTON_ACCEPT(999999008);
-		
-		public final int value;
-		private Data(final int model) {
-			this.value = model;
-		}
-	}
 }
