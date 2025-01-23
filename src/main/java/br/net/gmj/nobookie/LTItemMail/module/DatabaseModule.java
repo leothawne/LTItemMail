@@ -428,7 +428,9 @@ public final class DatabaseModule {
 					try {
 						final UUID from = UUID.fromString(results.getString("uuid_from"));
 						return from;
-					} catch(final IllegalArgumentException exception) {}
+					} catch(final IllegalArgumentException e) {
+						if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
+					}
 					return null;
 				}
 			} catch (final SQLException | NullPointerException e) {
