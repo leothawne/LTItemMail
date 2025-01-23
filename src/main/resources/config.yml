@@ -49,9 +49,9 @@ hook:
   #Defina 'true' se desejar usar um plugin de economia (defina o preço do corrêio).
   economy:
     enable: false
-    #Useful for multicurrencies plugins (like CoinsEngine. Ex: CoinsEngine:Crowns). Default: Vault
+    #Compatible plugins: Vault for economies in general, CoinsEngine (ex: CoinsEngine:Coins) or The New Economy (ex: TheNewEconomy:USD). Default: Vault
     #
-    #Útil para plugins de multiplas moedas (como o CoinsEngine. Ex: CoinsEngine:Coroas). Padrão: Vault
+    #Plugins compatíveis: Vault para economias em geral, CoinsEngine (ex: CoinsEngine:Moedas) ou The New Economy (ex: TheNewEconomy:USD). Padrão: Vault
     type: 'Vault'
   #Set 'true' if you wish to show mailbox blocks on the map.
   #

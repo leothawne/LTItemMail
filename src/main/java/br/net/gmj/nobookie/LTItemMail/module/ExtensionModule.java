@@ -32,6 +32,7 @@ public final class ExtensionModule {
 		final PluginManager manager = Bukkit.getPluginManager();
 		plugins.putIfAbsent(Name.VAULT, manager.getPlugin("Vault"));
 		plugins.putIfAbsent(Name.COINSENGINE, manager.getPlugin("CoinsEngine"));
+		plugins.putIfAbsent(Name.THENEWECONOMY, manager.getPlugin("TheNewEconomy"));
 		plugins.putIfAbsent(Name.GRIEFPREVENTION, manager.getPlugin("GriefPrevention"));
 		plugins.putIfAbsent(Name.REDPROTECT, manager.getPlugin("RedProtect"));
 		plugins.putIfAbsent(Name.TOWNYADVANCED, manager.getPlugin("Towny"));
@@ -118,7 +119,7 @@ public final class ExtensionModule {
 			detected = true;
 			break;
 		}
-		if(detected) ConsoleModule.info("Extensions integrations...");
+		if(detected) ConsoleModule.info("Loading extensions...");
 		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_ECONOMY_ENABLE)) EconomyModule.getInstance();
 		if(isInstalled(Name.VAULT)) if(!isRegistered(Function.VAULT_PERMISSION)) if(register(Function.VAULT_PERMISSION)) warn(Name.VAULT, ((LTVault.Permission) get(Function.VAULT_PERMISSION)).getPlugin());
 		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_GRIEFPREVENTION)) if(isInstalled(Name.GRIEFPREVENTION)) if(!isRegistered(Function.GRIEFPREVENTION)) {
@@ -181,6 +182,7 @@ public final class ExtensionModule {
 	public enum Name {
 		VAULT,
 		COINSENGINE,
+		THENEWECONOMY,
 		GRIEFPREVENTION,
 		REDPROTECT,
 		TOWNYADVANCED,

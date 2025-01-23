@@ -1,13 +1,10 @@
 package br.net.gmj.nobookie.LTItemMail;
 
-import java.awt.Desktop;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.swing.JOptionPane;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -154,10 +151,5 @@ public final class LTItemMail extends JavaPlugin {
 	 */
 	public static final LTItemMail getInstance() {
 		return instance;
-	}
-	public static final void main(final String[] args) {
-		final String error = "Incorrect usage! You must put the jar file into your server /plugins/ folder.";
-		System.out.println(error);		if(Desktop.isDesktopSupported()) JOptionPane.showInternalMessageDialog(null, error, LTItemMail.class.getName(), JOptionPane.ERROR_MESSAGE);
-		System.exit(0);
 	}
 }

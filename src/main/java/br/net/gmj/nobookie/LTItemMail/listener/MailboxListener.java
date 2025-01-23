@@ -70,10 +70,9 @@ public final class MailboxListener implements Listener {
 				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_TYPE_COST)) {
 					newcost = (Double) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_COST) * count;
 				} else newcost = (Double) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_COST);
-				final EconomyModule economy = EconomyModule.getInstance();
-				if(economy != null) {
-					if(economy.has(sender, newcost)) {
-						if(economy.withdraw(player, newcost)) {
+				if(EconomyModule.getInstance() != null) {
+					if(EconomyModule.getInstance().has(sender, newcost)) {
+						if(EconomyModule.getInstance().withdraw(player, newcost)) {
 							MailboxModule.log(sender.getUniqueId(), null, MailboxModule.Action.PAID, null, newcost, null, null);
 							final EntitySendMailEvent sendEvent = new EntitySendMailEvent(sender, receiver, items, true, newcost);
 							Bukkit.getPluginManager().callEvent(sendEvent);
@@ -82,7 +81,7 @@ public final class MailboxListener implements Listener {
 								sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + "" + mailboxPaid[0] + "" + ChatColor.GREEN + newcost + "" + ChatColor.YELLOW + "" + mailboxPaid[1]);
 								MailboxModule.send(sender, receiver, items, label);
 							} else {
-								economy.deposit(sender, newcost);
+								EconomyModule.getInstance().deposit(sender, newcost);
 								MailboxModule.log(sender.getUniqueId(), null, MailboxModule.Action.REFUNDED, null, newcost, null, null);
 								sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + "" + LanguageModule.get(LanguageModule.Type.MAILBOX_BLOCKED));
 								MailboxModule.log(sender.getUniqueId(), null, MailboxModule.Action.CANCELED, null, null, null, null);
