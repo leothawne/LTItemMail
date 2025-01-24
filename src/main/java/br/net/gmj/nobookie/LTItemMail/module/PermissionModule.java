@@ -7,123 +7,44 @@ import br.net.gmj.nobookie.LTItemMail.module.ext.LTVault;
 public class PermissionModule {
 	private PermissionModule() {}
 	public static final boolean hasPermission(final CommandSender sender, final Type permission) {
-		String node = null;
-		switch(permission) {
-			case CMD_ADMIN_LIST:
-				node = "ltitemmail.admin.list";
-				break;
-			case CMD_ADMIN_MAIN:
-				node = "ltitemmail.admin";
-				break;
-			case CMD_ADMIN_RECOVER:
-				node = "ltitemmail.admin.recover";
-				break;
-			case CMD_ADMIN_UPDATE:
-				node = "ltitemmail.admin.update";
-				break;
-			case CMD_PLAYER_DELETE:
-				node = "ltitemmail.player.delete";
-				break;
-			case CMD_PLAYER_LIST:
-				node = "ltitemmail.player.list";
-				break;
-			case CMD_PLAYER_COLOR:
-				node = "ltitemmail.player.color";
-				break;
-			case CMD_PLAYER_MAIN:
-				node = "ltitemmail.player";
-				break;
-			case CMD_PLAYER_OPEN:
-				node = "ltitemmail.player.open";
-				break;
-			case CMD_PLAYER_SEND:
-				node = "ltitemmail.player.send";
-				break;
-			case CMD_PLAYER_PRICE:
-				node = "ltitemmail.player.price";
-				break;
-			case CMD_PLAYER_VERSION:
-				node = "ltitemmail.player.version";
-				break;
-			case CMD_PLAYER_INFO:
-				node = "ltitemmail.player.info";
-				break;
-			case CMD_ADMIN_BYPASS:
-				node = "ltitemmail.admin.bypass";
-				break;
-			case CMD_ADMIN_NOTIFY:
-				node = "ltitemmail.admin.notify";
-				break;
-			case CMD_PLAYER_NOTIFY:
-				node = "ltitemmail.player.notify";
-				break;
-			case BLOCK_PLAYER_BREAK:
-				node = "ltitemmail.block.break";
-				break;
-			case BLOCK_PLAYER_PLACE:
-				node = "ltitemmail.block.place";
-				break;
-			case BLOCK_PLAYER_USE:
-				node = "ltitemmail.block.use";
-				break;
-			case BLOCK_ADMIN_BREAK:
-				node = "ltitemmail.block.break.bypass";
-				break;
-			case CMD_ADMIN_RELOAD:
-				node = "ltitemmail.admin.reload";
-				break;
-			case CMD_ADMIN_BAN:
-				node = "ltitemmail.admin.ban";
-				break;
-			case CMD_ADMIN_UNBAN:
-				node = "ltitemmail.admin.unban";
-				break;
-			case CMD_ADMIN_BANLIST:
-				node = "ltitemmail.admin.banlist";
-				break;
-			case CMD_ADMIN_INFO:
-				node = "ltitemmail.admin.info";
-				break;
-			case CMD_PLAYER_BLOCKS:
-				node = "ltitemmail.player.blocks";
-				break;
-			case CMD_ADMIN_BLOCKS:
-				node = "ltitemmail.admin.blocks";
-				break;
-		}
-		if(node != null) {
-			if(ExtensionModule.getInstance().isRegistered(ExtensionModule.Function.VAULT_PERMISSION)) return ((LTVault.Permission) ExtensionModule.getInstance().get(ExtensionModule.Function.VAULT_PERMISSION)).getAPI().has(sender, node);
-			return sender.hasPermission(node);
-		}
-		return false;
+		final String node = permission.node();
+		if(ExtensionModule.getInstance().isRegistered(ExtensionModule.Function.VAULT_PERMISSION)) return ((LTVault.Permission) ExtensionModule.getInstance().get(ExtensionModule.Function.VAULT_PERMISSION)).getAPI().has(sender, node);
+		return sender.hasPermission(node);
 	}
 	public enum Type {
-		CMD_PLAYER_MAIN,
-		CMD_PLAYER_VERSION,
-		CMD_PLAYER_LIST,
-		CMD_PLAYER_COLOR,
-		CMD_PLAYER_OPEN,
-		CMD_PLAYER_DELETE,
-		CMD_PLAYER_SEND,
-		CMD_PLAYER_PRICE,
-		CMD_PLAYER_INFO,
-		CMD_PLAYER_BLOCKS,
-		CMD_ADMIN_MAIN,
-		CMD_ADMIN_UPDATE,
-		CMD_ADMIN_LIST,
-		CMD_ADMIN_RECOVER,
-		CMD_ADMIN_BYPASS,
-		CMD_PLAYER_NOTIFY,
-		CMD_ADMIN_NOTIFY,
-		CMD_ADMIN_BAN,
-		CMD_ADMIN_UNBAN,
-		CMD_ADMIN_BANLIST,
-		CMD_ADMIN_INFO,
-		CMD_ADMIN_RELOAD,
-		CMD_ADMIN_BLOCKS,
-		BLOCK_PLAYER_PLACE,
-		BLOCK_PLAYER_BREAK,
-		BLOCK_PLAYER_USE,
-		BLOCK_ADMIN_BREAK
+		CMD_PLAYER_MAIN("ltitemmail.player"),
+		CMD_PLAYER_VERSION("ltitemmail.player.version"),
+		CMD_PLAYER_LIST("ltitemmail.player.list"),
+		CMD_PLAYER_COLOR("ltitemmail.player.color"),
+		CMD_PLAYER_OPEN("ltitemmail.player.open"),
+		CMD_PLAYER_DELETE("ltitemmail.player.delete"),
+		CMD_PLAYER_SEND("ltitemmail.player.send"),
+		CMD_PLAYER_PRICE("ltitemmail.player.price"),
+		CMD_PLAYER_INFO("ltitemmail.player.info"),
+		CMD_PLAYER_BLOCKS("ltitemmail.player.blocks"),
+		CMD_PLAYER_NOTIFY("ltitemmail.player.notify"),
+		CMD_ADMIN_MAIN("ltitemmail.admin"),
+		CMD_ADMIN_UPDATE("ltitemmail.admin.update"),
+		CMD_ADMIN_LIST("ltitemmail.admin.list"),
+		CMD_ADMIN_RECOVER("ltitemmail.admin.recover"),
+		CMD_ADMIN_BAN("ltitemmail.admin.ban"),
+		CMD_ADMIN_UNBAN("ltitemmail.admin.unban"),
+		CMD_ADMIN_BANLIST("ltitemmail.admin.banlist"),
+		CMD_ADMIN_INFO("ltitemmail.admin.info"),
+		CMD_ADMIN_RELOAD("ltitemmail.admin.reload"),
+		CMD_ADMIN_BLOCKS("ltitemmail.admin.blocks"),
+		CMD_ADMIN_NOTIFY("ltitemmail.admin.notify"),
+		CMD_ADMIN_BYPASS("ltitemmail.admin.bypass"),
+		BLOCK_PLAYER_PLACE("ltitemmail.block.place"),
+		BLOCK_PLAYER_BREAK("ltitemmail.block.break"),
+		BLOCK_PLAYER_USE("ltitemmail.block.use"),
+		BLOCK_ADMIN_BREAK("ltitemmail.block.break.bypass");
+		private final String node;
+		Type(final String node){
+			this.node = node;
+		}
+		public final String node() {
+			return node;
+		}
 	}
 }
