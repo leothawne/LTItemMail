@@ -9,6 +9,7 @@ import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import br.net.gmj.nobookie.LTItemMail.command.ItemMailAdminCommand;
 import br.net.gmj.nobookie.LTItemMail.command.ItemMailCommand;
@@ -29,6 +30,7 @@ import br.net.gmj.nobookie.LTItemMail.module.LanguageModule;
 import br.net.gmj.nobookie.LTItemMail.module.ModelsModule;
 import br.net.gmj.nobookie.LTItemMail.task.MailboxTask;
 import br.net.gmj.nobookie.LTItemMail.task.RecipeTask;
+import br.net.gmj.nobookie.LTItemMail.task.UpdateTask;
 import br.net.gmj.nobookie.LTItemMail.task.VersionControlTask;
 import br.net.gmj.nobookie.LTItemMail.util.BStats;
 import br.net.gmj.nobookie.LTItemMail.util.FetchUtil;
@@ -59,50 +61,40 @@ public final class LTItemMail extends JavaPlugin {
 		final BStats metrics = new BStats(this, 3647);
 		loadConfig();
 		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_ENABLE)) {
-			ConsoleModule.hello();
 			metrics.addCustomChart(new BStats.SimplePie("builds", () -> {
 		        return String.valueOf((Integer) ConfigurationModule.get(ConfigurationModule.Type.BUILD_NUMBER));
 		    }));
+			ConsoleModule.hello();
 			loadLang();
-			loadModels();
 			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.BUNGEE_MODE)) {
 				getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 				getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", new BungeeModule());
 			}
+			loadModels();
 			connection = DatabaseModule.connect();
 			DatabaseModule.checkForUpdates();
 			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.DATABASE_CONVERT)) DatabaseModule.convert();
 			ExtensionModule.getInstance().load();
-			new PlayerListener();
-			new MailboxListener();
-			new MailboxBlockListener();
+			registerListeners();
+			runTasks();
 			getCommand("itemmail").setExecutor(new ItemMailCommand());
 			getCommand("itemmail").setTabCompleter(new ItemMailCommandTabCompleter());
 			getCommand("itemmailadmin").setExecutor(new ItemMailAdminCommand());
 			getCommand("itemmailadmin").setTabCompleter(new ItemMailAdminCommandTabCompleter());
 			getCommand("mailitem").setExecutor(new MailItemCommand());
 			getCommand("mailitem").setTabCompleter(new MailItemCommandTabCompleter());
-			Bukkit.getScheduler().runTaskTimer(this, new RecipeTask(), 1, 20 * 60);
-			Bukkit.getScheduler().runTaskTimer(this, new MailboxTask(), 1, 1);
-			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_UPDATE_CHECK)) {
-				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ltitemmail:itemmailadmin update");
-				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_UPDATE_PERIODIC_NOTIFICATION)) Bukkit.getScheduler().runTaskTimerAsynchronously(this, new Runnable() {
-					@Override
-					public final void run() {
-						Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ltitemmail:itemmailadmin update");
-					}
-				}, 20 * 60 * 60 * 3, 20 * 60 * 60 * 3);
-			}
-			VersionControlTask.run();
 			FetchUtil.FileManager.download(DataModule.getResourcePackURL(), "LTItemMail-ResourcePack.zip", false);
+			if((Integer) ConfigurationModule.get(ConfigurationModule.Type.BUILD_NUMBER) > DataModule.getLatestStable()) {
+				
+			}
 		} else {
-			Bukkit.getScheduler().runTaskTimer(this, new Runnable() {
+			new BukkitRunnable() {
 				@Override
 				public final void run() {
 					ConsoleModule.severe("Plugin disabled in config.yml.");
 					Bukkit.getPluginManager().disablePlugin(instance);
 				}
-			}, 1, 1);
+			}.runTaskTimer(this, 1, 1);
 		}
 	}
 	/**
@@ -143,6 +135,17 @@ public final class LTItemMail extends JavaPlugin {
 		ModelsModule.check();
 		models = ModelsModule.load();
 		ModelsModule.addMissing();
+	}
+	private final void registerListeners() {
+		new PlayerListener();
+		new MailboxListener();
+		new MailboxBlockListener();
+	}
+	private final void runTasks() {
+		new RecipeTask();
+		new MailboxTask();
+		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_UPDATE_CHECK)) new UpdateTask();
+		new VersionControlTask();
 	}
 	/**
 	 * 

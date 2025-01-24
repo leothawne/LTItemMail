@@ -19,9 +19,8 @@ import br.net.gmj.nobookie.LTItemMail.module.DataModule;
 import br.net.gmj.nobookie.LTItemMail.util.FetchUtil;
 
 public final class VersionControlTask {
-	private VersionControlTask() {}
-	private static BukkitTask task;
-	public static final void run() {
+	private final BukkitTask task;
+	public VersionControlTask() {
 		task = new BukkitRunnable() {
 			@Override
 			public final void run() {
