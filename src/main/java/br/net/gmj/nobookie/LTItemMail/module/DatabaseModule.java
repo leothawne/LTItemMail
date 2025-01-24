@@ -208,8 +208,8 @@ public final class DatabaseModule {
 	}
 	public static final void checkForUpdates() {
 		final Integer dbVer = getCurrentVersion();
-		if(dbVer < Integer.valueOf(DataModule.getVersion(DataModule.VersionType.DATABASE))) {
-			for(Integer i = dbVer; i < Integer.valueOf(DataModule.getVersion(DataModule.VersionType.DATABASE)); i++) {
+		if(dbVer < DataModule.getVersion(DataModule.VersionType.DATABASE)) {
+			for(Integer i = dbVer; i < DataModule.getVersion(DataModule.VersionType.DATABASE); i++) {
 				if(((String) ConfigurationModule.get(ConfigurationModule.Type.DATABASE_TYPE)).toLowerCase().equals("mysql") && i > 0 && i < 4) continue;
 				ConsoleModule.info("Updating database... (" + i + " -> " + (i + 1) + ")");
 				if(DatabaseModule.runSQL(i)) {
