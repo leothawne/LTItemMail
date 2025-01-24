@@ -38,6 +38,10 @@ public final class EconomyModule {
 		}
 		switch(type) {
 			case VAULT:
+				if(!ExtensionModule.getInstance().isInstalled(ExtensionModule.Name.VAULT)) {
+					instance = null;
+					return;
+				}
 				final RegisteredServiceProvider<Economy> vault = Bukkit.getServicesManager().getRegistration(Economy.class);
 				if(vault != null) {
 					api = vault.getProvider();
@@ -48,6 +52,10 @@ public final class EconomyModule {
 				}
 				break;
 			case COINSENGINE:
+				if(!ExtensionModule.getInstance().isInstalled(ExtensionModule.Name.COINSENGINE)) {
+					instance = null;
+					return;
+				}
 				if(CoinsEngineAPI.class != null && coin != null) {
 					for(final su.nightexpress.coinsengine.api.currency.Currency c : CoinsEngineAPI.getCurrencyManager().getCurrencies()) if(c.getName().equalsIgnoreCase(coin)) {
 						currency = c;
@@ -63,6 +71,10 @@ public final class EconomyModule {
 				}
 				break;
 			case THENEWECONOMY:
+				if(!ExtensionModule.getInstance().isInstalled(ExtensionModule.Name.THENEWECONOMY)) {
+					instance = null;
+					return;
+				}
 				if(TNECore.api() != null && coin != null) {
 					api = TNECore.api();
 					for(final net.tnemc.core.currency.Currency c : TNECore.api().getCurrencies()) if(c.getIdentifier().equalsIgnoreCase(coin)) {
