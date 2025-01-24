@@ -39,6 +39,11 @@ public final class ConfigurationModule {
 					configuration.set("config-version", DataModule.getVersion(DataModule.VersionType.CONFIG_YML));
 					configuration.save(file);
 				}
+				if(configuration.isSet("version-number")) if(!configuration.getString("version-number").equals(FetchUtil.Version.get())) {
+					configuration.set("version-number", FetchUtil.Version.get());
+					configuration.set("boards-read", new ArrayList<Integer>());
+					configuration.save(file);
+				}
 				if(configuration.isSet("build-number")) if(configuration.getInt("build-number") < FetchUtil.Build.get()) {
 					configuration.set("build-number", FetchUtil.Build.get());
 					configuration.save(file);
@@ -105,6 +110,7 @@ public final class ConfigurationModule {
 	}
 	public enum Type {
 		BUILD_NUMBER("build-number", FetchUtil.Build.get()),
+		VERSION_NUMBER("version-number", FetchUtil.Version.get()),
 		PLUGIN_ENABLE("plugin.enable", true),
 		PLUGIN_TYPE_LANGUAGE("plugin.language", "english"),
 		PLUGIN_TAG("plugin.tag", "&6[LTIM]"),

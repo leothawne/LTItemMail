@@ -34,7 +34,7 @@ public final class DataModule {
 		sender.sendMessage(ChatColor.YELLOW + LTItemMail.getInstance().getDescription().getName() + " " + version);
 	}
 	public enum VersionType {
-		CONFIG_YML(11),
+		CONFIG_YML(12),
 		ITEM_MODELS_YML(1),
 		ENGLISH_YML(9),
 		PORTUGUESE_YML(9),

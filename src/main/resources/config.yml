@@ -1,5 +1,6 @@
 #Do not touch it!
-config-version: 11
+config-version: 12
+version-number: ${project.version}
 build-number: ${v}
 plugin:
   #Enable or disable LTItemMail. Default: true

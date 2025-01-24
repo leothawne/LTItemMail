@@ -142,9 +142,23 @@ public final class FetchUtil {
 				return pluginYaml.getInt("build");
 			} catch (IOException | InvalidConfigurationException e) {
 				ConsoleModule.debug("There was an error trying to retrieve build number from plugin.yml");
-				e.printStackTrace();
+				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 			}
 			return 0;
+		}
+	}
+	public static final class Version {
+		public static final String get() {
+			final InputStream internalPluginYaml = LTItemMail.getInstance().getResource("plugin.yml");
+			final YamlConfiguration pluginYaml = new YamlConfiguration();
+			try {
+				pluginYaml.load(new InputStreamReader(internalPluginYaml));
+				return pluginYaml.getString("version");
+			} catch (IOException | InvalidConfigurationException e) {
+				ConsoleModule.debug("There was an error trying to retrieve version number from plugin.yml");
+				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
+			}
+			return null;
 		}
 	}
 }
