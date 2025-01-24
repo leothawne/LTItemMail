@@ -1,5 +1,6 @@
 package br.net.gmj.nobookie.LTItemMail;
 
+import java.io.File;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -85,7 +86,8 @@ public final class LTItemMail extends JavaPlugin {
 			getCommand("mailitem").setTabCompleter(new MailItemCommandTabCompleter());
 			FetchUtil.FileManager.download(DataModule.getResourcePackURL(), "LTItemMail-ResourcePack.zip", false);
 			if((Integer) ConfigurationModule.get(ConfigurationModule.Type.BUILD_NUMBER) > DataModule.getLatestStable()) {
-				
+				ConsoleModule.warning("You are running a development build. Be aware that bugs may occur!");
+				ConfigurationModule.devMode = new File(getDataFolder(), ".dev").exists();
 			}
 		} else {
 			new BukkitRunnable() {

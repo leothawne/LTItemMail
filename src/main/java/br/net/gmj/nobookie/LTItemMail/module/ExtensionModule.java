@@ -1,5 +1,6 @@
 package br.net.gmj.nobookie.LTItemMail.module;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,6 +23,7 @@ import br.net.gmj.nobookie.LTItemMail.module.ext.LTWorldGuard;
 import br.net.gmj.nobookie.LTItemMail.module.ext.listener.LTGriefPreventionListener;
 import br.net.gmj.nobookie.LTItemMail.module.ext.listener.LTRedProtectListener;
 import br.net.gmj.nobookie.LTItemMail.module.ext.listener.LTTownyListener;
+import br.net.gmj.nobookie.LTItemMail.util.FetchUtil;
 import net.milkbowl.vault.permission.Permission;
 
 public final class ExtensionModule {
@@ -158,9 +160,24 @@ public final class ExtensionModule {
 			warn(null, Name.PLACEHOLDERAPI);
 			register(Function.PLACEHOLDERAPI);
 		}
-		if(isInstalled(Name.ULTIMATEADVANCEMENTAPI)) if(!isRegistered(Function.ULTIMATEADVANCEMENTAPI)) {
-			warn(null, Name.ULTIMATEADVANCEMENTAPI);
-			register(Function.ULTIMATEADVANCEMENTAPI);
+		Boolean toastFallback = false;
+		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_ULTIMATEADVANCEMENTAPI)) {
+			if(isInstalled(Name.ULTIMATEADVANCEMENTAPI)) {
+				if(!isRegistered(Function.ULTIMATEADVANCEMENTAPI)) {
+					warn(null, Name.ULTIMATEADVANCEMENTAPI);
+					register(Function.ULTIMATEADVANCEMENTAPI);
+				}
+			} else toastFallback = true;
+		} else toastFallback = true;
+		if(toastFallback && ((String) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_DISPLAY)).equalsIgnoreCase("TOAST")) {
+			ConsoleModule.warning("You must install and enable UltimateAdvancementAPI in config.yml to use TOAST notifications. Falling back to CHAT notifications.");
+			LTItemMail.getInstance().configuration.set(ConfigurationModule.Type.MAILBOX_DISPLAY.path(), "CHAT");
+			try {
+				LTItemMail.getInstance().configuration.save(FetchUtil.FileManager.get("config.yml"));
+			} catch (final IOException e) {
+				ConsoleModule.severe("Error while saving config.yml.");
+				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
+			}
 		}
 		if(detected) {
 			ConsoleModule.info("Extensions loaded.");

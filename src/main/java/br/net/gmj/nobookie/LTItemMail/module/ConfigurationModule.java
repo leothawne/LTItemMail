@@ -77,11 +77,14 @@ public final class ConfigurationModule {
 		} else boards = new ArrayList<>();
 		return boards;
 	}
+	public static Boolean devMode = false;
 	public static final Object get(final Type type) {
 		Object result = type.result();
 		final String path = type.path();
 		if(LTItemMail.getInstance().configuration.isSet(path)) {
-			result = LTItemMail.getInstance().configuration.get(path);
+			if(type.equals(Type.PLUGIN_DEBUG) && devMode) {
+				result = true;
+			} else result = LTItemMail.getInstance().configuration.get(path);
 			if(type.equals(Type.PLUGIN_TAG) || type.equals(Type.MAILBOX_NAME) || type.equals(Type.MAILBOX_NAME)) result = BukkitUtil.Text.Color.format((String) result);
 		} else {
 			ConsoleModule.info("Configuration fallback: [" + path + ":" + result + "]");
@@ -123,6 +126,7 @@ public final class ConfigurationModule {
 		PLUGIN_HOOK_REDPROTECT("hook.redprotect", false),
 		PLUGIN_HOOK_TOWNYADVANCED("hook.towny", false),
 		PLUGIN_HOOK_WORLDGUARD("hook.worldguard", false),
+		PLUGIN_HOOK_ULTIMATEADVANCEMENTAPI("hook.ultimateadvancementapi", false),
 		MAILBOX_DISPLAY("mail.display", "CHAT"),
 		MAILBOX_TEXTURES("mail.textures", false),
 		MAILBOX_TYPE_COST("mail.cost.per-item", false),

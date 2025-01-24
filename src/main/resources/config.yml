@@ -75,6 +75,10 @@ hook:
   redprotect: false
   towny: false
   worldguard: false
+  #Useful for TOAST notifications (refer to "mail.display" below).
+  #
+  #Útil para notificações TOAST (consulte "mail.display" abaixo).
+  ultimateadvancementapi: false
 mail:
   #When a new mail arrives, how do you want the message to appear? Valid: CHAT, TITLE, TOAST. Default: CHAT
   #
