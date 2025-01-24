@@ -1,3 +1,6 @@
+#Do not touch it!
+config-version: 11
+build-number: ${v}
 plugin:
   #Enable or disable LTItemMail. Default: true
   #
@@ -48,7 +51,7 @@ hook:
   #
   #Defina 'true' se desejar usar um plugin de economia (defina o preço do corrêio).
   economy:
-    enable: false
+    enable: true
     #Compatible plugins: Vault for economies in general, CoinsEngine (ex: CoinsEngine:Coins) or The New Economy (ex: TheNewEconomy:USD). Default: Vault
     #
     #Plugins compatíveis: Vault para economias em geral, CoinsEngine (ex: CoinsEngine:Moedas) ou The New Economy (ex: TheNewEconomy:USD). Padrão: Vault
@@ -64,7 +67,7 @@ hook:
   #Set 'true' if you wish to show holograms above mailbox blocks.
   #
   #Defina 'true' se desejar mostrar hologramas acima do blocos de caixa de corrêio.
-  decentholograms: false
+  decentholograms: true
   #My plugin has an in-built protection for mailbox blocks, but you can use some extra protection with the plugins listed below:
   #
   #Meu plugin tem uma proteção imbutida para blocos de caixa de corrêio, mas você pode usar uma proteção extra com os plugins abaixo:
@@ -102,6 +105,3 @@ update:
   periodic-notification: true
 boards:
   console-only: false
-#Do not touch it!
-build-number: ${v}
-config-version: 11

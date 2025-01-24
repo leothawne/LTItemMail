@@ -32,11 +32,11 @@ public final class ConfigurationModule {
 			try {
 				configuration.load(file);
 				ConsoleModule.info("Configuration loaded.");
-				if(configuration.getInt("config-version") < Integer.valueOf(DataModule.getVersion(DataModule.VersionType.CONFIG_YML))) {
+				if(configuration.getInt("config-version") < DataModule.getVersion(DataModule.VersionType.CONFIG_YML)) {
 					update = true;
 					ConsoleModule.warning("Configuration outdated!");
 					ConsoleModule.warning("New settings will be added.");
-					configuration.set("config-version", Integer.valueOf(DataModule.getVersion(DataModule.VersionType.CONFIG_YML)));
+					configuration.set("config-version", DataModule.getVersion(DataModule.VersionType.CONFIG_YML));
 					configuration.save(file);
 				}
 				if(configuration.isSet("build-number")) if(configuration.getInt("build-number") < FetchUtil.Build.get()) {
@@ -78,138 +78,12 @@ public final class ConfigurationModule {
 		return boards;
 	}
 	public static final Object get(final Type type) {
-		Object result = null;
-		String path = null;
-		switch(type) {
-			case MAILBOX_TEXTURES:
-				result = false;
-				path = "mail.textures";
-				break;
-			case MAILBOX_COST:
-				result = 30.0;
-				path = "mail.cost.value";
-				break;
-			case MAILBOX_NAME:
-				result = "&3&lMailbox&r&4";
-				path = "mail.name";
-				break;
-			case MAILBOX_DISPLAY:
-				result = "CHAT";
-				path = "mail.display";
-				break;
-			case MAILBOX_TYPE_COST:
-				result = false;
-				path = "mail.cost.per-item";
-				break;
-			case PLUGIN_CONFIG:
-				result = DataModule.getVersion(DataModule.VersionType.CONFIG_YML);
-				path = "config-version";
-				break;
-			case PLUGIN_ENABLE:
-				result = true;
-				path = "plugin.enable";
-				break;
-			case PLUGIN_HOOK_ECONOMY_ENABLE:
-				result = false;
-				path = "hook.economy.enable";
-				break;
-			case PLUGIN_HOOK_ECONOMY_TYPE:
-				result = "Vault";
-				path = "hook.economy.type";
-				break;
-			case PLUGIN_TAG:
-				result = "&6[LTIM]";
-				path = "plugin.tag";
-				break;
-			case PLUGIN_TYPE_LANGUAGE:
-				result = "english";
-				path = "plugin.language";
-				break;
-			case PLUGIN_UPDATE_CHECK:
-				result = true;
-				path = "update.check";
-				break;
-			case PLUGIN_UPDATE_PERIODIC_NOTIFICATION:
-				result = true;
-				path = "update.periodic-notification";
-				break;
-			case PLUGIN_HOOK_GRIEFPREVENTION:
-				result = false;
-				path = "hook.griefprevention";
-				break;
-			case PLUGIN_HOOK_REDPROTECT:
-				result = false;
-				path = "hook.redprotect";
-				break;
-			case PLUGIN_HOOK_TOWNYADVANCED:
-				result = false;
-				path = "hook.towny";
-				break;
-			case PLUGIN_HOOK_WORLDGUARD:
-				result = false;
-				path = "hook.worldguard";
-				break;
-			case PLUGIN_HOOK_DYNMAP:
-				result = false;
-				path = "hook.dynmap";
-				break;
-			case PLUGIN_HOOK_BLUEMAP:
-				result = false;
-				path = "hook.bluemap";
-				break;
-			case PLUGIN_HOOK_DECENTHOLOGRAMS:
-				result = false;
-				path = "hook.decentholograms";
-				break;
-			case PLUGIN_DEBUG:
-				result = false;
-				path = "plugin.debug";
-				break;
-			case DATABASE_TYPE:
-				result = "flatfile";
-				path = "database.type";
-				break;
-			case DATABASE_CONVERT:
-				result = false;
-				path = "database.convert";
-				break;
-			case DATABASE_FLATFILE_FILE:
-				result = "mailboxes.db";
-				path = "database.flatfile.file";
-				break;
-			case DATABASE_MYSQL_HOST:
-				result = "127.0.0.1:3306";
-				path = "database.mysql.host";
-				break;
-			case DATABASE_MYSQL_USER:
-				result = "root";
-				path = "database.mysql.user";
-				break;
-			case DATABASE_MYSQL_PASSWORD:
-				result = "pass";
-				path = "database.mysql.password";
-				break;
-			case DATABASE_MYSQL_NAME:
-				result = "ltitemmail";
-				path = "database.mysql.database";
-				break;
-			case BUNGEE_MODE:
-				result = false;
-				path = "plugin.bungee-mode";
-				break;
-			case BUILD_NUMBER:
-				result = FetchUtil.Build.get();
-				path = "build-number";
-				break;
-			case BOARDS_CONSOLE_ONLY:
-				result = false;
-				path = "boards.console-only";
-				break;
-		}
-		if(path != null) if(LTItemMail.getInstance().configuration.isSet(path)) {
+		Object result = type.result();
+		final String path = type.path();
+		if(LTItemMail.getInstance().configuration.isSet(path)) {
 			result = LTItemMail.getInstance().configuration.get(path);
 			if(type.equals(Type.PLUGIN_TAG) || type.equals(Type.MAILBOX_NAME) || type.equals(Type.MAILBOX_NAME)) result = BukkitUtil.Text.Color.format((String) result);
-		} else if(result != null) {
+		} else {
 			ConsoleModule.info("Configuration fallback: [" + path + ":" + result + "]");
 			LTItemMail.getInstance().configuration.set(path, result);
 			try {
@@ -227,36 +101,47 @@ public final class ConfigurationModule {
 		}
 	}
 	public enum Type {
-		PLUGIN_ENABLE,
-		PLUGIN_TYPE_LANGUAGE,
-		PLUGIN_TAG,
-		PLUGIN_HOOK_ECONOMY_ENABLE,
-		PLUGIN_HOOK_ECONOMY_TYPE,
-		PLUGIN_HOOK_GRIEFPREVENTION,
-		PLUGIN_HOOK_REDPROTECT,
-		PLUGIN_HOOK_TOWNYADVANCED,
-		PLUGIN_HOOK_WORLDGUARD,
-		PLUGIN_HOOK_DYNMAP,
-		PLUGIN_HOOK_BLUEMAP,
-		PLUGIN_HOOK_DECENTHOLOGRAMS,
-		PLUGIN_DEBUG,
-		MAILBOX_DISPLAY,
-		MAILBOX_TYPE_COST,
-		MAILBOX_COST,
-		MAILBOX_NAME,
-		MAILBOX_TEXTURES,
-		PLUGIN_UPDATE_CHECK,
-		PLUGIN_UPDATE_PERIODIC_NOTIFICATION,
-		PLUGIN_CONFIG,
-		DATABASE_TYPE,
-		DATABASE_CONVERT,
-		DATABASE_FLATFILE_FILE,
-		DATABASE_MYSQL_HOST,
-		DATABASE_MYSQL_USER,
-		DATABASE_MYSQL_PASSWORD,
-		DATABASE_MYSQL_NAME,
-		BUNGEE_MODE,
-		BUILD_NUMBER,
-		BOARDS_CONSOLE_ONLY
+		BUILD_NUMBER("build-number", FetchUtil.Build.get()),
+		PLUGIN_ENABLE("plugin.enable", true),
+		PLUGIN_TYPE_LANGUAGE("plugin.language", "english"),
+		PLUGIN_TAG("plugin.tag", "&6[LTIM]"),
+		BUNGEE_MODE("plugin.bungee-mode", false),
+		PLUGIN_DEBUG("plugin.debug", false),
+		DATABASE_TYPE("database.type", "flatfile"),
+		DATABASE_CONVERT("database.convert", false),
+		DATABASE_FLATFILE_FILE("database.flatfile.file", "mailboxes.db"),
+		DATABASE_MYSQL_HOST("database.mysql.host", "127.0.0.1:3306"),
+		DATABASE_MYSQL_USER("database.mysql.user", "root"),
+		DATABASE_MYSQL_PASSWORD("database.mysql.password", ""),
+		DATABASE_MYSQL_NAME("database.mysql.database", "ltitemmail"),
+		PLUGIN_HOOK_ECONOMY_ENABLE("hook.economy.enable", true),
+		PLUGIN_HOOK_ECONOMY_TYPE("hook.economy.type", "Vault"),
+		PLUGIN_HOOK_DYNMAP("hook.dynmap", false),
+		PLUGIN_HOOK_BLUEMAP("hook.bluemap", false),
+		PLUGIN_HOOK_DECENTHOLOGRAMS("hook.decentholograms", true),
+		PLUGIN_HOOK_GRIEFPREVENTION("hook.griefprevention", false),
+		PLUGIN_HOOK_REDPROTECT("hook.redprotect", false),
+		PLUGIN_HOOK_TOWNYADVANCED("hook.towny", false),
+		PLUGIN_HOOK_WORLDGUARD("hook.worldguard", false),
+		MAILBOX_DISPLAY("mail.display", "CHAT"),
+		MAILBOX_TEXTURES("mail.textures", false),
+		MAILBOX_TYPE_COST("mail.cost.per-item", false),
+		MAILBOX_COST("mail.cost.value", 30.0),
+		MAILBOX_NAME("mail.name", "&3&lMailbox&r&4"),
+		PLUGIN_UPDATE_CHECK("update.check", true),
+		PLUGIN_UPDATE_PERIODIC_NOTIFICATION("update.periodic-notification", true),
+		BOARDS_CONSOLE_ONLY("boards.console-only", false);
+		private final String path;
+		private final Object result;
+		Type(final String path, final Object result){
+			this.path = path;
+			this.result = result;
+		}
+		public final String path() {
+			return path;
+		}
+		public final Object result() {
+			return result;
+		}
 	}
 }

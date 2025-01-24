@@ -30,11 +30,11 @@ public class ModelsModule {
 				configuration.load(file);
 				ConsoleModule.info("Item models loaded.");
 				try {
-					if(configuration.getInt("model-version") < Integer.valueOf(DataModule.getVersion(DataModule.VersionType.ITEM_MODELS_YML))) {
+					if(configuration.getInt("model-version") < DataModule.getVersion(DataModule.VersionType.ITEM_MODELS_YML)) {
 						update = true;
 						ConsoleModule.warning("Item models outdated!");
 						ConsoleModule.warning("New models will be added.");
-						configuration.set("model-version", Integer.valueOf(DataModule.getVersion(DataModule.VersionType.ITEM_MODELS_YML)));
+						configuration.set("model-version", DataModule.getVersion(DataModule.VersionType.ITEM_MODELS_YML));
 						configuration.save(file);
 					}
 				} catch(final IllegalArgumentException e) {
@@ -49,45 +49,11 @@ public class ModelsModule {
 		return null;
 	}
 	public static final Integer get(final Type type) {
-		Integer result = null;
-		String path = null;
-		switch(type) {
-			case MAILBOX_LIMITER:
-				result = 999999001;
-				path = "mailbox.limiter";
-				break;
-			case MAILBOX_BUTTON_COST:
-				result = 999999002;
-				path = "mailbox.button.cost";
-				break;
-			case MAILBOX_BUTTON_LABEL:
-				result = 999999006;
-				path = "mailbox.button.label";
-				break;
-			case MAILBOX_BUTTON_DENY:
-				result = 999999007;
-				path = "mailbox.button.deny";
-				break;
-			case MAILBOX_BUTTON_ACCEPT:
-				result = 999999008;
-				path = "mailbox.button.accept";
-				break;
-			case MAILBOX_GUI_NORMAL:
-				result = 999999003;
-				path = "mailbox.gui.normal";
-				break;
-			case MAILBOX_GUI_PENDING:
-				result = 999999004;
-				path = "mailbox.gui.pending";
-				break;
-			case MAILBOX_GUI_ADMIN:
-				result = 999999005;
-				path = "mailbox.gui.admin";
-				break;
-		}
-		if(path != null) if(LTItemMail.getInstance().models.isSet(path)) {
+		Integer result = type.result();
+		final String path = type.path();
+		if(LTItemMail.getInstance().models.isSet(path)) {
 			result = LTItemMail.getInstance().models.getInt(path);
-		} else if(result != null) {
+		} else {
 			ConsoleModule.info("Item models fallback: [" + path + ":" + result + "]");
 			LTItemMail.getInstance().models.set(path, result);
 			try {
@@ -105,13 +71,25 @@ public class ModelsModule {
 		}
 	}
 	public enum Type {
-		MAILBOX_LIMITER,
-		MAILBOX_BUTTON_COST,
-		MAILBOX_BUTTON_LABEL,
-		MAILBOX_BUTTON_DENY,
-		MAILBOX_BUTTON_ACCEPT,
-		MAILBOX_GUI_NORMAL,
-		MAILBOX_GUI_PENDING,
-		MAILBOX_GUI_ADMIN
+		MAILBOX_LIMITER("mailbox.limiter", 999999001),
+		MAILBOX_BUTTON_COST("mailbox.button.cost", 999999002),
+		MAILBOX_BUTTON_LABEL("mailbox.button.label", 999999006),
+		MAILBOX_BUTTON_DENY("mailbox.button.deny", 999999007),
+		MAILBOX_BUTTON_ACCEPT("mailbox.button.accept", 999999008),
+		MAILBOX_GUI_NORMAL("mailbox.gui.normal", 999999003),
+		MAILBOX_GUI_PENDING("mailbox.gui.pending", 999999004),
+		MAILBOX_GUI_ADMIN("mailbox.gui.admin", 999999005);
+		private final String path;
+		private final Integer result;
+		Type(final String path, final Integer result){
+			this.path = path;
+			this.result = result;
+		}
+		public final String path() {
+			return path;
+		}
+		public final Integer result() {
+			return result;
+		}
 	}
 }

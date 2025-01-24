@@ -2,7 +2,6 @@
 language-version: 9
 player:
   permissionerror: 'Você não tem permissão para fazer isso.'
-  inventoryfull: '% não tem % slot(s) livre(s).'
   missingerror: 'Você deve especificar o nome do jogador.'
   neverplayederror: 'O jogador especificado nunca entrou neste servidor.'
   error: 'Você precisa ser um jogador para fazer isso!'
@@ -34,7 +33,7 @@ transaction:
   error: 'Transação mal sucedida!'
   nomoney: 'Você não tem $% para pagar ao corrêio.'
   paid: 'Você pagou $% ao corrêio.'
-  notinstalled: 'Vault não está instalado!'
+  notinstalled: 'Economia não foi detectada!'
   costs: 'Preço:'
 block:
   breakerror: 'Você não tem permissão para quebrar esta caixa de corrêio.'
