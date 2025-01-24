@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -33,10 +34,13 @@ public final class PlayerListener implements Listener {
 		Bukkit.getScheduler().runTaskLater(LTItemMail.getInstance(), new Runnable() {
 			@Override
 			public final void run() {
-				if(PermissionModule.hasPermission(player, PermissionModule.Type.CMD_ADMIN_NOTIFY) && PermissionModule.hasPermission(player, PermissionModule.Type.CMD_ADMIN_UPDATE)) if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_UPDATE_CHECK)) player.performCommand("ltitemmail:itemmailadmin update");
+				if(PermissionModule.hasPermission(player, PermissionModule.Type.CMD_ADMIN_NOTIFY)) {
+					if(LTItemMail.getInstance().isDevBuild()) player.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.LIGHT_PURPLE + "Thank you for testing my development build! Be aware that bugs may occur!");
+					if(PermissionModule.hasPermission(player, PermissionModule.Type.CMD_ADMIN_UPDATE)) if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_UPDATE_CHECK)) player.performCommand("ltitemmail:itemmailadmin update");
+				}
 				if(PermissionModule.hasPermission(player, PermissionModule.Type.CMD_PLAYER_NOTIFY) && PermissionModule.hasPermission(player, PermissionModule.Type.CMD_PLAYER_LIST)) player.performCommand("ltitemmail:itemmail list");
 			}
-		}, 20 * 2);
+		}, 20 * 5);
 		if(!(Boolean) ConfigurationModule.get(ConfigurationModule.Type.BOARDS_CONSOLE_ONLY)) Bukkit.getScheduler().runTaskLater(LTItemMail.getInstance(), new Runnable() {
 			@Override
 			public final void run() {
@@ -68,6 +72,6 @@ public final class PlayerListener implements Listener {
 					}
 				}
 			}
-		}, 20 * 4);
+		}, 20 * 10);
 	}
 }

@@ -85,8 +85,8 @@ public final class LTItemMail extends JavaPlugin {
 			getCommand("mailitem").setExecutor(new MailItemCommand());
 			getCommand("mailitem").setTabCompleter(new MailItemCommandTabCompleter());
 			FetchUtil.FileManager.download(DataModule.getResourcePackURL(), "LTItemMail-ResourcePack.zip", false);
-			if((Integer) ConfigurationModule.get(ConfigurationModule.Type.BUILD_NUMBER) > DataModule.getLatestStable()) {
-				ConsoleModule.warning("You are running a development build. Be aware that bugs may occur!");
+			if(isDevBuild()) {
+				ConsoleModule.warning("You are running a development build! Be aware that bugs may occur.");
 				ConfigurationModule.devMode = new File(getDataFolder(), ".dev").exists();
 			}
 		} else {
@@ -148,6 +148,9 @@ public final class LTItemMail extends JavaPlugin {
 		new MailboxTask();
 		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_UPDATE_CHECK)) new UpdateTask();
 		new VersionControlTask();
+	}
+	public final boolean isDevBuild() {
+		return (Integer) ConfigurationModule.get(ConfigurationModule.Type.BUILD_NUMBER) > DataModule.getLatestStable();
 	}
 	/**
 	 * 

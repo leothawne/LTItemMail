@@ -75,8 +75,8 @@ command:
     itemmailadmin: 'Lista de comandos para admins.'
     update:
       update: 'Verifica se há novas atualizações.'
-      found: 'Nova atualização encontrada. Você está % build(s) desatualizado. Baixe agora:'
-      nonew: 'Não há novas atualizações!'
+      found: 'Nova atualização encontrada! Você está % build(s) desatualizado. Baixe agora:'
+      nonew: 'Não há novas atualizações.'
     list: 'Lista de todos os corrêios deletados de um jogador.'
     recover: 'Recupera items perdidos de corrêios deletados (se houver algum).'
     reload: 'Recarrega as configurações do plugin e idioma/tradução.'
