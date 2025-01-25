@@ -97,6 +97,7 @@
 					<exclude>config.yml</exclude>
 					<exclude>atualizar-paginas.txt</exclude>
 					<exclude>ideias.txt</exclude>
+					<exclude>changelog.txt</exclude>
 				</excludes>
 		    </resource>
 		</resources>
