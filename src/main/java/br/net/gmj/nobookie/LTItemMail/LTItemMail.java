@@ -12,16 +12,11 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import br.net.gmj.nobookie.LTItemMail.command.ItemMailAdminCommand;
-import br.net.gmj.nobookie.LTItemMail.command.ItemMailCommand;
-import br.net.gmj.nobookie.LTItemMail.command.MailItemCommand;
-import br.net.gmj.nobookie.LTItemMail.command.tabCompleter.ItemMailAdminCommandTabCompleter;
-import br.net.gmj.nobookie.LTItemMail.command.tabCompleter.ItemMailCommandTabCompleter;
-import br.net.gmj.nobookie.LTItemMail.command.tabCompleter.MailItemCommandTabCompleter;
 import br.net.gmj.nobookie.LTItemMail.listener.MailboxBlockListener;
 import br.net.gmj.nobookie.LTItemMail.listener.MailboxListener;
 import br.net.gmj.nobookie.LTItemMail.listener.PlayerListener;
 import br.net.gmj.nobookie.LTItemMail.module.BungeeModule;
+import br.net.gmj.nobookie.LTItemMail.module.CommandModule;
 import br.net.gmj.nobookie.LTItemMail.module.ConfigurationModule;
 import br.net.gmj.nobookie.LTItemMail.module.ConsoleModule;
 import br.net.gmj.nobookie.LTItemMail.module.DataModule;
@@ -29,6 +24,7 @@ import br.net.gmj.nobookie.LTItemMail.module.DatabaseModule;
 import br.net.gmj.nobookie.LTItemMail.module.ExtensionModule;
 import br.net.gmj.nobookie.LTItemMail.module.LanguageModule;
 import br.net.gmj.nobookie.LTItemMail.module.ModelsModule;
+import br.net.gmj.nobookie.LTItemMail.module.PermissionModule;
 import br.net.gmj.nobookie.LTItemMail.task.MailboxTask;
 import br.net.gmj.nobookie.LTItemMail.task.RecipeTask;
 import br.net.gmj.nobookie.LTItemMail.task.UpdateTask;
@@ -62,6 +58,10 @@ public final class LTItemMail extends JavaPlugin {
 		final BStats metrics = new BStats(this, 3647);
 		loadConfig();
 		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_ENABLE)) {
+			if(isDevBuild()) {
+				ConsoleModule.warning("You are running a development build! Be aware that bugs may occur.");
+				ConfigurationModule.devMode = new File(getDataFolder(), ".dev").exists();
+			}
 			metrics.addCustomChart(new BStats.SimplePie("builds", () -> {
 		        return String.valueOf((Integer) ConfigurationModule.get(ConfigurationModule.Type.BUILD_NUMBER));
 		    }));
@@ -76,19 +76,11 @@ public final class LTItemMail extends JavaPlugin {
 			DatabaseModule.checkForUpdates();
 			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.DATABASE_CONVERT)) DatabaseModule.convert();
 			ExtensionModule.getInstance().load();
+			PermissionModule.register();
 			registerListeners();
 			runTasks();
-			getCommand("itemmail").setExecutor(new ItemMailCommand());
-			getCommand("itemmail").setTabCompleter(new ItemMailCommandTabCompleter());
-			getCommand("itemmailadmin").setExecutor(new ItemMailAdminCommand());
-			getCommand("itemmailadmin").setTabCompleter(new ItemMailAdminCommandTabCompleter());
-			getCommand("mailitem").setExecutor(new MailItemCommand());
-			getCommand("mailitem").setTabCompleter(new MailItemCommandTabCompleter());
+			new CommandModule();
 			FetchUtil.FileManager.download(DataModule.getResourcePackURL(), "LTItemMail-ResourcePack.zip", false);
-			if(isDevBuild()) {
-				ConsoleModule.warning("You are running a development build! Be aware that bugs may occur.");
-				ConfigurationModule.devMode = new File(getDataFolder(), ".dev").exists();
-			}
 		} else {
 			new BukkitRunnable() {
 				@Override
@@ -151,6 +143,9 @@ public final class LTItemMail extends JavaPlugin {
 	}
 	public final boolean isDevBuild() {
 		return (Integer) ConfigurationModule.get(ConfigurationModule.Type.BUILD_NUMBER) > DataModule.getLatestStable();
+	}
+	public final ClassLoader getLTClassLoader() {
+		return getClassLoader();
 	}
 	/**
 	 * 

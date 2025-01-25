@@ -1,6 +1,7 @@
 package br.net.gmj.nobookie.LTItemMail.command;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -12,7 +13,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -24,13 +24,20 @@ import br.net.gmj.nobookie.LTItemMail.inventory.MailboxInventory;
 import br.net.gmj.nobookie.LTItemMail.module.ConfigurationModule;
 import br.net.gmj.nobookie.LTItemMail.module.DataModule;
 import br.net.gmj.nobookie.LTItemMail.module.DatabaseModule;
-import br.net.gmj.nobookie.LTItemMail.module.ExtensionModule;
+import br.net.gmj.nobookie.LTItemMail.module.EconomyModule;
 import br.net.gmj.nobookie.LTItemMail.module.LanguageModule;
 import br.net.gmj.nobookie.LTItemMail.module.MailboxModule;
 import br.net.gmj.nobookie.LTItemMail.module.PermissionModule;
 import br.net.gmj.nobookie.LTItemMail.util.BukkitUtil;
+import br.net.gmj.nobookie.LTItemMail.util.TabUtil;
 
-public final class ItemMailCommand implements CommandExecutor {
+@LTCommandInfo(
+		name = "ltitemmail:itemmail",
+		description = "Used to send items and to check your mailbox.",
+		aliases = "itemmail,ima,imail",
+		permission = "ltitemmail.player",
+		usage = "<command> [help|version|list|open|delete|info|price|color|blocks]")
+public final class ItemMailCommand extends LTCommandExecutor {
 	@SuppressWarnings("incomplete-switch")
 	@Override
 	public final boolean onCommand(final CommandSender sender, final Command command, final String commandLabel, final String[] args) {
@@ -136,7 +143,7 @@ public final class ItemMailCommand implements CommandExecutor {
 		} else if(args[0].equalsIgnoreCase("price")) {
 			if(hasPermission = PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_PLAYER_PRICE)) {
 				if(args.length == 1) {
-					if(ExtensionModule.getInstance().isInstalled(ExtensionModule.Name.VAULT)) {
+					if(EconomyModule.getInstance() != null) {
 						String costs = null;
 						if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_TYPE_COST)) {
 							costs = (Double) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_COST) + " x Item";
@@ -217,5 +224,38 @@ public final class ItemMailCommand implements CommandExecutor {
 		}
 		if(!hasPermission) sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + "" + LanguageModule.get(LanguageModule.Type.PLAYER_PERMISSIONERROR));
 		return true;
+	}
+	@Override
+	public final List<String> onTabComplete(final CommandSender sender, final Command cmd, final String alias, final String[] args){
+		if(args.length == 1) {
+			final List<String> commands  = new ArrayList<>();
+			if(PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_PLAYER_MAIN)) commands.add("help");
+			if(PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_PLAYER_VERSION)) commands.add("version");
+			if(PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_PLAYER_LIST)) commands.add("list");
+			if(PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_PLAYER_OPEN)) commands.add("open");
+			if(PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_PLAYER_DELETE)) commands.add("delete");
+			if(PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_PLAYER_INFO)) commands.add("info");
+			if(PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_PLAYER_PRICE)) commands.add("price");
+			if(PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_PLAYER_COLOR)) commands.add("color");
+			if(PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_PLAYER_BLOCKS)) commands.add("blocks");
+			return TabUtil.partial(args[0], commands);
+		}
+		if(args.length == 2) {
+			if(PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_PLAYER_OPEN) || PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_PLAYER_DELETE)) if(args[0].equals("open") || args[0].equals("delete")) if(sender instanceof Player) {
+				final Player player = (Player) sender;
+				final HashMap<Integer, String> mailboxes = DatabaseModule.Virtual.getMailboxesList(player.getUniqueId());
+				final LinkedList<String> response = new LinkedList<>();
+				for(final Integer i : mailboxes.keySet()) response.add(String.valueOf(i));
+				response.sort(Comparator.naturalOrder());
+				return TabUtil.partial(args[1], response);
+			}
+			if(PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_PLAYER_COLOR) && args[0].equals("color")) {
+				final LinkedList<String> colors = new LinkedList<>();
+				for(Material color : Material.values()) if(color.toString().endsWith("_SHULKER_BOX")) colors.add(color.toString().replace("_SHULKER_BOX", "").toLowerCase());
+				colors.sort(Comparator.naturalOrder());
+				return TabUtil.partial(args[1], colors);
+			}
+		}
+		return Collections.emptyList();
 	}
 }

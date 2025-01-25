@@ -16,6 +16,7 @@ import su.nightexpress.coinsengine.api.CoinsEngineAPI;
 
 public final class EconomyModule {
 	private static EconomyModule instance = null;
+	private static Boolean disable = false;
 	private ExtensionModule.Name type;
 	private Object currency = null;
 	private Object api = null;
@@ -33,13 +34,13 @@ public final class EconomyModule {
 			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 		}
 		if(type == null) {
-			instance = null;
+			disable = true;
 			return;
 		}
 		switch(type) {
 			case VAULT:
 				if(!ExtensionModule.getInstance().isInstalled(ExtensionModule.Name.VAULT)) {
-					instance = null;
+					disable = true;
 					return;
 				}
 				final RegisteredServiceProvider<Economy> vault = Bukkit.getServicesManager().getRegistration(Economy.class);
@@ -47,13 +48,13 @@ public final class EconomyModule {
 					api = vault.getProvider();
 					plugin = vault.getPlugin();
 				} else {
-					instance = null;
+					disable = true;
 					return;
 				}
 				break;
 			case COINSENGINE:
 				if(!ExtensionModule.getInstance().isInstalled(ExtensionModule.Name.COINSENGINE)) {
-					instance = null;
+					disable = true;
 					return;
 				}
 				if(CoinsEngineAPI.class != null && coin != null) {
@@ -62,17 +63,17 @@ public final class EconomyModule {
 						break;
 					}
 					if(currency == null) {
-						instance = null;
+						disable = true;
 						return;
 					}
 				} else {
-					instance = null;
+					disable = true;
 					return;
 				}
 				break;
 			case THENEWECONOMY:
 				if(!ExtensionModule.getInstance().isInstalled(ExtensionModule.Name.THENEWECONOMY)) {
-					instance = null;
+					disable = true;
 					return;
 				}
 				if(TNECore.api() != null && coin != null) {
@@ -82,16 +83,16 @@ public final class EconomyModule {
 						break;
 					}
 					if(currency == null) {
-						instance = null;
+						disable = true;
 						return;
 					}
 				} else {
-					instance = null;
+					disable = true;
 					return;
 				}
 				break;
 			default:
-				instance = null;
+				disable = true;
 				return;
 		}
 		if(plugin != null) {
@@ -139,8 +140,11 @@ public final class EconomyModule {
 	}
 	return false;
 	}
-	public static final EconomyModule getInstance() {
+	public static final void init() {
 		if(instance == null) instance = new EconomyModule();
+	}
+	public static final EconomyModule getInstance() {
+		if(disable) instance = null;
 		return instance;
 	}
 }

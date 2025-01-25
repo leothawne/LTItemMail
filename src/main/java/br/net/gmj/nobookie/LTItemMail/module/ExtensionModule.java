@@ -122,7 +122,7 @@ public final class ExtensionModule {
 			break;
 		}
 		if(detected) ConsoleModule.info("Loading extensions...");
-		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_ECONOMY_ENABLE)) EconomyModule.getInstance();
+		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_ECONOMY_ENABLE)) EconomyModule.init();
 		if(isInstalled(Name.VAULT)) if(!isRegistered(Function.VAULT_PERMISSION)) if(register(Function.VAULT_PERMISSION)) warn(Name.VAULT, ((LTVault.Permission) get(Function.VAULT_PERMISSION)).getPlugin());
 		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_GRIEFPREVENTION)) if(isInstalled(Name.GRIEFPREVENTION)) if(!isRegistered(Function.GRIEFPREVENTION)) {
 			warn(null, Name.GRIEFPREVENTION);

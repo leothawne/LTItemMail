@@ -1,6 +1,7 @@
 package br.net.gmj.nobookie.LTItemMail.command;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -11,7 +12,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -21,6 +21,7 @@ import br.net.gmj.nobookie.LTItemMail.LTItemMail;
 import br.net.gmj.nobookie.LTItemMail.block.MailboxBlock;
 import br.net.gmj.nobookie.LTItemMail.entity.LTPlayer;
 import br.net.gmj.nobookie.LTItemMail.inventory.MailboxInventory;
+import br.net.gmj.nobookie.LTItemMail.module.BungeeModule;
 import br.net.gmj.nobookie.LTItemMail.module.ConfigurationModule;
 import br.net.gmj.nobookie.LTItemMail.module.ConsoleModule;
 import br.net.gmj.nobookie.LTItemMail.module.DataModule;
@@ -29,8 +30,15 @@ import br.net.gmj.nobookie.LTItemMail.module.LanguageModule;
 import br.net.gmj.nobookie.LTItemMail.module.MailboxModule;
 import br.net.gmj.nobookie.LTItemMail.module.PermissionModule;
 import br.net.gmj.nobookie.LTItemMail.util.FetchUtil;
+import br.net.gmj.nobookie.LTItemMail.util.TabUtil;
 
-public final class ItemMailAdminCommand implements CommandExecutor {
+@LTCommandInfo(
+		name = "ltitemmail:itemmailadmin",
+		description = "For administration purposes.",
+		aliases = "itemmailadmin,imad,imadmin",
+		permission = "ltitemmail.admin",
+		usage = "<command> [help|update|list|recover|reload|info|ban|unban|banlist|blocks]")
+public final class ItemMailAdminCommand extends LTCommandExecutor {
 	@Override
 	public final boolean onCommand(final CommandSender sender, final Command cmd, final String commandLabel, final String[] args) {
 		Boolean hasPermission = false;
@@ -218,5 +226,31 @@ public final class ItemMailAdminCommand implements CommandExecutor {
 		}
 		if(!hasPermission) sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + "" + LanguageModule.get(LanguageModule.Type.PLAYER_PERMISSIONERROR));
 		return true;
+	}
+	@Override
+	public final List<String> onTabComplete(final CommandSender sender, Command cmd, final String commandLabel, final String[] args){
+		if(args.length == 1) {
+			final List<String> commands = new ArrayList<>();
+			if(PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_ADMIN_MAIN)) commands.add("help");
+			if(PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_ADMIN_UPDATE)) commands.add("update");
+			if(PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_ADMIN_LIST)) commands.add("list");
+			if(PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_ADMIN_RECOVER)) commands.add("recover");
+			if(PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_ADMIN_RELOAD)) commands.add("reload");
+			if(PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_ADMIN_INFO)) commands.add("info");
+			if(PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_ADMIN_BAN)) commands.add("ban");
+			if(PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_ADMIN_UNBAN)) commands.add("unban");
+			if(PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_ADMIN_BANLIST)) commands.add("banlist");
+			if(PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_ADMIN_BLOCKS)) commands.add("blocks");
+			return TabUtil.partial(args[0], commands);
+		}
+		if(args.length == 2) if((PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_ADMIN_LIST) && args[0].equals("list")) || (PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_ADMIN_BAN) && args[0].equals("ban")) || (PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_ADMIN_UNBAN) && args[0].equals("unban")) || (PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_ADMIN_INFO) && args[0].equals("info")) || (PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_ADMIN_BLOCKS) && args[0].equals("blocks"))) {
+			final LinkedList<String> response = new LinkedList<>();
+			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.BUNGEE_MODE)) {
+				for(final String bungeePlayer : BungeeModule.getOnlinePlayers()) response.add(bungeePlayer);
+				for(final Player p: Bukkit.getOnlinePlayers()) if(!response.contains(p.getName())) response.add(p.getName());
+			} else for(final Player onlinePlayer : Bukkit.getOnlinePlayers()) response.add(onlinePlayer.getName());
+			return TabUtil.partial(args[1], response);
+		}
+		return Collections.emptyList();
 	}
 }
