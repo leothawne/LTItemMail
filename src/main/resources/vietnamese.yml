@@ -1,19 +1,19 @@
 #Translation created by DUYSONGLOI: https://github.com/DUYSONGLOI
-player:
-    permissionerror: 'Bạn không có quyền để làm điều này'
-    inventoryfull: '% không có đủ % slots còn trống để gửi.'
-    missingerror: 'bạn phải chỉ định người chơi!'
-    error: 'Bạn phải là người chơi để làm điều này!'
-    selferror: 'Không thể gửi cho chính mình.'
-mailbox:
-    closed: 'Đã tắt MailBox!'
-    sent: 'Vật phẩm đã gửi cho %.'
-    from: 'Mailbox từ:'
-    special: 'hộp thư đặc biệt!!!'
-    aborted: 'Box Trống! Đã bị hủy.'
-transaction:
-    error: 'Giao dịch không thành công!'
-    nomoney: 'Bạn không có % để gửi.'
-    paid: 'Đã thanh toán % cho ngân hàng!'
 #Đừng thay đổi nó trong bất kỳ trường hợp nào!
 language-version: 3
+player:
+  permissionerror: 'Bạn không có quyền để làm điều này'
+  inventoryfull: '% không có đủ % slots còn trống để gửi.'
+  missingerror: 'bạn phải chỉ định người chơi!'
+  error: 'Bạn phải là người chơi để làm điều này!'
+  selferror: 'Không thể gửi cho chính mình.'
+mailbox:
+  closed: 'Đã tắt MailBox!'
+  sent: 'Vật phẩm đã gửi cho %.'
+  from: 'Mailbox từ:'
+  special: 'hộp thư đặc biệt!!!'
+  aborted: 'Box Trống! Đã bị hủy.'
+transaction:
+  error: 'Giao dịch không thành công!'
+  nomoney: 'Bạn không có % để gửi.'
+  paid: 'Đã thanh toán % cho ngân hàng!'
