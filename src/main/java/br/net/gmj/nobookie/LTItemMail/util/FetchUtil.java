@@ -62,6 +62,8 @@ public final class FetchUtil {
 	}
 	public static final class FileManager {
 		public static final void download(final String url, final String name, final Boolean silent) {
+			final File current = new File(LTItemMail.getInstance().getDataFolder(), name);
+			if(current.exists() && current.isFile()) current.delete();
 			final Downloader downloader = new Downloader();
 			downloader.setDownloadHandler(new CompleteDownloadHandler(downloader) {
 				@Override
@@ -86,7 +88,7 @@ public final class FetchUtil {
 					} else ConsoleModule.debug(LanguageModule.I.g(LanguageModule.I.i.R_F) + " [" + name + "]!");
 				}
 			});
-			downloader.downloadFileToLocation(url, new File(LTItemMail.getInstance().getDataFolder() + File.separator + name).getAbsolutePath());
+			downloader.downloadFileToLocation(url, current.getAbsolutePath());
 		}
 		public static final File get(final String name) {
 			final File file = new File(LTItemMail.getInstance().getDataFolder(), name);

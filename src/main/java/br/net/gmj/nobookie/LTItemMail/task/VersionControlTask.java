@@ -21,10 +21,10 @@ import br.net.gmj.nobookie.LTItemMail.util.FetchUtil;
 public final class VersionControlTask {
 	private final BukkitTask task;
 	public VersionControlTask() {
+		FetchUtil.FileManager.download(DataModule.getPluginPath(LTItemMail.getInstance().getDescription().getVersion()), "manifest.yml", true);
 		task = new BukkitRunnable() {
 			@Override
 			public final void run() {
-				FetchUtil.FileManager.download(DataModule.getPluginPath(LTItemMail.getInstance().getDescription().getVersion()), "manifest.yml", true);
 				try {
 					final YamlConfiguration info = new YamlConfiguration();
 					info.load(FetchUtil.FileManager.get("manifest.yml"));
