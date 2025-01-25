@@ -11,7 +11,7 @@ public final class DataModule {
 	private static final String UPDATE = "https://jenkins.gmj.net.br/job/LTItemMail/lastSuccessfulBuild/buildNumber";
 	private static final String PLUGIN = "https://request.gmj.net.br/LTItemMail/$version/manifest.yml";
 	private static final String RESOURCE = "https://jenkins.gmj.net.br/job/LTItemMail-ResourcePack/lastSuccessfulBuild/artifact/LTItemMail-ResourcePack.zip";
-	private static final Integer STABLE = 52;
+	private static final Integer STABLE = 61;
 	public static final Integer getVersion(final VersionType type) {
 		return type.value();
 	}
