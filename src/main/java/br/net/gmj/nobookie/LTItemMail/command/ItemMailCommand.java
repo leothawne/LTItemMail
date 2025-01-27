@@ -16,12 +16,14 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import br.net.gmj.nobookie.LTItemMail.LTItemMail;
 import br.net.gmj.nobookie.LTItemMail.block.MailboxBlock;
 import br.net.gmj.nobookie.LTItemMail.entity.LTPlayer;
 import br.net.gmj.nobookie.LTItemMail.inventory.MailboxInventory;
 import br.net.gmj.nobookie.LTItemMail.module.ConfigurationModule;
+import br.net.gmj.nobookie.LTItemMail.module.ConfigurationModule.Type;
 import br.net.gmj.nobookie.LTItemMail.module.DataModule;
 import br.net.gmj.nobookie.LTItemMail.module.DatabaseModule;
 import br.net.gmj.nobookie.LTItemMail.module.EconomyModule;
@@ -29,14 +31,16 @@ import br.net.gmj.nobookie.LTItemMail.module.LanguageModule;
 import br.net.gmj.nobookie.LTItemMail.module.MailboxModule;
 import br.net.gmj.nobookie.LTItemMail.module.PermissionModule;
 import br.net.gmj.nobookie.LTItemMail.util.BukkitUtil;
+import br.net.gmj.nobookie.LTItemMail.util.FetchUtil;
 import br.net.gmj.nobookie.LTItemMail.util.TabUtil;
 
 @LTCommandInfo(
-		name = "ltitemmail:itemmail",
-		description = "Used to send items and to check your mailbox.",
-		aliases = "itemmail,ima,imail",
-		permission = "ltitemmail.player",
-		usage = "<command> [help|version|list|open|delete|info|price|color|blocks]")
+	name = "ltitemmail:itemmail",
+	description = "Used to send items and to check your mailbox.",
+	aliases = "itemmail,ima,imail",
+	permission = "ltitemmail.player",
+	usage = "<command> [help|version|list|open|delete|info|price|color|blocks]"
+)
 public final class ItemMailCommand extends LTCommandExecutor {
 	@SuppressWarnings("incomplete-switch")
 	@Override
@@ -73,7 +77,26 @@ public final class ItemMailCommand extends LTCommandExecutor {
 		} else if(args[0].equalsIgnoreCase("version")) {
 			if(hasPermission = PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_PLAYER_VERSION)) {
 				if(args.length == 1) {
-					DataModule.showVersion(LTItemMail.getInstance().getDescription().getVersion(), sender);
+					new BukkitRunnable() {
+						@Override
+						public final void run() {
+							sender.sendMessage(ChatColor.YELLOW + "LT Item Mail");
+							sender.sendMessage(ChatColor.YELLOW + "Version: " + ChatColor.DARK_GREEN + LTItemMail.getInstance().getDescription().getVersion());
+							sender.sendMessage(ChatColor.YELLOW + "Build: " + ChatColor.DARK_GREEN + ConfigurationModule.get(ConfigurationModule.Type.BUILD_NUMBER));
+							sender.sendMessage(ChatColor.YELLOW + "Build date: " + ChatColor.DARK_GREEN + FetchUtil.URL.get(DataModule.getDateURL((Integer) ConfigurationModule.get(Type.BUILD_NUMBER))));
+							String authors = "";
+							if(LTItemMail.getInstance().getDescription().getAuthors().size() > 1) {
+								String separator = ", ";
+								for(final String author : LTItemMail.getInstance().getDescription().getAuthors()) {
+									if(LTItemMail.getInstance().getDescription().getAuthors().get(LTItemMail.getInstance().getDescription().getAuthors().size() - 1).equals(author)) separator = "";
+									authors = authors + ChatColor.DARK_GREEN + author + ChatColor.YELLOW + separator;
+								}
+							} else authors = LTItemMail.getInstance().getDescription().getAuthors().get(0);
+							sender.sendMessage(ChatColor.YELLOW + "Authors: " + authors);
+							sender.sendMessage(ChatColor.YELLOW + "Website: " + ChatColor.DARK_GREEN + LTItemMail.getInstance().getDescription().getWebsite());
+							if(PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_ADMIN_MAIN)) sender.sendMessage(ChatColor.YELLOW + "Version manifest: " + ChatColor.DARK_GREEN + DataModule.getManifestURL(LTItemMail.getInstance().getDescription().getVersion()));
+						}
+					}.runTask(LTItemMail.getInstance());
 				} else sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.PLAYER_SYNTAXERROR));
 			}
 		} else if(args[0].equalsIgnoreCase("open")) {
@@ -160,17 +183,17 @@ public final class ItemMailCommand extends LTCommandExecutor {
 					if(args.length == 1) {
 						if(!ltPlayer.isRegistered()) DatabaseModule.User.register(ltPlayer);
 						player.sendMessage("");
-						player.sendMessage(ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_INFO_REGISTRY) + " " + ltPlayer.getRegistryDate());
-						String banned = ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_INFO_BANNED_NO);
+						player.sendMessage(ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_INFO_REGISTRY) + " " + ChatColor.DARK_GREEN + ltPlayer.getRegistryDate());
+						String banned = LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_INFO_BANNED_NO);
 						String banreason = "";
 						if(ltPlayer.isBanned()) {
-							banned = ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_INFO_BANNED_YES);
+							banned = LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_INFO_BANNED_YES);
 							banreason = ltPlayer.getBanReason();
 						}
-						player.sendMessage(ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_INFO_BANNED_MAIN) + " " + banned);
-						if(banreason != null && !banreason.isEmpty()) player.sendMessage(ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_INFO_BANNED_REASON) + " " + banreason);
-						player.sendMessage(ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_INFO_SENT) + " " + ltPlayer.getMailSentCount());
-						player.sendMessage(ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_INFO_RECEIVED) + " " + ltPlayer.getMailReceivedCount());
+						player.sendMessage(ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_INFO_BANNED_MAIN) + " " + ChatColor.DARK_GREEN + banned);
+						if(banreason != null && !banreason.isEmpty()) player.sendMessage(ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_INFO_BANNED_REASON) + " " + ChatColor.DARK_GREEN + banreason);
+						player.sendMessage(ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_INFO_SENT) + " " + ChatColor.DARK_GREEN + ltPlayer.getMailSentCount());
+						player.sendMessage(ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_INFO_RECEIVED) + " " + ChatColor.DARK_GREEN + ltPlayer.getMailReceivedCount());
 						player.sendMessage("");
 					} else sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.PLAYER_SYNTAXERROR));
 				} else sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.PLAYER_ERROR));
