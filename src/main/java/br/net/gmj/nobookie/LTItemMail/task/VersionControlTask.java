@@ -21,7 +21,7 @@ import br.net.gmj.nobookie.LTItemMail.util.FetchUtil;
 public final class VersionControlTask {
 	private final BukkitTask task;
 	public VersionControlTask() {
-		FetchUtil.FileManager.download(DataModule.getPluginPath(LTItemMail.getInstance().getDescription().getVersion()), "manifest.yml", true);
+		FetchUtil.FileManager.download(DataModule.getManifestURL(LTItemMail.getInstance().getDescription().getVersion()), "manifest.yml", true);
 		task = new BukkitRunnable() {
 			@Override
 			public final void run() {

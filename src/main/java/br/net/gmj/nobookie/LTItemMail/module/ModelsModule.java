@@ -30,11 +30,11 @@ public class ModelsModule {
 				configuration.load(file);
 				ConsoleModule.info("Item models loaded.");
 				try {
-					if(configuration.getInt("model-version") < DataModule.getVersion(DataModule.VersionType.ITEM_MODELS_YML)) {
+					if(configuration.getInt("model-version") < DataModule.Version.ITEM_MODELS_YML.value()) {
 						update = true;
 						ConsoleModule.warning("Item models outdated!");
 						ConsoleModule.warning("New models will be added.");
-						configuration.set("model-version", DataModule.getVersion(DataModule.VersionType.ITEM_MODELS_YML));
+						configuration.set("model-version", DataModule.Version.ITEM_MODELS_YML.value());
 						configuration.save(file);
 					}
 				} catch(final IllegalArgumentException e) {

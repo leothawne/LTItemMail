@@ -32,22 +32,16 @@ public final class ConfigurationModule {
 			try {
 				configuration.load(file);
 				ConsoleModule.info("Configuration loaded.");
-				if(configuration.getInt("config-version") < DataModule.getVersion(DataModule.VersionType.CONFIG_YML)) {
+				if(configuration.getInt("config-version") < DataModule.Version.CONFIG_YML.value()) {
 					update = true;
 					ConsoleModule.warning("Configuration outdated!");
 					ConsoleModule.warning("New settings will be added.");
-					configuration.set("config-version", DataModule.getVersion(DataModule.VersionType.CONFIG_YML));
-					configuration.save(file);
+					configuration.set("config-version", DataModule.Version.CONFIG_YML.value());
 				}
-				if(configuration.isSet("version-number")) if(!configuration.getString("version-number").equals(FetchUtil.Version.get())) {
-					configuration.set("version-number", FetchUtil.Version.get());
-					configuration.set("boards-read", new ArrayList<Integer>());
-					configuration.save(file);
-				}
-				if(configuration.isSet("build-number")) if(configuration.getInt("build-number") < FetchUtil.Build.get()) {
-					configuration.set("build-number", FetchUtil.Build.get());
-					configuration.save(file);
-				}
+				if(configuration.isSet("version-number")) if(!configuration.getString("version-number").equals(FetchUtil.Version.get())) configuration.set("boards-read", new ArrayList<Integer>());
+				configuration.set("version-number", FetchUtil.Version.get());
+				configuration.set("build-number", FetchUtil.Build.get());
+				configuration.save(file);
 				return configuration;
 			} catch (final IOException | InvalidConfigurationException e) {
 				if((Boolean) get(Type.PLUGIN_DEBUG)) e.printStackTrace();

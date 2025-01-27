@@ -8,7 +8,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import br.net.gmj.nobookie.LTItemMail.LTItemMail;
-import br.net.gmj.nobookie.LTItemMail.module.DataModule.VersionType;
+import br.net.gmj.nobookie.LTItemMail.module.DataModule.Version;
 import br.net.gmj.nobookie.LTItemMail.util.BukkitUtil;
 import br.net.gmj.nobookie.LTItemMail.util.FetchUtil;
 
@@ -39,12 +39,12 @@ public final class LanguageModule {
 				ConsoleModule.info((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml loaded.");
 				if(((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE)).equalsIgnoreCase("portuguese")) ConsoleModule.br();
 				try {
-					final VersionType type = DataModule.VersionType.valueOf(((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE)).toUpperCase() + "_YML");
-					if(configuration.getInt("language-version") < DataModule.getVersion(type)) {
+					final Version version = DataModule.Version.valueOf(((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE)).toUpperCase() + "_YML");
+					if(configuration.getInt("language-version") < version.value()) {
 						update = true;
 						ConsoleModule.warning("Language " + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml outdated!");
 						ConsoleModule.warning("Missing translations will be added with default value.");
-						configuration.set("language-version", DataModule.getVersion(type));
+						configuration.set("language-version", version.value());
 						configuration.save(file);
 					}
 				} catch(final IllegalArgumentException e) {
