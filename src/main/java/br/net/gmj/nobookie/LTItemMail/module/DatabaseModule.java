@@ -172,8 +172,21 @@ public final class DatabaseModule {
 		try {
 			LTItemMail.getInstance().connection.close();
 		} catch (final SQLException | NullPointerException e) {
+			ConsoleModule.debug("Unable to disconnect from database.");
 			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 		}
+	}
+	public static final boolean purge() {
+		try {
+			LTItemMail.getInstance().connection.createStatement().executeLargeUpdate("DELETE FROM mailbox;");
+			LTItemMail.getInstance().connection.createStatement().executeLargeUpdate("DELETE FROM mailbox_block;");
+			LTItemMail.getInstance().connection.createStatement().executeLargeUpdate("DELETE FROM users;");
+			return true;
+		} catch (final SQLException e) {
+			ConsoleModule.debug("Unable to purge database.");
+			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
+		}
+		return false;
 	}
 	private static final int getCurrentVersion() {
 		try {
@@ -208,8 +221,8 @@ public final class DatabaseModule {
 	}
 	public static final void checkForUpdates() {
 		final Integer dbVer = getCurrentVersion();
-		if(dbVer < DataModule.getVersion(DataModule.VersionType.DATABASE)) {
-			for(Integer i = dbVer; i < DataModule.getVersion(DataModule.VersionType.DATABASE); i++) {
+		if(dbVer < DataModule.Version.DATABASE.value()) {
+			for(Integer i = dbVer; i < DataModule.Version.DATABASE.value(); i++) {
 				if(((String) ConfigurationModule.get(ConfigurationModule.Type.DATABASE_TYPE)).toLowerCase().equals("mysql") && i > 0 && i < 4) continue;
 				ConsoleModule.info("Updating database... (" + i + " -> " + (i + 1) + ")");
 				if(DatabaseModule.runSQL(i)) {
@@ -254,7 +267,7 @@ public final class DatabaseModule {
 							+ ");");
 						sql.add("ALTER TABLE mailbox ADD status TEXT NOT NULL DEFAULT 'PENDING';");
 						sql.add("ALTER TABLE mailbox RENAME COLUMN opened TO deleted;");
-						sql.add("ALTER TABLE mailbox_block ADD mailbox_world TEXT NOT NULL DEFAULT 'world';");
+						sql.add("ALTER TABLE mailbox_block ADD mailbox_world TEXT NOT NULL;");
 						sql.add("UPDATE config SET version = '4';");
 						break;
 				}
@@ -287,7 +300,7 @@ public final class DatabaseModule {
 						sql.add("CREATE TABLE mailbox_block ("
 								+ "id int NOT NULL AUTO_INCREMENT,"
 								+ "owner_uuid longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,"
-								+ "mailbox_world longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL DEFAULT 'world',"
+								+ "mailbox_world longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,"
 								+ "mailbox_x int NOT NULL,"
 								+ "mailbox_y int NOT NULL,"
 								+ "mailbox_z int NOT NULL,"

@@ -72,9 +72,7 @@ public final class LTItemMail extends JavaPlugin {
 				getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", new BungeeModule());
 			}
 			loadModels();
-			connection = DatabaseModule.connect();
-			DatabaseModule.checkForUpdates();
-			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.DATABASE_CONVERT)) DatabaseModule.convert();
+			loadDatabase();
 			ExtensionModule.getInstance().load();
 			PermissionModule.register();
 			registerListeners();
@@ -110,9 +108,13 @@ public final class LTItemMail extends JavaPlugin {
 	 * 
 	 */
 	public final void reload() {
+		ExtensionModule.getInstance().unload();
+		DatabaseModule.disconnect();
 		loadConfig();
 		loadLang();
 		loadModels();
+		DatabaseModule.disconnect();
+		loadDatabase();
 		ExtensionModule.reload().load();
 	}
 	private final void loadConfig() {
@@ -129,6 +131,11 @@ public final class LTItemMail extends JavaPlugin {
 		ModelsModule.check();
 		models = ModelsModule.load();
 		ModelsModule.addMissing();
+	}
+	private final void loadDatabase() {
+		connection = DatabaseModule.connect();
+		DatabaseModule.checkForUpdates();
+		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.DATABASE_CONVERT)) DatabaseModule.convert();
 	}
 	private final void registerListeners() {
 		new PlayerListener();

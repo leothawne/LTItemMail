@@ -61,6 +61,7 @@ public class PermissionModule {
 		CMD_ADMIN_BLOCKS("ltitemmail.admin.blocks", "OP"),
 		CMD_ADMIN_NOTIFY("ltitemmail.admin.notify", "OP"),
 		CMD_ADMIN_BYPASS("ltitemmail.admin.bypass", "OP"),
+		CMD_ADMIN_PURGE("ltitemmail.admin.purge", "OP"),
 		BLOCK_PLAYER_PLACE("ltitemmail.block.place", "TRUE"),
 		BLOCK_PLAYER_BREAK("ltitemmail.block.break", "TRUE"),
 		BLOCK_PLAYER_USE("ltitemmail.block.use", "TRUE"),
