@@ -1,5 +1,5 @@
 #Não toque nisso!
-language-version: 9
+language-version: 10
 player:
   permissionerror: 'Você não tem permissão para fazer isso.'
   missingerror: 'Você deve especificar o nome do jogador.'
@@ -49,6 +49,7 @@ block:
     world: 'Mundo'
   adminlist:
     placed: 'Caixas de Corrêio de'
+  notfound: 'Nenhum bloco caixa de corrêio encontrado.'
 command:
   invalid: 'Comando inválido. Digite % para ver a lista de comandos.'
   player:

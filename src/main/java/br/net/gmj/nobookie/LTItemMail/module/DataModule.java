@@ -25,8 +25,8 @@ public final class DataModule {
 	public enum Version {
 		CONFIG_YML(12),
 		ITEM_MODELS_YML(1),
-		ENGLISH_YML(9),
-		PORTUGUESE_YML(9),
+		ENGLISH_YML(10),
+		PORTUGUESE_YML(10),
 		VIETNAMESE_YML(3),
 		DATABASE(4);
 		private final Integer value;

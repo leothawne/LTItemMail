@@ -159,7 +159,8 @@ public final class LanguageModule {
 		BLOCK_OWNER("block.owner", "Owner:"),
 		BLOCK_LIST("block.list.placed", "Mailboxes you placed:"),
 		BLOCK_LIST_WORLD("block.list.world", "World"),
-		BLOCK_ADMIN_LIST("block.adminlist.placed", "Mailboxes of");
+		BLOCK_ADMIN_LIST("block.adminlist.placed", "Mailboxes of"),
+		BLOCK_NOTFOUND("block.notfound", "No mailbox block found.");
 		private final String path;
 		private final String result;
 		Type(final String path, final String result){
