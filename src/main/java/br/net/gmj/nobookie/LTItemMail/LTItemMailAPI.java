@@ -38,17 +38,18 @@ public final class LTItemMailAPI {
 	/**
 	 * 
 	 * Method used to send items anonymously
-	 * to any player on the server. The mailbox
-	 * will be assigned as a "Special Mailbox".
+	 * to any player on the server. The mail
+	 * will be assigned as a "Special Mail".
+	 * The sender will be assigned as CONSOLE.
 	 * 
 	 * @param player The player who will receive (See {@link LTPlayer}).
 	 * @param items A list of items that the player will receive.
 	 * @param label The label you want to put on the mailbox.
 	 * 
-	 * @return "success" if it was successfully delivered. Otherwise it will return an error message.
+	 * @return true if it was successfully sent. Otherwise it will return false.
 	 * 
 	 */
-	public static final String sendSpecialMailbox(final LTPlayer player, final LinkedList<ItemStack> items, String label) {
+	public static final boolean sendSpecialMail(final LTPlayer player, final LinkedList<ItemStack> items, String label) {
 		if(player != null) {
 			final Player bukkitPlayer = player.getBukkitPlayer().getPlayer();
 			if(label == null) label = "";
@@ -93,9 +94,9 @@ public final class LTItemMailAPI {
 				bungee.writeUTF((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.AQUA + "" + LanguageModule.get(LanguageModule.Type.MAILBOX_SPECIAL));
 				Bukkit.getServer().sendPluginMessage(LTItemMail.getInstance(), "BungeeCord", bungee.toByteArray());
 			}
-			return "success";
+			return true;
 		}
-		return LanguageModule.Type.PLAYER_NEVERPLAYEDERROR.toString();
+		return false;
 	}
 	/**
 	 * 
