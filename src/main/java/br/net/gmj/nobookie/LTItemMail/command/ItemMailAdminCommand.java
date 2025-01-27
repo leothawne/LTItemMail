@@ -33,11 +33,12 @@ import br.net.gmj.nobookie.LTItemMail.util.FetchUtil;
 import br.net.gmj.nobookie.LTItemMail.util.TabUtil;
 
 @LTCommandInfo(
-		name = "ltitemmail:itemmailadmin",
-		description = "For administration purposes.",
-		aliases = "itemmailadmin,imad,imadmin",
-		permission = "ltitemmail.admin",
-		usage = "<command> [help|update|list|recover|reload|info|ban|unban|banlist|blocks]")
+	name = "ltitemmail:itemmailadmin",
+	description = "For administration purposes.",
+	aliases = "itemmailadmin,imad,imadmin",
+	permission = "ltitemmail.admin",
+	usage = "<command> [help|update|list|recover|reload|info|ban|unban|banlist|blocks]"
+)
 public final class ItemMailAdminCommand extends LTCommandExecutor {
 	@Override
 	public final boolean onCommand(final CommandSender sender, final Command cmd, final String commandLabel, final String[] args) {
@@ -115,17 +116,17 @@ public final class ItemMailAdminCommand extends LTCommandExecutor {
 						String divider = "";
 						for(int i = 0; i < ltPlayer.getName().toCharArray().length; i++) divider = divider + "-";
 						sender.sendMessage(ChatColor.YELLOW + divider);
-						sender.sendMessage(ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_INFO_REGISTRY) + " " + ltPlayer.getRegistryDate());
-						String banned = ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_INFO_BANNED_NO);
+						sender.sendMessage(ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_INFO_REGISTRY) + " " + ChatColor.DARK_GREEN + ltPlayer.getRegistryDate());
+						String banned = LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_INFO_BANNED_NO);
 						String banreason = "";
 						if(ltPlayer.isBanned()) {
-							banned = ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_INFO_BANNED_YES);
+							banned = LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_INFO_BANNED_YES);
 							banreason = ltPlayer.getBanReason();
 						}
-						sender.sendMessage(ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_INFO_BANNED_MAIN) + " " + banned);
-						if(banreason != null && !banreason.isEmpty()) sender.sendMessage(ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_INFO_BANNED_REASON) + " " + banreason);
-						sender.sendMessage(ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_INFO_SENT) + " " + ltPlayer.getMailSentCount());
-						sender.sendMessage(ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_INFO_RECEIVED) + " " + ltPlayer.getMailReceivedCount());
+						sender.sendMessage(ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_INFO_BANNED_MAIN) + " " + ChatColor.DARK_GREEN + banned);
+						if(banreason != null && !banreason.isEmpty()) sender.sendMessage(ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_INFO_BANNED_REASON) + " " + ChatColor.DARK_GREEN + banreason);
+						sender.sendMessage(ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_INFO_SENT) + " " + ChatColor.DARK_GREEN + ltPlayer.getMailSentCount());
+						sender.sendMessage(ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_INFO_RECEIVED) + " " + ChatColor.DARK_GREEN + ltPlayer.getMailReceivedCount());
 						sender.sendMessage("");
 					} else sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + "" + LanguageModule.get(LanguageModule.Type.PLAYER_NEVERPLAYEDERROR));
 				} else sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.PLAYER_SYNTAXERROR));
