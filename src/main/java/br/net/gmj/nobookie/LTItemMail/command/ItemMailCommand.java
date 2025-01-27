@@ -35,11 +35,11 @@ import br.net.gmj.nobookie.LTItemMail.util.FetchUtil;
 import br.net.gmj.nobookie.LTItemMail.util.TabUtil;
 
 @LTCommandInfo(
-	name = "ltitemmail:itemmail",
+	name = "itemmail",
 	description = "Used to send items and to check your mailbox.",
-	aliases = "itemmail,ima,imail",
+	aliases = "ltitemmail:itemmail,ima,imail",
 	permission = "ltitemmail.player",
-	usage = "<command> [help|version|list|open|delete|info|price|color|blocks]"
+	usage = "/<command> [help|version|list|open|delete|info|price|color|blocks]"
 )
 public final class ItemMailCommand extends LTCommandExecutor {
 	@SuppressWarnings("incomplete-switch")
@@ -238,7 +238,7 @@ public final class ItemMailCommand extends LTCommandExecutor {
 							player.sendMessage(ChatColor.YELLOW + "    - #" + ChatColor.GREEN + String.valueOf(number) + ChatColor.YELLOW + " : " + LanguageModule.get(LanguageModule.Type.BLOCK_LIST_WORLD) + "=" + ChatColor.GREEN + loc.getWorld().getName() + ChatColor.YELLOW + ", X=" + ChatColor.GREEN + String.valueOf(loc.getBlockX()) + ChatColor.YELLOW + ", Y=" + ChatColor.GREEN + String.valueOf(loc.getBlockY()) + ChatColor.YELLOW + ", Z=" + ChatColor.GREEN + String.valueOf(loc.getBlockZ()));
 							number++;
 						}
-					}
+					} else sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.BLOCK_NOTFOUND));
 				} else sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.PLAYER_ERROR));
 			}
 		} else if(hasPermission = PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_PLAYER_MAIN)) {

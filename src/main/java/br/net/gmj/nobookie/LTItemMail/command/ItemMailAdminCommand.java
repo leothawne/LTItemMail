@@ -33,11 +33,11 @@ import br.net.gmj.nobookie.LTItemMail.util.FetchUtil;
 import br.net.gmj.nobookie.LTItemMail.util.TabUtil;
 
 @LTCommandInfo(
-	name = "ltitemmail:itemmailadmin",
+	name = "itemmailadmin",
 	description = "For administration purposes.",
-	aliases = "itemmailadmin,imad,imadmin",
+	aliases = "ltitemmail:itemmailadmin,imad,imadmin",
 	permission = "ltitemmail.admin",
-	usage = "<command> [help|update|list|recover|reload|info|ban|unban|banlist|blocks]"
+	usage = "/<command> [help|update|list|recover|reload|info|ban|unban|banlist|blocks]"
 )
 public final class ItemMailAdminCommand extends LTCommandExecutor {
 	@Override
@@ -217,7 +217,7 @@ public final class ItemMailAdminCommand extends LTCommandExecutor {
 								sender.sendMessage(ChatColor.YELLOW + "    - #" + ChatColor.GREEN + String.valueOf(number) + ChatColor.YELLOW + " : " + LanguageModule.get(LanguageModule.Type.BLOCK_LIST_WORLD) + "=" + ChatColor.GREEN + loc.getWorld().getName() + ChatColor.YELLOW + ", X=" + ChatColor.GREEN + String.valueOf(loc.getBlockX()) + ChatColor.YELLOW + ", Y=" + ChatColor.GREEN + String.valueOf(loc.getBlockY()) + ChatColor.YELLOW + ", Z=" + ChatColor.GREEN + String.valueOf(loc.getBlockZ()));
 								number++;
 							}
-						}
+						} else sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.BLOCK_NOTFOUND));
 					} else sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + "" + LanguageModule.get(LanguageModule.Type.PLAYER_NEVERPLAYEDERROR));
 				} else sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.PLAYER_SYNTAXERROR));
 			}

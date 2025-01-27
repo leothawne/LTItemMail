@@ -20,11 +20,11 @@ import br.net.gmj.nobookie.LTItemMail.module.PermissionModule;
 import br.net.gmj.nobookie.LTItemMail.util.TabUtil;
 
 @LTCommandInfo(
-	name = "ltitemmail:mailitem",
+	name = "mailitem",
 	description = "Used to send items.",
-	aliases = "mailitem,mit,enviaritem",
+	aliases = "ltitemmail:mailitem,mit,enviaritem",
 	permission = "ltitemmail.player.send",
-	usage = "<command> <player> <label>"
+	usage = "/<command> <player> <label>"
 )
 public final class MailItemCommand extends LTCommandExecutor {
 	@Override

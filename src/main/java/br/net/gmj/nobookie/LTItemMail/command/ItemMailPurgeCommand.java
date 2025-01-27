@@ -14,9 +14,9 @@ import br.net.gmj.nobookie.LTItemMail.module.LanguageModule;
 import br.net.gmj.nobookie.LTItemMail.module.PermissionModule;
 
 @LTCommandInfo(
-	name = "ltitemmail:itemmailpurge",
+	name = "itemmailpurge",
 	description = "Delete everything from the database.",
-	aliases = "itemmailpurge",
+	aliases = "ltitemmail:itemmailpurge",
 	permission = "ltitemmail.admin.purge"
 )
 public final class ItemMailPurgeCommand extends LTCommandExecutor {
