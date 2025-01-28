@@ -1,0 +1,15 @@
+main:
+  enabled: true
+  warnings: []
+boards:
+  0:
+    title: "Two permission nodes removed (Build #66 or newer only)"
+    datetime: "28/01/2025 03:54 BRT"
+    contents:
+      - "&c&lFor server owners:"
+      - "Due to imcompatibility with Bukkit API, the nodes &cltitemmail.player.all &rand &cltitemmail.admin.all &rwas removed and will not work anymore."
+      - "I am very sorry!"
+      - ""
+      - "&c&lPara donos de servidores:"
+      - "Devido à imcompatibilidade com a API do Bukkit, os nós &cltitemmail.player.all &re &cltitemmail.admin.all &rforam removidos e não funcionarão mais."
+      - "Eu sinto muito!"
