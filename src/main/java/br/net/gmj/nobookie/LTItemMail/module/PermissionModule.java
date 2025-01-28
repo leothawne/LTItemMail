@@ -1,8 +1,5 @@
 package br.net.gmj.nobookie.LTItemMail.module;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permission;
@@ -13,22 +10,10 @@ import br.net.gmj.nobookie.LTItemMail.module.ext.LTVault;
 public class PermissionModule {
 	private PermissionModule() {}
 	public static final void register() {
-		final List<Type> player = new ArrayList<>();
-		final List<Type> admin = new ArrayList<>();
-		for(final Type perm : Type.values()) if(!perm.equals(Type.CMD_PLAYER_ALL) && !perm.equals(Type.CMD_ADMIN_ALL)) {
-			if(perm.name().startsWith("CMD_PLAYER_") && perm.name().startsWith("BLOCK_PLAYER_")) player.add(perm);
-			if(perm.name().startsWith("CMD_ADMIN_") && perm.name().startsWith("BLOCK_ADMIN_")) admin.add(perm);
+		for(final Type perm : Type.values()) {
 			final Permission permission = new Permission(perm.node(), perm.permissionDefault());
 			Bukkit.getPluginManager().addPermission(permission);
 		}
-		final Permission player_all = new Permission(Type.CMD_PLAYER_ALL.node(), Type.CMD_PLAYER_ALL.permissionDefault());
-		for(final Type perm : player) player_all.getChildren().put(perm.node(), true);
-		player_all.recalculatePermissibles();
-		Bukkit.getPluginManager().addPermission(player_all);
-		final Permission admin_all = new Permission(Type.CMD_ADMIN_ALL.node(), Type.CMD_ADMIN_ALL.permissionDefault());
-		for(final Type perm : admin) admin_all.getChildren().put(perm.node(), true);
-		admin_all.recalculatePermissibles();
-		Bukkit.getPluginManager().addPermission(admin_all);
 	}
 	public static final boolean hasPermission(final CommandSender sender, final Type permission) {
 		final String node = permission.node();
@@ -36,7 +21,6 @@ public class PermissionModule {
 		return sender.hasPermission(node);
 	}
 	public enum Type {
-		CMD_PLAYER_ALL("ltitemmail.player.all", "TRUE"),
 		CMD_PLAYER_MAIN("ltitemmail.player", "TRUE"),
 		CMD_PLAYER_VERSION("ltitemmail.player.version", "TRUE"),
 		CMD_PLAYER_LIST("ltitemmail.player.list", "TRUE"),
@@ -48,7 +32,6 @@ public class PermissionModule {
 		CMD_PLAYER_INFO("ltitemmail.player.info", "TRUE"),
 		CMD_PLAYER_BLOCKS("ltitemmail.player.blocks", "TRUE"),
 		CMD_PLAYER_NOTIFY("ltitemmail.player.notify", "TRUE"),
-		CMD_ADMIN_ALL("ltitemmail.admin.all", "OP"),
 		CMD_ADMIN_MAIN("ltitemmail.admin", "OP"),
 		CMD_ADMIN_UPDATE("ltitemmail.admin.update", "OP"),
 		CMD_ADMIN_LIST("ltitemmail.admin.list", "OP"),
