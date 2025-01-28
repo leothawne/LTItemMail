@@ -74,7 +74,7 @@ public final class LTItemMail extends JavaPlugin {
 			loadModels();
 			loadDatabase();
 			ExtensionModule.getInstance().load();
-			PermissionModule.register();
+			PermissionModule.load();
 			registerListeners();
 			runTasks();
 			new CommandModule();
@@ -97,6 +97,7 @@ public final class LTItemMail extends JavaPlugin {
 	@Override
 	public final void onDisable() {
 		Bukkit.getScheduler().cancelTasks(this);
+		PermissionModule.unload();
 		ExtensionModule.getInstance().unload();
 		DatabaseModule.disconnect();
 		getServer().getMessenger().unregisterOutgoingPluginChannel(this, "BungeeCord");
@@ -108,14 +109,15 @@ public final class LTItemMail extends JavaPlugin {
 	 * 
 	 */
 	public final void reload() {
+		PermissionModule.unload();
 		ExtensionModule.getInstance().unload();
 		DatabaseModule.disconnect();
 		loadConfig();
 		loadLang();
 		loadModels();
-		DatabaseModule.disconnect();
 		loadDatabase();
 		ExtensionModule.reload().load();
+		PermissionModule.load();
 	}
 	private final void loadConfig() {
 		ConfigurationModule.check();

@@ -9,10 +9,21 @@ import br.net.gmj.nobookie.LTItemMail.module.ext.LTVault;
 
 public class PermissionModule {
 	private PermissionModule() {}
-	public static final void register() {
+	public static final void load() {
 		for(final Type perm : Type.values()) {
 			final Permission permission = new Permission(perm.node(), perm.permissionDefault());
-			Bukkit.getPluginManager().addPermission(permission);
+			try {
+				Bukkit.getPluginManager().addPermission(permission);
+			} catch(final IllegalArgumentException e) {
+				ConsoleModule.debug("Permission node " + permission.getName() + " already registered.");
+				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
+			}
+		}
+	}
+	public static final void unload() {
+		for(final Type perm : Type.values()) {
+			final Permission permission = new Permission(perm.node(), perm.permissionDefault());
+			Bukkit.getPluginManager().removePermission(permission);
 		}
 	}
 	public static final boolean hasPermission(final CommandSender sender, final Type permission) {
