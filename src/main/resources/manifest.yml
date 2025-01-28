@@ -3,7 +3,7 @@ main:
   warnings: []
 boards:
   0:
-    title: "Two permission nodes removed (Build #66 or newer only)"
+    title: "Two permission nodes removed (Build #67 or newer only)"
     datetime: "28/01/2025 03:54 BRT"
     contents:
       - "&c&lFor server owners:"
