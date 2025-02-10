@@ -28,6 +28,12 @@ public interface Block {
 	public Block.Type getType();
 	/**
 	 * 
+	 * Gets in which server the block was created.
+	 * 
+	 */
+	public String getServer();
+	/**
+	 * 
 	 * Gets the block current location.
 	 * 
 	 */

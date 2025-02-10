@@ -28,7 +28,7 @@ public final class DataModule {
 		ENGLISH_YML(10),
 		PORTUGUESE_YML(10),
 		VIETNAMESE_YML(3),
-		DATABASE(4);
+		DATABASE(5);
 		private final Integer value;
 		Version(final Integer value){
 			this.value = value;

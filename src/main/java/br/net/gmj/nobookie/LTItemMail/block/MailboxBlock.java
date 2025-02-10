@@ -25,6 +25,7 @@ import br.net.gmj.nobookie.LTItemMail.module.DatabaseModule;
 public final class MailboxBlock implements Block {
 	private final Integer id;
 	private UUID owner;
+	private final String server;
 	private final String world;
 	private final Integer x;
 	private final Integer y;
@@ -35,9 +36,10 @@ public final class MailboxBlock implements Block {
 	 * 
 	 * 
 	 */
-	public MailboxBlock(final Integer id, final UUID owner, final String world, final Integer x, final Integer y, final Integer z) {
+	public MailboxBlock(final Integer id, final UUID owner, final String server, final String world, final Integer x, final Integer y, final Integer z) {
 		this.id = id;
 		this.owner = owner;
+		this.server = server;
 		this.world = world;
 		this.x = x;
 		this.y = y;
@@ -51,6 +53,7 @@ public final class MailboxBlock implements Block {
 	public MailboxBlock() {
 		id = null;
 		owner = null;
+		server = null;
 		world = null;
 		x = null;
 		y = null;
@@ -73,6 +76,15 @@ public final class MailboxBlock implements Block {
 	@Override
 	public final Block.Type getType(){
 		return Block.Type.MAILBOX_BLOCK;
+	}
+	/**
+	 * 
+	 * Gets in which server the block was created.
+	 * 
+	 */
+	@Override
+	public final String getServer() {
+		return server;
 	}
 	/**
 	 * 

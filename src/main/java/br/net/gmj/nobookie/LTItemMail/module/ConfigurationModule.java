@@ -109,6 +109,7 @@ public final class ConfigurationModule {
 		PLUGIN_TYPE_LANGUAGE("plugin.language", "english"),
 		PLUGIN_TAG("plugin.tag", "&6[LTIM]"),
 		BUNGEE_MODE("plugin.bungee-mode", false),
+		BUNGEE_SERVER_ID("plugin.bungee-server-id", "server1"),
 		PLUGIN_DEBUG("plugin.debug", false),
 		DATABASE_TYPE("database.type", "flatfile"),
 		DATABASE_CONVERT("database.convert", false),
