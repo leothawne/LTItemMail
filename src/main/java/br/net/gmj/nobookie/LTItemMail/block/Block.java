@@ -1,6 +1,10 @@
 package br.net.gmj.nobookie.LTItemMail.block;
 
+import java.util.List;
+
 import org.bukkit.Location;
+import org.bukkit.event.Listener;
+import org.bukkit.scheduler.BukkitTask;
 
 /**
  * 
@@ -34,6 +38,24 @@ public interface Block {
 	 * 
 	 */
 	public org.bukkit.block.Block getBukkitBlock();
+	/**
+	 * 
+	 * Used internally. Do not mess with it.
+	 * 
+	 */
+	public List<Listener> getListeners();
+	/**
+	 * 
+	 * Used internally. Do not mess with it.
+	 * 
+	 */
+	public void runTasks();
+	/**
+	 * 
+	 * Used internally. Do not mess with it.
+	 * 
+	 */
+	public List<BukkitTask> getTasks();
 	/**
 	 * 
 	 * All types of blocks.

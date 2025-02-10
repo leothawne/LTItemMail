@@ -1,11 +1,20 @@
 package br.net.gmj.nobookie.LTItemMail.block;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.event.Listener;
+import org.bukkit.scheduler.BukkitTask;
 
+import br.net.gmj.nobookie.LTItemMail.LTItemMail;
+import br.net.gmj.nobookie.LTItemMail.LTItemMailAPI;
+import br.net.gmj.nobookie.LTItemMail.block.listener.MailboxBlockListener;
+import br.net.gmj.nobookie.LTItemMail.block.task.MailboxBlockTask;
 import br.net.gmj.nobookie.LTItemMail.module.DatabaseModule;
 
 /**
@@ -20,6 +29,12 @@ public final class MailboxBlock implements Block {
 	private final Integer x;
 	private final Integer y;
 	private final Integer z;
+	/**
+	 * 
+	 * Use {@link LTItemMailAPI#getBlockList()} instead.
+	 * 
+	 * 
+	 */
 	public MailboxBlock(final Integer id, final UUID owner, final String world, final Integer x, final Integer y, final Integer z) {
 		this.id = id;
 		this.owner = owner;
@@ -27,6 +42,19 @@ public final class MailboxBlock implements Block {
 		this.x = x;
 		this.y = y;
 		this.z = z;
+	}
+	/**
+	 * 
+	 * Used internally. Do not mess with it.
+	 * 
+	 */
+	public MailboxBlock() {
+		id = null;
+		owner = null;
+		world = null;
+		x = null;
+		y = null;
+		z = null;
 	}
 	/**
 	 * 
@@ -63,6 +91,34 @@ public final class MailboxBlock implements Block {
 	@Override
 	public final org.bukkit.block.Block getBukkitBlock(){
 		return getLocation().getBlock();
+	}
+	/**
+	 * 
+	 * Used internally. Do not mess with it.
+	 * 
+	 */
+	@Override
+	public final List<Listener> getListeners(){
+		return Arrays.asList(new MailboxBlockListener());
+	}
+	private final List<BukkitTask> tasks = new ArrayList<>();
+	/**
+	 * 
+	 * Used internally. Do not mess with it.
+	 * 
+	 */
+	@Override
+	public final void runTasks() {
+		tasks.add(Bukkit.getScheduler().runTaskTimer(LTItemMail.getInstance(), new MailboxBlockTask(), 20, 20));
+	}
+	/**
+	 * 
+	 * Used internally. Do not mess with it.
+	 * 
+	 */
+	@Override
+	public final List<BukkitTask> getTasks(){
+		return tasks;
 	}
 	/**
 	 * 
