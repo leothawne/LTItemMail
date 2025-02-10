@@ -48,7 +48,7 @@ public final class ItemMailAdminCommand extends LTCommandExecutor {
 			Bukkit.dispatchCommand(sender, "ltitemmail:itemmailadmin help");
 		} else if(args[0].equalsIgnoreCase("help")) {
 			if(hasPermission = PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_ADMIN_MAIN)) {
-				sender.sendMessage(ChatColor.AQUA + "=+=+=+= [LT Item Mail " + LTItemMail.getInstance().getDescription().getVersion() + " :: Administration] =+=+=+=");
+				sender.sendMessage(ChatColor.LIGHT_PURPLE + "[ LT Item Mail " + ConfigurationModule.get(ConfigurationModule.Type.VERSION_NUMBER) + " #" + ConfigurationModule.get(ConfigurationModule.Type.BUILD_NUMBER) + " ]");
 				sender.sendMessage(ChatColor.GREEN + "/itemmailadmin help " + ChatColor.AQUA + "- " + LanguageModule.get(LanguageModule.Type.COMMAND_ADMIN_ITEMMAILADMIN));
 				if(PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_ADMIN_UPDATE)) sender.sendMessage(ChatColor.GREEN + "/itemmailadmin update " + ChatColor.AQUA + "- " + LanguageModule.get(LanguageModule.Type.COMMAND_ADMIN_UPDATE_MAIN));
 				if(PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_ADMIN_LIST)) sender.sendMessage(ChatColor.GREEN + "/itemmailadmin list <player> " + ChatColor.AQUA + "- " + LanguageModule.get(LanguageModule.Type.COMMAND_ADMIN_LIST));
