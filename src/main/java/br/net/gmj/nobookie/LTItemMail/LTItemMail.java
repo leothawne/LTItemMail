@@ -6,14 +6,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import br.net.gmj.nobookie.LTItemMail.listener.MailboxBlockListener;
-import br.net.gmj.nobookie.LTItemMail.listener.MailboxListener;
+import br.net.gmj.nobookie.LTItemMail.listener.MailboxVirtualListener;
 import br.net.gmj.nobookie.LTItemMail.listener.PlayerListener;
 import br.net.gmj.nobookie.LTItemMail.module.BungeeModule;
 import br.net.gmj.nobookie.LTItemMail.module.CommandModule;
@@ -25,8 +27,7 @@ import br.net.gmj.nobookie.LTItemMail.module.ExtensionModule;
 import br.net.gmj.nobookie.LTItemMail.module.LanguageModule;
 import br.net.gmj.nobookie.LTItemMail.module.ModelsModule;
 import br.net.gmj.nobookie.LTItemMail.module.PermissionModule;
-import br.net.gmj.nobookie.LTItemMail.task.MailboxTask;
-import br.net.gmj.nobookie.LTItemMail.task.RecipeTask;
+import br.net.gmj.nobookie.LTItemMail.module.RegistrationModule;
 import br.net.gmj.nobookie.LTItemMail.task.UpdateTask;
 import br.net.gmj.nobookie.LTItemMail.task.VersionControlTask;
 import br.net.gmj.nobookie.LTItemMail.util.BStats;
@@ -52,6 +53,16 @@ public final class LTItemMail extends JavaPlugin {
 	 * Used internally by Bukkit.
 	 * 
 	 */
+	private Took took = null;
+	@Override
+	public final void onLoad() {
+		took = new Took();
+	}
+	/**
+	 * 
+	 * Used internally by Bukkit.
+	 * 
+	 */
 	@Override
 	public final void onEnable() {
 		instance = this;
@@ -60,7 +71,8 @@ public final class LTItemMail extends JavaPlugin {
 		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_ENABLE)) {
 			if(isDevBuild()) {
 				ConsoleModule.warning("You are running a development build! Be aware that bugs may occur.");
-				ConfigurationModule.devMode = new File(getDataFolder(), ".dev").exists();
+				final File dev = new File(getDataFolder(), ".dev");
+				ConfigurationModule.devMode = (dev.exists() && dev.isFile());
 			}
 			metrics.addCustomChart(new BStats.SimplePie("builds", () -> {
 		        return String.valueOf((Integer) ConfigurationModule.get(ConfigurationModule.Type.BUILD_NUMBER));
@@ -77,16 +89,20 @@ public final class LTItemMail extends JavaPlugin {
 			PermissionModule.load();
 			registerListeners();
 			runTasks();
+			RegistrationModule.setupItems();
+			RegistrationModule.setupBlocks();
 			new CommandModule();
 			FetchUtil.FileManager.download(DataModule.getResourcePackURL(), "LTItemMail-ResourcePack.zip", false);
+			ConsoleModule.raw(ChatColor.GREEN + "Plugin took " + took.took() + " to load.");
 		} else {
+			took.cancel();
 			new BukkitRunnable() {
 				@Override
 				public final void run() {
 					ConsoleModule.severe("Plugin disabled in config.yml.");
 					Bukkit.getPluginManager().disablePlugin(instance);
 				}
-			}.runTaskTimer(this, 1, 1);
+			}.runTaskTimer(this, 10, 10);
 		}
 	}
 	/**
@@ -97,7 +113,7 @@ public final class LTItemMail extends JavaPlugin {
 	@Override
 	public final void onDisable() {
 		Bukkit.getScheduler().cancelTasks(this);
-		PermissionModule.unload();
+		//PermissionModule.unload();
 		ExtensionModule.getInstance().unload();
 		DatabaseModule.disconnect();
 		getServer().getMessenger().unregisterOutgoingPluginChannel(this, "BungeeCord");
@@ -141,12 +157,9 @@ public final class LTItemMail extends JavaPlugin {
 	}
 	private final void registerListeners() {
 		new PlayerListener();
-		new MailboxListener();
-		new MailboxBlockListener();
+		new MailboxVirtualListener();
 	}
 	private final void runTasks() {
-		new RecipeTask();
-		new MailboxTask();
 		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_UPDATE_CHECK)) new UpdateTask();
 		new VersionControlTask();
 	}
@@ -164,4 +177,26 @@ public final class LTItemMail extends JavaPlugin {
 	public static final LTItemMail getInstance() {
 		return instance;
 	}
+	private final class Took {
+		private final TimerTask task;
+		private Double took = 0.0;
+		private Took() {
+			task = new TimerTask() {
+				@Override
+				public final void run() {
+					took++;
+				}
+			};
+			new Timer().schedule(task, 1, 1);
+		}
+		private final void cancel() {
+			task.cancel();
+		}
+		private final String took() {
+			cancel();
+			String r = String.valueOf(took) + "ms";
+			if(took >= 1000.0) r = String.valueOf(took / 1000.0) + "s";
+			return r;
+		}
+	} 
 }
