@@ -42,7 +42,7 @@ public final class LTDynmap extends DynmapCommonAPIListener {
 			final String id = player.getName() + "_" + world + "_" + x + "_" + y + "_" + z;
 			deleteMarker(player, location);
 			set.createMarker(id, LanguageModule.get(LanguageModule.Type.BLOCK_NAME) + " | " + LanguageModule.get(LanguageModule.Type.BLOCK_OWNER) + " " + player.getName() + " (" + x + ", " + y + ", " + z + ")", false, world, x, y, z, getIcon(), false);
-			ConsoleModule.debug(getClass().getName() + "#createMarker: " + id);
+			ConsoleModule.debug(getClass(), "#createMarker: " + id);
 		}
 	}
 	public final void deleteMarker(final OfflinePlayer player, final Location location) {
@@ -52,7 +52,7 @@ public final class LTDynmap extends DynmapCommonAPIListener {
 			if(marker != null) {
 				final String id = marker.getMarkerID();
 				marker.deleteMarker();
-				ConsoleModule.debug(getClass().getName() + "#deleteMarker: " + id);
+				ConsoleModule.debug(getClass(), "#deleteMarker: " + id);
 			}
 		}
 	}

@@ -17,21 +17,21 @@ public final class LTWorldGuard {
 		final RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
 		final RegionQuery query = container.createQuery();
 		final Boolean result = query.testState(BukkitAdapter.adapt(location), WorldGuardPlugin.inst().wrapPlayer(player), Flags.BLOCK_PLACE);
-		ConsoleModule.debug(getClass().getName() + "#canBuild: " + player.getName() + " " + result);
+		ConsoleModule.debug(getClass(), "#canBuild: " + player.getName() + " " + result);
 		return result;
 	}
 	public final boolean canBreak(final Player player, final Location location) {
 		final RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
 		final RegionQuery query = container.createQuery();
 		final Boolean result = query.testState(BukkitAdapter.adapt(location), WorldGuardPlugin.inst().wrapPlayer(player), Flags.BLOCK_BREAK);
-		ConsoleModule.debug(getClass().getName() + "#canBreak: " + player.getName() + " " + result);
+		ConsoleModule.debug(getClass(), "#canBreak: " + player.getName() + " " + result);
 		return result;
 	}
 	public final boolean canInteract(final Player player, final Location location) {
 		final RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
 		final RegionQuery query = container.createQuery();
 		final Boolean result = query.testState(BukkitAdapter.adapt(location), WorldGuardPlugin.inst().wrapPlayer(player), Flags.INTERACT);
-		ConsoleModule.debug(getClass().getName() + "#canInteract: " + player.getName() + " " + result);
+		ConsoleModule.debug(getClass(), "#canInteract: " + player.getName() + " " + result);
 		return result;
 	}
 }

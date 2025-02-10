@@ -15,7 +15,7 @@ public class PermissionModule {
 			try {
 				Bukkit.getPluginManager().addPermission(permission);
 			} catch(final IllegalArgumentException e) {
-				ConsoleModule.debug("Permission node " + permission.getName() + " already registered.");
+				ConsoleModule.debug(PermissionModule.class, "Permission node " + permission.getName() + " already registered.");
 				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 			}
 		}

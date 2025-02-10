@@ -71,7 +71,7 @@ public final class LTBlueMap {
 				} else cachedMap.getMarkerSets().put("ltitemmail_markers", set);
 			}
 			saveToFile();
-			ConsoleModule.debug(getClass().getName() + "#createMarker: " + id);
+			ConsoleModule.debug(getClass(), "#createMarker: " + id);
 		}
 	}
 	public final void deleteMarker(final OfflinePlayer player, final Location location, Boolean doNotSave) {
@@ -92,7 +92,7 @@ public final class LTBlueMap {
 					set.getMarkers().remove(id);
 					for(final BlueMapMap cachedMap : world.getMaps()) if(cachedMap.getMarkerSets().containsKey("ltitemmail_markers")) cachedMap.getMarkerSets().replace("ltitemmail_markers", set);
 					if(!doNotSave) saveToFile();
-					ConsoleModule.debug(getClass().getName() + "#deleteMarker: " + id);
+					ConsoleModule.debug(getClass(), "#deleteMarker: " + id);
 				}
 			}
 		}
@@ -104,9 +104,9 @@ public final class LTBlueMap {
 			final FileWriter writer = new FileWriter(new File(LTItemMail.getInstance().getDataFolder(), "bluemap-markers.json"));
 			MarkerGson.INSTANCE.toJson(set, writer);
 			writer.close();
-			ConsoleModule.debug(getClass().getName() + "#saveToFile: saved");
+			ConsoleModule.debug(getClass(), "#saveToFile: saved");
 		} catch (final IOException e) {
-			ConsoleModule.debug(getClass().getName() + "#saveToFile: error");
+			ConsoleModule.debug(getClass(), "#saveToFile: error");
 			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 		}
 	}
@@ -117,9 +117,9 @@ public final class LTBlueMap {
 			final FileReader reader = new FileReader(markers);
 			set = MarkerGson.INSTANCE.fromJson(reader, MarkerSet.class);
 			reader.close();
-			ConsoleModule.debug(getClass().getName() + "#loadFromFile: loaded");
+			ConsoleModule.debug(getClass(), "#loadFromFile: loaded");
 		} catch (final IOException e) {
-			ConsoleModule.debug(getClass().getName() + "#loadFromFile: error");
+			ConsoleModule.debug(getClass(), "#loadFromFile: error");
 			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 		}
 		return set;

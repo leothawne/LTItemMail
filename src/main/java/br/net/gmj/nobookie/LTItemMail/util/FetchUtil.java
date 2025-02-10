@@ -85,7 +85,7 @@ public final class FetchUtil {
 					super.onDownloadError(download, exception);
 					if(!silent) {
 						ConsoleModule.warning(LanguageModule.I.g(LanguageModule.I.i.R_F) + " [" + name + "]!");
-					} else ConsoleModule.debug(LanguageModule.I.g(LanguageModule.I.i.R_F) + " [" + name + "]!");
+					} else ConsoleModule.debug(FetchUtil.FileManager.class, LanguageModule.I.g(LanguageModule.I.i.R_F) + " [" + name + "]!");
 				}
 			});
 			downloader.downloadFileToLocation(url, current.getAbsolutePath());
@@ -143,7 +143,7 @@ public final class FetchUtil {
 				pluginYaml.load(new InputStreamReader(internalPluginYaml));
 				return pluginYaml.getInt("build");
 			} catch (IOException | InvalidConfigurationException e) {
-				ConsoleModule.debug("There was an error trying to retrieve build number from plugin.yml");
+				ConsoleModule.debug(FetchUtil.Build.class, "There was an error trying to retrieve build number from plugin.yml");
 				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 			}
 			return 0;
@@ -157,7 +157,7 @@ public final class FetchUtil {
 				pluginYaml.load(new InputStreamReader(internalPluginYaml));
 				return pluginYaml.getString("version");
 			} catch (IOException | InvalidConfigurationException e) {
-				ConsoleModule.debug("There was an error trying to retrieve version number from plugin.yml");
+				ConsoleModule.debug(FetchUtil.Version.class, "There was an error trying to retrieve version number from plugin.yml");
 				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 			}
 			return null;

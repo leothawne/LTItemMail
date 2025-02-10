@@ -13,14 +13,14 @@ public final class LTGriefPrevention {
 		final Claim claim = GriefPrevention.instance.dataStore.getClaimAt(location, false, false, null);
 		Boolean result = true;
 		if(claim != null) result = claim.hasExplicitPermission(player, ClaimPermission.Build);
-		ConsoleModule.debug(getClass().getName() + "#canBuildBreak: " + player.getName() + " " + result);
+		ConsoleModule.debug(getClass(), "#canBuildBreak: " + player.getName() + " " + result);
 		return result;
 	}
 	public final boolean canInteract(final Player player, final Location location) {
 		final Claim claim = GriefPrevention.instance.dataStore.getClaimAt(location, false, false, null);
 		Boolean result = true;
 		if(claim != null) result = claim.hasExplicitPermission(player, ClaimPermission.Inventory);
-		ConsoleModule.debug(getClass().getName() + "#canInteract: " + player.getName() + " " + result);
+		ConsoleModule.debug(getClass(), "#canInteract: " + player.getName() + " " + result);
 		return result;
 	}
 }

@@ -34,10 +34,10 @@ public final class LTDecentHolograms {
 		Bukkit.getScheduler().runTaskLater(LTItemMail.getInstance(), new Runnable() {
 			@Override
 			public final void run() {
-				ConsoleModule.debug(getClass().getName() + "#cleanup: performing");
+				ConsoleModule.debug(getClass(), "#cleanup: performing");
 				for(final MailboxBlock block : DatabaseModule.Block.getMailboxBlocks()) deleteHolo(Bukkit.getOfflinePlayer(block.getOwner()), block.getLocation());
 				for(final MailboxBlock block : DatabaseModule.Block.getMailboxBlocks()) createHolo(Bukkit.getOfflinePlayer(block.getOwner()), block.getLocation());
-				ConsoleModule.debug(getClass().getName() + "#cleanup: done");
+				ConsoleModule.debug(getClass(), "#cleanup: done");
 			}
 		}, 1);
 	}
@@ -53,7 +53,7 @@ public final class LTDecentHolograms {
 		DHAPI.addHologramLine(holo, items.get(new Random().nextInt(items.size() - 1)));
 		DHAPI.addHologramLine(holo, "<#ANIM:wave:" + ChatColor.GREEN + "" + ChatColor.BOLD + "," + ChatColor.GOLD + "" + ChatColor.BOLD + ">" + LanguageModule.get(LanguageModule.Type.BLOCK_NAME) + "</#ANIM>");
 		DHAPI.addHologramLine(holo, ChatColor.GOLD + LanguageModule.get(LanguageModule.Type.BLOCK_OWNER) + " " + ChatColor.AQUA + player.getName());
-		ConsoleModule.debug(getClass().getName() + "#createHolo: " + id);
+		ConsoleModule.debug(getClass(), "#createHolo: " + id);
 	}
 	public final void deleteHolo(final OfflinePlayer player, final Location location) {
 		final String world = location.getWorld().getName();
@@ -63,7 +63,7 @@ public final class LTDecentHolograms {
 		final String id = player.getName() + "_" + world + "_" + x + "_" + y + "_" + z;
 		if(DHAPI.getHologram(id) != null) {
 			DHAPI.removeHologram(id);
-			ConsoleModule.debug(getClass().getName() + "#deleteHolo: " + id);
+			ConsoleModule.debug(getClass(), "#deleteHolo: " + id);
 		}
 	}
 }
