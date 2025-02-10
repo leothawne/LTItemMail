@@ -82,7 +82,7 @@ public final class DatabaseModule {
 						this.cancel();
 					}
 				}
-			}.runTaskTimer(LTItemMail.getInstance(), 20 * 60, 20 * 60);
+			}.runTaskTimerAsynchronously(LTItemMail.getInstance(), 20 * 60, 20 * 60);
 			return connection;
 		}
 	}
@@ -172,18 +172,27 @@ public final class DatabaseModule {
 		try {
 			LTItemMail.getInstance().connection.close();
 		} catch (final SQLException | NullPointerException e) {
-			ConsoleModule.debug("Unable to disconnect from database.");
+			ConsoleModule.debug(DatabaseModule.class, "Unable to disconnect from database.");
 			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 		}
 	}
 	public static final boolean purge() {
 		try {
-			LTItemMail.getInstance().connection.createStatement().executeLargeUpdate("DELETE FROM mailbox;");
-			LTItemMail.getInstance().connection.createStatement().executeLargeUpdate("DELETE FROM mailbox_block;");
-			LTItemMail.getInstance().connection.createStatement().executeLargeUpdate("DELETE FROM users;");
+			switch(((String) ConfigurationModule.get(ConfigurationModule.Type.DATABASE_TYPE)).toLowerCase()) {
+				case "flatfile":
+					LTItemMail.getInstance().connection.createStatement().executeLargeUpdate("DELETE FROM mailbox;");
+					LTItemMail.getInstance().connection.createStatement().executeLargeUpdate("DELETE FROM mailbox_block;");
+					LTItemMail.getInstance().connection.createStatement().executeLargeUpdate("DELETE FROM users;");
+					break;
+				case "mysql":
+					LTItemMail.getInstance().connection.createStatement().executeLargeUpdate("TRUNCATE TABLE mailbox;");
+					LTItemMail.getInstance().connection.createStatement().executeLargeUpdate("TRUNCATE TABLE mailbox_block;");
+					LTItemMail.getInstance().connection.createStatement().executeLargeUpdate("TRUNCATE TABLE users;");
+					break;
+			}
 			return true;
 		} catch (final SQLException e) {
-			ConsoleModule.debug("Unable to purge database.");
+			ConsoleModule.debug(DatabaseModule.class, "Unable to purge database.");
 			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 		}
 		return false;
