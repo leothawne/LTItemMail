@@ -62,7 +62,7 @@ public final class ItemMailCommand extends LTCommandExecutor {
 			} else Bukkit.dispatchCommand(sender, "ltitemmail:itemmail help");
 		} else if(args[0].equalsIgnoreCase("help")) {
 			if(hasPermission = PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_PLAYER_MAIN)) {
-				sender.sendMessage(ChatColor.AQUA + "=+=+=+= [LT Item Mail] =+=+=+=");
+				sender.sendMessage(ChatColor.LIGHT_PURPLE + "[ LT Item Mail ]");
 				sender.sendMessage(ChatColor.GREEN + "/itemmail help " + ChatColor.AQUA + "- " + LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_ITEMMAIL));
 				if(PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_PLAYER_VERSION)) sender.sendMessage(ChatColor.GREEN + "/itemmail version " + ChatColor.AQUA + "- " + LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_VERSION));
 				if(PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_PLAYER_LIST)) sender.sendMessage(ChatColor.GREEN + "/itemmail list " + ChatColor.AQUA + "- " + LanguageModule.get(LanguageModule.Type.COMMAND_PLAYER_LIST));
@@ -81,7 +81,7 @@ public final class ItemMailCommand extends LTCommandExecutor {
 						@Override
 						public final void run() {
 							sender.sendMessage(ChatColor.YELLOW + "LT Item Mail");
-							sender.sendMessage(ChatColor.YELLOW + "Version: " + ChatColor.DARK_GREEN + LTItemMail.getInstance().getDescription().getVersion());
+							sender.sendMessage(ChatColor.YELLOW + "Version: " + ChatColor.DARK_GREEN + ConfigurationModule.get(ConfigurationModule.Type.VERSION_NUMBER));
 							sender.sendMessage(ChatColor.YELLOW + "Build: " + ChatColor.DARK_GREEN + ConfigurationModule.get(ConfigurationModule.Type.BUILD_NUMBER));
 							sender.sendMessage(ChatColor.YELLOW + "Build date: " + ChatColor.DARK_GREEN + FetchUtil.URL.get(DataModule.getDateURL((Integer) ConfigurationModule.get(Type.BUILD_NUMBER))));
 							String authors = "";
