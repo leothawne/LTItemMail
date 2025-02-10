@@ -1,9 +1,8 @@
-package br.net.gmj.nobookie.LTItemMail.listener;
+package br.net.gmj.nobookie.LTItemMail.block.listener;
 
 import java.util.HashMap;
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -28,7 +27,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
-import br.net.gmj.nobookie.LTItemMail.LTItemMail;
 import br.net.gmj.nobookie.LTItemMail.entity.LTPlayer;
 import br.net.gmj.nobookie.LTItemMail.inventory.MailboxInventory;
 import br.net.gmj.nobookie.LTItemMail.item.Item;
@@ -49,9 +47,6 @@ import br.net.gmj.nobookie.LTItemMail.module.ext.LTWorldGuard;
 import br.net.gmj.nobookie.LTItemMail.util.BukkitUtil;
 
 public final class MailboxBlockListener implements Listener {
-	public MailboxBlockListener() {
-		Bukkit.getServer().getPluginManager().registerEvents(this, LTItemMail.getInstance());
-	}
 	private final Item mailbox = new MailboxItem();
 	private final LTDynmap dynmap = (LTDynmap) ExtensionModule.getInstance().get(ExtensionModule.Function.DYNMAP);
 	private final LTBlueMap blueMap = (LTBlueMap) ExtensionModule.getInstance().get(ExtensionModule.Function.BLUEMAP);
