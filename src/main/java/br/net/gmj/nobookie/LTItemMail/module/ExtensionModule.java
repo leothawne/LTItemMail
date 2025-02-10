@@ -1,10 +1,20 @@
 package br.net.gmj.nobookie.LTItemMail.module;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -182,6 +192,49 @@ public final class ExtensionModule {
 		if(detected) {
 			ConsoleModule.info("Extensions loaded.");
 		} else ConsoleModule.info("No extensions detected.");
+		new PlugManSafeGuard();
+	}
+	private final class PlugManSafeGuard implements Listener {
+		private PlugManSafeGuard() {
+			try {
+				Plugin plugMan = null;
+				if(Bukkit.getPluginManager().isPluginEnabled("PlugManX")) {
+					 plugMan = Bukkit.getPluginManager().getPlugin("PlugManX");
+				} else if(Bukkit.getPluginManager().isPluginEnabled("PlugMan")) plugMan = Bukkit.getPluginManager().getPlugin("PlugMan");
+				if(plugMan != null) {
+					ConsoleModule.warning("PlugMan detected! Reloading LT Item Mail with PlugMan can cause issues. Safe Guard activated!");
+					if(!ConfigurationModule.devMode) Bukkit.getPluginManager().registerEvents(this, LTItemMail.getInstance());
+					final FileConfiguration config = plugMan.getConfig();
+					final List<String> ignored = config.getStringList("ignored-plugins");
+					if(!ignored.contains(LTItemMail.getInstance().getDescription().getName())){
+						ignored.add(LTItemMail.getInstance().getDescription().getName());
+						config.set("ignored-plugins", ignored);
+						config.save(new File(plugMan.getDataFolder(), "config.yml"));
+					}
+				}
+			} catch(final Exception e) {}
+		}
+		@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
+		public final void onServerCommandEvent(final ServerCommandEvent event) {
+			final String[] command = event.getCommand().split(" ");
+			event.setCancelled(prevent(event.getSender(), command));
+		}
+		@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
+		public final void onPlayerCommandEvent(final PlayerCommandPreprocessEvent event) {
+			final String[] command = event.getMessage().replace("/", "").split(" ");
+			event.setCancelled(prevent(event.getPlayer(), command));
+		}
+		private final boolean prevent(final CommandSender sender, final String[] command) {
+			Boolean plugman = false;
+			for(final String cmd : command) {
+				if(cmd.equalsIgnoreCase("plugman")) plugman = true;
+				if(plugman && cmd.equalsIgnoreCase(LTItemMail.getInstance().getDescription().getName())) {
+					sender.sendMessage(ChatColor.DARK_RED + "Don't! >:(");
+					return true;
+				}
+			}
+			return false;
+		}
 	}
 	public static final ExtensionModule reload() {
 		if(instance != null) {

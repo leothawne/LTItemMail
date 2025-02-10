@@ -4,7 +4,9 @@ version: ${project.version}
 build: ${v}
 api-version: 1.14
 load: POSTWORLD
-authors: [Nobookie, leothawne]
+authors:
+  - Nobookie
+  - leothawne
 website: https://www.spigotmc.org/resources/62294/
 main: ${project.groupId}.${project.artifactId}.${project.name}
 database: true
@@ -21,3 +23,5 @@ softdepend:
   - CoinsEngine
   - UltimateAdvancementAPI
   - TheNewEconomy
+  - PlugMan
+  - PlugManX
