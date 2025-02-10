@@ -31,7 +31,7 @@ public final class BungeeModule implements PluginMessageListener {
 				bungee.writeUTF("ALL");
 				Bukkit.getServer().sendPluginMessage(LTItemMail.getInstance(), "BungeeCord", bungee.toByteArray());
 			}
-		}, 1, 5);
+		}, 10, 20);
 	}
 	private final LTUltimateAdvancementAPI ultimateAdvancementAPI = (LTUltimateAdvancementAPI) ExtensionModule.getInstance().get(ExtensionModule.Function.ULTIMATEADVANCEMENTAPI);
 	@Override
@@ -57,20 +57,20 @@ public final class BungeeModule implements PluginMessageListener {
 							display = MailboxModule.Display.valueOf(((String) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_DISPLAY)).toUpperCase());
 						} catch(final IllegalArgumentException e) {
 							if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) {
-								ConsoleModule.severe("New mail display must be CHAT, TITLE or TOAST");
+								ConsoleModule.severe("New mail notification must be CHAT, TITLE or TOAST");
 								e.printStackTrace();
 							}
 							display = MailboxModule.Display.CHAT;
 						}
 						switch(display) {
 							case CHAT:
-								bukkitReceiver.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.AQUA + "" + LanguageModule.get(LanguageModule.Type.MAILBOX_FROM) + " " + ChatColor.GREEN + "" + sender.getName());
+								bukkitReceiver.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.AQUA + "" + LanguageModule.get(LanguageModule.Type.MAILBOX_FROM) + " " + ChatColor.GREEN + "" + sender.getName() + " (#" + mailboxID + ")");
 								break;
 							case TITLE:
-								bukkitReceiver.sendTitle(ChatColor.AQUA + "" + LanguageModule.get(LanguageModule.Type.MAILBOX_FROM) +  " " + ChatColor.GREEN, sender.getName(), 20 * 1, 20 * 5, 20 * 1);
+								bukkitReceiver.sendTitle(ChatColor.AQUA + "" + LanguageModule.get(LanguageModule.Type.MAILBOX_FROM) +  " " + ChatColor.GREEN, sender.getName() + " (#" + mailboxID + ")", 20 * 1, 20 * 5, 20 * 1);
 								break;
 							case TOAST:
-								if(ultimateAdvancementAPI != null) ultimateAdvancementAPI.show(receiver, LanguageModule.get(LanguageModule.Type.MAILBOX_FROM) + " " + sender.getName());
+								if(ultimateAdvancementAPI != null) ultimateAdvancementAPI.show(receiver, LanguageModule.get(LanguageModule.Type.MAILBOX_FROM) + " " + sender.getName() + " (#" + mailboxID + ")");
 								break;
 						}
 					}

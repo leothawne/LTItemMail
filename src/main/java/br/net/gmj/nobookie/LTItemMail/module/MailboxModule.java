@@ -40,7 +40,7 @@ public final class MailboxModule {
 		} catch (final IOException e) {
 			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 		}
-		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) ConsoleModule.mailbox(content);
+		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) ConsoleModule.debug(MailboxModule.class, content);
 	}
 	public static final boolean log(final UUID from, UUID playerTo, final Action action, final Integer mailboxID, final Double mailboxCost, final LinkedList<ItemStack> contents, final Location mailboxBlock) {
 		if(from == null || action == null) return false;
@@ -126,21 +126,21 @@ public final class MailboxModule {
 				display = MailboxModule.Display.valueOf(((String) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_DISPLAY)).toUpperCase());
 			} catch(final IllegalArgumentException e) {
 				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) {
-					ConsoleModule.severe("New mail display must be CHAT, TITLE or TOAST");
+					ConsoleModule.severe("New mail notification must be CHAT, TITLE or TOAST");
 					e.printStackTrace();
 				}
 				display = MailboxModule.Display.CHAT;
 			}
 			switch(display) {
 				case CHAT:
-					bukkitReceiver.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.AQUA + "" + LanguageModule.get(LanguageModule.Type.MAILBOX_FROM) + " " + ChatColor.GREEN + "" + sender.getName());
+					bukkitReceiver.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.AQUA + "" + LanguageModule.get(LanguageModule.Type.MAILBOX_FROM) + " " + ChatColor.GREEN + "" + sender.getName() + ChatColor.AQUA + " (#" + mailboxID + "): " + ChatColor.GOLD + label);
 					break;
 				case TITLE:
-					bukkitReceiver.sendTitle(ChatColor.AQUA + "" + LanguageModule.get(LanguageModule.Type.MAILBOX_FROM) +  " " + ChatColor.GREEN, sender.getName(), 20 * 1, 20 * 5, 20 * 1);
+					bukkitReceiver.sendTitle(ChatColor.AQUA + "" + LanguageModule.get(LanguageModule.Type.MAILBOX_FROM) + " " + ChatColor.GREEN, sender.getName() + ChatColor.AQUA + " (#" + mailboxID + ")", 20 * 1, 20 * 5, 20 * 1);
 					break;
 				case TOAST:
 					if(ultimateAdvancementAPI != null) {
-						ultimateAdvancementAPI.show(receiver, LanguageModule.get(LanguageModule.Type.MAILBOX_FROM) + " " + sender.getName());
+						ultimateAdvancementAPI.show(receiver, LanguageModule.get(LanguageModule.Type.MAILBOX_FROM) + " " + sender.getName() + ChatColor.AQUA + " (#" + mailboxID + ")");
 						if(!label.isEmpty()) Bukkit.getScheduler().runTaskLater(LTItemMail.getInstance(), new Runnable() {
 							@Override
 							public final void run() {

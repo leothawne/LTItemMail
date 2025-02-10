@@ -49,7 +49,7 @@ public final class LTItemMailAPI {
 	 * @return true if it was successfully sent. Otherwise it will return false.
 	 * 
 	 */
-	public static final boolean sendSpecialMail(final LTPlayer player, final LinkedList<ItemStack> items, String label) {
+	public static final Boolean sendSpecialMail(final LTPlayer player, final LinkedList<ItemStack> items, String label) {
 		if(player != null) {
 			final Player bukkitPlayer = player.getBukkitPlayer().getPlayer();
 			if(label == null) label = "";
@@ -60,7 +60,7 @@ public final class LTItemMailAPI {
 					display = MailboxModule.Display.valueOf(((String) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_DISPLAY)).toUpperCase());
 				} catch(final IllegalArgumentException e) {
 					if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) {
-						ConsoleModule.severe("New mail display must be CHAT, TITLE or TOAST");
+						ConsoleModule.severe("New mail notification must be CHAT, TITLE or TOAST");
 						e.printStackTrace();
 					}
 					display = MailboxModule.Display.CHAT;
@@ -100,10 +100,9 @@ public final class LTItemMailAPI {
 	}
 	/**
 	 * 
-	 * Gets all existing LT Item Mail
-	 * blocks standing in one or
-	 * more worlds of the specified
-	 * block type.
+	 * Gets all existing types of
+	 * LT Item Mail blocks standing
+	 * in one or more worlds.
 	 * 
 	 * @return A list of LT Item Mail blocks.
 	 * 
@@ -115,9 +114,10 @@ public final class LTItemMailAPI {
 	}
 	/**
 	 * 
-	 * Gets all existing types of
-	 * LT Item Mail blocks standing
-	 * in one or more worlds.
+	 * Gets all existing LT Item Mail
+	 * blocks standing in one or
+	 * more worlds of the specified
+	 * block type.
 	 * 
 	 * @param blockType The type of block to be retrieved (See {@link Block.Type}).
 	 * 
