@@ -104,7 +104,7 @@ public final class LTPlayer {
 	 * @return true if the player is online and received the mailbox block. Otherwise, it will return false.
 	 * 
 	 */
-	public final boolean giveMailboxBlock() {
+	public final Boolean giveMailboxBlock() {
 		final Player player = this.player.getPlayer();
 		if(player != null && player.getInventory().firstEmpty() != -1) {
 			player.getInventory().addItem(new MailboxItem().getItem(null));
@@ -145,7 +145,7 @@ public final class LTPlayer {
 	 * @return true if the player is banned. Otherwise, it will return false.
 	 * 
 	 */
-	public final boolean isBanned() {
+	public final Boolean isBanned() {
 		if(isRegistered()) return DatabaseModule.User.isBanned(uuid);
 		return false;
 	}
@@ -154,7 +154,7 @@ public final class LTPlayer {
 	 * Gets the count of mails sent from the LTPlayer.
 	 * 
 	 */
-	public final int getMailSentCount() {
+	public final Integer getMailSentCount() {
 		if(isRegistered()) return DatabaseModule.User.getSentCount(uuid);
 		return 0;
 	}
@@ -163,7 +163,7 @@ public final class LTPlayer {
 	 * Gets the count of mails sent to the LTPlayer.
 	 * 
 	 */
-	public final int getMailReceivedCount() {
+	public final Integer getMailReceivedCount() {
 		if(isRegistered()) return DatabaseModule.User.getReceivedCount(uuid);
 		return 0;
 	}
@@ -174,7 +174,7 @@ public final class LTPlayer {
 	 * @return true if the player is registered. Otherwise, it will return false.
 	 * 
 	 */
-	public final boolean isRegistered() {
+	public final Boolean isRegistered() {
 		return DatabaseModule.User.isRegistered(uuid);
 	}
 	/**
