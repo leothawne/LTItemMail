@@ -50,15 +50,10 @@ public final class ItemMailCommand extends LTCommandExecutor {
 			hasPermission = true;
 			HashMap<Integer, String> mailboxes = null;
 			Player player = null;
-			if(PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_PLAYER_OPEN) && sender instanceof Player && (mailboxes = DatabaseModule.Virtual.getMailboxesList((player = (Player) sender).getUniqueId())).size() > 0) {
-				Integer first = 0;
-				for(final Integer id : mailboxes.keySet()) if(DatabaseModule.Virtual.getStatus(id).equals(DatabaseModule.Virtual.Status.PENDING)) {
-					first = id;
-					break;
-				}
-				if(first > 0) {
-					player.performCommand("ltitemmail:itemmail open " + first);
-				} else Bukkit.dispatchCommand(sender, "ltitemmail:itemmail help");
+			if(PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_PLAYER_OPEN) && sender instanceof Player && (mailboxes = DatabaseModule.Virtual.getMailboxesList((player = (Player) sender).getUniqueId(), DatabaseModule.Virtual.Status.PENDING)).size() > 0) {
+				final List<Integer> ids = new ArrayList<>();
+				for(final Integer id : mailboxes.keySet()) ids.add(id);
+				player.performCommand("ltitemmail:itemmail open " + ids.get(0));
 			} else Bukkit.dispatchCommand(sender, "ltitemmail:itemmail help");
 		} else if(args[0].equalsIgnoreCase("help")) {
 			if(hasPermission = PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_PLAYER_MAIN)) {
@@ -131,7 +126,7 @@ public final class ItemMailCommand extends LTCommandExecutor {
 				if(sender instanceof Player) {
 					final Player player = (Player) sender;
 					if(args.length == 1) {
-						final HashMap<Integer, String> mailboxes = DatabaseModule.Virtual.getMailboxesList(player.getUniqueId());
+						final HashMap<Integer, String> mailboxes = DatabaseModule.Virtual.getMailboxesList(player.getUniqueId(), DatabaseModule.Virtual.Status.ALL);
 						if(mailboxes.size() > 0) {
 							for(final Integer mailboxID : mailboxes.keySet()) {
 								String from = "CONSOLE";
@@ -268,7 +263,7 @@ public final class ItemMailCommand extends LTCommandExecutor {
 		if(args.length == 2) {
 			if(PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_PLAYER_OPEN) || PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_PLAYER_DELETE)) if(args[0].equals("open") || args[0].equals("delete")) if(sender instanceof Player) {
 				final Player player = (Player) sender;
-				final HashMap<Integer, String> mailboxes = DatabaseModule.Virtual.getMailboxesList(player.getUniqueId());
+				final HashMap<Integer, String> mailboxes = DatabaseModule.Virtual.getMailboxesList(player.getUniqueId(), DatabaseModule.Virtual.Status.ALL);
 				final LinkedList<String> response = new LinkedList<>();
 				for(final Integer i : mailboxes.keySet()) response.add(String.valueOf(i));
 				response.sort(Comparator.naturalOrder());

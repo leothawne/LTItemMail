@@ -1,6 +1,5 @@
 package br.net.gmj.nobookie.LTItemMail.block.listener;
 
-import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -65,16 +64,8 @@ public final class MailboxBlockListener implements Listener {
 					if(PermissionModule.hasPermission(player, PermissionModule.Type.BLOCK_PLAYER_USE)) {
 						final LTPlayer owner = LTPlayer.fromUUID(DatabaseModule.Block.getMailboxOwner(block.getLocation()));
 						if(owner.getUniqueId().equals(player.getUniqueId()) && !PermissionModule.hasPermission(player, PermissionModule.Type.CMD_ADMIN_BYPASS)) {
-							HashMap<Integer, String> mailboxes = null;
-							if((mailboxes = DatabaseModule.Virtual.getMailboxesList(player.getUniqueId())).size() > 0) {
-								Boolean first = false;
-								for(final Integer id : mailboxes.keySet()) if(DatabaseModule.Virtual.getStatus(id).equals(DatabaseModule.Virtual.Status.PENDING)) {
-									first = true;
-									break;
-								}
-								if(first) {
-									player.performCommand("ltitemmail:itemmail");
-								} else player.performCommand("ltitemmail:itemmail list");
+							if(DatabaseModule.Virtual.getMailboxesList(player.getUniqueId(), DatabaseModule.Virtual.Status.PENDING).size() > 0) {
+								player.performCommand("ltitemmail:itemmail");
 							} else player.performCommand("ltitemmail:itemmail list");
 						} else player.openInventory(MailboxInventory.getInventory(MailboxInventory.Type.OUT, null, owner, null, player.getUniqueId(), "", false));
 					} else player.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.BLOCK_USEERROR));

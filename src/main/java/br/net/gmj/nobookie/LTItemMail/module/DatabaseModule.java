@@ -490,11 +490,15 @@ public final class DatabaseModule {
 			}
 			return false;
 		}
-		public static final HashMap<Integer, String> getMailboxesList(final UUID owner){
+		public static final HashMap<Integer, String> getMailboxesList(final UUID owner, final Status status){
+			String sts = " AND status = '" + status.toString() + "'";
+			Integer deleted = 0;
+			if(status.equals(Status.DENIED)) deleted = 1;
+			if(status.equals(Status.ALL)) sts = "";
 			final HashMap<Integer, String> mailboxes = new HashMap<>();
 			try {
 				final Statement statement = LTItemMail.getInstance().connection.createStatement();
-				final ResultSet results = statement.executeQuery("SELECT * FROM mailbox WHERE uuid_to = '" + owner.toString() + "' AND deleted = '0' ORDER BY id ASC;");
+				final ResultSet results = statement.executeQuery("SELECT * FROM mailbox WHERE uuid_to = '" + owner.toString() + "' AND deleted = '" + deleted + "'" + sts + " ORDER BY id ASC;");
 				while(results.next()) mailboxes.putIfAbsent(results.getInt("id"), results.getString("sent_date"));
 				statement.closeOnCompletion();
 			} catch (final SQLException | NullPointerException e) {
@@ -538,6 +542,7 @@ public final class DatabaseModule {
 			PENDING,
 			DENIED,
 			ACCEPTED,
+			ALL,
 			UNDEFINED
 		}
 	}
