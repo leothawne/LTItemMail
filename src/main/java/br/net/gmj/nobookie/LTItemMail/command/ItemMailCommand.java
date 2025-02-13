@@ -48,7 +48,7 @@ public final class ItemMailCommand extends LTCommandExecutor {
 		Boolean hasPermission = false;
 		if(args.length == 0) {
 			hasPermission = true;
-			HashMap<Integer, String> mailboxes = null;
+			HashMap<Integer, String> mailboxes;
 			Player player = null;
 			if(PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_PLAYER_OPEN) && sender instanceof Player && (mailboxes = DatabaseModule.Virtual.getMailboxesList((player = (Player) sender).getUniqueId(), DatabaseModule.Virtual.Status.PENDING)).size() > 0) {
 				final List<Integer> ids = new ArrayList<>();
@@ -99,20 +99,42 @@ public final class ItemMailCommand extends LTCommandExecutor {
 				if(sender instanceof Player) {
 					final Player player = (Player) sender;
 					if(args.length == 2) {
+						final String idStr = args[1].toLowerCase();
 						try {
-							final Integer mailboxID = Integer.valueOf(args[1].replace("#", ""));
-							if(DatabaseModule.Virtual.isMaiboxOwner(player.getUniqueId(), mailboxID) && !DatabaseModule.Virtual.isMailboxDeleted(mailboxID)) {
-								MailboxModule.log(player.getUniqueId(), null, MailboxModule.Action.OPENED, mailboxID, null, null, null);
-								switch(DatabaseModule.Virtual.getStatus(mailboxID)) {
-									case ACCEPTED:
-										player.openInventory(MailboxInventory.getInventory(MailboxInventory.Type.IN, mailboxID, null, DatabaseModule.Virtual.getMailbox(mailboxID), DatabaseModule.Virtual.getMailboxFrom(mailboxID), DatabaseModule.Virtual.getMailboxLabel(mailboxID), false));
-										break;
-									case PENDING:
-										player.openInventory(MailboxInventory.getInventory(MailboxInventory.Type.IN_PENDING, mailboxID, null, DatabaseModule.Virtual.getMailbox(mailboxID), DatabaseModule.Virtual.getMailboxFrom(mailboxID), DatabaseModule.Virtual.getMailboxLabel(mailboxID), false));
-										break;
-									case UNDEFINED:
-										player.sendMessage(DatabaseModule.Virtual.Status.class.getName() + ": " + DatabaseModule.Virtual.Status.UNDEFINED.toString());
-										break;
+							if(idStr.endsWith("p") || idStr.endsWith("a")) {
+								DatabaseModule.Virtual.Status status;
+								MailboxInventory.Type type;
+								if(idStr.endsWith("p")) {
+									status = DatabaseModule.Virtual.Status.PENDING;
+									type = MailboxInventory.Type.IN_PENDING;
+								} else {
+									status = DatabaseModule.Virtual.Status.ACCEPTED;
+									type = MailboxInventory.Type.IN;
+								}
+								final HashMap<Integer, String> mailboxes = DatabaseModule.Virtual.getMailboxesList(player.getUniqueId(), status);
+								final Integer pos = Integer.valueOf(idStr.replace("#", "").replace("p", "").replace("a", ""));
+								if(mailboxes.size() >= pos) {
+									final List<Integer> ids = new ArrayList<>();
+									for(final Integer id : mailboxes.keySet()) ids.add(id);
+									player.openInventory(MailboxInventory.getInventory(type, ids.get((pos - 1)), null, DatabaseModule.Virtual.getMailbox(ids.get((pos - 1))), DatabaseModule.Virtual.getMailboxFrom(ids.get((pos - 1))), DatabaseModule.Virtual.getMailboxLabel(ids.get((pos - 1))), false));
+								}
+							} else {
+								final Integer mailboxID = Integer.valueOf(idStr.replace("#", ""));
+								if(DatabaseModule.Virtual.isMaiboxOwner(player.getUniqueId(), mailboxID) && !DatabaseModule.Virtual.isMailboxDeleted(mailboxID)) {
+									MailboxModule.log(player.getUniqueId(), null, MailboxModule.Action.OPENED, mailboxID, null, null, null);
+									MailboxInventory.Type type = null;
+									switch(DatabaseModule.Virtual.getStatus(mailboxID)) {
+										case ACCEPTED:
+											type = MailboxInventory.Type.IN;
+											break;
+										case PENDING:
+											type = MailboxInventory.Type.IN_PENDING;
+											break;
+										case UNDEFINED:
+											player.sendMessage(ChatColor.DARK_RED + DatabaseModule.Virtual.Status.class.getName() + ": " + DatabaseModule.Virtual.Status.UNDEFINED.toString());
+											break;
+									}
+									if(type != null) player.openInventory(MailboxInventory.getInventory(type, mailboxID, null, DatabaseModule.Virtual.getMailbox(mailboxID), DatabaseModule.Virtual.getMailboxFrom(mailboxID), DatabaseModule.Virtual.getMailboxLabel(mailboxID), false));
 								}
 							}
 						} catch (final NumberFormatException e) {
