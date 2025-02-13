@@ -62,7 +62,7 @@ public final class LTPlaceholderAPI extends PlaceholderExpansion {
 						case "accepted":
 						case "denied":
 							if(phSplit.length > 2) try {
-								Integer pos = Integer.parseInt(phSplit[2]);
+								
 								HashMap<Integer, String> mails = null;
 								switch(phSplit[1]) {
 									case "pending":
@@ -75,16 +75,25 @@ public final class LTPlaceholderAPI extends PlaceholderExpansion {
 										mails = DatabaseModule.Virtual.getMailboxesList(ltPlayer.getUniqueId(), DatabaseModule.Virtual.Status.DENIED);
 										break;
 								}
-								if(mails != null) if(mails.size() >= pos) {
-									final List<Integer> ids = new ArrayList<>();
-									for(final Integer id : mails.keySet()) ids.add(id);
-									if(phSplit.length > 3) switch(phSplit[3]) {
-										case "id":
-											return String.valueOf(ids.get((pos - 1)));
-										case "date":
-											return mails.get(ids.get((pos - 1)));
+								if(phSplit[2].equals("total")) {
+									return String.valueOf(mails.size());
+								} else {
+									Integer pos = Integer.parseInt(phSplit[2]);
+									if(mails.size() >= pos) {
+										final List<Integer> ids = new ArrayList<>();
+										for(final Integer id : mails.keySet()) ids.add(id);
+										if(phSplit.length > 3) switch(phSplit[3]) {
+											case "id":
+												return String.valueOf(ids.get((pos - 1)));
+											case "date":
+												return mails.get(ids.get((pos - 1)));
+											case "label":
+												return DatabaseModule.Virtual.getMailboxLabel(ids.get((pos - 1)));
+											case "from":
+												return LTPlayer.fromUUID(DatabaseModule.Virtual.getMailboxFrom(ids.get((pos - 1)))).getName();
+										}
+										return "#" + ids.get((pos - 1)) + " (" + mails.get(ids.get((pos - 1))) + ")";
 									}
-									return "#" + ids.get((pos - 1)) + " (" + mails.get(ids.get((pos - 1))) + ")";
 								}
 							} catch(final NumberFormatException e) {
 								ConsoleModule.severe("Invalid placeholder %" + ph + "% (called by player " + ltPlayer.getName() + ")");
