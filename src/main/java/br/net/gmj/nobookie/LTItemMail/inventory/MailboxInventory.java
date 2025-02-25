@@ -67,10 +67,11 @@ public final class MailboxInventory {
 		ItemStack denyButton = new ItemStack(Material.BARRIER, 1);
 		ItemStack acceptButton = new ItemStack(Material.ENDER_EYE, 1);
 		if(ExtensionModule.getInstance().isRegistered(Function.HEADDATABASE)) {
-			costButton = LTHeadDatabase.Type.MAILBOX_BUTTON_COST.head();
-			labelButton = LTHeadDatabase.Type.MAILBOX_BUTTON_LABEL.head();
-			denyButton = LTHeadDatabase.Type.MAILBOX_BUTTON_DENY.head();
-			acceptButton = LTHeadDatabase.Type.MAILBOX_BUTTON_ACCEPT.head();
+			final LTHeadDatabase headDB = (LTHeadDatabase) ExtensionModule.getInstance().get(Function.HEADDATABASE);
+			costButton = headDB.getHead(LTHeadDatabase.Type.MAILBOX_BUTTON_COST);
+			labelButton = headDB.getHead(LTHeadDatabase.Type.MAILBOX_BUTTON_LABEL);
+			denyButton = headDB.getHead(LTHeadDatabase.Type.MAILBOX_BUTTON_DENY);
+			acceptButton = headDB.getHead(LTHeadDatabase.Type.MAILBOX_BUTTON_ACCEPT);
 		}
 		gui.setItemMeta(prepareItem(gui.getItemMeta(), ModelsModule.get(ModelsModule.Type.MAILBOX_GUI_NORMAL), null, null));
 		limiter.setItemMeta(prepareItem(limiter.getItemMeta(), ModelsModule.get(ModelsModule.Type.MAILBOX_LIMITER), null, null));
