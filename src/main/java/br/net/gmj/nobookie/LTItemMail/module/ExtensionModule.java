@@ -24,6 +24,7 @@ import br.net.gmj.nobookie.LTItemMail.module.ext.LTBlueMap;
 import br.net.gmj.nobookie.LTItemMail.module.ext.LTDecentHolograms;
 import br.net.gmj.nobookie.LTItemMail.module.ext.LTDynmap;
 import br.net.gmj.nobookie.LTItemMail.module.ext.LTGriefPrevention;
+import br.net.gmj.nobookie.LTItemMail.module.ext.LTHeadDatabase;
 import br.net.gmj.nobookie.LTItemMail.module.ext.LTPlaceholderAPI;
 import br.net.gmj.nobookie.LTItemMail.module.ext.LTRedProtect;
 import br.net.gmj.nobookie.LTItemMail.module.ext.LTTownyAdvanced;
@@ -54,6 +55,7 @@ public final class ExtensionModule {
 		plugins.putIfAbsent(Name.DECENTHOLOGRAMS, manager.getPlugin("DecentHolograms"));
 		plugins.putIfAbsent(Name.PLACEHOLDERAPI, manager.getPlugin("PlaceholderAPI"));
 		plugins.putIfAbsent(Name.ULTIMATEADVANCEMENTAPI, manager.getPlugin("UltimateAdvancementAPI"));
+		plugins.putIfAbsent(Name.HEADDATABASE, manager.getPlugin("HeadDatabase"));
 	}
 	public final void warn(final Name sourceName, final Name pluginName) {
 		Plugin source = null;
@@ -104,6 +106,9 @@ public final class ExtensionModule {
 				break;
 			case ULTIMATEADVANCEMENTAPI:
 				register.putIfAbsent(function, new LTUltimateAdvancementAPI());
+				break;
+			case HEADDATABASE:
+				register.putIfAbsent(function, new LTHeadDatabase());
 				break;
 		}
 		return isRegistered(function);
@@ -189,6 +194,10 @@ public final class ExtensionModule {
 				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 			}
 		}
+		if(isInstalled(Name.HEADDATABASE)) if(!isRegistered(Function.HEADDATABASE)) {
+			warn(null, Name.HEADDATABASE);
+			register(Function.HEADDATABASE);
+		}
 		if(detected) {
 			ConsoleModule.info("Extensions loaded.");
 		} else ConsoleModule.info("No extensions detected.");
@@ -261,7 +270,8 @@ public final class ExtensionModule {
 		BLUEMAP,
 		DECENTHOLOGRAMS,
 		PLACEHOLDERAPI,
-		ULTIMATEADVANCEMENTAPI
+		ULTIMATEADVANCEMENTAPI,
+		HEADDATABASE
 	}
 	public enum Function {
 		VAULT_PERMISSION,
@@ -273,6 +283,7 @@ public final class ExtensionModule {
 		BLUEMAP,
 		DECENTHOLOGRAMS,
 		PLACEHOLDERAPI,
-		ULTIMATEADVANCEMENTAPI
+		ULTIMATEADVANCEMENTAPI,
+		HEADDATABASE
 	}
 }

@@ -21,6 +21,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import br.net.gmj.nobookie.LTItemMail.LTItemMail;
 import br.net.gmj.nobookie.LTItemMail.entity.LTPlayer;
@@ -31,9 +32,12 @@ import br.net.gmj.nobookie.LTItemMail.module.ConfigurationModule;
 import br.net.gmj.nobookie.LTItemMail.module.ConsoleModule;
 import br.net.gmj.nobookie.LTItemMail.module.DatabaseModule;
 import br.net.gmj.nobookie.LTItemMail.module.EconomyModule;
+import br.net.gmj.nobookie.LTItemMail.module.ExtensionModule;
+import br.net.gmj.nobookie.LTItemMail.module.ExtensionModule.Function;
 import br.net.gmj.nobookie.LTItemMail.module.LanguageModule;
 import br.net.gmj.nobookie.LTItemMail.module.MailboxModule;
 import br.net.gmj.nobookie.LTItemMail.module.PermissionModule;
+import br.net.gmj.nobookie.LTItemMail.module.ext.LTHeadDatabase;
 import br.net.gmj.nobookie.LTItemMail.util.BukkitUtil;
 
 public final class MailboxVirtualListener implements Listener {
@@ -167,7 +171,13 @@ public final class MailboxVirtualListener implements Listener {
 			event.setCancelled(true);
 			final Inventory inventory = event.getClickedInventory();
 			final ItemStack[] contents = inventory.getContents();
-			if(selected.getType().equals(Material.EMERALD)) {
+			LTHeadDatabase headDB = null;
+			if(ExtensionModule.getInstance().isRegistered(Function.HEADDATABASE)) headDB = (LTHeadDatabase) ExtensionModule.getInstance().get(Function.HEADDATABASE);
+			Boolean primeCost = false;
+			if(headDB != null) {
+				if(selected.getItemMeta() instanceof SkullMeta) if(headDB.getId(selected).equals(LTHeadDatabase.Type.MAILBOX_BUTTON_COST.id())) primeCost = true;
+			} else if(selected.getType().equals(Material.EMERALD)) primeCost = true;
+			if(primeCost) {
 				final boolean isEmpty = BukkitUtil.Inventory.isEmpty(contents);
 				double newcost = 0.0;
 				if(!isEmpty) {
@@ -176,20 +186,30 @@ public final class MailboxVirtualListener implements Listener {
 						newcost = (Double) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_COST) * count;
 					} else newcost = (Double) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_COST);
 				}
-				final ItemStack emerald = event.getCurrentItem();
-				final ItemMeta emeraldMeta = emerald.getItemMeta();
-				final List<String> emeraldLore = emeraldMeta.getLore();
+				final ItemMeta selectedMeta = selected.getItemMeta();
+				final List<String> selectedLore = selectedMeta.getLore();
 				if(EconomyModule.getInstance() != null) {
-					emeraldLore.set(0, ChatColor.RESET + "" + ChatColor.GREEN + "$ " + newcost);
-				} else emeraldLore.set(0, ChatColor.RESET + "" + ChatColor.DARK_RED + LanguageModule.get(LanguageModule.Type.MAILBOX_COSTERROR));
-				emeraldMeta.setLore(emeraldLore);
-				emerald.setItemMeta(emeraldMeta);
-				inventory.setItem(event.getRawSlot(), emerald);
+					selectedLore.set(0, ChatColor.RESET + "" + ChatColor.GREEN + "$ " + newcost);
+				} else selectedLore.set(0, ChatColor.RESET + "" + ChatColor.DARK_RED + LanguageModule.get(LanguageModule.Type.MAILBOX_COSTERROR));
+				selectedMeta.setLore(selectedLore);
+				selected.setItemMeta(selectedMeta);
+				inventory.setItem(event.getRawSlot(), selected);
 			}
 			final String[] elements = inventoryView.getTitle().split("!");
 			if(elements.length == 2) {
 				final Integer mailboxID = Integer.parseInt(elements[1]);
-				if(selected.getType().equals(Material.BARRIER)) {
+				Boolean primeDeny = false;
+				Boolean primeAccept = false;
+				if(headDB != null) {
+					if(selected.getItemMeta() instanceof SkullMeta) {
+						if(headDB.getId(selected).equals(LTHeadDatabase.Type.MAILBOX_BUTTON_DENY.id())) primeDeny = true;
+						if(headDB.getId(selected).equals(LTHeadDatabase.Type.MAILBOX_BUTTON_ACCEPT.id())) primeAccept = true;
+					}
+				} else {
+					if(selected.getType().equals(Material.BARRIER)) primeDeny = true;
+					if(selected.getType().equals(Material.ENDER_EYE)) primeAccept = true;
+				}
+				if(primeDeny) {
 					DatabaseModule.Virtual.setStatus(mailboxID, DatabaseModule.Virtual.Status.DENIED);
 					final UUID from = DatabaseModule.Virtual.getMailboxFrom(mailboxID);
 					if(from != null) {
@@ -200,7 +220,7 @@ public final class MailboxVirtualListener implements Listener {
 					DatabaseModule.Virtual.setMailboxDeleted(mailboxID);
 					inventoryView.close();
 				}
-				if(selected.getType().equals(Material.ENDER_EYE)) {
+				if(primeAccept) {
 					DatabaseModule.Virtual.setStatus(mailboxID, DatabaseModule.Virtual.Status.ACCEPTED);
 					event.getInventory().clear();
 					inventoryView.close();
@@ -209,7 +229,7 @@ public final class MailboxVirtualListener implements Listener {
 			}
 		}
 	}
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public final void onSendMail(final EntitySendMailEvent event) {
 		final LTPlayer playerTo = event.getPlayerTo();
 		if(event.getFrom() instanceof Player) {
@@ -219,14 +239,14 @@ public final class MailboxVirtualListener implements Listener {
 				if(playerFrom.isBanned()) {
 					event.setCancelReason(LanguageModule.get(LanguageModule.Type.PLAYER_BANNED) + " (@" + playerFrom.getName() + " => @" + playerTo.getName() + ")");
 					event.setCancelled(true);
-				} else if(!event.isCancelled()) {
+				} else {
 					int sent_count = playerFrom.getMailSentCount();
 					sent_count++;
 					DatabaseModule.User.setSentCount(playerFrom.getUniqueId(), sent_count);
 				}
 			}
 		}
-		if(playerTo != null) if(!event.isCancelled()) {
+		if(playerTo != null) {
 			if(!playerTo.isRegistered()) DatabaseModule.User.register(playerTo);
 			int received_count = playerTo.getMailReceivedCount();
 			received_count++;
