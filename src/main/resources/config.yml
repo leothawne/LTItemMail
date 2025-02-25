@@ -1,5 +1,5 @@
 #Do not touch it!
-config-version: 12
+config-version: 13
 version-number: ${project.version}
 build-number: ${v}
 plugin:
@@ -26,6 +26,7 @@ plugin:
   #Cada servidor deve ter um identificador único. Senão caixas de corrêio físicas irão quebrar.
   #Se você alterar esse valor, você e seus jogadores terão que substituir todos os blocos de caixa de correio existentes, não importa se o modo bungee está ativado ou não.
   bungee-server-id: 'server1'
+  resource-pack-download: false
   debug: false
 database:
   #'flatfile' or 'mysql'

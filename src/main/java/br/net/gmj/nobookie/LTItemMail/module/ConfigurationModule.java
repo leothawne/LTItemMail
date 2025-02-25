@@ -110,6 +110,7 @@ public final class ConfigurationModule {
 		PLUGIN_TAG("plugin.tag", "&6[LTIM]"),
 		BUNGEE_MODE("plugin.bungee-mode", false),
 		BUNGEE_SERVER_ID("plugin.bungee-server-id", "server1"),
+		RESOURCE_PACK_DOWNLOAD("plugin.resource-pack-download", false),
 		PLUGIN_DEBUG("plugin.debug", false),
 		DATABASE_TYPE("database.type", "flatfile"),
 		DATABASE_CONVERT("database.convert", false),

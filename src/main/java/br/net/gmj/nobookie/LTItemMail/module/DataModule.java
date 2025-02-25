@@ -23,7 +23,7 @@ public final class DataModule {
 		return STABLE;
 	}
 	public enum Version {
-		CONFIG_YML(12),
+		CONFIG_YML(13),
 		ITEM_MODELS_YML(1),
 		ENGLISH_YML(10),
 		PORTUGUESE_YML(10),

@@ -92,7 +92,7 @@ public final class LTItemMail extends JavaPlugin {
 			RegistrationModule.setupItems();
 			RegistrationModule.setupBlocks();
 			new CommandModule();
-			FetchUtil.FileManager.download(DataModule.getResourcePackURL(), "LTItemMail-ResourcePack.zip", false);
+			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.RESOURCE_PACK_DOWNLOAD)) FetchUtil.FileManager.download(DataModule.getResourcePackURL(), "LTItemMail-ResourcePack.zip", false);
 			ConsoleModule.raw(ChatColor.GREEN + "Plugin took " + took.took() + " to load.");
 		} else {
 			took.cancel();
