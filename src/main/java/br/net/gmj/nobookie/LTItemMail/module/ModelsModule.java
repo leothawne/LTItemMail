@@ -52,7 +52,7 @@ public class ModelsModule {
 	public static final Integer get(final Type type) {
 		Integer result = type.result();
 		final String path = type.path();
-		if(LTItemMail.getInstance().models.isSet(path)) {
+		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_TEXTURES)) if(LTItemMail.getInstance().models.isSet(path)) {
 			result = LTItemMail.getInstance().models.getInt(path);
 		} else {
 			ConsoleModule.info("Item models fallback: [" + path + ":" + result + "]");

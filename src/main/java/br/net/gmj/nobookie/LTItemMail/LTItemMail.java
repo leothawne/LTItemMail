@@ -146,9 +146,11 @@ public final class LTItemMail extends JavaPlugin {
 		LanguageModule.addMissing();
 	}
 	private final void loadModels() {
-		ModelsModule.check();
-		models = ModelsModule.load();
-		ModelsModule.addMissing();
+		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_TEXTURES)) {
+			ModelsModule.check();
+			models = ModelsModule.load();
+			ModelsModule.addMissing();
+		}
 	}
 	private final void loadDatabase() {
 		connection = DatabaseModule.connect();
