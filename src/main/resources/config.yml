@@ -1,5 +1,5 @@
 #Do not touch it!
-config-version: 13
+config-version: 14
 version-number: ${project.version}
 build-number: ${v}
 plugin:
@@ -26,7 +26,13 @@ plugin:
   #Cada servidor deve ter um identificador único. Senão caixas de corrêio físicas irão quebrar.
   #Se você alterar esse valor, você e seus jogadores terão que substituir todos os blocos de caixa de correio existentes, não importa se o modo bungee está ativado ou não.
   bungee-server-id: 'server1'
+  #Choose whether download the resource pack on every startup (it will update the current downloaded zip file as well). Default: false
+  #
+  #Escolha se quer baixar o pacote de recursos em cada inicialização (isso também irá atualizar o arquivo zip baixado atualmente). Padrão: false
   resource-pack-download: false
+  #For debug purposes only. Default: false
+  #
+  #Somente para fins de depuração. Padrão: false
   debug: false
 database:
   #'flatfile' or 'mysql'
@@ -59,7 +65,7 @@ hook:
   #
   #Defina 'true' se desejar usar um plugin de economia (defina o preço do corrêio).
   economy:
-    enable: true
+    enable: false
     #Compatible plugins: Vault for economies in general, CoinsEngine (ex: CoinsEngine:Coins) or The New Economy (ex: TheNewEconomy:USD). Default: Vault
     #
     #Plugins compatíveis: Vault para economias em geral, CoinsEngine (ex: CoinsEngine:Moedas) ou The New Economy (ex: TheNewEconomy:USD). Padrão: Vault
@@ -87,6 +93,10 @@ hook:
   #
   #Útil para notificações TOAST (consulte "mail.display" abaixo).
   ultimateadvancementapi: false
+  #You can replace mail buttons with custom heads from HeadDatabase.
+  #
+  #Você pode substituir botões do corrêio com cabeças customizadas do HeadDatabase.
+  headdatabase: false
 mail:
   #When a new mail arrives, how do you want the message to appear? Valid: CHAT, TITLE, TOAST. Default: CHAT
   #
