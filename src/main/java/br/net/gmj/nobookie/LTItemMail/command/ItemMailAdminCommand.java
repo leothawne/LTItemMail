@@ -228,13 +228,13 @@ public final class ItemMailAdminCommand extends LTCommandExecutor {
 		} else if(args[0].equalsIgnoreCase("dump")) {
 			if(hasPermission = PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_ADMIN_DUMP)) {
 				if(args.length == 1) {
-					sender.sendMessage(LTItemMail.getInstance().getDescription().getName() + " version " + (String) ConfigurationModule.get(ConfigurationModule.Type.VERSION_NUMBER));
+					sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.RESET + LTItemMail.getInstance().getDescription().getName() + " version " + ChatColor.GREEN + (String) ConfigurationModule.get(ConfigurationModule.Type.VERSION_NUMBER));
 					for(final ExtensionModule.Name name : ExtensionModule.getInstance().getPlugins().keySet()) {
 						final Plugin plugin = ExtensionModule.getInstance().getPlugins().get(name);
 						if(plugin != null) {
-							String disabled = "[DISABLED] ";
-							if(plugin.isEnabled()) disabled = "";
-							sender.sendMessage(disabled + plugin.getDescription().getName() + " version " + plugin.getDescription().getVersion());
+							String disabled = ChatColor.RED + "[DISABLED] " + ChatColor.RESET;
+							if(plugin.isEnabled()) disabled = "" + ChatColor.RESET;
+							sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + disabled + plugin.getDescription().getName() + " version " + ChatColor.GREEN + plugin.getDescription().getVersion());
 						}
 					}
 				} else sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.PLAYER_SYNTAXERROR));
