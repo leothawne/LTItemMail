@@ -3,33 +3,23 @@ package br.net.gmj.nobookie.LTItemMail.module.ext;
 import java.io.File;
 import java.io.IOException;
 
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
-import br.net.gmj.nobookie.LTItemMail.LTItemMail;
 import br.net.gmj.nobookie.LTItemMail.module.ConfigurationModule;
 import br.net.gmj.nobookie.LTItemMail.module.ConsoleModule;
 import br.net.gmj.nobookie.LTItemMail.module.DataModule;
 import br.net.gmj.nobookie.LTItemMail.util.FetchUtil;
-import me.arcaniax.hdb.api.DatabaseLoadEvent;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 
-public final class LTHeadDatabase implements Listener {
-	private HeadDatabaseAPI api = null;
+public final class LTHeadDatabase {
+	private final HeadDatabaseAPI api;
 	public LTHeadDatabase() {
-		Bukkit.getPluginManager().registerEvents(this, LTItemMail.getInstance());
+		api = new HeadDatabaseAPI();
 		check();
 		load();
-	}
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
-	public final void onDatabaseLoad(final DatabaseLoadEvent event) {
-		api = new HeadDatabaseAPI();
 	}
 	private File file;
 	private final void check() {
@@ -94,8 +84,8 @@ public final class LTHeadDatabase implements Listener {
 		}
 		return null;
 	}
-	public final String getId(final ItemStack head) {
-		return api.getItemID(head);
+	public final Integer getId(final ItemStack head) {
+		return Integer.parseInt(api.getItemID(head));
 	}
 	public enum Type {
 		MAILBOX_BUTTON_COST("mailbox.button.cost", 60568),

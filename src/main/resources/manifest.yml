@@ -14,8 +14,8 @@ boards:
       - "Devido à imcompatibilidade com a API do Bukkit, os nós &cltitemmail.player.all &re &cltitemmail.admin.all &rforam removidos e não funcionarão mais."
       - "Eu sinto muito!"
   1:
-    title: "Added HeadDatabase compatibility (Build #72 or newer only)"
-    datetime: "26/02/2025 01:54 BRT"
+    title: "Added HeadDatabase compatibility (Build #73 or newer only)"
+    datetime: "26/02/2025 02:25 BRT"
     contents:
       - "&c&lFor server owners:"
       - "Now you can choose to replace mail buttons for custom heads. Try it with HeadDatabase!"
