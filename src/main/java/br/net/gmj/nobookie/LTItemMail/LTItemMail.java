@@ -35,7 +35,7 @@ import br.net.gmj.nobookie.LTItemMail.util.FetchUtil;
 
 /**
  * 
- * Main class of the plugin.
+ * Main class of the plugin. This is typically of no use to developers.
  * 
  * @author Nobookie
  * 
@@ -48,21 +48,11 @@ public final class LTItemMail extends JavaPlugin {
 	public Connection connection = null;
 	public List<Integer> boardsForPlayers = new ArrayList<>();
 	public Map<String, List<Integer>> boardsPlayers = new HashMap<>();
-	/**
-	 * 
-	 * Used internally by Bukkit.
-	 * 
-	 */
 	private Took took = null;
 	@Override
 	public final void onLoad() {
 		took = new Took();
 	}
-	/**
-	 * 
-	 * Used internally by Bukkit.
-	 * 
-	 */
 	@Override
 	public final void onEnable() {
 		instance = this;
@@ -105,11 +95,6 @@ public final class LTItemMail extends JavaPlugin {
 			}.runTaskTimer(this, 10, 10);
 		}
 	}
-	/**
-	 * 
-	 * Used internally by Bukkit.
-	 * 
-	 */
 	@Override
 	public final void onDisable() {
 		Bukkit.getScheduler().cancelTasks(this);
@@ -119,11 +104,6 @@ public final class LTItemMail extends JavaPlugin {
 		getServer().getMessenger().unregisterOutgoingPluginChannel(this, "BungeeCord");
 		getServer().getMessenger().unregisterIncomingPluginChannel(this, "BungeeCord");
 	}
-	/**
-	 * 
-	 * Reloads the plugin (configuration, language and item models).
-	 * 
-	 */
 	public final void reload() {
 		PermissionModule.unload();
 		ExtensionModule.getInstance().unload();
@@ -165,17 +145,12 @@ public final class LTItemMail extends JavaPlugin {
 		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_UPDATE_CHECK)) new UpdateTask();
 		new VersionControlTask();
 	}
-	public final boolean isDevBuild() {
+	public final Boolean isDevBuild() {
 		return (Integer) ConfigurationModule.get(ConfigurationModule.Type.BUILD_NUMBER) > DataModule.getLatestStable();
 	}
 	public final ClassLoader getLTClassLoader() {
 		return getClassLoader();
 	}
-	/**
-	 * 
-	 * Gets the {@link LTItemMail} instance.
-	 * 
-	 */
 	public static final LTItemMail getInstance() {
 		return instance;
 	}

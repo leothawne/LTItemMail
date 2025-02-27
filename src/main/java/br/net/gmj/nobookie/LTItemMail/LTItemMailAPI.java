@@ -17,6 +17,7 @@ import com.google.common.io.ByteStreams;
 import br.net.gmj.nobookie.LTItemMail.block.Block;
 import br.net.gmj.nobookie.LTItemMail.block.MailboxBlock;
 import br.net.gmj.nobookie.LTItemMail.entity.LTPlayer;
+import br.net.gmj.nobookie.LTItemMail.event.ServerSendMailEvent;
 import br.net.gmj.nobookie.LTItemMail.module.ConfigurationModule;
 import br.net.gmj.nobookie.LTItemMail.module.ConsoleModule;
 import br.net.gmj.nobookie.LTItemMail.module.DatabaseModule;
@@ -54,6 +55,7 @@ public final class LTItemMailAPI {
 			final Player bukkitPlayer = player.getBukkitPlayer().getPlayer();
 			if(label == null) label = "";
 			DatabaseModule.Virtual.saveMailbox(null, player.getBukkitPlayer().getUniqueId(), items, label);
+			Bukkit.getPluginManager().callEvent(new ServerSendMailEvent(player, items, label));
 			if(bukkitPlayer != null) {
 				MailboxModule.Display display;
 				try {

@@ -1,7 +1,6 @@
 package br.net.gmj.nobookie.LTItemMail.block.task;
 
 import br.net.gmj.nobookie.LTItemMail.block.MailboxBlock;
-import br.net.gmj.nobookie.LTItemMail.entity.LTPlayer;
 import br.net.gmj.nobookie.LTItemMail.module.ConfigurationModule;
 import br.net.gmj.nobookie.LTItemMail.module.DatabaseModule;
 import br.net.gmj.nobookie.LTItemMail.module.ExtensionModule;
@@ -18,9 +17,9 @@ public final class MailboxBlockTask implements Runnable {
 			if(!block.getServer().equals((String) ConfigurationModule.get(ConfigurationModule.Type.BUNGEE_SERVER_ID))) continue;
 			if(!block.getBukkitBlock().getType().toString().endsWith("_SHULKER_BOX")) {
 				block.remove(true);
-				if(blueMap != null) blueMap.deleteMarker(LTPlayer.fromUUID(block.getOwner()).getBukkitPlayer(), block.getLocation(), false);
-				if(decentHolograms != null) decentHolograms.deleteHolo(LTPlayer.fromUUID(block.getOwner()).getBukkitPlayer(), block.getLocation());
-				if(dynmap != null) dynmap.deleteMarker(LTPlayer.fromUUID(block.getOwner()).getBukkitPlayer(), block.getLocation());
+				if(blueMap != null) blueMap.deleteMarker(block.getOwner().getBukkitPlayer(), block.getLocation(), false);
+				if(decentHolograms != null) decentHolograms.deleteHolo(block.getOwner().getBukkitPlayer(), block.getLocation());
+				if(dynmap != null) dynmap.deleteMarker(block.getOwner().getBukkitPlayer(), block.getLocation());
 			}
 		}
 	}

@@ -6,7 +6,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Map;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 
@@ -40,11 +39,11 @@ public final class LTBlueMap {
 				}
 				map.getMarkerSets().put("ltitemmail_markers", set);
 			}
-			for(final MailboxBlock block : DatabaseModule.Block.getMailboxBlocks()) createMarker(Bukkit.getOfflinePlayer(block.getOwner()), block.getLocation());
+			for(final MailboxBlock block : DatabaseModule.Block.getMailboxBlocks()) createMarker(block.getOwner().getBukkitPlayer(), block.getLocation());
 		});
 	}
 	public final void unload() {
-		for(final MailboxBlock block : DatabaseModule.Block.getMailboxBlocks()) deleteMarker(Bukkit.getOfflinePlayer(block.getOwner()), block.getLocation(), true);
+		for(final MailboxBlock block : DatabaseModule.Block.getMailboxBlocks()) deleteMarker(block.getOwner().getBukkitPlayer(), block.getLocation(), true);
 	}
 	public final void createMarker(final OfflinePlayer player, final Location location) {
 		if(api != null) {

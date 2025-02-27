@@ -2,6 +2,7 @@ package br.net.gmj.nobookie.LTItemMail.block.listener;
 
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -26,7 +27,11 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
+import br.net.gmj.nobookie.LTItemMail.block.MailboxBlock;
 import br.net.gmj.nobookie.LTItemMail.entity.LTPlayer;
+import br.net.gmj.nobookie.LTItemMail.event.BreakMailboxBlockEvent;
+import br.net.gmj.nobookie.LTItemMail.event.PlayerBreakMailboxBlockEvent;
+import br.net.gmj.nobookie.LTItemMail.event.PlayerPlaceMailboxBlockEvent;
 import br.net.gmj.nobookie.LTItemMail.inventory.MailboxInventory;
 import br.net.gmj.nobookie.LTItemMail.item.Item;
 import br.net.gmj.nobookie.LTItemMail.item.MailboxItem;
@@ -83,11 +88,17 @@ public final class MailboxBlockListener implements Listener {
 				if(PermissionModule.hasPermission(player, PermissionModule.Type.BLOCK_PLAYER_PLACE)) {
 					final Block blockBelow = new Location(block.getLocation().getWorld(), block.getLocation().getBlockX(), (block.getLocation().getBlockY() - 1), block.getLocation().getBlockZ()).getBlock();
 					if(blockBelow.getType().toString().endsWith("_FENCE") || blockBelow.getType().toString().endsWith("_WALL")) {
-						if(!DatabaseModule.Block.isMailboxBlock(block.getLocation()) && DatabaseModule.Block.placeMailbox(player.getUniqueId(), block.getLocation())) {
-							if(dynmap != null) dynmap.createMarker(player, block.getLocation());
-							if(blueMap != null) blueMap.createMarker(player, block.getLocation());
-							if(decentHolograms != null) decentHolograms.createHolo(player, block.getLocation());
-							MailboxModule.log(player.getUniqueId(), null, MailboxModule.Action.PLACED, null, null, null, block.getLocation());
+						if(!DatabaseModule.Block.isMailboxBlock(block.getLocation())) {
+							final PlayerPlaceMailboxBlockEvent placeEvent = new PlayerPlaceMailboxBlockEvent(new MailboxBlock(DatabaseModule.Block.getMailboxID(block.getLocation()), LTPlayer.fromUUID(player.getUniqueId()), (String) ConfigurationModule.get(ConfigurationModule.Type.BUNGEE_SERVER_ID), block.getLocation().getWorld().getName(), block.getLocation().getBlockX(), block.getLocation().getBlockY(), block.getLocation().getBlockZ()), PlayerPlaceMailboxBlockEvent.Reason.BY_PLAYER, LTPlayer.fromUUID(player.getUniqueId()));
+							Bukkit.getPluginManager().callEvent(placeEvent);
+							if(!placeEvent.isCancelled()) {
+								if(DatabaseModule.Block.placeMailbox(player.getUniqueId(), block.getLocation())) {
+									if(dynmap != null) dynmap.createMarker(player, block.getLocation());
+									if(blueMap != null) blueMap.createMarker(player, block.getLocation());
+									if(decentHolograms != null) decentHolograms.createHolo(player, block.getLocation());
+									MailboxModule.log(player.getUniqueId(), null, MailboxModule.Action.PLACED, null, null, null, block.getLocation());
+								} else event.setCancelled(true);
+							} else event.setCancelled(true);
 						} else event.setCancelled(true);
 					} else {
 						event.setCancelled(true);
@@ -110,24 +121,32 @@ public final class MailboxBlockListener implements Listener {
 			if(canBuildBreak(player, block.getLocation()) && canBreak(player, block.getLocation())) {
 				if(PermissionModule.hasPermission(player, PermissionModule.Type.BLOCK_PLAYER_BREAK)) {
 					if(DatabaseModule.Block.isMailboxOwner(player.getUniqueId(), block.getLocation())) {
-						if(DatabaseModule.Block.breakMailbox(block.getLocation())) {
-							event.setDropItems(false);
-							block.getWorld().dropItem(block.getLocation(), newMailbox);
-							if(dynmap != null) dynmap.deleteMarker(player, block.getLocation());
-							if(blueMap != null) blueMap.deleteMarker(player, block.getLocation(), false);
-							if(decentHolograms != null) decentHolograms.deleteHolo(player, block.getLocation());
-							MailboxModule.log(player.getUniqueId(), null, MailboxModule.Action.BROKE, null, null, null, block.getLocation());
+						final PlayerBreakMailboxBlockEvent breakEvent = new PlayerBreakMailboxBlockEvent(new MailboxBlock(DatabaseModule.Block.getMailboxID(block.getLocation()), LTPlayer.fromUUID(player.getUniqueId()), (String) ConfigurationModule.get(ConfigurationModule.Type.BUNGEE_SERVER_ID), block.getLocation().getWorld().getName(), block.getLocation().getBlockX(), block.getLocation().getBlockY(), block.getLocation().getBlockZ()), BreakMailboxBlockEvent.Reason.BY_PLAYER_OWNER, LTPlayer.fromUUID(player.getUniqueId()));
+						Bukkit.getPluginManager().callEvent(breakEvent);
+						if(!breakEvent.isCancelled()) {
+							if(DatabaseModule.Block.breakMailbox(block.getLocation())) {
+								event.setDropItems(false);
+								block.getWorld().dropItem(block.getLocation(), newMailbox);
+								if(dynmap != null) dynmap.deleteMarker(player, block.getLocation());
+								if(blueMap != null) blueMap.deleteMarker(player, block.getLocation(), false);
+								if(decentHolograms != null) decentHolograms.deleteHolo(player, block.getLocation());
+								MailboxModule.log(player.getUniqueId(), null, MailboxModule.Action.BROKE, null, null, null, block.getLocation());
+							} else event.setCancelled(true);
 						} else event.setCancelled(true);
 					} else if(PermissionModule.hasPermission(player, PermissionModule.Type.BLOCK_ADMIN_BREAK)){
 						final LTPlayer owner = LTPlayer.fromUUID(DatabaseModule.Block.getMailboxOwner(block.getLocation()));
-						if(DatabaseModule.Block.breakMailbox(block.getLocation())) {
-							event.setDropItems(false);
-							block.getWorld().dropItem(block.getLocation(), newMailbox);
-							if(dynmap != null) dynmap.deleteMarker(owner.getBukkitPlayer(), block.getLocation());
-							if(blueMap != null) blueMap.deleteMarker(owner.getBukkitPlayer(), block.getLocation(), false);
-							if(decentHolograms != null) decentHolograms.deleteHolo(owner.getBukkitPlayer(), block.getLocation());
-							MailboxModule.log(player.getUniqueId(), owner.getUniqueId(), MailboxModule.Action.ADMIN_BROKE, null, null, null, block.getLocation());
-							player.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.BLOCK_ADMINBROKE) + " " + owner.getName());
+						final PlayerBreakMailboxBlockEvent breakEvent = new PlayerBreakMailboxBlockEvent(new MailboxBlock(DatabaseModule.Block.getMailboxID(block.getLocation()), owner, (String) ConfigurationModule.get(ConfigurationModule.Type.BUNGEE_SERVER_ID), block.getLocation().getWorld().getName(), block.getLocation().getBlockX(), block.getLocation().getBlockY(), block.getLocation().getBlockZ()), BreakMailboxBlockEvent.Reason.BY_PLAYER_ADMIN, LTPlayer.fromUUID(player.getUniqueId()));
+						Bukkit.getPluginManager().callEvent(breakEvent);
+						if(!breakEvent.isCancelled()) {
+							if(DatabaseModule.Block.breakMailbox(block.getLocation())) {
+								event.setDropItems(false);
+								block.getWorld().dropItem(block.getLocation(), newMailbox);
+								if(dynmap != null) dynmap.deleteMarker(owner.getBukkitPlayer(), block.getLocation());
+								if(blueMap != null) blueMap.deleteMarker(owner.getBukkitPlayer(), block.getLocation(), false);
+								if(decentHolograms != null) decentHolograms.deleteHolo(owner.getBukkitPlayer(), block.getLocation());
+								MailboxModule.log(player.getUniqueId(), owner.getUniqueId(), MailboxModule.Action.ADMIN_BROKE, null, null, null, block.getLocation());
+								player.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.BLOCK_ADMINBROKE) + " " + owner.getName());
+							} else event.setCancelled(true);
 						} else event.setCancelled(true);
 					} else {
 						event.setCancelled(true);

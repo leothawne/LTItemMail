@@ -580,13 +580,24 @@ public final class DatabaseModule {
 			}
 			return null;
 		}
+		public static final Integer getMailboxID(final Location block) {
+			try {
+				final Statement statement = LTItemMail.getInstance().connection.createStatement();
+				final ResultSet results = statement.executeQuery("SELECT id FROM mailbox_block WHERE mailbox_server = '" + (String) ConfigurationModule.get(ConfigurationModule.Type.BUNGEE_SERVER_ID) + "' AND mailbox_world = '" + block.getWorld().getName() + "' AND mailbox_x = '" + block.getBlockX() + "' AND mailbox_y = '" + block.getBlockY() + "' AND mailbox_z = '" + block.getBlockZ() + "';");
+				statement.closeOnCompletion();
+				if(results.next()) return results.getInt("id");
+			} catch (final SQLException | NullPointerException e) {
+				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
+			}
+			return null;
+		}
 		public static final List<MailboxBlock> getMailboxBlocks(){
 			final List<MailboxBlock> blocks = new ArrayList<>();
 			try {
 				final Statement statement = LTItemMail.getInstance().connection.createStatement();
 				final ResultSet results = statement.executeQuery("SELECT * FROM mailbox_block ORDER BY id ASC;");
 				statement.closeOnCompletion();
-				while(results.next()) blocks.add(new MailboxBlock(results.getInt("id"), UUID.fromString(results.getString("owner_uuid")), results.getString("mailbox_server"), results.getString("mailbox_world"), results.getInt("mailbox_x"), results.getInt("mailbox_y"), results.getInt("mailbox_z")));
+				while(results.next()) blocks.add(new MailboxBlock(results.getInt("id"), LTPlayer.fromUUID(UUID.fromString(results.getString("owner_uuid"))), results.getString("mailbox_server"), results.getString("mailbox_world"), results.getInt("mailbox_x"), results.getInt("mailbox_y"), results.getInt("mailbox_z")));
 			} catch (final SQLException | NullPointerException e) {
 				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 			}

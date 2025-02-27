@@ -1,6 +1,5 @@
 package br.net.gmj.nobookie.LTItemMail.module.ext;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.dynmap.DynmapCommonAPI;
@@ -25,11 +24,11 @@ public final class LTDynmap extends DynmapCommonAPIListener {
 	public final void apiEnabled(final DynmapCommonAPI api) {
 		if(api != null) {
 			this.api = api.getMarkerAPI();
-			for(final MailboxBlock block : DatabaseModule.Block.getMailboxBlocks()) createMarker(Bukkit.getOfflinePlayer(block.getOwner()), block.getLocation());
+			for(final MailboxBlock block : DatabaseModule.Block.getMailboxBlocks()) createMarker(block.getOwner().getBukkitPlayer(), block.getLocation());
 		}
 	}
 	public final void unload() {
-		for(final MailboxBlock block : DatabaseModule.Block.getMailboxBlocks()) deleteMarker(Bukkit.getOfflinePlayer(block.getOwner()), block.getLocation());
+		for(final MailboxBlock block : DatabaseModule.Block.getMailboxBlocks()) deleteMarker(block.getOwner().getBukkitPlayer(), block.getLocation());
 		DynmapCommonAPIListener.unregister(this);
 	}
 	public final void createMarker(final OfflinePlayer player, final Location location) {

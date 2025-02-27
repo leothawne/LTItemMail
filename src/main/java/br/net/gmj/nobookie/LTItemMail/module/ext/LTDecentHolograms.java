@@ -35,8 +35,8 @@ public final class LTDecentHolograms {
 			@Override
 			public final void run() {
 				ConsoleModule.debug(getClass(), "#cleanup: performing");
-				for(final MailboxBlock block : DatabaseModule.Block.getMailboxBlocks()) deleteHolo(Bukkit.getOfflinePlayer(block.getOwner()), block.getLocation());
-				for(final MailboxBlock block : DatabaseModule.Block.getMailboxBlocks()) createHolo(Bukkit.getOfflinePlayer(block.getOwner()), block.getLocation());
+				for(final MailboxBlock block : DatabaseModule.Block.getMailboxBlocks()) deleteHolo(block.getOwner().getBukkitPlayer(), block.getLocation());
+				for(final MailboxBlock block : DatabaseModule.Block.getMailboxBlocks()) createHolo(block.getOwner().getBukkitPlayer(), block.getLocation());
 				ConsoleModule.debug(getClass(), "#cleanup: done");
 			}
 		}, 1);

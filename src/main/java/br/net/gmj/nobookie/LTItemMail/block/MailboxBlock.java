@@ -3,7 +3,6 @@ package br.net.gmj.nobookie.LTItemMail.block;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -15,16 +14,21 @@ import br.net.gmj.nobookie.LTItemMail.LTItemMail;
 import br.net.gmj.nobookie.LTItemMail.LTItemMailAPI;
 import br.net.gmj.nobookie.LTItemMail.block.listener.MailboxBlockListener;
 import br.net.gmj.nobookie.LTItemMail.block.task.MailboxBlockTask;
+import br.net.gmj.nobookie.LTItemMail.entity.LTPlayer;
+import br.net.gmj.nobookie.LTItemMail.event.BreakMailboxBlockEvent;
+import br.net.gmj.nobookie.LTItemMail.event.PlaceMailboxBlockEvent;
 import br.net.gmj.nobookie.LTItemMail.module.DatabaseModule;
 
 /**
+ * 
+ * The object representing the block of the physical mailbox.
  * 
  * @author Nobookie
  * 
  */
 public final class MailboxBlock implements Block {
 	private final Integer id;
-	private UUID owner;
+	private LTPlayer owner;
 	private final String server;
 	private final String world;
 	private final Integer x;
@@ -36,7 +40,7 @@ public final class MailboxBlock implements Block {
 	 * 
 	 * 
 	 */
-	public MailboxBlock(final Integer id, final UUID owner, final String server, final String world, final Integer x, final Integer y, final Integer z) {
+	public MailboxBlock(final Integer id, final LTPlayer owner, final String server, final String world, final Integer x, final Integer y, final Integer z) {
 		this.id = id;
 		this.owner = owner;
 		this.server = server;
@@ -137,7 +141,7 @@ public final class MailboxBlock implements Block {
 	 * Gets the owner of the mailbox block.
 	 * 
 	 */
-	public final UUID getOwner() {
+	public final LTPlayer getOwner() {
 		return owner;
 	}
 	/**
@@ -150,6 +154,7 @@ public final class MailboxBlock implements Block {
 	 * 
 	 */
 	public final void remove(final Boolean virtual) {
+		Bukkit.getPluginManager().callEvent(new BreakMailboxBlockEvent(this, BreakMailboxBlockEvent.Reason.BY_SERVER, virtual));
 		DatabaseModule.Block.breakMailbox(getLocation());
 		if(!virtual) getBukkitBlock().setType(Material.AIR);
 	}
@@ -160,8 +165,10 @@ public final class MailboxBlock implements Block {
 	 * 
 	 */
 	public final void replace() {
+		Bukkit.getPluginManager().callEvent(new BreakMailboxBlockEvent(this, BreakMailboxBlockEvent.Reason.BY_SERVER, false));
 		DatabaseModule.Block.breakMailbox(getLocation());
-		DatabaseModule.Block.placeMailbox(owner, getLocation());
+		Bukkit.getPluginManager().callEvent(new PlaceMailboxBlockEvent(this, PlaceMailboxBlockEvent.Reason.BY_SERVER));
+		DatabaseModule.Block.placeMailbox(owner.getUniqueId(), getLocation());
 	}
 	/**
 	 * 
@@ -169,10 +176,10 @@ public final class MailboxBlock implements Block {
 	 * @param newOwner The new owner's unique id.
 	 * 
 	 */
-	public final void transferOwnership(final UUID newOwner) {
-		if(newOwner == owner) return;
+	public final void transferOwnership(final LTPlayer newOwner) {
+		if(newOwner.getUniqueId() == owner.getUniqueId()) return;
 		DatabaseModule.Block.breakMailbox(getLocation());
-		DatabaseModule.Block.placeMailbox(newOwner, getLocation());
+		DatabaseModule.Block.placeMailbox(newOwner.getUniqueId(), getLocation());
 		owner = newOwner;
 	}
 }
