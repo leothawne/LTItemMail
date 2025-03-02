@@ -233,22 +233,16 @@ public final class MailboxVirtualListener implements Listener {
 	public final void onSendMail(final PlayerSendMailEvent event) {
 		final LTPlayer playerFrom = event.getFrom();
 		final LTPlayer playerTo = event.getTo();
-		if(playerFrom != null) {
-			if(!playerFrom.isRegistered()) DatabaseModule.User.register(playerFrom);
-			if(playerFrom.isBanned()) {
-				event.setCancelReason(LanguageModule.get(LanguageModule.Type.PLAYER_BANNED) + " (@" + playerFrom.getName() + " => @" + playerTo.getName() + ")");
-				event.setCancelled(true);
-			} else {
-				int sent_count = playerFrom.getMailSentCount();
-				sent_count++;
-				DatabaseModule.User.setSentCount(playerFrom.getUniqueId(), sent_count);
-			}
-		}
-		if(playerTo != null) {
-			if(!playerTo.isRegistered()) DatabaseModule.User.register(playerTo);
-			int received_count = playerTo.getMailReceivedCount();
-			received_count++;
-			DatabaseModule.User.setReceivedCount(playerTo.getUniqueId(), received_count);
+		if(!playerFrom.isRegistered()) DatabaseModule.User.register(playerFrom);
+		if(!playerTo.isRegistered()) DatabaseModule.User.register(playerTo);
+		if(playerFrom.isBanned()) {
+			event.setCancelReason(LanguageModule.get(LanguageModule.Type.PLAYER_BANNED) + " (@" + playerFrom.getName() + " => @" + playerTo.getName() + ")");
+			event.setCancelled(true);
+		} else {
+			Integer sent_count = playerFrom.getMailSentCount();
+			DatabaseModule.User.setSentCount(playerFrom.getUniqueId(), sent_count++);
+			Integer received_count = playerTo.getMailReceivedCount();
+			DatabaseModule.User.setReceivedCount(playerTo.getUniqueId(), received_count++);
 		}
 	}
 }
