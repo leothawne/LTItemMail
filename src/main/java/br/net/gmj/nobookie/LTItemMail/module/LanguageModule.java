@@ -16,33 +16,33 @@ public final class LanguageModule {
 	private LanguageModule() {}
 	private static File file;
 	public static final void check() {
-		file = FetchUtil.FileManager.get((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml");
+		file = FetchUtil.FileManager.get((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_LANGUAGE) + ".yml");
 		if(file == null) {
-			ConsoleModule.info("Extracting " + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml...");
-			if(LTItemMail.getInstance().getResource((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml") != null) {
-				LTItemMail.getInstance().saveResource((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml", false);
+			ConsoleModule.info("Extracting " + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_LANGUAGE) + ".yml...");
+			if(LTItemMail.getInstance().getResource((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_LANGUAGE) + ".yml") != null) {
+				LTItemMail.getInstance().saveResource((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_LANGUAGE) + ".yml", false);
 				ConsoleModule.info("Done.");
 			} else {
-				if(!((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE)).equalsIgnoreCase("english")) ConsoleModule.warning("Language " + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + " not found!");
+				if(!((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_LANGUAGE)).equalsIgnoreCase("english")) ConsoleModule.warning("Language " + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_LANGUAGE) + " not found!");
 				ConsoleModule.warning("Generating a new one and all default translations will be added.");
-				FetchUtil.FileManager.create((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml");
+				FetchUtil.FileManager.create((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_LANGUAGE) + ".yml");
 			}
 		}
 	}
 	private static boolean update = false;
 	public static final FileConfiguration load() {
-		file = FetchUtil.FileManager.get((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml");
+		file = FetchUtil.FileManager.get((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_LANGUAGE) + ".yml");
 		if(file != null) {
 			final FileConfiguration configuration = new YamlConfiguration();
 			try {
 				configuration.load(file);
-				ConsoleModule.info((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml loaded.");
-				if(((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE)).equalsIgnoreCase("portuguese")) ConsoleModule.br();
+				ConsoleModule.info((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_LANGUAGE) + ".yml loaded.");
+				if(((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_LANGUAGE)).equalsIgnoreCase("portuguese")) ConsoleModule.br();
 				try {
-					final Version version = DataModule.Version.valueOf(((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE)).toUpperCase() + "_YML");
+					final Version version = DataModule.Version.valueOf(((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_LANGUAGE)).toUpperCase() + "_YML");
 					if(configuration.getInt("language-version") < version.value()) {
 						update = true;
-						ConsoleModule.warning("Language " + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml outdated!");
+						ConsoleModule.warning("Language " + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_LANGUAGE) + ".yml outdated!");
 						ConsoleModule.warning("Missing translations will be added with default value.");
 						configuration.set("language-version", version.value());
 						configuration.save(file);
@@ -176,7 +176,7 @@ public final class LanguageModule {
 	}
 	public static final class I {
 		public static final String g(final i i) {
-			if(((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE)).equals("portuguese")) switch(i) {
+			if(((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_LANGUAGE)).equals("portuguese")) switch(i) {
 				case R_S:
 					return "Download de recurso iniciado";
 				case R_D:
