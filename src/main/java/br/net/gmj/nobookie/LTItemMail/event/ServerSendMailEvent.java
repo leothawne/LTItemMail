@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import br.net.gmj.nobookie.LTItemMail.entity.LTPlayer;
 /**
@@ -29,6 +30,7 @@ public final class ServerSendMailEvent extends Event {
 	 * Gets who received the mailbox.
 	 * 
 	 */
+	@NotNull
 	public final LTPlayer getTo() {
 		return to;
 	}
@@ -37,6 +39,7 @@ public final class ServerSendMailEvent extends Event {
 	 * Gets the mailbox contents.
 	 * 
 	 */
+	@NotNull
 	public final LinkedList<ItemStack> getContents(){
 		return contents;
 	}
@@ -45,6 +48,7 @@ public final class ServerSendMailEvent extends Event {
 	 * Gets the label of the mail.
 	 * 
 	 */
+	@NotNull
 	public final String getLabel() {
 		return label;
 	}
@@ -52,6 +56,7 @@ public final class ServerSendMailEvent extends Event {
 	public final HandlerList getHandlers() {
 		return handlers;
 	}
+	@NotNull
 	public static final HandlerList getHandlerList() {
 		return handlers;
 	}

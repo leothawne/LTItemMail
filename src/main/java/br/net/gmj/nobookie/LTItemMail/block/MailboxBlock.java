@@ -9,6 +9,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.NotNull;
 
 import br.net.gmj.nobookie.LTItemMail.LTItemMail;
 import br.net.gmj.nobookie.LTItemMail.LTItemMailAPI;
@@ -17,6 +18,8 @@ import br.net.gmj.nobookie.LTItemMail.block.task.MailboxBlockTask;
 import br.net.gmj.nobookie.LTItemMail.entity.LTPlayer;
 import br.net.gmj.nobookie.LTItemMail.event.BreakMailboxBlockEvent;
 import br.net.gmj.nobookie.LTItemMail.event.PlaceMailboxBlockEvent;
+import br.net.gmj.nobookie.LTItemMail.module.ConfigurationModule;
+import br.net.gmj.nobookie.LTItemMail.module.ConsoleModule;
 import br.net.gmj.nobookie.LTItemMail.module.DatabaseModule;
 
 /**
@@ -141,6 +144,7 @@ public final class MailboxBlock implements Block {
 	 * Gets the owner of the mailbox block.
 	 * 
 	 */
+	@NotNull
 	public final LTPlayer getOwner() {
 		return owner;
 	}
@@ -153,10 +157,17 @@ public final class MailboxBlock implements Block {
 	 * @param virtual If set to true, the current block will be set to air.
 	 * 
 	 */
-	public final void remove(final Boolean virtual) {
-		Bukkit.getPluginManager().callEvent(new BreakMailboxBlockEvent(this, BreakMailboxBlockEvent.Reason.BY_SERVER, virtual));
-		DatabaseModule.Block.breakMailbox(getLocation());
-		if(!virtual) getBukkitBlock().setType(Material.AIR);
+	public final Boolean remove(@NotNull final Boolean virtual) {
+		try {
+			Bukkit.getPluginManager().callEvent(new BreakMailboxBlockEvent(this, BreakMailboxBlockEvent.Reason.BY_SERVER, virtual));
+			DatabaseModule.Block.breakMailbox(getLocation());
+			if(!virtual) getBukkitBlock().setType(Material.AIR);
+			return true;
+		} catch(final IllegalArgumentException e) {
+			ConsoleModule.debug(getClass(), "Argument cannot be null.");
+			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
+		}
+		return false;
 	}
 	/**
 	 * 
@@ -176,10 +187,17 @@ public final class MailboxBlock implements Block {
 	 * @param newOwner The new owner's unique id.
 	 * 
 	 */
-	public final void transferOwnership(final LTPlayer newOwner) {
-		if(newOwner.getUniqueId() == owner.getUniqueId()) return;
-		DatabaseModule.Block.breakMailbox(getLocation());
-		DatabaseModule.Block.placeMailbox(newOwner.getUniqueId(), getLocation());
-		owner = newOwner;
+	public final Boolean transferOwnership(@NotNull final LTPlayer newOwner) {
+		try {
+			if(newOwner.getUniqueId() == owner.getUniqueId()) return false;
+			DatabaseModule.Block.breakMailbox(getLocation());
+			DatabaseModule.Block.placeMailbox(newOwner.getUniqueId(), getLocation());
+			owner = newOwner;
+			return true;
+		} catch(final IllegalArgumentException e) {
+			ConsoleModule.debug(getClass(), "Argument cannot be null.");
+			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
+		}
+		return false;
 	}
 }

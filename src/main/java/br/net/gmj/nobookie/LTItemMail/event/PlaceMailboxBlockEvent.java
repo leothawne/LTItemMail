@@ -2,6 +2,7 @@ package br.net.gmj.nobookie.LTItemMail.event;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 import br.net.gmj.nobookie.LTItemMail.block.Block;
 /**
@@ -24,6 +25,7 @@ public class PlaceMailboxBlockEvent extends Event {
 	 * Gets the block affected by this event.
 	 * 
 	 */
+	@NotNull
 	public final Block getBlock() {
 		return block;
 	}
@@ -31,6 +33,7 @@ public class PlaceMailboxBlockEvent extends Event {
 	public final HandlerList getHandlers() {
 		return handlers;
 	}
+	@NotNull
 	public static final HandlerList getHandlerList() {
 		return handlers;
 	}
@@ -39,6 +42,7 @@ public class PlaceMailboxBlockEvent extends Event {
 	 * Gets what triggered the event.
 	 * 
 	 */
+	@NotNull
 	public final Reason getReason() {
 		return reason;
 	}

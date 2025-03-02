@@ -6,8 +6,11 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import br.net.gmj.nobookie.LTItemMail.entity.LTPlayer;
+import br.net.gmj.nobookie.LTItemMail.module.ConfigurationModule;
+import br.net.gmj.nobookie.LTItemMail.module.ConsoleModule;
 /**
  * 
  * Event called when a mailbox is sent by a player.
@@ -38,6 +41,7 @@ public final class PlayerSendMailEvent extends Event implements Cancellable {
 	 * Gets who sent the mailbox.
 	 * 
 	 */
+	@NotNull
 	public final LTPlayer getFrom() {
 		return from;
 	}
@@ -46,6 +50,7 @@ public final class PlayerSendMailEvent extends Event implements Cancellable {
 	 * Gets who received the mailbox.
 	 * 
 	 */
+	@NotNull
 	public final LTPlayer getTo() {
 		return to;
 	}
@@ -54,6 +59,7 @@ public final class PlayerSendMailEvent extends Event implements Cancellable {
 	 * Gets the mailbox contents.
 	 * 
 	 */
+	@NotNull
 	public final LinkedList<ItemStack> getContents(){
 		return contents;
 	}
@@ -62,6 +68,7 @@ public final class PlayerSendMailEvent extends Event implements Cancellable {
 	 * Returns "true" if the mailbox was paid to be sent.
 	 * 
 	 */
+	@NotNull
 	public final Boolean hasCost() {
 		return hasCost;
 	}
@@ -70,6 +77,7 @@ public final class PlayerSendMailEvent extends Event implements Cancellable {
 	 * If the mailbox was paid, returns the paid value, otherwise it will return "0.0".
 	 * 
 	 */
+	@NotNull
 	public final Double getCost() {
 		return cost;
 	}
@@ -78,6 +86,7 @@ public final class PlayerSendMailEvent extends Event implements Cancellable {
 	 * Gets the label of the mail.
 	 * 
 	 */
+	@NotNull
 	public final String getLabel() {
 		return label;
 	}
@@ -85,6 +94,7 @@ public final class PlayerSendMailEvent extends Event implements Cancellable {
 	public final HandlerList getHandlers() {
 		return handlers;
 	}
+	@NotNull
 	public static final HandlerList getHandlerList() {
 		return handlers;
 	}
@@ -103,14 +113,20 @@ public final class PlayerSendMailEvent extends Event implements Cancellable {
 	 * 
 	 */
 	@Override
-	public final void setCancelled(final boolean cancel) {
-		cancelled = cancel;
+	public final void setCancelled(@NotNull final boolean cancel) {
+		try {
+			cancelled = cancel;
+		} catch(final IllegalArgumentException e) {
+			ConsoleModule.debug(getClass(), "Argument cannot be null.");
+			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
+		}
 	}
 	/**
 	 * 
 	 * If the event is cancelled, gets the cancel reason.
 	 * 
 	 */
+	@NotNull
 	public final String getCancelReason() {
 		return cancelReason;
 	}
@@ -119,7 +135,12 @@ public final class PlayerSendMailEvent extends Event implements Cancellable {
 	 * Sets the event cancel reason.
 	 * 
 	 */
-	public final void setCancelReason(final String reason) {
-		cancelReason = reason;
+	public final void setCancelReason(@NotNull final String reason) {
+		try {
+			cancelReason = reason;
+		} catch(final IllegalArgumentException e) {
+			ConsoleModule.debug(getClass(), "Argument cannot be null.");
+			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
+		}
 	}
 }

@@ -10,6 +10,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
@@ -47,13 +48,10 @@ public final class LTItemMailAPI {
 	 * @param items A list of items that the player will receive.
 	 * @param label The label you want to put on the mailbox.
 	 * 
-	 * @return true if it was successfully sent. Otherwise it will return false.
-	 * 
 	 */
-	public static final Boolean sendSpecialMail(final LTPlayer player, final LinkedList<ItemStack> items, String label) {
-		if(player != null) {
+	public static final Boolean sendSpecialMail(@NotNull final LTPlayer player, @NotNull final LinkedList<ItemStack> items, @NotNull final String label) {
+		try {
 			final Player bukkitPlayer = player.getBukkitPlayer().getPlayer();
-			if(label == null) label = "";
 			DatabaseModule.Virtual.saveMailbox(null, player.getBukkitPlayer().getUniqueId(), items, label);
 			Bukkit.getPluginManager().callEvent(new ServerSendMailEvent(player, items, label));
 			if(bukkitPlayer != null) {
@@ -97,6 +95,9 @@ public final class LTItemMailAPI {
 				Bukkit.getServer().sendPluginMessage(LTItemMail.getInstance(), "BungeeCord", bungee.toByteArray());
 			}
 			return true;
+		} catch(final IllegalArgumentException e) {
+			ConsoleModule.debug(LTItemMailAPI.class, "Argument cannot be null.");
+			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 		}
 		return false;
 	}
@@ -109,6 +110,7 @@ public final class LTItemMailAPI {
 	 * @return A list of LT Item Mail blocks.
 	 * 
 	 */
+	@NotNull
 	public static final List<Block> getBlockList(){
 		final List<Block> blockList = new ArrayList<>();
 		for(final MailboxBlock mailboxBlock : DatabaseModule.Block.getMailboxBlocks()) blockList.add(mailboxBlock);
@@ -126,12 +128,18 @@ public final class LTItemMailAPI {
 	 * @return A list of LT Item Mail blocks.
 	 * 
 	 */
-	public static final List<Block> getBlockList(final Block.Type blockType){
-		final List<Block> blockList = new ArrayList<>();
-		switch(blockType) {
-			case MAILBOX_BLOCK:
-				for(final MailboxBlock mailboxBlock : DatabaseModule.Block.getMailboxBlocks()) blockList.add(mailboxBlock);
-				return blockList;
+	@NotNull
+	public static final List<Block> getBlockList(@NotNull final Block.Type blockType){
+		try {
+			final List<Block> blockList = new ArrayList<>();
+			switch(blockType) {
+				case MAILBOX_BLOCK:
+					for(final MailboxBlock mailboxBlock : DatabaseModule.Block.getMailboxBlocks()) blockList.add(mailboxBlock);
+					return blockList;
+			}
+		} catch(final IllegalArgumentException e) {
+			ConsoleModule.debug(LTItemMailAPI.class, "Argument cannot be null.");
+			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 		}
 		return Collections.emptyList();
 	}

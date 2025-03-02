@@ -2,6 +2,7 @@ package br.net.gmj.nobookie.LTItemMail.event;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 import br.net.gmj.nobookie.LTItemMail.block.Block;
 /**
@@ -26,6 +27,7 @@ public class BreakMailboxBlockEvent extends Event {
 	 * Gets the block affected by this event.
 	 * 
 	 */
+	@NotNull
 	public final Block getBlock() {
 		return block;
 	}
@@ -34,6 +36,7 @@ public class BreakMailboxBlockEvent extends Event {
 	 * "true" means that the block was removed from the database and it remains on the game as a vanilla shulker box.
 	 * 
 	 */
+	@NotNull
 	public final Boolean isVirtual() {
 		return virtual;
 	}
@@ -41,6 +44,7 @@ public class BreakMailboxBlockEvent extends Event {
 	public final HandlerList getHandlers() {
 		return handlers;
 	}
+	@NotNull
 	public static final HandlerList getHandlerList() {
 		return handlers;
 	}
@@ -49,6 +53,7 @@ public class BreakMailboxBlockEvent extends Event {
 	 * Gets what triggered the event.
 	 * 
 	 */
+	@NotNull
 	public final Reason getReason() {
 		return reason;
 	}
