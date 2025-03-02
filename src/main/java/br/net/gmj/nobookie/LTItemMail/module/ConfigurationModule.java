@@ -106,7 +106,7 @@ public final class ConfigurationModule {
 		BUILD_NUMBER("build-number", FetchUtil.Build.get()),
 		VERSION_NUMBER("version-number", FetchUtil.Version.get()),
 		PLUGIN_ENABLE("plugin.enable", true),
-		PLUGIN_TYPE_LANGUAGE("plugin.language", "english"),
+		PLUGIN_LANGUAGE("plugin.language", "english"),
 		PLUGIN_TAG("plugin.tag", "&6[LTIM]"),
 		BUNGEE_MODE("plugin.bungee-mode", false),
 		BUNGEE_SERVER_ID("plugin.bungee-server-id", "server1"),
