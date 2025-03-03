@@ -5,7 +5,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 
-import br.net.gmj.nobookie.LTItemMail.module.ext.LTVault;
+import br.net.gmj.nobookie.LTItemMail.module.ext.LTVaultPermission;
 
 public class PermissionModule {
 	private PermissionModule() {}
@@ -28,7 +28,7 @@ public class PermissionModule {
 	}
 	public static final boolean hasPermission(final CommandSender sender, final Type permission) {
 		final String node = permission.node();
-		if(ExtensionModule.getInstance().isRegistered(ExtensionModule.Function.VAULT_PERMISSION)) return ((LTVault.Permission) ExtensionModule.getInstance().get(ExtensionModule.Function.VAULT_PERMISSION)).getAPI().has(sender, node);
+		if(ExtensionModule.getInstance().isInstalled(ExtensionModule.Name.VAULT) && ExtensionModule.getInstance().isRegistered(ExtensionModule.Function.VAULT_PERMISSION)) return ((LTVaultPermission) ExtensionModule.getInstance().get(ExtensionModule.Function.VAULT_PERMISSION)).getAPI().has(sender, node);
 		return sender.hasPermission(node);
 	}
 	public enum Type {

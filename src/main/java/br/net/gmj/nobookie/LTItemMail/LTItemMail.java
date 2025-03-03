@@ -28,6 +28,7 @@ import br.net.gmj.nobookie.LTItemMail.module.LanguageModule;
 import br.net.gmj.nobookie.LTItemMail.module.ModelsModule;
 import br.net.gmj.nobookie.LTItemMail.module.PermissionModule;
 import br.net.gmj.nobookie.LTItemMail.module.RegistrationModule;
+import br.net.gmj.nobookie.LTItemMail.module.ext.LTExtension;
 import br.net.gmj.nobookie.LTItemMail.task.UpdateTask;
 import br.net.gmj.nobookie.LTItemMail.task.VersionControlTask;
 import br.net.gmj.nobookie.LTItemMail.util.BStats;
@@ -67,6 +68,9 @@ public final class LTItemMail extends JavaPlugin {
 			metrics.addCustomChart(new BStats.SimplePie("builds", () -> {
 		        return String.valueOf((Integer) ConfigurationModule.get(ConfigurationModule.Type.BUILD_NUMBER));
 		    }));
+			metrics.addCustomChart(new BStats.SimplePie("language", () -> {
+		        return ((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_LANGUAGE)).toUpperCase();
+		    }));
 			ConsoleModule.hello();
 			loadLang();
 			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.BUNGEE_MODE)) {
@@ -76,6 +80,12 @@ public final class LTItemMail extends JavaPlugin {
 			loadModels();
 			loadDatabase();
 			ExtensionModule.getInstance().load();
+			for(final ExtensionModule.Function function : ExtensionModule.getInstance().reg().keySet()) {
+				final LTExtension extension = (LTExtension) ExtensionModule.getInstance().reg().get(function);
+				metrics.addCustomChart(new BStats.SimplePie("extensions", () -> {
+			        return extension.getBasePlugin().getDescription().getName();
+			    }));
+			}
 			PermissionModule.load();
 			registerListeners();
 			runTasks();

@@ -15,7 +15,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import br.net.gmj.nobookie.LTItemMail.entity.LTPlayer;
 import br.net.gmj.nobookie.LTItemMail.module.ConfigurationModule;
 import br.net.gmj.nobookie.LTItemMail.module.ExtensionModule;
-import br.net.gmj.nobookie.LTItemMail.module.ExtensionModule.Function;
 import br.net.gmj.nobookie.LTItemMail.module.LanguageModule;
 import br.net.gmj.nobookie.LTItemMail.module.ModelsModule;
 import br.net.gmj.nobookie.LTItemMail.module.ext.LTHeadDatabase;
@@ -66,8 +65,8 @@ public final class MailboxInventory {
 		ItemStack labelButton = new ItemStack(Material.BOOK, 1);
 		ItemStack denyButton = new ItemStack(Material.BARRIER, 1);
 		ItemStack acceptButton = new ItemStack(Material.ENDER_EYE, 1);
-		if(ExtensionModule.getInstance().isRegistered(Function.HEADDATABASE)) {
-			final LTHeadDatabase headDB = (LTHeadDatabase) ExtensionModule.getInstance().get(Function.HEADDATABASE);
+		if(ExtensionModule.getInstance().isInstalled(ExtensionModule.Name.HEADDATABASE) && ExtensionModule.getInstance().isRegistered(ExtensionModule.Function.HEADDATABASE)) {
+			final LTHeadDatabase headDB = (LTHeadDatabase) ExtensionModule.getInstance().get(ExtensionModule.Function.HEADDATABASE);
 			costButton = headDB.getHead(LTHeadDatabase.Type.MAILBOX_BUTTON_COST);
 			labelButton = headDB.getHead(LTHeadDatabase.Type.MAILBOX_BUTTON_LABEL);
 			denyButton = headDB.getHead(LTHeadDatabase.Type.MAILBOX_BUTTON_DENY);

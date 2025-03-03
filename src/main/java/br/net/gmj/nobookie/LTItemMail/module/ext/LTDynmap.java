@@ -2,6 +2,7 @@ package br.net.gmj.nobookie.LTItemMail.module.ext;
 
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.plugin.Plugin;
 import org.dynmap.DynmapCommonAPI;
 import org.dynmap.DynmapCommonAPIListener;
 import org.dynmap.markers.Marker;
@@ -15,10 +16,16 @@ import br.net.gmj.nobookie.LTItemMail.module.ConsoleModule;
 import br.net.gmj.nobookie.LTItemMail.module.DatabaseModule;
 import br.net.gmj.nobookie.LTItemMail.module.LanguageModule;
 
-public final class LTDynmap extends DynmapCommonAPIListener {
+public final class LTDynmap extends DynmapCommonAPIListener implements LTExtension {
+	private final Plugin plugin;
 	private MarkerAPI api = null;
-	public LTDynmap(){
+	public LTDynmap(final Plugin plugin){
+		this.plugin = plugin;
 		DynmapCommonAPIListener.register(this);
+	}
+	@Override
+	public final Plugin getBasePlugin() {
+		return plugin;
 	}
 	@Override
 	public final void apiEnabled(final DynmapCommonAPI api) {

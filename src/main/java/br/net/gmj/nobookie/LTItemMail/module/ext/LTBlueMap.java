@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.plugin.Plugin;
 
 import com.flowpowered.math.vector.Vector3d;
 
@@ -25,9 +26,11 @@ import de.bluecolored.bluemap.api.markers.Marker;
 import de.bluecolored.bluemap.api.markers.MarkerSet;
 import de.bluecolored.bluemap.api.markers.POIMarker;
 
-public final class LTBlueMap {
+public final class LTBlueMap implements LTExtension {
+	private final Plugin plugin;
 	private BlueMapAPI api = null;
-	public LTBlueMap() {
+	public LTBlueMap(final Plugin plugin) {
+		this.plugin = plugin;
 		BlueMapAPI.onEnable(api -> {
 			this.api = api;
 			final MarkerSet loadedSet = loadFromFile();
@@ -41,6 +44,10 @@ public final class LTBlueMap {
 			}
 			for(final MailboxBlock block : DatabaseModule.Block.getMailboxBlocks()) createMarker(block.getOwner().getBukkitPlayer(), block.getLocation());
 		});
+	}
+	@Override
+	public final Plugin getBasePlugin() {
+		return plugin;
 	}
 	public final void unload() {
 		for(final MailboxBlock block : DatabaseModule.Block.getMailboxBlocks()) deleteMarker(block.getOwner().getBukkitPlayer(), block.getLocation(), true);

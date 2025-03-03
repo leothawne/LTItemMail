@@ -29,7 +29,6 @@ import br.net.gmj.nobookie.LTItemMail.module.ext.LTUltimateAdvancementAPI;
 
 public final class MailboxModule {
 	private MailboxModule() {}
-	private static final LTUltimateAdvancementAPI ultimateAdvancementAPI = (LTUltimateAdvancementAPI) ExtensionModule.getInstance().get(ExtensionModule.Function.ULTIMATEADVANCEMENTAPI);
 	private static final void write(final String content) {
 		try {
 			Files.createDirectories(Paths.get(LTItemMail.getInstance().getDataFolder() + File.separator + "logs"));
@@ -139,7 +138,8 @@ public final class MailboxModule {
 					bukkitReceiver.sendTitle(ChatColor.AQUA + "" + LanguageModule.get(LanguageModule.Type.MAILBOX_FROM) + " " + ChatColor.GREEN, sender.getName() + ChatColor.AQUA + " (#" + mailboxID + ")", 20 * 1, 20 * 5, 20 * 1);
 					break;
 				case TOAST:
-					if(ultimateAdvancementAPI != null) {
+					if(ExtensionModule.getInstance().isInstalled(ExtensionModule.Name.ULTIMATEADVANCEMENTAPI) && ExtensionModule.getInstance().isRegistered(ExtensionModule.Function.ULTIMATEADVANCEMENTAPI)) {
+						final LTUltimateAdvancementAPI ultimateAdvancementAPI = (LTUltimateAdvancementAPI) ExtensionModule.getInstance().get(ExtensionModule.Function.ULTIMATEADVANCEMENTAPI);
 						ultimateAdvancementAPI.show(receiver, LanguageModule.get(LanguageModule.Type.MAILBOX_FROM) + " " + sender.getName() + ChatColor.AQUA + " (#" + mailboxID + ")");
 						if(!label.isEmpty()) Bukkit.getScheduler().runTaskLater(LTItemMail.getInstance(), new Runnable() {
 							@Override

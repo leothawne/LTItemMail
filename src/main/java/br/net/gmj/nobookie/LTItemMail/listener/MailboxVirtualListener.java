@@ -33,7 +33,6 @@ import br.net.gmj.nobookie.LTItemMail.module.ConsoleModule;
 import br.net.gmj.nobookie.LTItemMail.module.DatabaseModule;
 import br.net.gmj.nobookie.LTItemMail.module.EconomyModule;
 import br.net.gmj.nobookie.LTItemMail.module.ExtensionModule;
-import br.net.gmj.nobookie.LTItemMail.module.ExtensionModule.Function;
 import br.net.gmj.nobookie.LTItemMail.module.LanguageModule;
 import br.net.gmj.nobookie.LTItemMail.module.MailboxModule;
 import br.net.gmj.nobookie.LTItemMail.module.PermissionModule;
@@ -172,7 +171,7 @@ public final class MailboxVirtualListener implements Listener {
 			final Inventory inventory = event.getClickedInventory();
 			final ItemStack[] contents = inventory.getContents();
 			LTHeadDatabase headDB = null;
-			if(ExtensionModule.getInstance().isRegistered(Function.HEADDATABASE)) headDB = (LTHeadDatabase) ExtensionModule.getInstance().get(Function.HEADDATABASE);
+			if(ExtensionModule.getInstance().isInstalled(ExtensionModule.Name.HEADDATABASE) && ExtensionModule.getInstance().isRegistered(ExtensionModule.Function.HEADDATABASE)) headDB = (LTHeadDatabase) ExtensionModule.getInstance().get(ExtensionModule.Function.HEADDATABASE);
 			Boolean primeCost = false;
 			if(headDB != null) {
 				if(selected.getItemMeta() instanceof SkullMeta) if(headDB.getId(selected).equals(LTHeadDatabase.Type.MAILBOX_BUTTON_COST.id())) primeCost = true;

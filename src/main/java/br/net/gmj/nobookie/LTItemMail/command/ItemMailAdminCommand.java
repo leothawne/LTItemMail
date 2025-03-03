@@ -15,7 +15,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import br.net.gmj.nobookie.LTItemMail.LTItemMail;
@@ -31,6 +30,7 @@ import br.net.gmj.nobookie.LTItemMail.module.ExtensionModule;
 import br.net.gmj.nobookie.LTItemMail.module.LanguageModule;
 import br.net.gmj.nobookie.LTItemMail.module.MailboxModule;
 import br.net.gmj.nobookie.LTItemMail.module.PermissionModule;
+import br.net.gmj.nobookie.LTItemMail.module.ext.LTExtension;
 import br.net.gmj.nobookie.LTItemMail.util.FetchUtil;
 import br.net.gmj.nobookie.LTItemMail.util.TabUtil;
 
@@ -229,13 +229,9 @@ public final class ItemMailAdminCommand extends LTCommandExecutor {
 			if(hasPermission = PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_ADMIN_DUMP)) {
 				if(args.length == 1) {
 					sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.RESET + LTItemMail.getInstance().getDescription().getName() + " version " + ChatColor.GREEN + (String) ConfigurationModule.get(ConfigurationModule.Type.VERSION_NUMBER));
-					for(final ExtensionModule.Name name : ExtensionModule.getInstance().getPlugins().keySet()) {
-						final Plugin plugin = ExtensionModule.getInstance().getPlugins().get(name);
-						if(plugin != null) {
-							String disabled = ChatColor.RED + "[DISABLED] " + ChatColor.RESET;
-							if(plugin.isEnabled()) disabled = "" + ChatColor.RESET;
-							sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + disabled + plugin.getDescription().getName() + " version " + ChatColor.GREEN + plugin.getDescription().getVersion());
-						}
+					for(final ExtensionModule.Function function : ExtensionModule.getInstance().reg().keySet()) {
+						final LTExtension extension = (LTExtension) ExtensionModule.getInstance().reg().get(function);
+						sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + extension.getBasePlugin().getDescription().getName() + " version " + ChatColor.GREEN + extension.getBasePlugin().getDescription().getVersion());
 					}
 				} else sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.PLAYER_SYNTAXERROR));
 			}

@@ -36,7 +36,6 @@ public final class LTPlayer {
 		this.name = name;
 		this.uuid = uuid;
 	}
-	private final LTUltimateAdvancementAPI ultimateAdvancementAPI = (LTUltimateAdvancementAPI) ExtensionModule.getInstance().get(ExtensionModule.Function.ULTIMATEADVANCEMENTAPI);
 	/**
 	 * 
 	 * Creates the LTPlayer object from a player's name (case NOT sensitive).
@@ -219,7 +218,10 @@ public final class LTPlayer {
 	@NotNull
 	public final void sendToastMessage(@NotNull final String message) {
 		try {
-			if(ultimateAdvancementAPI != null) ultimateAdvancementAPI.show(this, message);
+			if(ExtensionModule.getInstance().isInstalled(ExtensionModule.Name.ULTIMATEADVANCEMENTAPI) && ExtensionModule.getInstance().isRegistered(ExtensionModule.Function.ULTIMATEADVANCEMENTAPI)) {
+				final LTUltimateAdvancementAPI ultimateAdvancementAPI = (LTUltimateAdvancementAPI) ExtensionModule.getInstance().get(ExtensionModule.Function.ULTIMATEADVANCEMENTAPI);
+				ultimateAdvancementAPI.show(this, message);
+			}
 		} catch(final IllegalArgumentException e) {
 			ConsoleModule.debug(getClass(), "Argument cannot be null.");
 			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
