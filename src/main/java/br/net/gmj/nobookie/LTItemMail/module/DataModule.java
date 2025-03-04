@@ -26,8 +26,8 @@ public final class DataModule {
 		CONFIG_YML(14),
 		ITEM_MODELS_YML(1),
 		HEADDATABASE_YML(1),
-		ENGLISH_YML(10),
-		PORTUGUESE_YML(10),
+		ENGLISH_YML(11),
+		PORTUGUESE_YML(11),
 		VIETNAMESE_YML(3),
 		DATABASE(5);
 		private final Integer value;

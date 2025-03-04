@@ -3,11 +3,10 @@ package br.net.gmj.nobookie.LTItemMail;
 import java.io.File;
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -25,6 +24,7 @@ import br.net.gmj.nobookie.LTItemMail.module.DataModule;
 import br.net.gmj.nobookie.LTItemMail.module.DatabaseModule;
 import br.net.gmj.nobookie.LTItemMail.module.ExtensionModule;
 import br.net.gmj.nobookie.LTItemMail.module.LanguageModule;
+import br.net.gmj.nobookie.LTItemMail.module.MailboxModule;
 import br.net.gmj.nobookie.LTItemMail.module.ModelsModule;
 import br.net.gmj.nobookie.LTItemMail.module.PermissionModule;
 import br.net.gmj.nobookie.LTItemMail.module.RegistrationModule;
@@ -49,10 +49,10 @@ public final class LTItemMail extends JavaPlugin {
 	public Connection connection = null;
 	public List<Integer> boardsForPlayers = new ArrayList<>();
 	public Map<String, List<Integer>> boardsPlayers = new HashMap<>();
-	private Took took = null;
+	private Long startup;
 	@Override
 	public final void onLoad() {
-		took = new Took();
+		startup = Calendar.getInstance().getTimeInMillis();
 	}
 	@Override
 	public final void onEnable() {
@@ -92,10 +92,19 @@ public final class LTItemMail extends JavaPlugin {
 			RegistrationModule.setupItems();
 			RegistrationModule.setupBlocks();
 			new CommandModule();
-			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.RESOURCE_PACK_DOWNLOAD)) FetchUtil.FileManager.download(DataModule.getResourcePackURL(), "LTItemMail-ResourcePack.zip", false);
-			ConsoleModule.raw(ChatColor.GREEN + "Plugin took " + took.took() + " to load.");
+			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.RESOURCE_PACK_DOWNLOAD)) new BukkitRunnable() {
+				@Override
+				public final void run() {
+					FetchUtil.FileManager.download(DataModule.getResourcePackURL(), "LTItemMail-ResourcePack.zip", false);
+				}
+			}.runTask(this);
+			final Long done = Calendar.getInstance().getTimeInMillis() - startup;
+			String took = done + "ms";
+			if(done >= 1000.0) took = (done / 1000.0) + "s";
+			MailboxModule.ready();
+			new FetchUtil.Stats().reg();
+			ConsoleModule.raw(ChatColor.GREEN + "Plugin took " + took + " to load.");
 		} else {
-			took.cancel();
 			new BukkitRunnable() {
 				@Override
 				public final void run() {
@@ -108,7 +117,6 @@ public final class LTItemMail extends JavaPlugin {
 	@Override
 	public final void onDisable() {
 		Bukkit.getScheduler().cancelTasks(this);
-		//PermissionModule.unload();
 		ExtensionModule.getInstance().unload();
 		DatabaseModule.disconnect();
 		getServer().getMessenger().unregisterOutgoingPluginChannel(this, "BungeeCord");
@@ -164,26 +172,4 @@ public final class LTItemMail extends JavaPlugin {
 	public static final LTItemMail getInstance() {
 		return instance;
 	}
-	private final class Took {
-		private final TimerTask task;
-		private Double took = 0.0;
-		private Took() {
-			task = new TimerTask() {
-				@Override
-				public final void run() {
-					took++;
-				}
-			};
-			new Timer().schedule(task, 1, 1);
-		}
-		private final void cancel() {
-			task.cancel();
-		}
-		private final String took() {
-			cancel();
-			String r = String.valueOf(took) + "ms";
-			if(took >= 1000.0) r = String.valueOf(took / 1000.0) + "s";
-			return r;
-		}
-	} 
 }

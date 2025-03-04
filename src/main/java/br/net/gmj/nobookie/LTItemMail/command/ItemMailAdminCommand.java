@@ -72,12 +72,14 @@ public final class ItemMailAdminCommand extends LTCommandExecutor {
 						@Override
 						public final void run() {
 							final Integer localBuild = (Integer) ConfigurationModule.get(ConfigurationModule.Type.BUILD_NUMBER);
-							final Integer remoteBuild = Integer.parseInt(FetchUtil.URL.get(DataModule.getUpdateURL()));
-							if(remoteBuild > localBuild) {
-								final Integer outOfDate = remoteBuild - localBuild;
-								final String[] found = LanguageModule.get(LanguageModule.Type.COMMAND_ADMIN_UPDATE_FOUND).split("%");
-								sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.RED + found[0] + outOfDate + found[1] + ChatColor.GREEN + " https://jenkins.gmj.net.br/job/LTItemMail/" + remoteBuild + "/");
-							} else if(!s) sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.COMMAND_ADMIN_UPDATE_NONEW));
+							final String http = FetchUtil.URL.get(DataModule.getUpdateURL()).replaceAll(System.lineSeparator(), "");
+							if(http != null) {
+								final Integer remoteBuild = Integer.parseInt(http);
+								if(remoteBuild > localBuild) {
+									final Integer outOfDate = remoteBuild - localBuild;
+									sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ((String) LanguageModule.get(LanguageModule.Type.COMMAND_ADMIN_UPDATE_FOUND)).replaceAll("%build%", "" + ChatColor.RED + outOfDate + ChatColor.GREEN) + " https://jenkins.gmj.net.br/job/LTItemMail/" + remoteBuild + "/");
+								} else if(!s) sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.COMMAND_ADMIN_UPDATE_NONEW));
+							} else if(!s) sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.DARK_RED + "Update server is down! Please, try again later.");
 						}
 					}.runTask(LTItemMail.getInstance());
 				} else sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.PLAYER_SYNTAXERROR));
@@ -143,7 +145,7 @@ public final class ItemMailAdminCommand extends LTCommandExecutor {
 							final LinkedList<ItemStack> items = DatabaseModule.Virtual.getMailbox(mailboxID);
 							if(DatabaseModule.Virtual.isMailboxDeleted(mailboxID) && !DatabaseModule.Virtual.getStatus(mailboxID).equals(DatabaseModule.Virtual.Status.DENIED) && items.size() > 0) {
 								player.openInventory(MailboxInventory.getInventory(MailboxInventory.Type.IN, mailboxID, null, items, DatabaseModule.Virtual.getMailboxFrom(mailboxID), DatabaseModule.Virtual.getMailboxLabel(mailboxID), true));
-								MailboxModule.log(player.getUniqueId(), null, MailboxModule.Action.RECOVERED, mailboxID, null, null, null);
+								MailboxModule.log(LTPlayer.fromUUID(player.getUniqueId()), null, MailboxModule.Action.RECOVERED, mailboxID, null, null, null);
 							} else player.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + "" + LanguageModule.get(LanguageModule.Type.MAILBOX_NOLOST));
 						} catch (final NumberFormatException e) {
 							player.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + "" + LanguageModule.get(LanguageModule.Type.MAILBOX_IDERROR));
@@ -210,7 +212,7 @@ public final class ItemMailAdminCommand extends LTCommandExecutor {
 					final LTPlayer ltPlayer = LTPlayer.fromName(args[1]);
 					if(ltPlayer != null) {
 						final List<MailboxBlock> mailboxes = new ArrayList<>();
-						for(final MailboxBlock block : DatabaseModule.Block.getMailboxBlocks()) if(block.getOwner().equals(ltPlayer.getUniqueId())) mailboxes.add(block);
+						for(final MailboxBlock block : DatabaseModule.Block.getMailboxBlocks()) if(block.getOwner().getUniqueId().equals(ltPlayer.getUniqueId())) mailboxes.add(block);
 						if(mailboxes.size() > 0) {
 							sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + "" + LanguageModule.get(LanguageModule.Type.BLOCK_ADMIN_LIST) + " " + ChatColor.GREEN + ltPlayer.getName() + ":");
 							Integer number = 1;
@@ -236,8 +238,7 @@ public final class ItemMailAdminCommand extends LTCommandExecutor {
 				} else sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.PLAYER_SYNTAXERROR));
 			}
 		} else if(hasPermission = PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_ADMIN_MAIN)) {
-			final String[] invalidCmd = LanguageModule.get(LanguageModule.Type.COMMAND_INVALID).split("%");
-			sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + invalidCmd[0] + ChatColor.GREEN + "/itemmailadmin " + ChatColor.YELLOW + invalidCmd[1]);
+			sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + ((String) LanguageModule.get(LanguageModule.Type.COMMAND_INVALID)).replaceAll("%command%", ChatColor.GREEN + "/itemmailadmin" + ChatColor.YELLOW));
 		}
 		if(!hasPermission) sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + "" + LanguageModule.get(LanguageModule.Type.PLAYER_PERMISSIONERROR));
 		return true;

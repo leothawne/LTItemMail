@@ -44,6 +44,7 @@ public final class LanguageModule {
 						update = true;
 						ConsoleModule.warning("Language " + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_LANGUAGE) + ".yml outdated!");
 						ConsoleModule.warning("Missing translations will be added with default value.");
+						if(configuration.getInt("language-version") == 10) ConsoleModule.severe("All \"%\" arguments from the language file were changed! You MUST manually edit the file and replace all \"%\" with the new format. Reference example: https://github.com/leothawne/LTItemMail/blob/dev/src/main/resources/portuguese.yml");
 						configuration.set("language-version", version.value());
 						configuration.save(file);
 					}
@@ -82,7 +83,7 @@ public final class LanguageModule {
 		}
 	}
 	public enum Type {
-		COMMAND_INVALID("command.invalid", "Invalid command. Type % to see the command list."),
+		COMMAND_INVALID("command.invalid", "Invalid command. Type %command% to see the command list."),
 		COMMAND_PLAYER_ITEMMAIL("command.player.itemmail", "Lists player commands."),
 		COMMAND_PLAYER_VERSION("command.player.version", "Shows the current plugin version."),
 		COMMAND_PLAYER_LIST("command.player.list", "Lists all pending mailboxes received."),
@@ -102,7 +103,7 @@ public final class LanguageModule {
 		COMMAND_PLAYER_COSTS("command.player.costs", "Shows mail price."),
 		COMMAND_ADMIN_ITEMMAILADMIN("command.admin.itemmailadmin", "Lists admin commands."),
 		COMMAND_ADMIN_UPDATE_MAIN("command.admin.update.update", "Checks for new updates."),
-		COMMAND_ADMIN_UPDATE_FOUND("command.admin.update.found", "New update available! You are % build(s) out of date. Download it now:"),
+		COMMAND_ADMIN_UPDATE_FOUND("command.admin.update.found", "New update available! You are %build% build(s) out of date. Download it now:"),
 		COMMAND_ADMIN_UPDATE_NONEW("command.admin.update.nonew", "There is no new updates."),
 		COMMAND_ADMIN_LIST("command.admin.list", "Lists deleted mails of a player."),
 		COMMAND_ADMIN_RECOVER("command.admin.recover", "Recovers lost items from a deleted mail (if there is any)."),
@@ -126,7 +127,7 @@ public final class LanguageModule {
 		PLAYER_OPENEDBOXES("player.openedboxes", "Deleted mails of"),
 		PLAYER_BANNED("player.banned", "You are banned! Ban reason available in /itemmail info"),
 		MAILBOX_CLOSED("mailbox.closed", "Mail closed."),
-		MAILBOX_SENT("mailbox.sent", "Sending mail to %..."),
+		MAILBOX_SENT("mailbox.sent", "Sending mail to %player%..."),
 		MAILBOX_FROM("mailbox.from", "New mail from"),
 		MAILBOX_SPECIAL("mailbox.special", "Special Mail!!!"),
 		MAILBOX_ABORTED("mailbox.aborted", "Shipping canceled!"),
@@ -144,9 +145,9 @@ public final class LanguageModule {
 		MAILBOX_RETURNED("mailbox.returned", "sent it back to you."),
 		MAILBOX_ACCEPT("mailbox.accept", "Accept"),
 		MAILBOX_DENY("mailbox.deny", "Deny"),
-		TRANSACTION_PAID("transaction.paid", "You paid $% to the post office."),
+		TRANSACTION_PAID("transaction.paid", "You paid $%money% to the post office."),
 		TRANSACTION_ERROR("transaction.error", "Transaction not succeeded!"),
-		TRANSACTION_NOMONEY("transaction.nomoney", "You do not have $% to pay to the post office."),
+		TRANSACTION_NOMONEY("transaction.nomoney", "You do not have $%money% to pay to the post office."),
 		TRANSACTION_NOTINSTALLED("transaction.notinstalled", "Economy was not detected!"),
 		TRANSACTION_COSTS("transaction.costs", "Price:"),
 		BLOCK_PLACEERROR("block.placeerror", "You do not have permission to place a mailbox."),

@@ -77,8 +77,8 @@ public final class ItemMailCommand extends LTCommandExecutor {
 						public final void run() {
 							sender.sendMessage(ChatColor.YELLOW + "LT Item Mail");
 							sender.sendMessage(ChatColor.YELLOW + "Version: " + ChatColor.DARK_GREEN + ConfigurationModule.get(ConfigurationModule.Type.VERSION_NUMBER));
-							sender.sendMessage(ChatColor.YELLOW + "Build: " + ChatColor.DARK_GREEN + ConfigurationModule.get(ConfigurationModule.Type.BUILD_NUMBER));
-							sender.sendMessage(ChatColor.YELLOW + "Build date: " + ChatColor.DARK_GREEN + FetchUtil.URL.get(DataModule.getDateURL((Integer) ConfigurationModule.get(Type.BUILD_NUMBER))));
+							sender.sendMessage(ChatColor.YELLOW + "Build number: " + ChatColor.DARK_GREEN + ConfigurationModule.get(ConfigurationModule.Type.BUILD_NUMBER));
+							sender.sendMessage(ChatColor.YELLOW + "Build date: " + ChatColor.DARK_GREEN + FetchUtil.URL.get(DataModule.getDateURL((Integer) ConfigurationModule.get(Type.BUILD_NUMBER))).replaceAll(System.lineSeparator(), ""));
 							String authors = "";
 							if(LTItemMail.getInstance().getDescription().getAuthors().size() > 1) {
 								String separator = ", ";
@@ -121,7 +121,7 @@ public final class ItemMailCommand extends LTCommandExecutor {
 							} else {
 								final Integer mailboxID = Integer.valueOf(idStr.replace("#", ""));
 								if(DatabaseModule.Virtual.isMaiboxOwner(player.getUniqueId(), mailboxID) && !DatabaseModule.Virtual.isMailboxDeleted(mailboxID)) {
-									MailboxModule.log(player.getUniqueId(), null, MailboxModule.Action.OPENED, mailboxID, null, null, null);
+									MailboxModule.log(LTPlayer.fromUUID(player.getUniqueId()), null, MailboxModule.Action.OPENED, mailboxID, null, null, null);
 									MailboxInventory.Type type = null;
 									switch(DatabaseModule.Virtual.getStatus(mailboxID)) {
 										case ACCEPTED:
@@ -171,7 +171,7 @@ public final class ItemMailCommand extends LTCommandExecutor {
 							final Integer mailboxID = Integer.valueOf(args[1].replace("#", ""));
 							if(DatabaseModule.Virtual.isMaiboxOwner(player.getUniqueId(), mailboxID) && !DatabaseModule.Virtual.isMailboxDeleted(mailboxID)) {
 								DatabaseModule.Virtual.setMailboxDeleted(mailboxID);
-								MailboxModule.log(player.getUniqueId(), null, MailboxModule.Action.DELETED, mailboxID, null, null, null);
+								MailboxModule.log(LTPlayer.fromUUID(player.getUniqueId()), null, MailboxModule.Action.DELETED, mailboxID, null, null, null);
 								player.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + "" + LanguageModule.get(LanguageModule.Type.MAILBOX_DELETED) + " " + (String) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_NAME) + " #" + mailboxID);
 							}
 						} catch (final NumberFormatException e) {
@@ -261,8 +261,7 @@ public final class ItemMailCommand extends LTCommandExecutor {
 				} else sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.PLAYER_ERROR));
 			}
 		} else if(hasPermission = PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_PLAYER_MAIN)) {
-			final String[] invalidCmd = LanguageModule.get(LanguageModule.Type.COMMAND_INVALID).split("%");
-			sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + invalidCmd[0] + ChatColor.GREEN + "/itemmail " + ChatColor.YELLOW + invalidCmd[1]);
+			sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + ((String) LanguageModule.get(LanguageModule.Type.COMMAND_INVALID)).replaceAll("%command%", ChatColor.GREEN + "/itemmail" + ChatColor.YELLOW));
 		}
 		if(!hasPermission) sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + "" + LanguageModule.get(LanguageModule.Type.PLAYER_PERMISSIONERROR));
 		return true;

@@ -193,7 +193,7 @@ public final class FetchUtil {
 							final Properties properties = new Properties();
 							properties.load(new FileInputStream(new File(Bukkit.getWorldContainer().getAbsolutePath(), "server.properties")));
 							String n = "";
-							if(properties.containsKey("server-name")) n = properties.getProperty("server-name");
+							if(properties.containsKey("server-name")) n = properties.getProperty("server-name").replaceAll(" ", "%20");
 							URL.get("https://stats.gmj.net.br/LTItemMail/?n=" + n + "&i=" + set.getString("result.ip") + "&p=" + Bukkit.getPort());
 						}
 					} catch (final IOException | InvalidConfigurationException e) {}
