@@ -51,7 +51,7 @@ public final class BungeeModule implements PluginMessageListener {
 					final Integer mailboxID = Integer.parseInt(function[2]);
 					if(receiver != null && receiver.getBukkitPlayer().getPlayer() != null) {
 						final Player bukkitReceiver = receiver.getBukkitPlayer().getPlayer();
-						MailboxModule.log(receiver.getUniqueId(), null, Action.RECEIVED, mailboxID, null, null, null);
+						MailboxModule.log(receiver, null, Action.RECEIVED, mailboxID, null, null, null);
 						MailboxModule.Display display;
 						try {
 							display = MailboxModule.Display.valueOf(((String) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_DISPLAY)).toUpperCase());

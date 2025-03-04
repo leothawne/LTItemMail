@@ -96,7 +96,7 @@ public final class MailboxBlockListener implements Listener {
 									if(dynmap != null) dynmap.createMarker(player, block.getLocation());
 									if(blueMap != null) blueMap.createMarker(player, block.getLocation());
 									if(decentHolograms != null) decentHolograms.createHolo(player, block.getLocation());
-									MailboxModule.log(player.getUniqueId(), null, MailboxModule.Action.PLACED, null, null, null, block.getLocation());
+									MailboxModule.log(LTPlayer.fromUUID(player.getUniqueId()), null, MailboxModule.Action.PLACED, null, null, null, block.getLocation());
 								} else event.setCancelled(true);
 							} else event.setCancelled(true);
 						} else event.setCancelled(true);
@@ -130,7 +130,7 @@ public final class MailboxBlockListener implements Listener {
 								if(dynmap != null) dynmap.deleteMarker(player, block.getLocation());
 								if(blueMap != null) blueMap.deleteMarker(player, block.getLocation(), false);
 								if(decentHolograms != null) decentHolograms.deleteHolo(player, block.getLocation());
-								MailboxModule.log(player.getUniqueId(), null, MailboxModule.Action.BROKE, null, null, null, block.getLocation());
+								MailboxModule.log(LTPlayer.fromUUID(player.getUniqueId()), null, MailboxModule.Action.BROKE, null, null, null, block.getLocation());
 							} else event.setCancelled(true);
 						} else event.setCancelled(true);
 					} else if(PermissionModule.hasPermission(player, PermissionModule.Type.BLOCK_ADMIN_BREAK)){
@@ -144,7 +144,7 @@ public final class MailboxBlockListener implements Listener {
 								if(dynmap != null) dynmap.deleteMarker(owner.getBukkitPlayer(), block.getLocation());
 								if(blueMap != null) blueMap.deleteMarker(owner.getBukkitPlayer(), block.getLocation(), false);
 								if(decentHolograms != null) decentHolograms.deleteHolo(owner.getBukkitPlayer(), block.getLocation());
-								MailboxModule.log(player.getUniqueId(), owner.getUniqueId(), MailboxModule.Action.ADMIN_BROKE, null, null, null, block.getLocation());
+								MailboxModule.log(LTPlayer.fromUUID(player.getUniqueId()), owner, MailboxModule.Action.ADMIN_BROKE, null, null, null, block.getLocation());
 								player.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.BLOCK_ADMINBROKE) + " " + owner.getName());
 							} else event.setCancelled(true);
 						} else event.setCancelled(true);

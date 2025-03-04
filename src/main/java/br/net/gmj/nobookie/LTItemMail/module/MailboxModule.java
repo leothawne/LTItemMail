@@ -41,16 +41,19 @@ public final class MailboxModule {
 		}
 		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) ConsoleModule.debug(MailboxModule.class, content);
 	}
-	public static final boolean log(final UUID from, UUID playerTo, final Action action, final Integer mailboxID, final Double mailboxCost, final LinkedList<ItemStack> contents, final Location mailboxBlock) {
+	public static final void ready() {
+		write("Mailbox Log Worker ready!");
+	}
+	public static final boolean log(final LTPlayer from, final LTPlayer to, final Action action, final Integer mailboxID, final Double mailboxCost, final LinkedList<ItemStack> contents, final Location mailboxBlock) {
 		if(from == null || action == null) return false;
-		String log = LTPlayer.fromUUID(from).getName() + " ";
+		String log = from.getName() + " ";
 		String contentString = "";
 		switch(action) {
 			case CANCELED:
 				log = log + "prevented from sending a mailbox";
 				break;
 			case GAVE_BACK:
-				log = log + "gave back Mailbox#" + mailboxID + " to " + LTPlayer.fromUUID(playerTo).getName();
+				log = log + "gave back Mailbox#" + mailboxID + " to " + to.getName();
 				break;
 			case PAID:
 				log = log + "paid $" + mailboxCost;
@@ -70,30 +73,22 @@ public final class MailboxModule {
 			case RECEIVED:
 				if(contents != null) {
 					for(final ItemStack content : contents) if(content != null && !content.getType().equals(Material.AIR)) {
-						String itemName = "";
-						if(content.hasItemMeta()) {
-							itemName = content.getItemMeta().getDisplayName();
-						} else itemName = content.getType().toString();
-						if(content.equals(contents.getLast())) {
-							contentString = contentString + itemName + "[" + content.getAmount() + "]";
-						} else contentString = contentString + itemName + "[" + content.getAmount() + "], ";
+						String itemName = content.getType().toString();
+						if(content.hasItemMeta()) itemName = content.getItemMeta().getDisplayName();
+						contentString = contentString + itemName + "[" + content.getType().toString() + "](" + content.getAmount() + ") ";
 					}
 				} else contentString = "#BungeeLimitation";
-				log = log + "received Mailbox#" + mailboxID + " (Contents: " + contentString + ")";
+				log = log + "received Mailbox#" + mailboxID + " / Contents: " + contentString;
 				break;
 			case SENT:
 				if(contents != null) {
 					for(final ItemStack content : contents) if(content != null && !content.getType().equals(Material.AIR)) {
-						String itemName = "";
-						if(content.hasItemMeta()) {
-							itemName = content.getItemMeta().getDisplayName();
-						} else itemName = content.getType().toString();
-						if(content.equals(contents.getLast())) {
-							contentString = contentString + itemName + "[" + content.getAmount() + "]";
-						} else contentString = contentString + itemName + "[" + content.getAmount() + "], ";
+						String itemName = content.getType().toString();
+						if(content.hasItemMeta()) itemName = content.getItemMeta().getDisplayName();
+						contentString = contentString + itemName + "[" + content.getType().toString() + "](" + content.getAmount() + ") ";
 					}
 				} else contentString = "#BungeeLimitation";
-				log = log + "sent to " + LTPlayer.fromUUID(playerTo).getName() + ": Mailbox#" + mailboxID + " (Contents: " + contentString + ")";
+				log = log + "sent to " + to.getName() + ": Mailbox#" + mailboxID + " / Contents: " + contentString;
 				break;
 			case PLACED:
 				log = log + "placed a mailbox at X: " + mailboxBlock.getBlockX() + ", Y: " + mailboxBlock.getBlockY() + ", Z: " + mailboxBlock.getBlockZ();
@@ -102,24 +97,25 @@ public final class MailboxModule {
 				log = log + "broke a mailbox at X: " + mailboxBlock.getBlockX() + ", Y: " + mailboxBlock.getBlockY() + ", Z: " + mailboxBlock.getBlockZ();
 				break;
 			case ADMIN_BROKE:
-				log = log + "broke the mailbox of " + LTPlayer.fromUUID(playerTo).getName() + " at X: " + mailboxBlock.getBlockX() + ", Y: " + mailboxBlock.getBlockY() + ", Z: " + mailboxBlock.getBlockZ();
+				log = log + "broke the mailbox of " + to.getName() + " at X: " + mailboxBlock.getBlockX() + ", Y: " + mailboxBlock.getBlockY() + ", Z: " + mailboxBlock.getBlockZ();
 				break;
 		}
 		write(log);
 		return true;
 	}
 	public static final int send(final CommandSender sender, final LTPlayer receiver, final LinkedList<ItemStack> contentsarray, final String label) {
-		Player senderPlayer = null;
-		if(sender instanceof Player) senderPlayer = (Player) sender;
-		UUID senderPlayerID = null;
-		if(senderPlayer != null) senderPlayerID = senderPlayer.getUniqueId();
-		final Integer mailboxID = DatabaseModule.Virtual.saveMailbox(senderPlayerID, receiver.getUniqueId(), contentsarray, label);
-		log(senderPlayerID, receiver.getUniqueId(), Action.SENT, mailboxID, null, contentsarray, null);
-		final String[] mailboxSent = LanguageModule.get(LanguageModule.Type.MAILBOX_SENT).split("%");
-		if(!(sender instanceof ConsoleCommandSender)) sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + "" + mailboxSent[0] + "" + ChatColor.AQUA + "" + receiver.getName() + "" + ChatColor.YELLOW + "" + mailboxSent[1]);
+		LTPlayer pSender = null;
+		UUID uSender = null;
+		if(sender instanceof Player) {
+			pSender = LTPlayer.fromUUID(((Player) sender).getUniqueId());
+			uSender = pSender.getUniqueId();
+		}
+		final Integer mailboxID = DatabaseModule.Virtual.saveMailbox(uSender, receiver.getUniqueId(), contentsarray, label);
+		log(pSender, receiver, Action.SENT, mailboxID, null, contentsarray, null);
+		if(!(sender instanceof ConsoleCommandSender)) sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + "" + ((String) LanguageModule.get(LanguageModule.Type.MAILBOX_SENT)).replaceAll("%player%", ChatColor.AQUA + receiver.getName() + ChatColor.YELLOW));
 		if(receiver.getBukkitPlayer().getPlayer() != null) {
 			final Player bukkitReceiver = receiver.getBukkitPlayer().getPlayer();
-			log(receiver.getUniqueId(), null, Action.RECEIVED, mailboxID, null, contentsarray, null);
+			log(receiver, null, Action.RECEIVED, mailboxID, null, contentsarray, null);
 			MailboxModule.Display display;
 			try {
 				display = MailboxModule.Display.valueOf(((String) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_DISPLAY)).toUpperCase());
@@ -152,12 +148,12 @@ public final class MailboxModule {
 			}
 		} else if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.BUNGEE_MODE)) {
 			final ByteArrayDataOutput bungee = ByteStreams.newDataOutput();
-			if(senderPlayer != null) {
+			if(pSender != null) {
 				bungee.writeUTF("Forward");
 				bungee.writeUTF("ALL");
 				bungee.writeUTF("LTItemMail_MailboxReceived");
 				final ByteArrayDataOutput function = ByteStreams.newDataOutput();
-				final String data = senderPlayer.getName() + ";" + receiver.getName() + ";" + mailboxID;
+				final String data = pSender.getName() + ";" + receiver.getName() + ";" + mailboxID;
 				function.writeUTF(data);
 				bungee.writeShort(function.toByteArray().length);
 				bungee.write(function.toByteArray());
