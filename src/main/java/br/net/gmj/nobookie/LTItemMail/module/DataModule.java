@@ -6,7 +6,7 @@ public final class DataModule {
 	private static final String UPDATE = "https://jenkins.gmj.net.br/job/LTItemMail/lastSuccessfulBuild/buildNumber";
 	private static final String PLUGIN = "https://request.gmj.net.br/LTItemMail/$version/manifest.yml";
 	private static final String RESOURCE = "https://jenkins.gmj.net.br/job/LTItemMail-ResourcePack/lastSuccessfulBuild/artifact/LTItemMail-ResourcePack.zip";
-	private static final Integer STABLE = 73;
+	private static final Integer STABLE = 76;
 	public static final String getDateURL(final Integer build) {
 		return DATE.replace("$build", String.valueOf(build));
 	}
