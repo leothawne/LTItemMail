@@ -137,6 +137,7 @@ public final class ConfigurationModule {
 		MAILBOX_NAME("mail.name", "&3&lMailbox&r&4"),
 		PLUGIN_UPDATE_CHECK("update.check", true),
 		PLUGIN_UPDATE_PERIODIC_NOTIFICATION("update.periodic-notification", true),
+		PLUGIN_UPDATE_AUTOMATIC("update.automatic", true),
 		BOARDS_CONSOLE_ONLY("boards.console-only", false);
 		private final String path;
 		private final Object result;

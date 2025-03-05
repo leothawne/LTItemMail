@@ -105,6 +105,7 @@ public final class LanguageModule {
 		COMMAND_ADMIN_UPDATE_MAIN("command.admin.update.update", "Checks for new updates."),
 		COMMAND_ADMIN_UPDATE_FOUND("command.admin.update.found", "New update available! You are %build% build(s) out of date. Download it now:"),
 		COMMAND_ADMIN_UPDATE_NONEW("command.admin.update.nonew", "There is no new updates."),
+		COMMAND_ADMIN_UPDATE_AUTOMATIC("command.admin.update.automatic", "The new update will be automatically downloaded and installed. Please restart the server as soon as possible to complete the update process!"),
 		COMMAND_ADMIN_LIST("command.admin.list", "Lists deleted mails of a player."),
 		COMMAND_ADMIN_RECOVER("command.admin.recover", "Recovers lost items from a deleted mail (if there is any)."),
 		COMMAND_ADMIN_BAN_MAIN("command.admin.ban.ban", "Bans a specific player."),

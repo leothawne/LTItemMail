@@ -1,5 +1,5 @@
 #Do not touch it!
-config-version: 14
+config-version: 15
 version-number: ${project.version}
 build-number: ${v}
 plugin:
@@ -125,5 +125,6 @@ mail:
 update:
   check: true
   periodic-notification: true
+  automatic: true
 boards:
   console-only: false

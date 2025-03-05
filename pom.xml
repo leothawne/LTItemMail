@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>br.net.gmj.nobookie</groupId>
 	<artifactId>LTItemMail</artifactId>
-	<version>1.0.1</version>
+	<version>1.1.0</version>
 	<name>LTItemMail</name>
 	<description>Have you ever imagined mailing items to your friends in Minecraft?</description>
 	<distributionManagement>
@@ -12,7 +12,7 @@
         </repository>
     </distributionManagement>
 	<build>
-		<finalName>${project.name}-${project.version}-#${v}</finalName>
+		<finalName>${project.name}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

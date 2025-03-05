@@ -92,17 +92,11 @@ public final class LTItemMail extends JavaPlugin {
 			RegistrationModule.setupItems();
 			RegistrationModule.setupBlocks();
 			new CommandModule();
-			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.RESOURCE_PACK_DOWNLOAD)) new BukkitRunnable() {
-				@Override
-				public final void run() {
-					FetchUtil.FileManager.download(DataModule.getResourcePackURL(), "LTItemMail-ResourcePack.zip", false);
-				}
-			}.runTask(this);
+			MailboxModule.ready();
+			new FetchUtil.Stats().reg();
 			final Long done = Calendar.getInstance().getTimeInMillis() - startup;
 			String took = done + "ms";
 			if(done >= 1000.0) took = (done / 1000.0) + "s";
-			MailboxModule.ready();
-			new FetchUtil.Stats().reg();
 			ConsoleModule.raw(ChatColor.GREEN + "Plugin took " + took + " to load.");
 		} else {
 			new BukkitRunnable() {
@@ -162,6 +156,12 @@ public final class LTItemMail extends JavaPlugin {
 	private final void runTasks() {
 		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_UPDATE_CHECK)) new UpdateTask();
 		new VersionControlTask();
+		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.RESOURCE_PACK_DOWNLOAD)) new BukkitRunnable() {
+			@Override
+			public final void run() {
+				FetchUtil.FileManager.download(DataModule.getResourceArtifactURL(), "LTItemMail-ResourcePack.zip", false);
+			}
+		}.runTask(this);
 	}
 	public final Boolean isDevBuild() {
 		return (Integer) ConfigurationModule.get(ConfigurationModule.Type.BUILD_NUMBER) > DataModule.getLatestStable();

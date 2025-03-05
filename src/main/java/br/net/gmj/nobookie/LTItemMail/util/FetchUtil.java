@@ -72,7 +72,10 @@ public final class FetchUtil {
 	}
 	public static final class FileManager {
 		public static final void download(final String url, final String name, final Boolean silent) {
-			final File current = new File(LTItemMail.getInstance().getDataFolder(), name);
+			download(url, LTItemMail.getInstance().getDataFolder(), name, silent);
+		}
+		public static final void download(final String url, final File path, final String name, final Boolean silent) {
+			final File current = new File(path, name);
 			if(current.exists() && current.isFile()) current.delete();
 			final Downloader downloader = new Downloader();
 			downloader.setDownloadHandler(new CompleteDownloadHandler(downloader) {
@@ -97,11 +100,14 @@ public final class FetchUtil {
 					} else ConsoleModule.debug(FetchUtil.FileManager.class, LanguageModule.I.g(LanguageModule.I.i.R_C) + " [" + name + "]!");
 				}
 				@Override
-				public final void onDownloadError(final Download download, final Exception exception) {
-					super.onDownloadError(download, exception);
+				public final void onDownloadError(final Download download, final Exception e) {
+					super.onDownloadError(download, e);
 					if(!silent) {
 						ConsoleModule.warning(LanguageModule.I.g(LanguageModule.I.i.R_F) + " [" + name + "]!");
-					} else ConsoleModule.debug(FetchUtil.FileManager.class, LanguageModule.I.g(LanguageModule.I.i.R_F) + " [" + name + "]!");
+					} else {
+						ConsoleModule.debug(FetchUtil.FileManager.class, LanguageModule.I.g(LanguageModule.I.i.R_F) + " [" + name + "]!");
+						if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
+					}
 				}
 			});
 			downloader.downloadFileToLocation(url, current.getAbsolutePath());
