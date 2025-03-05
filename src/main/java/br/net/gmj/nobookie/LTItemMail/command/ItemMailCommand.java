@@ -246,7 +246,7 @@ public final class ItemMailCommand extends LTCommandExecutor {
 				if(sender instanceof Player) {
 					final Player player = (Player) sender;
 					final List<MailboxBlock> mailboxes = new ArrayList<>();
-					for(final MailboxBlock block : DatabaseModule.Block.getMailboxBlocks()) if(block.getOwner().equals(player.getUniqueId())) mailboxes.add(block);
+					for(final MailboxBlock block : DatabaseModule.Block.getMailboxBlocks()) if(block.getOwner().equals(LTPlayer.fromUUID(player.getUniqueId()))) mailboxes.add(block);
 					if(mailboxes.size() > 0) {
 						player.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + "" + LanguageModule.get(LanguageModule.Type.BLOCK_LIST));
 						Integer number = 1;
@@ -260,9 +260,7 @@ public final class ItemMailCommand extends LTCommandExecutor {
 					} else sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.BLOCK_NOTFOUND));
 				} else sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + LanguageModule.get(LanguageModule.Type.PLAYER_ERROR));
 			}
-		} else if(hasPermission = PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_PLAYER_MAIN)) {
-			sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + ((String) LanguageModule.get(LanguageModule.Type.COMMAND_INVALID)).replaceAll("%command%", ChatColor.GREEN + "/itemmail" + ChatColor.YELLOW));
-		}
+		} else if(hasPermission = PermissionModule.hasPermission(sender, PermissionModule.Type.CMD_PLAYER_MAIN)) sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + ((String) LanguageModule.get(LanguageModule.Type.COMMAND_INVALID)).replaceAll("%command%", ChatColor.GREEN + "/itemmail" + ChatColor.YELLOW));
 		if(!hasPermission) sender.sendMessage((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TAG) + " " + ChatColor.YELLOW + "" + LanguageModule.get(LanguageModule.Type.PLAYER_PERMISSIONERROR));
 		return true;
 	}
