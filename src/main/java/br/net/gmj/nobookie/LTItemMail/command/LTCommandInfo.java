@@ -12,5 +12,5 @@ public @interface LTCommandInfo {
     String description() default "";
     String aliases() default "";
     String permission() default "";
-    String usage() default "<command>";
+    String usage() default "/<command>";
 }

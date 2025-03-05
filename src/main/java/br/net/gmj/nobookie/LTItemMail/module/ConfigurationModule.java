@@ -32,22 +32,16 @@ public final class ConfigurationModule {
 			try {
 				configuration.load(file);
 				ConsoleModule.info("Configuration loaded.");
-				if(configuration.getInt("config-version") < DataModule.getVersion(DataModule.VersionType.CONFIG_YML)) {
+				if(configuration.getInt("config-version") < DataModule.Version.CONFIG_YML.value()) {
 					update = true;
 					ConsoleModule.warning("Configuration outdated!");
 					ConsoleModule.warning("New settings will be added.");
-					configuration.set("config-version", DataModule.getVersion(DataModule.VersionType.CONFIG_YML));
-					configuration.save(file);
+					configuration.set("config-version", DataModule.Version.CONFIG_YML.value());
 				}
-				if(configuration.isSet("version-number")) if(!configuration.getString("version-number").equals(FetchUtil.Version.get())) {
-					configuration.set("version-number", FetchUtil.Version.get());
-					configuration.set("boards-read", new ArrayList<Integer>());
-					configuration.save(file);
-				}
-				if(configuration.isSet("build-number")) if(configuration.getInt("build-number") < FetchUtil.Build.get()) {
-					configuration.set("build-number", FetchUtil.Build.get());
-					configuration.save(file);
-				}
+				if(configuration.isSet("version-number")) if(!configuration.getString("version-number").equals(FetchUtil.Version.get())) configuration.set("boards-read", new ArrayList<Integer>());
+				configuration.set("version-number", FetchUtil.Version.get());
+				configuration.set("build-number", FetchUtil.Build.get());
+				configuration.save(file);
 				return configuration;
 			} catch (final IOException | InvalidConfigurationException e) {
 				if((Boolean) get(Type.PLUGIN_DEBUG)) e.printStackTrace();
@@ -112,9 +106,11 @@ public final class ConfigurationModule {
 		BUILD_NUMBER("build-number", FetchUtil.Build.get()),
 		VERSION_NUMBER("version-number", FetchUtil.Version.get()),
 		PLUGIN_ENABLE("plugin.enable", true),
-		PLUGIN_TYPE_LANGUAGE("plugin.language", "english"),
+		PLUGIN_LANGUAGE("plugin.language", "english"),
 		PLUGIN_TAG("plugin.tag", "&6[LTIM]"),
 		BUNGEE_MODE("plugin.bungee-mode", false),
+		BUNGEE_SERVER_ID("plugin.bungee-server-id", "server1"),
+		RESOURCE_PACK_DOWNLOAD("plugin.resource-pack-download", false),
 		PLUGIN_DEBUG("plugin.debug", false),
 		DATABASE_TYPE("database.type", "flatfile"),
 		DATABASE_CONVERT("database.convert", false),
@@ -123,7 +119,7 @@ public final class ConfigurationModule {
 		DATABASE_MYSQL_USER("database.mysql.user", "root"),
 		DATABASE_MYSQL_PASSWORD("database.mysql.password", ""),
 		DATABASE_MYSQL_NAME("database.mysql.database", "ltitemmail"),
-		PLUGIN_HOOK_ECONOMY_ENABLE("hook.economy.enable", true),
+		PLUGIN_HOOK_ECONOMY_ENABLE("hook.economy.enable", false),
 		PLUGIN_HOOK_ECONOMY_TYPE("hook.economy.type", "Vault"),
 		PLUGIN_HOOK_DYNMAP("hook.dynmap", false),
 		PLUGIN_HOOK_BLUEMAP("hook.bluemap", false),
@@ -133,6 +129,7 @@ public final class ConfigurationModule {
 		PLUGIN_HOOK_TOWNYADVANCED("hook.towny", false),
 		PLUGIN_HOOK_WORLDGUARD("hook.worldguard", false),
 		PLUGIN_HOOK_ULTIMATEADVANCEMENTAPI("hook.ultimateadvancementapi", false),
+		PLUGIN_HOOK_HEADDATABASE("hook.headdatabase", false),
 		MAILBOX_DISPLAY("mail.display", "CHAT"),
 		MAILBOX_TEXTURES("mail.textures", false),
 		MAILBOX_TYPE_COST("mail.cost.per-item", false),
@@ -140,6 +137,7 @@ public final class ConfigurationModule {
 		MAILBOX_NAME("mail.name", "&3&lMailbox&r&4"),
 		PLUGIN_UPDATE_CHECK("update.check", true),
 		PLUGIN_UPDATE_PERIODIC_NOTIFICATION("update.periodic-notification", true),
+		PLUGIN_UPDATE_AUTOMATIC("update.automatic", true),
 		BOARDS_CONSOLE_ONLY("boards.console-only", false);
 		private final String path;
 		private final Object result;

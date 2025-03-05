@@ -1,6 +1,5 @@
 package br.net.gmj.nobookie.LTItemMail.item;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import org.bukkit.Material;
@@ -15,9 +14,9 @@ public interface Item {
 	public Item.Type getType();
 	public Material getMaterial();
 	public String[] getData();
-	public LinkedList<Listener> getListeners();
+	public List<Listener> getListeners();
 	public void runTasks();
-	public LinkedList<BukkitTask> getTasks();
+	public List<BukkitTask> getTasks();
 	public ItemStack getItem(String data);
 	public Recipe getRecipe();
 	public enum Type {

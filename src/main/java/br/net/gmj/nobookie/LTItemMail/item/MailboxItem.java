@@ -1,7 +1,7 @@
 package br.net.gmj.nobookie.LTItemMail.item;
 
 import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.Collections;
 import java.util.List;
 
 import org.bukkit.Material;
@@ -39,14 +39,14 @@ public final class MailboxItem implements Item {
 		return null;
 	}
 	@Override
-	public final LinkedList<Listener> getListeners() {
-		return null;
+	public final List<Listener> getListeners() {
+		return Collections.emptyList();
 	}
 	@Override
 	public final void runTasks() {}
 	@Override
-	public final LinkedList<BukkitTask> getTasks() {
-		return null;
+	public final List<BukkitTask> getTasks() {
+		return Collections.emptyList();
 	}
 	@Override
 	public final ItemStack getItem(final String data) {

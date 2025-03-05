@@ -11,6 +11,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
+import org.bukkit.plugin.Plugin;
 
 import br.net.gmj.nobookie.LTItemMail.LTItemMail;
 import br.net.gmj.nobookie.LTItemMail.block.MailboxBlock;
@@ -20,9 +21,11 @@ import br.net.gmj.nobookie.LTItemMail.module.LanguageModule;
 import eu.decentsoftware.holograms.api.DHAPI;
 import eu.decentsoftware.holograms.api.holograms.Hologram;
 
-public final class LTDecentHolograms {
+public final class LTDecentHolograms implements LTExtension {
+	private final Plugin plugin;
 	private final List<Material> items;
-	public LTDecentHolograms() {
+	public LTDecentHolograms(final Plugin plugin) {
+		this.plugin = plugin;
 		items = new ArrayList<>();
 		for(final Material material : Material.values()) {
 			final String name = material.toString();
@@ -30,14 +33,18 @@ public final class LTDecentHolograms {
 		}
 		Collections.shuffle(items);
 	}
+	@Override
+	public final Plugin getBasePlugin() {
+		return plugin;
+	}
 	public final void cleanup() {
 		Bukkit.getScheduler().runTaskLater(LTItemMail.getInstance(), new Runnable() {
 			@Override
 			public final void run() {
-				ConsoleModule.debug(getClass().getName() + "#cleanup: performing");
-				for(final MailboxBlock block : DatabaseModule.Block.getMailboxBlocks()) deleteHolo(Bukkit.getOfflinePlayer(block.getOwner()), block.getLocation());
-				for(final MailboxBlock block : DatabaseModule.Block.getMailboxBlocks()) createHolo(Bukkit.getOfflinePlayer(block.getOwner()), block.getLocation());
-				ConsoleModule.debug(getClass().getName() + "#cleanup: done");
+				ConsoleModule.debug(getClass(), "#cleanup: performing");
+				for(final MailboxBlock block : DatabaseModule.Block.getMailboxBlocks()) deleteHolo(block.getOwner().getBukkitPlayer(), block.getLocation());
+				for(final MailboxBlock block : DatabaseModule.Block.getMailboxBlocks()) createHolo(block.getOwner().getBukkitPlayer(), block.getLocation());
+				ConsoleModule.debug(getClass(), "#cleanup: done");
 			}
 		}, 1);
 	}
@@ -53,7 +60,7 @@ public final class LTDecentHolograms {
 		DHAPI.addHologramLine(holo, items.get(new Random().nextInt(items.size() - 1)));
 		DHAPI.addHologramLine(holo, "<#ANIM:wave:" + ChatColor.GREEN + "" + ChatColor.BOLD + "," + ChatColor.GOLD + "" + ChatColor.BOLD + ">" + LanguageModule.get(LanguageModule.Type.BLOCK_NAME) + "</#ANIM>");
 		DHAPI.addHologramLine(holo, ChatColor.GOLD + LanguageModule.get(LanguageModule.Type.BLOCK_OWNER) + " " + ChatColor.AQUA + player.getName());
-		ConsoleModule.debug(getClass().getName() + "#createHolo: " + id);
+		ConsoleModule.debug(getClass(), "#createHolo: " + id);
 	}
 	public final void deleteHolo(final OfflinePlayer player, final Location location) {
 		final String world = location.getWorld().getName();
@@ -63,7 +70,7 @@ public final class LTDecentHolograms {
 		final String id = player.getName() + "_" + world + "_" + x + "_" + y + "_" + z;
 		if(DHAPI.getHologram(id) != null) {
 			DHAPI.removeHologram(id);
-			ConsoleModule.debug(getClass().getName() + "#deleteHolo: " + id);
+			ConsoleModule.debug(getClass(), "#deleteHolo: " + id);
 		}
 	}
 }

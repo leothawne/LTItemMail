@@ -14,11 +14,13 @@ import br.net.gmj.nobookie.LTItemMail.module.ext.LTBlueMap;
 import br.net.gmj.nobookie.LTItemMail.module.ext.LTDecentHolograms;
 import br.net.gmj.nobookie.LTItemMail.module.ext.LTDynmap;
 import br.net.gmj.nobookie.LTItemMail.module.ext.LTGriefPrevention;
+import br.net.gmj.nobookie.LTItemMail.module.ext.LTHeadDatabase;
 import br.net.gmj.nobookie.LTItemMail.module.ext.LTPlaceholderAPI;
+import br.net.gmj.nobookie.LTItemMail.module.ext.LTPlugMan;
 import br.net.gmj.nobookie.LTItemMail.module.ext.LTRedProtect;
 import br.net.gmj.nobookie.LTItemMail.module.ext.LTTownyAdvanced;
 import br.net.gmj.nobookie.LTItemMail.module.ext.LTUltimateAdvancementAPI;
-import br.net.gmj.nobookie.LTItemMail.module.ext.LTVault;
+import br.net.gmj.nobookie.LTItemMail.module.ext.LTVaultPermission;
 import br.net.gmj.nobookie.LTItemMail.module.ext.LTWorldGuard;
 import br.net.gmj.nobookie.LTItemMail.module.ext.listener.LTGriefPreventionListener;
 import br.net.gmj.nobookie.LTItemMail.module.ext.listener.LTRedProtectListener;
@@ -44,20 +46,21 @@ public final class ExtensionModule {
 		plugins.putIfAbsent(Name.DECENTHOLOGRAMS, manager.getPlugin("DecentHolograms"));
 		plugins.putIfAbsent(Name.PLACEHOLDERAPI, manager.getPlugin("PlaceholderAPI"));
 		plugins.putIfAbsent(Name.ULTIMATEADVANCEMENTAPI, manager.getPlugin("UltimateAdvancementAPI"));
+		plugins.putIfAbsent(Name.HEADDATABASE, manager.getPlugin("HeadDatabase"));
 	}
 	public final void warn(final Name sourceName, final Name pluginName) {
 		Plugin source = null;
 		Plugin plugin = null;
-		if(plugins.containsKey(sourceName)) source = plugins.get(sourceName);
-		if(plugins.containsKey(pluginName)) plugin = plugins.get(pluginName);
+		if(getPlugin(sourceName) != null) source = getPlugin(sourceName);
+		if(getPlugin(pluginName) != null) plugin = getPlugin(pluginName);
 		warn(source, plugin);
 	}
 	public final void warn(final Name sourceName, final Plugin plugin) {
 		Plugin source = null;
-		if(plugins.containsKey(sourceName)) source = plugins.get(sourceName);
+		if(getPlugin(sourceName) != null) source = getPlugin(sourceName);
 		warn(source, plugin);
 	}
-	public final void warn(final Plugin source, final Plugin plugin) {
+	private final void warn(final Plugin source, final Plugin plugin) {
 		String sourceName = "";
 		if(source != null && source.isEnabled()) sourceName = " through " + source.getDescription().getName();
 		if(plugin != null && plugin.isEnabled()) plugin.getLogger().info("Hooked into " + LTItemMail.getInstance().getDescription().getName() + sourceName);
@@ -66,34 +69,37 @@ public final class ExtensionModule {
 		switch(function) {
 			case VAULT_PERMISSION:
 				final RegisteredServiceProvider<Permission> permission = Bukkit.getServicesManager().getRegistration(Permission.class);
-				if(permission != null) register.putIfAbsent(function, new LTVault.Permission(permission.getProvider(), permission.getPlugin()));
+				if(permission != null) register.putIfAbsent(function, new LTVaultPermission(getPlugin(Name.VAULT), permission.getPlugin(), permission.getProvider()));
 				break;
 			case GRIEFPREVENTION:
-				register.putIfAbsent(function, new LTGriefPrevention());
+				register.putIfAbsent(function, new LTGriefPrevention(getPlugin(Name.GRIEFPREVENTION)));
 				break;
 			case REDPROTECT:
-				register.putIfAbsent(function, new LTRedProtect());
+				register.putIfAbsent(function, new LTRedProtect(getPlugin(Name.REDPROTECT)));
 				break;
 			case TOWNYADVANCED:
-				register.putIfAbsent(function, new LTTownyAdvanced());
+				register.putIfAbsent(function, new LTTownyAdvanced(getPlugin(Name.TOWNYADVANCED)));
 				break;
 			case WORLDGUARD:
-				register.putIfAbsent(function, new LTWorldGuard());
+				register.putIfAbsent(function, new LTWorldGuard(getPlugin(Name.WORLDGUARD)));
 				break;
 			case DYNMAP:
-				register.putIfAbsent(function, new LTDynmap());
+				register.putIfAbsent(function, new LTDynmap(getPlugin(Name.DYNMAP)));
 				break;
 			case BLUEMAP:
-				register.putIfAbsent(function, new LTBlueMap());
+				register.putIfAbsent(function, new LTBlueMap(getPlugin(Name.BLUEMAP)));
 				break;
 			case DECENTHOLOGRAMS:
-				register.putIfAbsent(function, new LTDecentHolograms());
+				register.putIfAbsent(function, new LTDecentHolograms(getPlugin(Name.DECENTHOLOGRAMS)));
 				break;
 			case PLACEHOLDERAPI:
-				register.putIfAbsent(function, new LTPlaceholderAPI());
+				register.putIfAbsent(function, new LTPlaceholderAPI(getPlugin(Name.PLACEHOLDERAPI)));
 				break;
 			case ULTIMATEADVANCEMENTAPI:
-				register.putIfAbsent(function, new LTUltimateAdvancementAPI());
+				register.putIfAbsent(function, new LTUltimateAdvancementAPI(getPlugin(Name.ULTIMATEADVANCEMENTAPI)));
+				break;
+			case HEADDATABASE:
+				register.putIfAbsent(function, new LTHeadDatabase(getPlugin(Name.HEADDATABASE)));
 				break;
 		}
 		return isRegistered(function);
@@ -105,7 +111,7 @@ public final class ExtensionModule {
 	}
 	public final boolean isInstalled(final Name name) {
 		Plugin plugin = null;
-		if(plugins.containsKey(name)) plugin = plugins.get(name);
+		if(getPlugin(name) != null) plugin = getPlugin(name);
 		return (plugin != null && plugin.isEnabled());
 	}
 	public final boolean isRegistered(final Function function) {
@@ -113,6 +119,10 @@ public final class ExtensionModule {
 	}
 	public final Object get(final Function function) {
 		if(isRegistered(function)) return register.get(function);
+		return null;
+	}
+	private final Plugin getPlugin(final Name name) {
+		if(plugins.containsKey(name)) return plugins.get(name);
 		return null;
 	}
 	public final void load() {
@@ -123,40 +133,40 @@ public final class ExtensionModule {
 		}
 		if(detected) ConsoleModule.info("Loading extensions...");
 		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_ECONOMY_ENABLE)) EconomyModule.init();
-		if(isInstalled(Name.VAULT)) if(!isRegistered(Function.VAULT_PERMISSION)) if(register(Function.VAULT_PERMISSION)) warn(Name.VAULT, ((LTVault.Permission) get(Function.VAULT_PERMISSION)).getPlugin());
-		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_GRIEFPREVENTION)) if(isInstalled(Name.GRIEFPREVENTION)) if(!isRegistered(Function.GRIEFPREVENTION)) {
+		if(isInstalled(Name.VAULT) && !isRegistered(Function.VAULT_PERMISSION)) if(register(Function.VAULT_PERMISSION)) warn(Name.VAULT, ((LTVaultPermission) get(Function.VAULT_PERMISSION)).getPermissionPlugin());
+		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_GRIEFPREVENTION)) if(isInstalled(Name.GRIEFPREVENTION) && !isRegistered(Function.GRIEFPREVENTION)) {
 			warn(null, Name.GRIEFPREVENTION);
 			register(Function.GRIEFPREVENTION);
 			new LTGriefPreventionListener();
 		}
-		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_REDPROTECT)) if(isInstalled(Name.REDPROTECT)) if(!isRegistered(Function.REDPROTECT)) {
+		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_REDPROTECT)) if(isInstalled(Name.REDPROTECT) && !isRegistered(Function.REDPROTECT)) {
 			warn(null, Name.REDPROTECT);
 			register(Function.REDPROTECT);
 			new LTRedProtectListener();
 		}
-		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_TOWNYADVANCED)) if(isInstalled(Name.TOWNYADVANCED)) if(!isRegistered(Function.TOWNYADVANCED)) {
+		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_TOWNYADVANCED)) if(isInstalled(Name.TOWNYADVANCED) && !isRegistered(Function.TOWNYADVANCED)) {
 			warn(null, Name.TOWNYADVANCED);
 			register(Function.TOWNYADVANCED);
 			new LTTownyListener();
 		}
-		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_WORLDGUARD)) if(isInstalled(Name.WORLDGUARD)) if(!isRegistered(Function.WORLDGUARD)) {
+		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_WORLDGUARD)) if(isInstalled(Name.WORLDGUARD) && !isRegistered(Function.WORLDGUARD)) {
 			warn(null, Name.WORLDGUARD);
 			register(Function.WORLDGUARD);
 		}
-		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_DYNMAP)) if(isInstalled(Name.DYNMAP)) if(!isRegistered(Function.DYNMAP)) {
+		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_DYNMAP)) if(isInstalled(Name.DYNMAP) && !isRegistered(Function.DYNMAP)) {
 			warn(null, Name.DYNMAP);
 			register(Function.DYNMAP);
 		}
-		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_BLUEMAP)) if(isInstalled(Name.BLUEMAP)) if(!isRegistered(Function.BLUEMAP)) {
+		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_BLUEMAP)) if(isInstalled(Name.BLUEMAP) && !isRegistered(Function.BLUEMAP)) {
 			warn(null, Name.BLUEMAP);
 			register(Function.BLUEMAP);
 		}
-		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_DECENTHOLOGRAMS)) if(isInstalled(Name.DECENTHOLOGRAMS)) if(!isRegistered(Function.DECENTHOLOGRAMS)) {
+		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_DECENTHOLOGRAMS)) if(isInstalled(Name.DECENTHOLOGRAMS) && !isRegistered(Function.DECENTHOLOGRAMS)) {
 			warn(null, Name.DECENTHOLOGRAMS);
 			register(Function.DECENTHOLOGRAMS);
 			if(isRegistered(Function.DECENTHOLOGRAMS)) ((LTDecentHolograms) get(Function.DECENTHOLOGRAMS)).cleanup();
 		}
-		if(isInstalled(Name.PLACEHOLDERAPI)) if(!isRegistered(Function.PLACEHOLDERAPI)) {
+		if(isInstalled(Name.PLACEHOLDERAPI) && !isRegistered(Function.PLACEHOLDERAPI)) {
 			warn(null, Name.PLACEHOLDERAPI);
 			register(Function.PLACEHOLDERAPI);
 		}
@@ -179,9 +189,14 @@ public final class ExtensionModule {
 				if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 			}
 		}
+		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_HOOK_HEADDATABASE)) if(isInstalled(Name.HEADDATABASE) && !isRegistered(Function.HEADDATABASE)) {
+			warn(null, Name.HEADDATABASE);
+			register(Function.HEADDATABASE);
+		}
 		if(detected) {
 			ConsoleModule.info("Extensions loaded.");
 		} else ConsoleModule.info("No extensions detected.");
+		new LTPlugMan();
 	}
 	public static final ExtensionModule reload() {
 		if(instance != null) {
@@ -191,6 +206,9 @@ public final class ExtensionModule {
 			return instance;
 		}
 		return getInstance();
+	}
+	public final Map<Function, Object> reg(){
+		return register;
 	}
 	public static final ExtensionModule getInstance() {
 		if(instance == null) instance = new ExtensionModule();
@@ -208,7 +226,8 @@ public final class ExtensionModule {
 		BLUEMAP,
 		DECENTHOLOGRAMS,
 		PLACEHOLDERAPI,
-		ULTIMATEADVANCEMENTAPI
+		ULTIMATEADVANCEMENTAPI,
+		HEADDATABASE
 	}
 	public enum Function {
 		VAULT_PERMISSION,
@@ -220,6 +239,7 @@ public final class ExtensionModule {
 		BLUEMAP,
 		DECENTHOLOGRAMS,
 		PLACEHOLDERAPI,
-		ULTIMATEADVANCEMENTAPI
+		ULTIMATEADVANCEMENTAPI,
+		HEADDATABASE
 	}
 }

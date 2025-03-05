@@ -8,7 +8,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import br.net.gmj.nobookie.LTItemMail.LTItemMail;
-import br.net.gmj.nobookie.LTItemMail.module.DataModule.VersionType;
+import br.net.gmj.nobookie.LTItemMail.module.DataModule.Version;
 import br.net.gmj.nobookie.LTItemMail.util.BukkitUtil;
 import br.net.gmj.nobookie.LTItemMail.util.FetchUtil;
 
@@ -16,35 +16,36 @@ public final class LanguageModule {
 	private LanguageModule() {}
 	private static File file;
 	public static final void check() {
-		file = FetchUtil.FileManager.get((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml");
+		file = FetchUtil.FileManager.get((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_LANGUAGE) + ".yml");
 		if(file == null) {
-			ConsoleModule.info("Extracting " + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml...");
-			if(LTItemMail.getInstance().getResource((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml") != null) {
-				LTItemMail.getInstance().saveResource((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml", false);
+			ConsoleModule.info("Extracting " + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_LANGUAGE) + ".yml...");
+			if(LTItemMail.getInstance().getResource((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_LANGUAGE) + ".yml") != null) {
+				LTItemMail.getInstance().saveResource((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_LANGUAGE) + ".yml", false);
 				ConsoleModule.info("Done.");
 			} else {
-				if(!((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE)).equalsIgnoreCase("english")) ConsoleModule.warning("Language " + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + " not found!");
+				if(!((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_LANGUAGE)).equalsIgnoreCase("english")) ConsoleModule.warning("Language " + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_LANGUAGE) + " not found!");
 				ConsoleModule.warning("Generating a new one and all default translations will be added.");
-				FetchUtil.FileManager.create((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml");
+				FetchUtil.FileManager.create((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_LANGUAGE) + ".yml");
 			}
 		}
 	}
 	private static boolean update = false;
 	public static final FileConfiguration load() {
-		file = FetchUtil.FileManager.get((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml");
+		file = FetchUtil.FileManager.get((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_LANGUAGE) + ".yml");
 		if(file != null) {
 			final FileConfiguration configuration = new YamlConfiguration();
 			try {
 				configuration.load(file);
-				ConsoleModule.info((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml loaded.");
-				if(((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE)).equalsIgnoreCase("portuguese")) ConsoleModule.br();
+				ConsoleModule.info((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_LANGUAGE) + ".yml loaded.");
+				if(((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_LANGUAGE)).equalsIgnoreCase("portuguese")) ConsoleModule.br();
 				try {
-					final VersionType type = DataModule.VersionType.valueOf(((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE)).toUpperCase() + "_YML");
-					if(configuration.getInt("language-version") < DataModule.getVersion(type)) {
+					final Version version = DataModule.Version.valueOf(((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_LANGUAGE)).toUpperCase() + "_YML");
+					if(configuration.getInt("language-version") < version.value()) {
 						update = true;
-						ConsoleModule.warning("Language " + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE) + ".yml outdated!");
+						ConsoleModule.warning("Language " + (String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_LANGUAGE) + ".yml outdated!");
 						ConsoleModule.warning("Missing translations will be added with default value.");
-						configuration.set("language-version", DataModule.getVersion(type));
+						if(configuration.getInt("language-version") == 10) ConsoleModule.severe("All \"%\" arguments from the language file were changed! You MUST manually edit the file and replace all \"%\" with the new format. Reference example: https://github.com/leothawne/LTItemMail/blob/dev/src/main/resources/portuguese.yml");
+						configuration.set("language-version", version.value());
 						configuration.save(file);
 					}
 				} catch(final IllegalArgumentException e) {
@@ -82,7 +83,7 @@ public final class LanguageModule {
 		}
 	}
 	public enum Type {
-		COMMAND_INVALID("command.invalid", "Invalid command. Type % to see the command list."),
+		COMMAND_INVALID("command.invalid", "Invalid command. Type %command% to see the command list."),
 		COMMAND_PLAYER_ITEMMAIL("command.player.itemmail", "Lists player commands."),
 		COMMAND_PLAYER_VERSION("command.player.version", "Shows the current plugin version."),
 		COMMAND_PLAYER_LIST("command.player.list", "Lists all pending mailboxes received."),
@@ -102,8 +103,9 @@ public final class LanguageModule {
 		COMMAND_PLAYER_COSTS("command.player.costs", "Shows mail price."),
 		COMMAND_ADMIN_ITEMMAILADMIN("command.admin.itemmailadmin", "Lists admin commands."),
 		COMMAND_ADMIN_UPDATE_MAIN("command.admin.update.update", "Checks for new updates."),
-		COMMAND_ADMIN_UPDATE_FOUND("command.admin.update.found", "New update available! You are % build(s) out of date. Download it now:"),
+		COMMAND_ADMIN_UPDATE_FOUND("command.admin.update.found", "New update available! You are %build% build(s) out of date. Download it now:"),
 		COMMAND_ADMIN_UPDATE_NONEW("command.admin.update.nonew", "There is no new updates."),
+		COMMAND_ADMIN_UPDATE_AUTOMATIC("command.admin.update.automatic", "The new update will be automatically downloaded and installed. Please restart the server as soon as possible to complete the update process!"),
 		COMMAND_ADMIN_LIST("command.admin.list", "Lists deleted mails of a player."),
 		COMMAND_ADMIN_RECOVER("command.admin.recover", "Recovers lost items from a deleted mail (if there is any)."),
 		COMMAND_ADMIN_BAN_MAIN("command.admin.ban.ban", "Bans a specific player."),
@@ -126,7 +128,7 @@ public final class LanguageModule {
 		PLAYER_OPENEDBOXES("player.openedboxes", "Deleted mails of"),
 		PLAYER_BANNED("player.banned", "You are banned! Ban reason available in /itemmail info"),
 		MAILBOX_CLOSED("mailbox.closed", "Mail closed."),
-		MAILBOX_SENT("mailbox.sent", "Sending mail to %..."),
+		MAILBOX_SENT("mailbox.sent", "Sending mail to %player%..."),
 		MAILBOX_FROM("mailbox.from", "New mail from"),
 		MAILBOX_SPECIAL("mailbox.special", "Special Mail!!!"),
 		MAILBOX_ABORTED("mailbox.aborted", "Shipping canceled!"),
@@ -144,9 +146,9 @@ public final class LanguageModule {
 		MAILBOX_RETURNED("mailbox.returned", "sent it back to you."),
 		MAILBOX_ACCEPT("mailbox.accept", "Accept"),
 		MAILBOX_DENY("mailbox.deny", "Deny"),
-		TRANSACTION_PAID("transaction.paid", "You paid $% to the post office."),
+		TRANSACTION_PAID("transaction.paid", "You paid $%money% to the post office."),
 		TRANSACTION_ERROR("transaction.error", "Transaction not succeeded!"),
-		TRANSACTION_NOMONEY("transaction.nomoney", "You do not have $% to pay to the post office."),
+		TRANSACTION_NOMONEY("transaction.nomoney", "You do not have $%money% to pay to the post office."),
 		TRANSACTION_NOTINSTALLED("transaction.notinstalled", "Economy was not detected!"),
 		TRANSACTION_COSTS("transaction.costs", "Price:"),
 		BLOCK_PLACEERROR("block.placeerror", "You do not have permission to place a mailbox."),
@@ -159,7 +161,8 @@ public final class LanguageModule {
 		BLOCK_OWNER("block.owner", "Owner:"),
 		BLOCK_LIST("block.list.placed", "Mailboxes you placed:"),
 		BLOCK_LIST_WORLD("block.list.world", "World"),
-		BLOCK_ADMIN_LIST("block.adminlist.placed", "Mailboxes of");
+		BLOCK_ADMIN_LIST("block.adminlist.placed", "Mailboxes of"),
+		BLOCK_NOTFOUND("block.notfound", "No mailbox block found.");
 		private final String path;
 		private final String result;
 		Type(final String path, final String result){
@@ -175,7 +178,7 @@ public final class LanguageModule {
 	}
 	public static final class I {
 		public static final String g(final i i) {
-			if(((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_TYPE_LANGUAGE)).equals("portuguese")) switch(i) {
+			if(((String) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_LANGUAGE)).equals("portuguese")) switch(i) {
 				case R_S:
 					return "Download de recurso iniciado";
 				case R_D:

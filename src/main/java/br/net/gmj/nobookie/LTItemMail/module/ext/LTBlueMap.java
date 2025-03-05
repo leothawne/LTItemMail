@@ -6,9 +6,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Map;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.plugin.Plugin;
 
 import com.flowpowered.math.vector.Vector3d;
 
@@ -26,9 +26,11 @@ import de.bluecolored.bluemap.api.markers.Marker;
 import de.bluecolored.bluemap.api.markers.MarkerSet;
 import de.bluecolored.bluemap.api.markers.POIMarker;
 
-public final class LTBlueMap {
+public final class LTBlueMap implements LTExtension {
+	private final Plugin plugin;
 	private BlueMapAPI api = null;
-	public LTBlueMap() {
+	public LTBlueMap(final Plugin plugin) {
+		this.plugin = plugin;
 		BlueMapAPI.onEnable(api -> {
 			this.api = api;
 			final MarkerSet loadedSet = loadFromFile();
@@ -40,11 +42,15 @@ public final class LTBlueMap {
 				}
 				map.getMarkerSets().put("ltitemmail_markers", set);
 			}
-			for(final MailboxBlock block : DatabaseModule.Block.getMailboxBlocks()) createMarker(Bukkit.getOfflinePlayer(block.getOwner()), block.getLocation());
+			for(final MailboxBlock block : DatabaseModule.Block.getMailboxBlocks()) createMarker(block.getOwner().getBukkitPlayer(), block.getLocation());
 		});
 	}
+	@Override
+	public final Plugin getBasePlugin() {
+		return plugin;
+	}
 	public final void unload() {
-		for(final MailboxBlock block : DatabaseModule.Block.getMailboxBlocks()) deleteMarker(Bukkit.getOfflinePlayer(block.getOwner()), block.getLocation(), true);
+		for(final MailboxBlock block : DatabaseModule.Block.getMailboxBlocks()) deleteMarker(block.getOwner().getBukkitPlayer(), block.getLocation(), true);
 	}
 	public final void createMarker(final OfflinePlayer player, final Location location) {
 		if(api != null) {
@@ -71,7 +77,7 @@ public final class LTBlueMap {
 				} else cachedMap.getMarkerSets().put("ltitemmail_markers", set);
 			}
 			saveToFile();
-			ConsoleModule.debug(getClass().getName() + "#createMarker: " + id);
+			ConsoleModule.debug(getClass(), "#createMarker: " + id);
 		}
 	}
 	public final void deleteMarker(final OfflinePlayer player, final Location location, Boolean doNotSave) {
@@ -92,7 +98,7 @@ public final class LTBlueMap {
 					set.getMarkers().remove(id);
 					for(final BlueMapMap cachedMap : world.getMaps()) if(cachedMap.getMarkerSets().containsKey("ltitemmail_markers")) cachedMap.getMarkerSets().replace("ltitemmail_markers", set);
 					if(!doNotSave) saveToFile();
-					ConsoleModule.debug(getClass().getName() + "#deleteMarker: " + id);
+					ConsoleModule.debug(getClass(), "#deleteMarker: " + id);
 				}
 			}
 		}
@@ -104,9 +110,9 @@ public final class LTBlueMap {
 			final FileWriter writer = new FileWriter(new File(LTItemMail.getInstance().getDataFolder(), "bluemap-markers.json"));
 			MarkerGson.INSTANCE.toJson(set, writer);
 			writer.close();
-			ConsoleModule.debug(getClass().getName() + "#saveToFile: saved");
+			ConsoleModule.debug(getClass(), "#saveToFile: saved");
 		} catch (final IOException e) {
-			ConsoleModule.debug(getClass().getName() + "#saveToFile: error");
+			ConsoleModule.debug(getClass(), "#saveToFile: error");
 			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 		}
 	}
@@ -117,9 +123,9 @@ public final class LTBlueMap {
 			final FileReader reader = new FileReader(markers);
 			set = MarkerGson.INSTANCE.fromJson(reader, MarkerSet.class);
 			reader.close();
-			ConsoleModule.debug(getClass().getName() + "#loadFromFile: loaded");
+			ConsoleModule.debug(getClass(), "#loadFromFile: loaded");
 		} catch (final IOException e) {
-			ConsoleModule.debug(getClass().getName() + "#loadFromFile: error");
+			ConsoleModule.debug(getClass(), "#loadFromFile: error");
 			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 		}
 		return set;

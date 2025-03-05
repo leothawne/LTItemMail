@@ -30,7 +30,6 @@ public class ReflectionsUtil {
     public static List<String> getClassNamesFromPackage(String packageName, ClassLoader classLoader) throws IOException {
         URL packageURL;
         ArrayList<String> names = new ArrayList<String>();
-        ;
 
         packageName = packageName.replace(".", "/");
         packageURL = classLoader.getResource(packageName);

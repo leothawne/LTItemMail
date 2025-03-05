@@ -1,8 +1,8 @@
 package br.net.gmj.nobookie.LTItemMail.module.ext;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.plugin.Plugin;
 import org.dynmap.DynmapCommonAPI;
 import org.dynmap.DynmapCommonAPIListener;
 import org.dynmap.markers.Marker;
@@ -16,20 +16,26 @@ import br.net.gmj.nobookie.LTItemMail.module.ConsoleModule;
 import br.net.gmj.nobookie.LTItemMail.module.DatabaseModule;
 import br.net.gmj.nobookie.LTItemMail.module.LanguageModule;
 
-public final class LTDynmap extends DynmapCommonAPIListener {
+public final class LTDynmap extends DynmapCommonAPIListener implements LTExtension {
+	private final Plugin plugin;
 	private MarkerAPI api = null;
-	public LTDynmap(){
+	public LTDynmap(final Plugin plugin){
+		this.plugin = plugin;
 		DynmapCommonAPIListener.register(this);
+	}
+	@Override
+	public final Plugin getBasePlugin() {
+		return plugin;
 	}
 	@Override
 	public final void apiEnabled(final DynmapCommonAPI api) {
 		if(api != null) {
 			this.api = api.getMarkerAPI();
-			for(final MailboxBlock block : DatabaseModule.Block.getMailboxBlocks()) createMarker(Bukkit.getOfflinePlayer(block.getOwner()), block.getLocation());
+			for(final MailboxBlock block : DatabaseModule.Block.getMailboxBlocks()) createMarker(block.getOwner().getBukkitPlayer(), block.getLocation());
 		}
 	}
 	public final void unload() {
-		for(final MailboxBlock block : DatabaseModule.Block.getMailboxBlocks()) deleteMarker(Bukkit.getOfflinePlayer(block.getOwner()), block.getLocation());
+		for(final MailboxBlock block : DatabaseModule.Block.getMailboxBlocks()) deleteMarker(block.getOwner().getBukkitPlayer(), block.getLocation());
 		DynmapCommonAPIListener.unregister(this);
 	}
 	public final void createMarker(final OfflinePlayer player, final Location location) {
@@ -42,7 +48,7 @@ public final class LTDynmap extends DynmapCommonAPIListener {
 			final String id = player.getName() + "_" + world + "_" + x + "_" + y + "_" + z;
 			deleteMarker(player, location);
 			set.createMarker(id, LanguageModule.get(LanguageModule.Type.BLOCK_NAME) + " | " + LanguageModule.get(LanguageModule.Type.BLOCK_OWNER) + " " + player.getName() + " (" + x + ", " + y + ", " + z + ")", false, world, x, y, z, getIcon(), false);
-			ConsoleModule.debug(getClass().getName() + "#createMarker: " + id);
+			ConsoleModule.debug(getClass(), "#createMarker: " + id);
 		}
 	}
 	public final void deleteMarker(final OfflinePlayer player, final Location location) {
@@ -52,7 +58,7 @@ public final class LTDynmap extends DynmapCommonAPIListener {
 			if(marker != null) {
 				final String id = marker.getMarkerID();
 				marker.deleteMarker();
-				ConsoleModule.debug(getClass().getName() + "#deleteMarker: " + id);
+				ConsoleModule.debug(getClass(), "#deleteMarker: " + id);
 			}
 		}
 	}

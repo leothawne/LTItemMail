@@ -9,7 +9,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 
-import br.net.gmj.nobookie.LTItemMail.LTItemMail;
 import br.net.gmj.nobookie.LTItemMail.module.ConfigurationModule.Type;
 import br.net.gmj.nobookie.LTItemMail.util.BukkitUtil;
 import br.net.gmj.nobookie.LTItemMail.util.FetchUtil;
@@ -20,31 +19,33 @@ public final class ConsoleModule {
 		return Bukkit.getConsoleSender();
 	}
 	public static final void hello() {
+		String buildDate = FetchUtil.URL.get(DataModule.getDateURL((Integer) ConfigurationModule.get(Type.BUILD_NUMBER)));
+		if(buildDate == null) buildDate = ChatColor.DARK_RED + "Server down!";
 		sender().sendMessage(ChatColor.DARK_AQUA + " _   _______ _____ __  __ ");
 		sender().sendMessage(ChatColor.DARK_AQUA + "| | |__   __|_   _|  \\/  |");
 		sender().sendMessage(ChatColor.DARK_AQUA + "| |    | |    | | | \\  / |" + ChatColor.WHITE + "  Build number: #" + ConfigurationModule.get(Type.BUILD_NUMBER));
-		sender().sendMessage(ChatColor.DARK_AQUA + "| |    | |    | | | |\\/| |" + ChatColor.WHITE + "  Build date: " + FetchUtil.URL.get(DataModule.getDateURL((Integer) ConfigurationModule.get(Type.BUILD_NUMBER))));
+		sender().sendMessage(ChatColor.DARK_AQUA + "| |____| |   _| |_| |\\/| |" + ChatColor.WHITE + "  Build date: " + buildDate.replaceAll(System.lineSeparator(), ""));
 		sender().sendMessage(ChatColor.DARK_AQUA + "|______|_|  |_____|_|  |_|" + ChatColor.WHITE + "  Need support or have questions? https://discord.gg/Nvnrv3P");
 	}
 	public static final void info(final String message) {
-		sender().sendMessage(ChatColor.WHITE + "[" + ChatColor.DARK_AQUA + "LTIM " + ChatColor.DARK_GREEN + "INFO" + ChatColor.WHITE + "] " + message);
+		sender().sendMessage(ChatColor.WHITE + "[" + ChatColor.DARK_AQUA + "LTIM " + ChatColor.WHITE + "I] " + message);
 	}
 	public static final void warning(final String message) {
-		sender().sendMessage(ChatColor.WHITE + "[" + ChatColor.DARK_AQUA + "LTIM " + ChatColor.GOLD + "WARNING" + ChatColor.WHITE + "] " + ChatColor.YELLOW + message);
+		sender().sendMessage(ChatColor.WHITE + "[" + ChatColor.DARK_AQUA + "LTIM " + ChatColor.YELLOW + "W" + ChatColor.WHITE + "] " + ChatColor.YELLOW + message);
 	}
 	public static final void severe(final String message) {
-		sender().sendMessage(ChatColor.WHITE + "[" + ChatColor.DARK_AQUA + "LTIM " + ChatColor.DARK_RED + "ERROR" + ChatColor.WHITE + "] " + ChatColor.RED + message);
+		sender().sendMessage(ChatColor.WHITE + "[" + ChatColor.DARK_AQUA + "LTIM " + ChatColor.RED + "E" + ChatColor.WHITE + "] " + ChatColor.RED + message);
 	}
-	public static final void debug(final String message) {
-		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) sender().sendMessage(ChatColor.GRAY + "[" + LTItemMail.class.getSimpleName() + "] " + message);
+	public static final void raw(final String message) {
+		sender().sendMessage(ChatColor.WHITE + "[" + ChatColor.DARK_AQUA + "LTIM" + ChatColor.WHITE + "] " + ChatColor.RESET + message);
 	}
-	public static final void mailbox(final String message) {
-		sender().sendMessage(ChatColor.WHITE + "[Mailbox-Log-Worker] " + message);
+	public static final void debug(final Class<?> clazz, final String message) {
+		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) sender().sendMessage(ChatColor.GRAY + "[" + clazz.getName() + "] " + message);
 	}
 	public static final void server(final List<String> warnings) {
-		sender().sendMessage(ChatColor.WHITE + "========== " + ChatColor.DARK_AQUA + "LT Item Mail " + ChatColor.RED + "Version Control" + ChatColor.WHITE + " ==========");
-		for(final String warning: warnings) sender().sendMessage(ChatColor.WHITE + warning);
-		sender().sendMessage(ChatColor.WHITE + "==================================================");
+		sender().sendMessage(ChatColor.WHITE + "<!-- " + ChatColor.DARK_AQUA + "LT Item Mail " + ChatColor.RED + "Version Control");
+		for(final String warning : warnings) sender().sendMessage(ChatColor.WHITE + "#   " + BukkitUtil.Text.Color.format(warning));
+		sender().sendMessage(ChatColor.WHITE + "-->");
 	}
 	public static final void board(final CommandSender receiver, final Map<Integer, Map<String, Map<String, List<String>>>> messages) {
 		receiver.sendMessage(ChatColor.WHITE + "" + ChatColor.BOLD + "<!-- " + ChatColor.DARK_AQUA + ChatColor.BOLD + "LT Item Mail " + ChatColor.LIGHT_PURPLE + ChatColor.BOLD + "Messages Board");
@@ -65,7 +66,7 @@ public final class ConsoleModule {
 		receiver.sendMessage(ChatColor.WHITE + "" + ChatColor.BOLD + "-->");
 	}
 	public static final void br() {
-		/*sender().sendMessage("⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣴⣾⣷⣦⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀");
+		sender().sendMessage("⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣴⣾⣷⣦⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀");
 		sender().sendMessage("⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⣾⡿⠿⠟⠻⠿⢿⣷⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀");
 		sender().sendMessage("⠀⠀⠀⠀⠀⠀⣀⣤⣾⣿⠟⠁⠀⠀⠀⠀⠀⠀⠈⠻⣿⣷⣤⣀⠀⠀⠀⠀⠀⠀");
 		sender().sendMessage("⠀⠀⠀⣀⣴⣾⣿⣿⣿⡿⠿⠿⠿⠶⢶⣦⣤⣀⠀⠀⢹⣿⣿⣿⣷⣦⣀⠀⠀⠀");
@@ -74,7 +75,7 @@ public final class ConsoleModule {
 		sender().sendMessage("⠀⠀⠀⠀⠀⠀⠉⠛⢿⣿⣦⡀⠀⠀⠀⠀⠀⠀⢀⣴⣿⡿⠛⠉⠀⠀⠀⠀⠀⠀");
 		sender().sendMessage("⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⢿⣷⣶⣦⣴⣶⣾⡿⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀");
 		sender().sendMessage("⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠻⢿⡿⠟⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀");
-		sender().sendMessage("");*/
+		sender().sendMessage("");
 		final List<ChatColor> cores = Arrays.asList(ChatColor.GREEN,
 				ChatColor.YELLOW);
 		int n = 0;

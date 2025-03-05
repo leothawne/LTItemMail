@@ -14,8 +14,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import br.net.gmj.nobookie.LTItemMail.entity.LTPlayer;
 import br.net.gmj.nobookie.LTItemMail.module.ConfigurationModule;
+import br.net.gmj.nobookie.LTItemMail.module.ExtensionModule;
 import br.net.gmj.nobookie.LTItemMail.module.LanguageModule;
 import br.net.gmj.nobookie.LTItemMail.module.ModelsModule;
+import br.net.gmj.nobookie.LTItemMail.module.ext.LTHeadDatabase;
 
 public final class MailboxInventory {
 	private MailboxInventory() {}
@@ -59,10 +61,17 @@ public final class MailboxInventory {
 	private static final void buildGUI(final Inventory inventory, final UUID from, final String message, final Boolean adminRecover, final Boolean acceptAndDeny) {
 		final ItemStack gui = new ItemStack(Material.WHITE_STAINED_GLASS_PANE, 1);
 		final ItemStack limiter = new ItemStack(Material.WHITE_STAINED_GLASS_PANE, 1);
-		final ItemStack costButton = new ItemStack(Material.EMERALD, 1);
-		final ItemStack labelButton = new ItemStack(Material.BOOK, 1);
-		final ItemStack denyButton = new ItemStack(Material.BARRIER, 1);
-		final ItemStack acceptButton = new ItemStack(Material.ENDER_EYE, 1);
+		ItemStack costButton = new ItemStack(Material.EMERALD, 1);
+		ItemStack labelButton = new ItemStack(Material.BOOK, 1);
+		ItemStack denyButton = new ItemStack(Material.BARRIER, 1);
+		ItemStack acceptButton = new ItemStack(Material.ENDER_EYE, 1);
+		if(ExtensionModule.getInstance().isInstalled(ExtensionModule.Name.HEADDATABASE) && ExtensionModule.getInstance().isRegistered(ExtensionModule.Function.HEADDATABASE)) {
+			final LTHeadDatabase headDB = (LTHeadDatabase) ExtensionModule.getInstance().get(ExtensionModule.Function.HEADDATABASE);
+			costButton = headDB.getHead(LTHeadDatabase.Type.MAILBOX_BUTTON_COST);
+			labelButton = headDB.getHead(LTHeadDatabase.Type.MAILBOX_BUTTON_LABEL);
+			denyButton = headDB.getHead(LTHeadDatabase.Type.MAILBOX_BUTTON_DENY);
+			acceptButton = headDB.getHead(LTHeadDatabase.Type.MAILBOX_BUTTON_ACCEPT);
+		}
 		gui.setItemMeta(prepareItem(gui.getItemMeta(), ModelsModule.get(ModelsModule.Type.MAILBOX_GUI_NORMAL), null, null));
 		limiter.setItemMeta(prepareItem(limiter.getItemMeta(), ModelsModule.get(ModelsModule.Type.MAILBOX_LIMITER), null, null));
 		costButton.setItemMeta(prepareItem(costButton.getItemMeta(), ModelsModule.get(ModelsModule.Type.MAILBOX_BUTTON_COST), ChatColor.RESET + LanguageModule.get(LanguageModule.Type.MAILBOX_COST), Arrays.asList(ChatColor.RESET + "" + ChatColor.GREEN + "$ 0.0", ChatColor.RESET + "" + ChatColor.WHITE + LanguageModule.get(LanguageModule.Type.MAILBOX_COSTUPDATE))));
@@ -97,9 +106,7 @@ public final class MailboxInventory {
 		for(int i = 34; i < 36; i++) inventory.setItem(i, limiter);
 	}
 	private static final ItemMeta prepareItem(final ItemMeta meta, final int model, final String name, final List<String> lore) {
-		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_TEXTURES)) {
-			meta.setCustomModelData(model);
-		} else meta.setCustomModelData(null);
+		if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.MAILBOX_TEXTURES)) if(model != -1) meta.setCustomModelData(model);
 		if(name != null) {
 			meta.setDisplayName(name);
 		} else meta.setDisplayName(" ");

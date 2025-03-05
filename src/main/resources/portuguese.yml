@@ -1,5 +1,5 @@
 #Não toque nisso!
-language-version: 9
+language-version: 12
 player:
   permissionerror: 'Você não tem permissão para fazer isso.'
   missingerror: 'Você deve especificar o nome do jogador.'
@@ -11,7 +11,7 @@ player:
   banned: 'Você está banido! O motivo pode ser visto digitando /itemmail info'
 mailbox:
   closed: 'Caixa fechada.'
-  sent: 'Enviando corrêio para %...'
+  sent: 'Enviando corrêio para %player%...'
   from: 'Novo corrêio de'
   special: 'Corrêio especial!!!'
   aborted: 'Envio cancelado.'
@@ -31,8 +31,8 @@ mailbox:
   deny: 'Recusar'
 transaction:
   error: 'Transação mal sucedida!'
-  nomoney: 'Você não tem $% para pagar ao corrêio.'
-  paid: 'Você pagou $% ao corrêio.'
+  nomoney: 'Você não tem $%money% para pagar ao corrêio.'
+  paid: 'Você pagou $%money% ao corrêio.'
   notinstalled: 'Economia não foi detectada!'
   costs: 'Preço:'
 block:
@@ -49,8 +49,9 @@ block:
     world: 'Mundo'
   adminlist:
     placed: 'Caixas de Corrêio de'
+  notfound: 'Nenhum bloco caixa de corrêio encontrado.'
 command:
-  invalid: 'Comando inválido. Digite % para ver a lista de comandos.'
+  invalid: 'Comando inválido. Digite %command% para ver a lista de comandos.'
   player:
     itemmail: 'Lista de comandos para jogadores.'
     version: 'Mostra a versão atual do plugin.'
@@ -75,8 +76,9 @@ command:
     itemmailadmin: 'Lista de comandos para admins.'
     update:
       update: 'Verifica se há novas atualizações.'
-      found: 'Nova atualização encontrada! Você está % build(s) desatualizado. Baixe agora:'
+      found: 'Nova atualização encontrada! Você está %build% build(s) desatualizado. Baixe agora:'
       nonew: 'Não há novas atualizações.'
+      automatic: 'A nova atualização será automaticamente baixada e instalada. Reinicie o servidor assim que possível para finalizar o processo de atualização!'
     list: 'Lista de todos os corrêios deletados de um jogador.'
     recover: 'Recupera items perdidos de corrêios deletados (se houver algum).'
     reload: 'Recarrega as configurações do plugin e idioma/tradução.'

@@ -22,7 +22,7 @@ public final class CommandModule {
 		   f.setAccessible(true);
 		   map = (CommandMap) f.get(Bukkit.getServer());
 		} catch(final Exception e) {
-			ConsoleModule.debug("Bukkit CommandMap not found.");
+			ConsoleModule.debug(getClass(), "Bukkit CommandMap not found.");
             if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 		}
 		if(map != null) {
@@ -30,12 +30,12 @@ public final class CommandModule {
 			try {
 	            for (final Class<? extends LTCommandExecutor> clazz : ReflectionsUtil.getSubtypesOf(LTCommandExecutor.class, LTCommandExecutor.class.getPackage().getName(), LTItemMail.getInstance().getLTClassLoader(), LTCommandExecutor.class)) commands.add(clazz);
 	        } catch (final Exception e) {
-	        	ConsoleModule.debug("Could not load command class with Reflections.");
+	        	ConsoleModule.debug(getClass(), "Could not load command class with reflection.");
 	            if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 	        }
 			if(commands.size() > 0) for(final Class<? extends LTCommandExecutor> clazz : commands) {
 				if (!clazz.isAnnotationPresent(LTCommandInfo.class)) {
-					ConsoleModule.debug("Missing annotation (" + LTCommandInfo.class.getName() + ") in class " + clazz.getName() + ".");
+					ConsoleModule.debug(getClass(), "Missing annotation (" + LTCommandInfo.class.getName() + ") in class " + clazz.getName() + ".");
 		            continue;
 		        }
 		        final LTCommandInfo cmdInfo = clazz.getAnnotation(LTCommandInfo.class);
@@ -51,7 +51,7 @@ public final class CommandModule {
 		        try {
 		        	command.setExecutor(clazz.getConstructor().newInstance());
 		        } catch (final Exception e) {
-		        	ConsoleModule.debug("Could not set command executor of class " + clazz.getName() + ".");
+		        	ConsoleModule.debug(getClass(), "Could not set command executor of class " + clazz.getName() + ".");
 		            if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 		            continue;
 		        }
@@ -59,9 +59,9 @@ public final class CommandModule {
 			}
 		} else ConsoleModule.severe("Could not register commands: Bukkit CommandMap not found.");
 	}
-	private static class LTCommand extends Command {
+	private class LTCommand extends Command {
 		private LTCommandExecutor executor;
-	    public LTCommand(final String name, final String description, final String usageMessage, final List<String> aliases) {
+	    private LTCommand(final String name, final String description, final String usageMessage, final List<String> aliases) {
 	        super(name, description, usageMessage, aliases);
 	    }
 		@Override

@@ -9,18 +9,20 @@ import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import br.net.gmj.nobookie.LTItemMail.item.MailboxItem;
+import br.net.gmj.nobookie.LTItemMail.module.ConfigurationModule;
+import br.net.gmj.nobookie.LTItemMail.module.ConsoleModule;
 import br.net.gmj.nobookie.LTItemMail.module.DatabaseModule;
 import br.net.gmj.nobookie.LTItemMail.module.ExtensionModule;
-import br.net.gmj.nobookie.LTItemMail.module.LanguageModule;
 import br.net.gmj.nobookie.LTItemMail.module.MailboxModule;
 import br.net.gmj.nobookie.LTItemMail.module.ext.LTUltimateAdvancementAPI;
 import br.net.gmj.nobookie.LTItemMail.util.FetchUtil;
 
 /**
  * 
- * {@link Bukkit#getOfflinePlayer(String)} requires a case sensitive name. This class avoids that method using the LT Item Mail database first or the username cache of the server.
+ * {@link Bukkit#getOfflinePlayer(String)} requires a case sensitive name and cannot be trusted. This class uses the database first and the username cache after to ensure consistency.
  * 
  * @author Nobookie
  * 
@@ -34,46 +36,60 @@ public final class LTPlayer {
 		this.name = name;
 		this.uuid = uuid;
 	}
-	private final LTUltimateAdvancementAPI ultimateAdvancementAPI = (LTUltimateAdvancementAPI) ExtensionModule.getInstance().get(ExtensionModule.Function.ULTIMATEADVANCEMENTAPI);
 	/**
 	 * 
-	 * Gets a LTPlayer with the player name (case NOT sensitive).
+	 * Creates the LTPlayer object from a player's name (case NOT sensitive).
 	 * 
 	 * @param name The player name.
 	 * 
 	 */
-	public static final LTPlayer fromName(final String name) {
-		final UUID uuid = FetchUtil.Player.fromName(name);
-		if(uuid != null) return new LTPlayer(Bukkit.getOfflinePlayer(uuid), FetchUtil.Player.fromUUID(uuid), uuid);
+	public static final LTPlayer fromName(@NotNull final String name) {
+		try {
+			final UUID uuid = FetchUtil.Player.fromName(name);
+			if(uuid != null) return new LTPlayer(Bukkit.getOfflinePlayer(uuid), FetchUtil.Player.fromUUID(uuid), uuid);
+		} catch(final IllegalArgumentException e) {
+			ConsoleModule.debug(LTPlayer.class, "Argument cannot be null.");
+			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
+		}
 		return null;
 	}
 	/**
 	 * 
-	 * Gets a LTPlayer with the player unique id.
+	 * Creates the LTPlayer object from a player's unique id.
 	 * 
 	 * @param uuid The player UUID.
 	 * 
 	 */
-	public static final LTPlayer fromUUID(final UUID uuid) {
-		final String name = FetchUtil.Player.fromUUID(uuid);
-		if(name != null) return new LTPlayer(Bukkit.getOfflinePlayer(FetchUtil.Player.fromName(name)), name, FetchUtil.Player.fromName(name));
+	public static final LTPlayer fromUUID(@NotNull final UUID uuid) {
+		try {
+			final String name = FetchUtil.Player.fromUUID(uuid);
+			if(name != null) return new LTPlayer(Bukkit.getOfflinePlayer(FetchUtil.Player.fromName(name)), name, FetchUtil.Player.fromName(name));
+		} catch(final IllegalArgumentException e) {
+			ConsoleModule.debug(LTPlayer.class, "Argument cannot be null.");
+			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
+		}
 		return null;
 	}
 	/**
 	 * 
-	 * Converts Bukkit player into LTPlayer.
-	 * 
-	 * @deprecated Not recommended. Bukkit requires case sensitive to get offline players with {@link Bukkit#getOfflinePlayer(String)}. Use {@link LTPlayer#fromName(String)} or {@link LTPlayer#fromUUID(UUID)} instead.
+	 * Converts from Bukkit player to LTPlayer (same as {@link LTPlayer#fromName(String)}.
 	 * 
 	 */
-	public static final LTPlayer fromBukkitPlayer(final OfflinePlayer player) {
-		return new LTPlayer(player, player.getName(), player.getUniqueId());
+	public static final LTPlayer fromBukkitPlayer(@NotNull final OfflinePlayer player) {
+		try {
+			return LTPlayer.fromName(player.getName());
+		} catch(final IllegalArgumentException e) {
+			ConsoleModule.debug(LTPlayer.class, "Argument cannot be null.");
+			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
+		}
+		return null;
 	}
 	/**
 	 * 
 	 * Converts LTPlayer into Bukkit player.
 	 * 
 	 */
+	@NotNull
 	public final OfflinePlayer getBukkitPlayer() {
 		return player;
 	}
@@ -85,17 +101,17 @@ public final class LTPlayer {
 	 * @param items A list of items that the player will receive.
 	 * @param label The label you want to put on the mailbox.
 	 * 
-	 * @return "success" if it was successfully delivered. Otherwise it will return an error message.
-	 * 
 	 */
-	public final String forceSend(final LTPlayer playerTo, final LinkedList<ItemStack> items, String label) {
-		final Player player = this.player.getPlayer();
-		if(player == null) return "offline";
-		if(playerTo != null) {
-			MailboxModule.send(player, playerTo, items, label);
-			return "success";
+	@NotNull
+	public final Boolean forceSend(@NotNull final LTPlayer playerTo, @NotNull final LinkedList<ItemStack> items, @NotNull final String label) {
+		try {
+			MailboxModule.send(player.getPlayer(), playerTo, items, label);
+			return true;
+		} catch(final IllegalArgumentException e) {
+			ConsoleModule.debug(getClass(), "Argument cannot be null.");
+			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
 		}
-		return LanguageModule.Type.PLAYER_NEVERPLAYEDERROR.toString();
+		return false;
 	}
 	/**
 	 * 
@@ -104,7 +120,8 @@ public final class LTPlayer {
 	 * @return true if the player is online and received the mailbox block. Otherwise, it will return false.
 	 * 
 	 */
-	public final boolean giveMailboxBlock() {
+	@NotNull
+	public final Boolean giveMailboxBlock() {
 		final Player player = this.player.getPlayer();
 		if(player != null && player.getInventory().firstEmpty() != -1) {
 			player.getInventory().addItem(new MailboxItem().getItem(null));
@@ -118,6 +135,7 @@ public final class LTPlayer {
 	 * Gets the LTPlayer user name.
 	 * 
 	 */
+	@NotNull
 	public final String getName() {
 		return name;
 	}
@@ -126,6 +144,7 @@ public final class LTPlayer {
 	 * Gets the LTPlayer unique id.
 	 * 
 	 */
+	@NotNull
 	public final UUID getUniqueId() {
 		return uuid;
 	}
@@ -145,7 +164,8 @@ public final class LTPlayer {
 	 * @return true if the player is banned. Otherwise, it will return false.
 	 * 
 	 */
-	public final boolean isBanned() {
+	@NotNull
+	public final Boolean isBanned() {
 		if(isRegistered()) return DatabaseModule.User.isBanned(uuid);
 		return false;
 	}
@@ -154,7 +174,8 @@ public final class LTPlayer {
 	 * Gets the count of mails sent from the LTPlayer.
 	 * 
 	 */
-	public final int getMailSentCount() {
+	@NotNull
+	public final Integer getMailSentCount() {
 		if(isRegistered()) return DatabaseModule.User.getSentCount(uuid);
 		return 0;
 	}
@@ -163,7 +184,8 @@ public final class LTPlayer {
 	 * Gets the count of mails sent to the LTPlayer.
 	 * 
 	 */
-	public final int getMailReceivedCount() {
+	@NotNull
+	public final Integer getMailReceivedCount() {
 		if(isRegistered()) return DatabaseModule.User.getReceivedCount(uuid);
 		return 0;
 	}
@@ -174,7 +196,8 @@ public final class LTPlayer {
 	 * @return true if the player is registered. Otherwise, it will return false.
 	 * 
 	 */
-	public final boolean isRegistered() {
+	@NotNull
+	public final Boolean isRegistered() {
 		return DatabaseModule.User.isRegistered(uuid);
 	}
 	/**
@@ -192,7 +215,16 @@ public final class LTPlayer {
 	 * @param message The message that will be shown.
 	 * 
 	 */
-	public final void sendToastMessage(final String message) {
-		if(ultimateAdvancementAPI != null) ultimateAdvancementAPI.show(this, message);
+	@NotNull
+	public final void sendToastMessage(@NotNull final String message) {
+		try {
+			if(ExtensionModule.getInstance().isInstalled(ExtensionModule.Name.ULTIMATEADVANCEMENTAPI) && ExtensionModule.getInstance().isRegistered(ExtensionModule.Function.ULTIMATEADVANCEMENTAPI)) {
+				final LTUltimateAdvancementAPI ultimateAdvancementAPI = (LTUltimateAdvancementAPI) ExtensionModule.getInstance().get(ExtensionModule.Function.ULTIMATEADVANCEMENTAPI);
+				ultimateAdvancementAPI.show(this, message);
+			}
+		} catch(final IllegalArgumentException e) {
+			ConsoleModule.debug(getClass(), "Argument cannot be null.");
+			if((Boolean) ConfigurationModule.get(ConfigurationModule.Type.PLUGIN_DEBUG)) e.printStackTrace();
+		}
 	}
 }
